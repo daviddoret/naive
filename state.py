@@ -16,11 +16,11 @@ StateOutput = None
 
 
 class IV(binary_vector.BinaryVector):
-    def __init__(self, v=None, size=None, value=None):
-        if isinstance(v, IV):
+    def __init__(self, source_object=None, size=None, value=None):
+        if isinstance(source_object, IV):
             # The IV type couldn't be expressly managed in the parent class
-            v = v.to_bool_numpy_array()
-        super().__init__(v, size, value)
+            source_object = source_object.to_bool_numpy_array()
+        super().__init__(source_object, size, value)
 
 
 class State(str):

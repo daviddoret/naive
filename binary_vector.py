@@ -9,12 +9,11 @@ class BinaryVector:
     """A (small) finite binary vector"""
     _bool_numpy_array: np.array
 
-    def __init__(self, v=None, size: int = None, value=None):
+    def __init__(self, source_object=None, size: int = None, value=None):
         # Assure expected typing
-        v = v if v is None else BinaryVector(v)
 
-        if isinstance(v, BinaryVector):
-            self._bool_numpy_array = v.to_bool_numpy_array()
+        if isinstance(source_object, BinaryVector):
+            self._bool_numpy_array = source_object.to_bool_numpy_array()
         if size is not None and isinstance(size, int):
             if value is None:
                 # By default, return a vector of zeroes
@@ -24,7 +23,7 @@ class BinaryVector:
             else:
                 self._bool_numpy_array = np.zeros((size), dtype=bool)
         else:
-            self._bool_numpy_array = np.array(v, dtype=bool).flatten()
+            self._bool_numpy_array = np.array(source_object, dtype=bool).flatten()
 
     def __eq__(self, other_object):
         if not isinstance(other_object, BinaryVector):
