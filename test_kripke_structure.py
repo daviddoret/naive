@@ -2,6 +2,7 @@ from unittest import TestCase
 import kripke_structure as ks
 import numpy as np
 import logging
+import collections.abc as abc
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -39,15 +40,16 @@ class Test(TestCase):
     def test_coerce_set(self):
         s1 = ['e1', 'e2', 'e3']
         s2 = ks.coerce_set(s1)
-        self.assertIsInstance(s2, ks.Set)
+        self.assertEqual(s1, s2)
         s3 = [1, 2, 3]
         s4 = ks.coerce_set(s3)
-        self.assertIsInstance(s4, ks.Set)
+        self.assertEqual(['1', '2', '3'], s4)
 
     def test_coerce_specialized(self):
         x1 = ['e1', 'e2', 'e3']
         x2 = ks.coerce_specialized(x1)
-        self.assertIsInstance(x2, ks.Set)
+        self.assertIsInstance(x2, abc.Iterable)
+        self.assertTrue(all(isinstance(y, str) for y in x2))
         x3 = [0, 1, 0, 1, 1, 0, 0, 0, 0]
         x4 = ks.coerce_specialized(x3)
         self.assertIsInstance(x4, ks.BinaryVector)
@@ -73,3 +75,21 @@ class Test(TestCase):
         self.assertFalse(ks.equals(ks.get_one_binary_vector(2), [1]))
         self.assertFalse(ks.equals(ks.get_one_binary_vector(3), [1, 1]))
         self.assertFalse(ks.equals(ks.get_one_binary_vector(1), [1, 1, 1]))
+
+    def test_get_set_from_range(self):
+        self.assertTrue(ks.equals(ks.get_set_from_range(3), ['e0', 'e1', 'e2']))
+        self.assertTrue(ks.equals(ks.get_set_from_range(3, 'x', 1), ['x1', 'x2', 'x3']))
+        self.assertFalse(ks.equals(ks.get_set_from_range(3, 'x', 1), ['x0', 'x1', 'x2']))
+
+    def test_get_state_set(self):
+        print(ks.get_state_set(3))
+        self.assertTrue(ks.equals(ks.get_state_set(3), ['s0', 's1', 's2']))
+        self.assertFalse(ks.equals(ks.get_state_set(3), ['s1', 's2', 's3']))
+
+    def test_set_to_incidence_vector(self):
+        superset = ks.get_state_set(12)
+        subset = ['s2', 's4', 's5']
+        iv = ks.get_incidence_vector(subset, superset)
+        print(iv)
+        self.assertTrue(ks.equals(iv, [0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0]))
+

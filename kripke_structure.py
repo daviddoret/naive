@@ -53,12 +53,13 @@ IncidenceVectorInput = typing.TypeVar(
     IncidenceVector,
     np.ndarray)
 
-Set = npt.NDArray[npt.Shape["*"], npt.Str0]
+Set = typing.List[str] #npt.NDArray[npt.Shape["*"], npt.Str0]
 
 SetInput = typing.TypeVar(
     'SetInput',
     abc.Iterable,
-    np.ndarray)
+    typing.List[str],
+    Set)
 
 Supported = typing.TypeVar(
     'Supported',
@@ -142,19 +143,28 @@ def coerce_incidence_vector(x: IncidenceVectorInput) -> IncidenceVector:
 
 
 def coerce_set(x: SetInput) -> Set:
-    if isinstance(x, Set):
-        return x
-    else:
-        x2 = np.asarray(x, dtype=str).flatten()
-        logging.debug(f'coerce_set({x}[{type(x)}]) -> {x2}')
-        return x2
+    """Assure the Set type for x.
+
+    Note: a coerced set is always sorted. This simplifies the usage of incidence vectors with consistent index positions.
+
+    :param x:
+    :return:
+    """
+    if isinstance(x, abc.Iterable):
+        if all(isinstance(y, str) for y in x):
+            return x
+    coerced_x = flatten(x)
+    coerced_x = [str(e) for e in coerced_x]
+    coerced_x = sorted(coerced_x)
+    logging.debug(f'coerce_set({x}[{type(x)}]) -> {coerced_x}')
+    return coerced_x
 
 
 def coerce_specialized(x: object) -> Supported:
-    if isinstance(x, (BinaryVector, BinaryMatrix, Set)):
+    if isinstance(x, (BinaryVector, BinaryMatrix)):
         return x
     else:
-        # object is not of specialized type
+        # object is not of recognizable specialized type
         # in consequence we must make an arbitrage
         if isinstance(x, abc.Iterable):
             if all(isinstance(y, bool) for y in x):
@@ -178,8 +188,14 @@ def equals(x: object, y: object) -> bool:
     if isinstance(x, np.ndarray) and isinstance(y, np.ndarray):
         # Provide generic support for BinaryVector, IncidenceVector, BinaryMatrix, etc., etc.
         return np.array_equal(x, y)
+    if isinstance(x, abc.Iterable):
+        if all(isinstance(z, str) for z in x):
+            # This is a Set
+            return x == y
+        else:
+            raise TypeError('Iterable of unsupported type')
     else:
-        raise NotImplementedError
+        raise TypeError('Unsupported type')
 
 
 def inverse(x: BinaryVector) -> BinaryVector:
@@ -197,9 +213,23 @@ def get_one_binary_vector(size: int) -> BinaryVector:
     return np.ones(size, dtype=bool)
 
 
-def set_to_incidence_vector(s: Set, t: Set) -> IncidenceVector:
-    iv = IV(size=len(base), value=0)
-    for e in s:
-        e_index = base.index(e)
-        iv[e_index] = 1
+def get_set_from_range(n: int, prefix: str = 'e', index_start: int = 0):
+    """Generate a set of n elements, prefixed and numbered"""
+    s = []
+    for i in range(index_start, index_start + n):
+        s.append(f'{prefix}{i}')
+    s = coerce_set(s)
+    return s
+
+
+def get_state_set(n: int, prefix: str = 's', index_start: int = 0):
+    return get_set_from_range(n, prefix, index_start)
+
+
+def get_incidence_vector(subset: Set, superset: Set) -> IncidenceVector:
+    """Given a subset S' ⊆ S, return the corresponding incidence vector"""
+    iv = get_zero_binary_vector(len(superset))
+    for e in subset:
+        e_index = superset.index(e)
+        iv[e_index] = True
     return iv
