@@ -233,3 +233,5 @@ def get_incidence_vector(subset: Set, superset: Set) -> IncidenceVector:
         e_index = superset.index(e)
         iv[e_index] = True
     return iv
+
+class KripkeStructure()
