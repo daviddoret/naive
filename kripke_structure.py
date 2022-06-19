@@ -156,22 +156,26 @@ def coerce_binary_matrix(x: BinaryMatrixInput) -> BinaryMatrix:
             # Good, it is a bi-dimensional array
             return x
     coerced_x = x
-    if isinstance(coerced_x, np.ndarray):
-        if len(coerced_x.shape) == 2:
-            # It is bi-dimensional,
-            # but d-type was probably wrong
-            coerced_x = np.asarray(coerced_x).astype(bool)
-        else:
-            # Dimension was incorrect,
-            # we must assume the intention was to flatten it
-            logging.warning(f'Incorrect dimension coerced to 1 dimension')
-            coerced_x = coerce_binary_vector(coerced_x)
-    elif isinstance(coerced_x, list) and len(coerced_x) == 2:
+    if not isinstance(coerced_x, np.ndarray):
+        try:
+            coerced_x = np.asarray(coerced_x, dtype=bool)
+        except ValueError as e:
+            # If x is not bi-dimensional,
+            # numpy raises the following error (which is expected):
+            # ValueError: setting an array element with a sequence.
+            # The requested array has an inhomogeneous shape after 1 dimensions.
+            # The detected shape was (2,) + inhomogeneous part.
+            raise ValueError(f'A binary matrix is bi-dimensional by definition. Please assure that {x}[{type(x)}] has an homogeneous shapre.')
+    if len(coerced_x.shape) == 2:
+        # It is bi-dimensional,
+        # but d-type was probably wrong
         coerced_x = np.asarray(coerced_x).astype(bool)
     else:
+        # Dimension was incorrect,
+        # we must assume the intention was to flatten it
         logging.warning(f'Incorrect dimension coerced to 1 dimension')
         coerced_x = coerce_binary_vector(coerced_x)
-    logging.debug(f'Coerce {x}[{type(x)}] to binary matrix {coerced_x}')
+    logging.warning(f'Coerce {x}[{type(x)}] to binary matrix {coerced_x}')
     return coerced_x
 
 
@@ -656,7 +660,23 @@ def labels(m: KripkeStructureInput, s: StateInput, output_type: (type, typing.Ty
     m = coerce_kripke_structure(m)
     s = coerce_state(s, m.s)
     output_type = coerce_set_or_iv_type(output_type)
-    raise NotImplementedError('TODO XXX')
+
+    # Get the index position of s
+    s_index = m.s.index(s)
+
+    # Get the s_index column from the label mapping matrix
+    # This corresponds to the label incidence vector
+    label_iv = m.lm[:, s_index]
+    # Superfluous coercion
+    label_iv = coerce_incidence_vector(label_iv, m.ap)
+
+    if output_type == Set:
+        label_set = get_set(label_iv, m.ap)
+        logging.debug(f'L({s}) = {label_set}')
+        return label_set
+    else:
+        logging.debug(f'L({s}) = {label_iv}')
+        return label_iv
 
 
 def a(m: KripkeStructure, s_prime: SetOrIVInput, a: AtomicPropertyInput, output_type: (type, typing.TypeVar) = Set) -> SetOrIV:

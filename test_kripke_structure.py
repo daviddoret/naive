@@ -27,7 +27,8 @@ class Test(TestCase):
         m1 = [[1, 1, 1], [1, 0, 1]]
         m2 = ks.coerce_binary_matrix(m1)
         self.assertIsInstance(m2, ks.BinaryMatrix)
-        ks.coerce_binary_matrix([[1, 2, 3], [4, 5]])
+        with self.assertRaises(ValueError):
+            ks.coerce_binary_matrix([[1, 2, 3], [4, 5]])
 
     def test_coerce_binary_square_matrix(self):
         m1 = [[1, 1, 1], [1, 0, 1], [0, 0, 0]]
@@ -140,8 +141,13 @@ class Test(TestCase):
         print(ks.tt(m))
         self.assertTrue(ks.equals(ks.tt(m), m.s))
 
-
-
+    def test_labels(self):
+        m = ks_samples.get_sample_1()
+        self.assertTrue(ks.equals(ks.labels(m, 's0'), ['red']))
+        self.assertTrue(ks.equals(ks.labels(m, 's1', output_type=ks.IncidenceVector), [True, True, False]))
+        self.assertTrue(ks.equals(ks.labels(m, 's2'), ['green', 'blue']))
+        self.assertTrue(ks.equals(ks.labels(m, 's3', output_type=ks.IncidenceVector), [False, False, True]))
+        self.assertTrue(ks.equals(ks.labels(m, 's4'), ['red', 'green', 'blue']))
 
 class TestKripkeStructure(TestCase):
     m = ks_samples.get_sample_1()
