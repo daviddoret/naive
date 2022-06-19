@@ -64,6 +64,47 @@ IncidenceVectorInput = typing.TypeVar(
     np.ndarray)
 
 Set = typing.List[str]  # npt.NDArray[npt.Shape["*"], npt.Str0]
+SetInput = typing.TypeVar(
+    'SetInput',
+    Set,
+    typing.List[str]
+    )
+
+AtomicPropertySet = Set
+AtomicPropertySetInput = SetInput
+
+StateSet = Set
+StateSetInput = SetInput
+
+IndexPosition = int
+IndexPositionInput = typing.TypeVar(
+    'IndexPositionInput',
+    IndexPosition,
+    int
+    )
+
+Element = str
+ElementInput = typing.TypeVar(
+    'ElementInput',
+    Element,
+    IndexPositionInput,
+    )
+
+
+State = Element
+StateInput = typing.TypeVar(
+    'StateInput',
+    State,
+    Element,
+    ElementInput
+    )
+
+AtomicProperty = str
+AtomicPropertyInput = typing.TypeVar(
+    'AtomicPropertyInput',
+    AtomicProperty,
+    ElementInput
+    )
 
 SetInput = typing.TypeVar(
     'SetInput',
@@ -283,6 +324,52 @@ def coerce_subset_or_iv(x: object, s: SetInput) -> SetOrIV:
             raise NotImplementedError('Unsupported iterable')
         else:
             raise NotImplementedError('Unsupported type')
+
+
+
+def coerce_atomic_property_set(ap: AtomicPropertySetInput):
+    return coerce_set(ap)
+
+def coerce_state_set(s: StateSetInput):
+    return coerce_set(s)
+
+def coerce_element(e: ElementInput, s: SetInput) -> Element:
+    """Given element e passed with flexible input type, assure e ∈ S, and return e typed as Element"""
+    # TODO: Assure support for index-based element
+    s = coerce_set(s)
+    if e is None:
+        logging.error(f'e is None')
+        raise ValueError(f'e is None')
+    elif isinstance(e, Element):
+        if s is None:
+            logging.warning(f'Skip {e} ∈ s test because s is None')
+        if e in s:
+            return e
+        else:
+            logging.error(f'Element {e} is not an element of set {s}')
+            raise ValueError(f'Element {e} is not an element of set {s}')
+    elif isinstance(e, IndexPosition):
+        if s is None:
+            logging.error(f'Element {e} passed by index but set s is None')
+            raise ValueError(f'Element {e} passed by index but set s is None')
+        elif 0 <= IndexPosition < len(s):
+            coerced_e = s[e]
+            logging.debug(f'Coerce {e}[{type(e)}] passed by index to element {coerced_e}')
+        else:
+            logging.error(f'Element {e}[{type(e)}] passed by index outside s boundaries')
+            raise ValueError(f'Element {e}[{type(e)}] passed by index outside s boundaries')
+    else:
+        logging.error(f'Element {e}[{type(e)}] of unsupported type')
+        raise ValueError(f'Element {e}[{type(e)}] of unsupported type')
+
+
+def coerce_atomic_property(atom: AtomicPropertyInput, ap: AtomicPropertySetInput) -> AtomicProperty:
+    atom = coerce_element(atom, ap)
+    return atom
+
+def coerce_state(state: StateInput, s: StateSetInput) -> State:
+    state = coerce_element(state, s)
+    return state
 
 
 def coerce_set_or_iv_type(python_type):
@@ -557,3 +644,71 @@ def tt(m: KripkeStructure, s_prime: SetOrIVInput = None, output_type: (type, typ
         return get_set(sat_iv, m.s)
     else:
         return sat_iv
+
+
+def labels(m: KripkeStructureInput, s: StateInput, output_type: (type, typing.TypeVar) = Set) -> AtomicPropertySet:
+    """Given a Kripke structure M (m), and a state s ∈ S, return the set of labels (aka atomic properties) attached to that state.
+
+    :param m: The Kripke structure M
+    :param s: A state s
+    :return:
+    """
+    m = coerce_kripke_structure(m)
+    s = coerce_state(s, m.s)
+    output_type = coerce_set_or_iv_type(output_type)
+    raise NotImplementedError('TODO XXX')
+
+
+def a(m: KripkeStructure, s_prime: SetOrIVInput, a: AtomicPropertyInput, output_type: (type, typing.TypeVar) = Set) -> SetOrIV:
+    """Get the satisfaction set of the a state formula
+
+    Apply the state formula a to the LTS model, or conditionally to a subset of states,
+    and return the resulting satisfaction set, or its corresponding incidence vector.
+
+    The returned incidence vector is always relative to the complete set of model states.
+
+    Formally:
+    Let M be an LTS model with states S.
+    Let S' be a subset of S.
+    Let a be an atomic properties.
+    Let L(s) be the set of atomic properties attached to s.
+    Let Sat(a) be the set such that its elements are elements of S' and have a in their label set L(s).
+
+    In short:
+    {s ∈ S' ⊆ S | ∀ s ∈ S', a ∈ L(s)}
+
+    :param m: The Kripke structure model M
+    :param s_prime: (conditional) The subset S' ⊆ S'. Note that if s' is None,
+    it is assumed that all states are considered and NOT no states (the empty set).
+    :param a:
+    :param output_type: (conditional) Set or IncidenceVector with a default of Set
+    :return: The satisfaction set
+    """
+    m = coerce_kripke_structure(m)
+    if s_prime is not None:
+        s_prime = coerce_subset_or_iv(s_prime, m.s)
+    a = coerce_atomic_property(a, m.ap)
+    output_type = coerce_set_or_iv_type(output_type)
+
+    # Get the size of the incidence vector
+    s_cardinality = cardinality(m.s)
+
+    # Prepare an incidence vector of that size with all ones
+    sat_iv = get_one_binary_vector(s_cardinality)
+
+    if s_prime is not None:
+        # Work internally with incidence vectors
+        s_prime_iv = get_incidence_vector(s_prime, m.s)
+        # Limit the result to the requested set
+        sat_iv = vmin(sat_iv, s_prime_iv)
+
+    # Note that if s' is None,
+    # it is assumed that we consider all states
+    # and NOT no states (the empty set).
+
+    if output_type == Set:
+        return get_set(sat_iv, m.s)
+    else:
+        return sat_iv
+
+

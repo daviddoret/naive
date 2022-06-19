@@ -52,15 +52,17 @@ class Test(TestCase):
         s4 = ks.coerce_set(s3)
         self.assertEqual(['1', '2', '3'], s4)
 
-    def test_coerce_specialized(self):
-        x1 = ['e1', 'e2', 'e3']
-        x2 = ks.coerce_subset_or_iv(x1)
-        self.assertIsInstance(x2, abc.Iterable)
-        self.assertTrue(all(isinstance(y, str) for y in x2))
-        x3 = [0, 1, 0, 1, 1, 0, 0, 0, 0]
-        x4 = ks.coerce_subset_or_iv(x3)
-        self.assertIsInstance(x4, ks.BinaryVector)
-        self.assertIsInstance(x4, ks.IncidenceVector)
+    def test_coerce_subset_or_iv(self):
+        s = ks.get_state_set(9)
+        s_prime_set = ['e1', 'e2', 'e3']
+        coerced_s_prime_set = ks.coerce_subset_or_iv(s_prime_set, s)
+        self.assertTrue(ks.is_set_instance(coerced_s_prime_set))
+        self.assertTrue(all(isinstance(y, str) for y in coerced_s_prime_set))
+        self.assertTrue(ks.equals(s_prime_set, coerced_s_prime_set, s))
+        s_prime_iv = [0, 1, 0, 1, 1, 0, 0, 0, 0]
+        coerced_s_prime_iv = ks.coerce_subset_or_iv(s_prime_iv, s)
+        self.assertIsInstance(coerced_s_prime_iv, ks.IncidenceVector)
+        self.assertTrue(ks.equals(s_prime_iv, coerced_s_prime_iv))
 
     def test_flatten(self):
         self.assertTrue(ks.flatten([1, [2, [3, 4, [5]]]]), [1, 2, 3, 4, 5])
