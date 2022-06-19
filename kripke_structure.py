@@ -221,9 +221,8 @@ def coerce_set(x: SetInput) -> Set:
     :param x:
     :return:
     """
-    if isinstance(x, set):
-        if all(isinstance(y, str) for y in x):
-            return x
+    if is_set_instance(x):
+        return x
     coerced_x = x
     # Prevent infinite loops by checking if x is already flat
     if not all(not isinstance(y, abc.Iterable) for y in x):
@@ -250,29 +249,35 @@ def coerce_subset(s_prime: Set, s: Set) -> Set:
     :return:
     """
     s_prime = coerce_set(s_prime)
-    s = coerce_set(s)
-    if set(s).issuperset(set(s_prime)):
+    if s is None:
+        logging.warning('Skip the subset test')
         return s_prime
     else:
-        coerced_s_prime = [e for e in s_prime if e in s]
-        coerced_s_prime = coerce_set(coerced_s_prime)
-        logging.warning(f'Coerce {s_prime} to subset {coerced_s_prime} of set {s}')
-        return coerced_s_prime
+        s = coerce_set(s)
+        if set(s).issuperset(set(s_prime)):
+            return s_prime
+        else:
+            coerced_s_prime = [e for e in s_prime if e in s]
+            coerced_s_prime = coerce_set(coerced_s_prime)
+            logging.warning(f'Coerce {s_prime} to subset {coerced_s_prime} of set {s}')
+            return coerced_s_prime
 
 
-def coerce_set_or_iv(x: object) -> SetOrIV:
-    if isinstance(x, (BinaryVector, BinaryMatrix)):
-        return x
+def coerce_subset_or_iv(x: object, s: SetInput) -> SetOrIV:
+    if isinstance(x, (BinaryVector, IncidenceVector)):
+        return coerce_incidence_vector(x, s)
+    elif is_set_instance(x):
+        return coerce_subset(x, s)
     else:
         # object is not of recognizable specialized type
         # in consequence we must make an arbitrage
         if isinstance(x, abc.Iterable):
             if all(isinstance(y, bool) for y in x):
                 # Note that BinaryVector is equivalent to IncidenceVector
-                return coerce_binary_vector(x)
+                return coerce_incidence_vector(x, s)
             elif all(isinstance(y, int) for y in x):
                 # Note that BinaryVector is equivalent to IncidenceVector
-                return coerce_binary_vector(x)
+                return coerce_incidence_vector(x, s)
             elif all(isinstance(y, str) for y in x):
                 return coerce_set(x)
             raise NotImplementedError('Unsupported iterable')
@@ -290,18 +295,14 @@ def coerce_set_or_iv_type(python_type):
 
 # OPERATORS
 
-def equals(x: object, y: object) -> bool:
-    x = coerce_set_or_iv(x)
-    y = coerce_set_or_iv(y)
+def equals(x: object, y: object, s: Set = None) -> bool:
+    x = coerce_subset_or_iv(x, s)
+    y = coerce_subset_or_iv(y, s)
     if isinstance(x, np.ndarray) and isinstance(y, np.ndarray):
         # Provide generic support for BinaryVector, IncidenceVector, BinaryMatrix, etc., etc.
         return np.array_equal(x, y)
-    if isinstance(x, abc.Iterable):
-        if all(isinstance(z, str) for z in x):
-            # This is a Set
-            return x == y
-        else:
-            raise TypeError('Iterable of unsupported type')
+    if is_set_instance(x):
+        return x == y
     else:
         raise TypeError('Unsupported type')
 
@@ -352,13 +353,32 @@ def is_set_instance(x: object) -> bool:
     return False
 
 
+def get_set(s_prime: SetOrIVInput, s: Set) -> Set:
+    """Given a subset S' ⊆ S or its incidence vector, return the corresponding subset"""
+    s_prime = coerce_subset_or_iv(s_prime, s)
+    s = coerce_set(s)
+    if isinstance(s_prime, IncidenceVector):
+        iv = coerce_incidence_vector(s_prime, s)
+        s_prime_idx = np.flatnonzero(iv)
+        s_prime_set = [str(s[i]) for i in s_prime_idx]
+        s_prime_set = coerce_subset(s_prime_set, s)
+        return s_prime_set
+    elif is_set_instance(s_prime):
+        # s' is already a set
+        # coerce it and push it back
+        s_prime_set = coerce_subset(s_prime, s)
+        return s_prime_set
+    else:
+        raise TypeError('Something weird happened, a bug is hiding')
+
+
 def get_incidence_vector(s_prime: SetOrIVInput, s: Set) -> IncidenceVector:
-    """Given a subset S' ⊆ S, return the corresponding incidence vector"""
-    s_prime = coerce_set_or_iv(s_prime)
+    """Given a subset S' ⊆ S or its incidence vector, return the corresponding incidence vector"""
+    s_prime = coerce_subset_or_iv(s_prime, s)
     s = coerce_set(s)
     if isinstance(s_prime, IncidenceVector):
         # s' is already an incidence vector
-        # coerce it
+        # coerce it and push it back
         iv = coerce_incidence_vector(s_prime, s)
         return iv
     elif is_set_instance(s_prime):
@@ -489,7 +509,7 @@ def vmin(v1: BinaryVector, v2: BinaryVector) -> BinaryVector:
     return coerce_binary_vector(np.minimum(v1, v2))
 
 
-def tt(m: KripkeStructure, s_prime: SetOrIVInput, output_type: (type, typing.TypeVar) = Set) -> SetOrIV:
+def tt(m: KripkeStructure, s_prime: SetOrIVInput = None, output_type: (type, typing.TypeVar) = Set) -> SetOrIV:
     """Get the satisfaction set of the tt state formula
 
     Apply the state formula tt to the LTS model,
@@ -506,13 +526,15 @@ def tt(m: KripkeStructure, s_prime: SetOrIVInput, output_type: (type, typing.Typ
     {s ∈ S' ⊆ S | ∀ s ∈ S', s ⊨ tt}
 
     :param m: The Kripke structure model M
-    :param s_prime: (conditional) The subset S' ⊆ S'
+    :param s_prime: (conditional) The subset S' ⊆ S'. Note that if s' is None,
+    it is assumed that all states are considered and NOT no states (the empty set).
     :param output_type: (conditional) Set or IncidenceVector with a default of Set
     :return: The satisfaction set
     """
 
     m = coerce_kripke_structure(m)
-    s_prime = coerce_set_or_iv(s_prime, m.s)
+    if s_prime is not None:
+        s_prime = coerce_subset_or_iv(s_prime, m.s)
     output_type = coerce_set_or_iv_type(output_type)
 
     # Get the size of the incidence vector
@@ -531,4 +553,7 @@ def tt(m: KripkeStructure, s_prime: SetOrIVInput, output_type: (type, typing.Typ
     # it is assumed that we consider all states
     # and NOT no states (the empty set).
 
-    return sat_iv
+    if output_type == Set:
+        return get_set(sat_iv, m.s)
+    else:
+        return sat_iv

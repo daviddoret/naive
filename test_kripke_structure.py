@@ -54,11 +54,11 @@ class Test(TestCase):
 
     def test_coerce_specialized(self):
         x1 = ['e1', 'e2', 'e3']
-        x2 = ks.coerce_set_or_iv(x1)
+        x2 = ks.coerce_subset_or_iv(x1)
         self.assertIsInstance(x2, abc.Iterable)
         self.assertTrue(all(isinstance(y, str) for y in x2))
         x3 = [0, 1, 0, 1, 1, 0, 0, 0, 0]
-        x4 = ks.coerce_set_or_iv(x3)
+        x4 = ks.coerce_subset_or_iv(x3)
         self.assertIsInstance(x4, ks.BinaryVector)
         self.assertIsInstance(x4, ks.IncidenceVector)
 
@@ -93,14 +93,24 @@ class Test(TestCase):
         self.assertTrue(ks.equals(ks.get_state_set(3), ['s0', 's1', 's2']))
         self.assertFalse(ks.equals(ks.get_state_set(3), ['s1', 's2', 's3']))
 
+    def test_get_set(self):
+        s = ks.get_state_set(12)
+        s_prime_iv = [0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0]
+        s_prime_set = ks.get_set(s_prime_iv, s)
+        print(f's_prime_set: {s_prime_set}')
+        correct_set = ['s02', 's04', 's05']
+        self.assertTrue(ks.equals(s_prime_set, correct_set))
+        correct_set_set = ks.get_set(correct_set, s)
+        self.assertTrue(ks.equals(correct_set_set, correct_set))
+
     def test_get_incidence_vector(self):
-        superset = ks.get_state_set(12)
-        subset = ['s02', 's04', 's05']
-        subset_iv = ks.get_incidence_vector(subset, superset)
+        s = ks.get_state_set(12)
+        s_prime_set = ['s02', 's04', 's05']
+        s_prime_iv = ks.get_incidence_vector(s_prime_set, s)
         correct_iv = [0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0]
-        self.assertTrue(ks.equals(subset_iv, correct_iv))
-        subset_iv_from_iv = ks.get_incidence_vector(correct_iv, superset)
-        self.assertTrue(ks.equals(subset_iv_from_iv, correct_iv))
+        self.assertTrue(ks.equals(s_prime_iv, correct_iv))
+        correct_iv_iv = ks.get_incidence_vector(correct_iv, s)
+        self.assertTrue(ks.equals(correct_iv_iv, correct_iv))
 
     def test_cardinality(self):
         s = ks.coerce_set(['a', 'b', 'c', 'd', 'e'])
@@ -124,9 +134,17 @@ class Test(TestCase):
     def test_tt(self):
         m = ks_samples.get_sample_1()
         print(ks.to_text(m))
+        self.assertTrue(ks.equals(ks.tt(m, ['s0', 's2']), ['s0', 's2']))
+        print(ks.tt(m))
+        self.assertTrue(ks.equals(ks.tt(m), m.s))
+
+
 
 
 class TestKripkeStructure(TestCase):
     m = ks_samples.get_sample_1()
     print(ks.to_text(m))
     print(m.lm)
+
+
+
