@@ -15,6 +15,8 @@ import collections.abc as abc
 import nptyping as npt
 import math
 import itertools
+import dataclasses
+
 
 # CLASSES AND VARIABLE TYPES
 # Reference: https://peps.python.org/pep-0484/
@@ -69,8 +71,14 @@ SetInput = typing.TypeVar(
     typing.List[str],
     Set)
 
-Supported = typing.TypeVar(
-    'Supported',
+SetOrIV = typing.TypeVar(
+    'SetOrIV',
+    BinaryVector,
+    IncidenceVector,
+    Set)
+
+SetOrIVInput = typing.TypeVar(
+    'SetOrIVInput',
     BinaryVectorInput,
     IncidenceVectorInput,
     SetInput)
@@ -252,7 +260,7 @@ def coerce_subset(s_prime: Set, s: Set) -> Set:
         return coerced_s_prime
 
 
-def coerce_specialized(x: object) -> Supported:
+def coerce_set_or_iv(x: object) -> SetOrIV:
     if isinstance(x, (BinaryVector, BinaryMatrix)):
         return x
     else:
@@ -272,11 +280,19 @@ def coerce_specialized(x: object) -> Supported:
             raise NotImplementedError('Unsupported type')
 
 
+def coerce_set_or_iv_type(python_type):
+    if python_type == IncidenceVector:
+        return python_type
+    else:
+
+        return Set
+
+
 # OPERATORS
 
 def equals(x: object, y: object) -> bool:
-    x = coerce_specialized(x)
-    y = coerce_specialized(y)
+    x = coerce_set_or_iv(x)
+    y = coerce_set_or_iv(y)
     if isinstance(x, np.ndarray) and isinstance(y, np.ndarray):
         # Provide generic support for BinaryVector, IncidenceVector, BinaryMatrix, etc., etc.
         return np.array_equal(x, y)
@@ -320,31 +336,56 @@ def get_state_set(n: int, prefix: str = 's', index_start: int = 0):
     return get_set_from_range(n, prefix, index_start)
 
 
-def get_incidence_vector(s_prime: Set, s: Set) -> IncidenceVector:
+def is_set_instance(x: object) -> bool:
+    """Check is an object is of type Set
+
+    Set is a parametrized generics.
+    The native isinstance function does now support parametrize generics.
+    Hence, we must define our own type checking function.
+
+    :param x: Any object
+    :return: A boolean
+    """
+    if isinstance(x, abc.Iterable):
+        if all(isinstance(y, str) for y in x):
+            return True
+    return False
+
+
+def get_incidence_vector(s_prime: SetOrIVInput, s: Set) -> IncidenceVector:
     """Given a subset S' ⊆ S, return the corresponding incidence vector"""
-    s_prime = coerce_set(s_prime)
+    s_prime = coerce_set_or_iv(s_prime)
     s = coerce_set(s)
-    iv = get_zero_binary_vector(cardinality(s))
-    for e in s_prime:
-        e_index = s.index(e)
-        iv[e_index] = True
-    return iv
+    if isinstance(s_prime, IncidenceVector):
+        # s' is already an incidence vector
+        # coerce it
+        iv = coerce_incidence_vector(s_prime, s)
+        return iv
+    elif is_set_instance(s_prime):
+        iv = get_zero_binary_vector(cardinality(s))
+        for e in s_prime:
+            e_index = s.index(e)
+            iv[e_index] = True
+        iv = coerce_incidence_vector(iv, s)
+        return iv
+    else:
+        raise TypeError('Something weird happened, a bug is hiding')
 
 
 class KripkeStructure:
     def __init__(self, s, i, tm, ap, lm):
-        # Set properties from inside __init__
+        # Initialize properties from inside __init__
         self._s = None
         self._i = None
         self._tm = None
         self._ap = None
         self._lm = None
-        # Then call setters for consistency
+        # Call properties to assure consistency
         self.s = s
         self.i = i
         self.tm = tm
         self.ap = ap
-        self.lf = lm
+        self.lm = lm
 
     @property
     def s(self):
@@ -358,20 +399,20 @@ class KripkeStructure:
 
     @property
     def i(self):
-        """The initial state set"""
+        """The initial set that is a subset of the state set"""
         return self._i
 
-    @s.setter
+    @i.setter
     def i(self, x):
         x = coerce_subset(x, self.s)
         self._i = x
 
     @property
     def tm(self):
-        """The transition matrix"""
+        """The transition square matrix"""
         return self._tm
 
-    @s.setter
+    @tm.setter
     def tm(self, x):
         x = coerce_binary_square_matrix(x)
         self._tm = x
@@ -381,17 +422,113 @@ class KripkeStructure:
         """The atomic property set"""
         return self._ap
 
-    @s.setter
+    @ap.setter
     def ap(self, x):
         x = coerce_set(x)
         self._ap = x
 
     @property
     def lm(self):
-        """The labeling function mapping"""
+        """The labeling function mapping matrix"""
         return self._lm
 
-    @s.setter
+    @lm.setter
     def lm(self, x):
         x = coerce_binary_matrix(x)
         self._lm = x
+
+
+KripkeStructureInput = typing.TypeVar(
+    'KripkeStructureInput',
+    KripkeStructure,
+    dict)
+
+
+def coerce_kripke_structure(m: KripkeStructureInput) -> KripkeStructure:
+    if isinstance(m, KripkeStructure):
+        return m
+    elif isinstance(m, dict):
+        s = m.get('s', None)
+        i = m.get('i', None)
+        tm = m.get('tm', None)
+        ap = m.get('ap', None)
+        lm = m.get('lm', None)
+        coerced_m = KripkeStructure(s, i, tm, ap, lm)
+        logging.debug(f'Coerce {m}[{type(m)}] to Kripke structure {coerced_m}')
+        return coerced_m
+    else:
+        raise ValueError
+
+
+def to_text(o: object) -> str:
+    if isinstance(o, KripkeStructure):
+        return f'({o.s}, {o.i}, {o.tm}, {o.ap}, {o.lm})'
+    else:
+        raise NotImplementedError
+
+
+def set_element_values_from_iterable(target, source: abc.Iterable):
+    # TODO: Add some type checking here as well
+    for i, e in enumerate(source):
+        target[i] = e
+
+
+def vmin(v1: BinaryVector, v2: BinaryVector) -> BinaryVector:
+    """Return the element-wise minimum of this set with another set
+
+    If the binary vector is the incidence vector of a set,
+    this is equivalent to the or set operation:
+    min(IV(s), IV(t)) ≡ s ∩ t
+    """
+
+    v1 = coerce_binary_vector(v1)
+    v2 = coerce_binary_vector(v2)
+
+    # Populate the values of the resulting vector
+    # as the element-wise min of both vectors
+    return coerce_binary_vector(np.minimum(v1, v2))
+
+
+def tt(m: KripkeStructure, s_prime: SetOrIVInput, output_type: (type, typing.TypeVar) = Set) -> SetOrIV:
+    """Get the satisfaction set of the tt state formula
+
+    Apply the state formula tt to the LTS model,
+    or conditionally to a subset of states,
+    and return the resulting satisfaction set.
+
+    Formally:
+    Let M be a Kripke Structure model with states S.
+    Let S' be a subset of S.
+    Let tt be the tautological truth state formula.
+    Let Sat(tt) be the satisfaction set of tt in S'.
+
+    In short:
+    {s ∈ S' ⊆ S | ∀ s ∈ S', s ⊨ tt}
+
+    :param m: The Kripke structure model M
+    :param s_prime: (conditional) The subset S' ⊆ S'
+    :param output_type: (conditional) Set or IncidenceVector with a default of Set
+    :return: The satisfaction set
+    """
+
+    m = coerce_kripke_structure(m)
+    s_prime = coerce_set_or_iv(s_prime, m.s)
+    output_type = coerce_set_or_iv_type(output_type)
+
+    # Get the size of the incidence vector
+    s_cardinality = cardinality(m.s)
+
+    # Prepare an incidence vector of that size with all ones
+    sat_iv = get_one_binary_vector(s_cardinality)
+
+    if s_prime is not None:
+        # Work internally with incidence vectors
+        s_prime_iv = get_incidence_vector(s_prime, m.s)
+        # Limit the result to the requested set
+        sat_iv = vmin(sat_iv, s_prime_iv)
+
+    # Note that if s' is None,
+    # it is assumed that we consider all states
+    # and NOT no states (the empty set).
+
+    return sat_iv

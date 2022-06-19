@@ -1,5 +1,6 @@
 from unittest import TestCase
 import kripke_structure as ks
+import kripke_samples as ks_samples
 import numpy as np
 import logging
 import collections.abc as abc
@@ -53,11 +54,11 @@ class Test(TestCase):
 
     def test_coerce_specialized(self):
         x1 = ['e1', 'e2', 'e3']
-        x2 = ks.coerce_specialized(x1)
+        x2 = ks.coerce_set_or_iv(x1)
         self.assertIsInstance(x2, abc.Iterable)
         self.assertTrue(all(isinstance(y, str) for y in x2))
         x3 = [0, 1, 0, 1, 1, 0, 0, 0, 0]
-        x4 = ks.coerce_specialized(x3)
+        x4 = ks.coerce_set_or_iv(x3)
         self.assertIsInstance(x4, ks.BinaryVector)
         self.assertIsInstance(x4, ks.IncidenceVector)
 
@@ -92,12 +93,14 @@ class Test(TestCase):
         self.assertTrue(ks.equals(ks.get_state_set(3), ['s0', 's1', 's2']))
         self.assertFalse(ks.equals(ks.get_state_set(3), ['s1', 's2', 's3']))
 
-    def test_set_to_incidence_vector(self):
+    def test_get_incidence_vector(self):
         superset = ks.get_state_set(12)
         subset = ['s02', 's04', 's05']
-        iv = ks.get_incidence_vector(subset, superset)
-        print(iv)
-        self.assertTrue(ks.equals(iv, [0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0]))
+        subset_iv = ks.get_incidence_vector(subset, superset)
+        correct_iv = [0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0]
+        self.assertTrue(ks.equals(subset_iv, correct_iv))
+        subset_iv_from_iv = ks.get_incidence_vector(correct_iv, superset)
+        self.assertTrue(ks.equals(subset_iv_from_iv, correct_iv))
 
     def test_cardinality(self):
         s = ks.coerce_set(['a', 'b', 'c', 'd', 'e'])
@@ -111,3 +114,19 @@ class Test(TestCase):
         s = ['a', 'b', 'c', 'd', 'e']
         self.assertEqual(ks.coerce_subset(['a', 'b'], s), ['a', 'b'])
         self.assertEqual(ks.coerce_subset(['a', 'z', 'b'], s), ['a', 'b'])
+
+    def test_vmin(self):
+        v1 = [0, 1, 0, 1, 0, 0, 1, 1]
+        v2 = [1, 1, 0, 0, 0, 0, 1, 1]
+        v3 = ks.vmin(v1, v2)
+        self.assertTrue(ks.equals(v3, [0, 1, 0, 0, 0, 0, 1, 1]))
+
+    def test_tt(self):
+        m = ks_samples.get_sample_1()
+        print(ks.to_text(m))
+
+
+class TestKripkeStructure(TestCase):
+    m = ks_samples.get_sample_1()
+    print(ks.to_text(m))
+    print(m.lm)
