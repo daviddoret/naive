@@ -53,7 +53,7 @@ IncidenceVectorInput = typing.TypeVar(
     IncidenceVector,
     np.ndarray)
 
-Set = typing.List[str] #npt.NDArray[npt.Shape["*"], npt.Str0]
+Set = typing.List[str]  # npt.NDArray[npt.Shape["*"], npt.Str0]
 
 SetInput = typing.TypeVar(
     'SetInput',
@@ -76,8 +76,9 @@ def flatten(x: abc.Iterable[abc.Any]) -> abc.List[abc.Any]:
     if isinstance(x, abc.Iterable):
         flat_x = []
         for y in x:
-            if isinstance(y, abc.Iterable):
-                # Recursive call
+            # Recursive call for sub-structures
+            # except strings that are understood as atomic
+            if isinstance(y, abc.Iterable) and not isinstance(y, str):
                 # We cannot call directly extend to support n-depth structures
                 flat_x.extend(flatten(y))
             else:
@@ -130,13 +131,41 @@ def coerce_binary_vector(x: BinaryVectorInput) -> BinaryVector:
         raise NotImplementedError
 
 
-def coerce_incidence_vector(x: IncidenceVectorInput) -> IncidenceVector:
+def cardinality(x: object) -> int:
+    """Return the cardinality of x.
+
+    :param x:
+    :return:
+    """
     if isinstance(x, (BinaryVector, IncidenceVector)):
-        return x
+        return len(x)
+    elif isinstance(x, abc.Iterable):
+        if all(isinstance(y, str) for y in x):
+            return len(x)
+        else:
+            raise TypeError
+    else:
+        raise TypeError
+
+
+def coerce_incidence_vector(x: IncidenceVectorInput, s: Set = None) -> IncidenceVector:
+    if s is not None:
+        s = coerce_set(s)
+    if isinstance(x, (BinaryVector, IncidenceVector)):
+        if s is None:
+            # If the base set is not provided,
+            # we assume it is the caller's intention
+            # to not check the consistency of
+            # the incidence vector with its base set.
+            return x
+        elif cardinality(x) == cardinality(s):
+            return x
+        else:
+            raise ValueError(f'Incidence vector {x} has inconsistent cardinality with set {s}')
     elif isinstance(x, abc.Iterable):
         coerced_x = flatten(x)
         coerced_x = np.asarray(coerced_x, dtype=bool)
-        logging.debug(f'coerce_binary_vector({x}[{type(x)}]) -> {coerced_x}')
+        logging.debug(f'Coerce incidence vector {x}[{type(x)}] to {coerced_x}')
         return coerced_x
     else:
         raise NotImplementedError
@@ -150,14 +179,43 @@ def coerce_set(x: SetInput) -> Set:
     :param x:
     :return:
     """
-    if isinstance(x, abc.Iterable):
+    if isinstance(x, set):
         if all(isinstance(y, str) for y in x):
             return x
-    coerced_x = flatten(x)
+    coerced_x = x
+    # Prevent infinite loops by checking if x is already flat
+    if not all(not isinstance(y, abc.Iterable) for y in x):
+        # Flatten x if necessary
+        coerced_x = flatten(x)
+    # Assure all elements are of type string
     coerced_x = [str(e) for e in coerced_x]
+    # Assure all elements are unique values
+    coerced_x = set(coerced_x)
+    # But do not use the python set type that is unordered
+    # and use list instead to assure index positions of elements
+    coerced_x = list(coerced_x)
+    # Assure elements are ordered to simplify the usage of incidence vectors
     coerced_x = sorted(coerced_x)
-    logging.debug(f'coerce_set({x}[{type(x)}]) -> {coerced_x}')
+    logging.debug(f'Coerce {x}[{type(x)}] to set {coerced_x}')
     return coerced_x
+
+
+def coerce_subset(s_prime: Set, s: Set) -> Set:
+    """Coerce s' to a subset of s.
+
+    :param s_prime:
+    :param s:
+    :return:
+    """
+    s_prime = coerce_set(s_prime)
+    s = coerce_set(s)
+    if set(s).issuperset(set(s_prime)):
+        return s_prime
+    else:
+        coerced_s_prime = [e for e in s_prime if e in s]
+        coerced_s_prime = coerce_set(coerced_s_prime)
+        logging.warning(f'Coerce {s_prime} to subset {coerced_s_prime} of set {s}')
+        return coerced_s_prime
 
 
 def coerce_specialized(x: object) -> Supported:
@@ -214,10 +272,12 @@ def get_one_binary_vector(size: int) -> BinaryVector:
 
 
 def get_set_from_range(n: int, prefix: str = 'e', index_start: int = 0):
-    """Generate a set of n elements, prefixed and numbered"""
+    """Generate a set of n elements, prefixed and numbered with 0 padding"""
     s = []
+    width = len(str(n))
     for i in range(index_start, index_start + n):
-        s.append(f'{prefix}{i}')
+        # Apply 0 padding to assure natural ordering
+        s.append(f'{prefix}{str(i).zfill(width)}')
     s = coerce_set(s)
     return s
 
@@ -226,12 +286,78 @@ def get_state_set(n: int, prefix: str = 's', index_start: int = 0):
     return get_set_from_range(n, prefix, index_start)
 
 
-def get_incidence_vector(subset: Set, superset: Set) -> IncidenceVector:
+def get_incidence_vector(s_prime: Set, s: Set) -> IncidenceVector:
     """Given a subset S' ⊆ S, return the corresponding incidence vector"""
-    iv = get_zero_binary_vector(len(superset))
-    for e in subset:
-        e_index = superset.index(e)
+    s_prime = coerce_set(s_prime)
+    s = coerce_set(s)
+    iv = get_zero_binary_vector(cardinality(s))
+    for e in s_prime:
+        e_index = s.index(e)
         iv[e_index] = True
     return iv
 
-class KripkeStructure()
+
+class KripkeStructure:
+    def __init__(self, s, i, tm, ap, lf):
+        # Set properties from inside __init__
+        self._s = None
+        self._i = None
+        self._tm = None
+        self._ap = None
+        self._lf = None
+        # Then call setters for consistency
+        self.s = s
+        self.i = i
+        self.tm = tm
+        self.ap = ap
+        self.lf = lf
+
+    @property
+    def s(self):
+        """The state set"""
+        return self._s
+
+    @s.setter
+    def s(self, x):
+        x = coerce_set(x)
+        self._s = x
+
+    @property
+    def i(self):
+        """The initial state set"""
+        return self._i
+
+    @s.setter
+    def i(self, x):
+        x = coerce_subset(x, self.s)
+        self._i = x
+
+    @property
+    def tm(self):
+        """The transition matrix"""
+        return self._tm
+
+    @s.setter
+    def s(self, x):
+        x = coerce_binary_matrix(x)
+        self._s = x
+
+    @property
+    def s(self):
+        """The state set"""
+        return self._s
+
+    @s.setter
+    def s(self, x):
+        x = coerce_set(x)
+        self._s = x
+
+    @property
+    def s(self):
+        """The state set"""
+        return self._s
+
+    @s.setter
+    def s(self, x):
+        x = coerce_set(x)
+        self._s = x

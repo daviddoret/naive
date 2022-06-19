@@ -88,8 +88,20 @@ class Test(TestCase):
 
     def test_set_to_incidence_vector(self):
         superset = ks.get_state_set(12)
-        subset = ['s2', 's4', 's5']
+        subset = ['s02', 's04', 's05']
         iv = ks.get_incidence_vector(subset, superset)
         print(iv)
         self.assertTrue(ks.equals(iv, [0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0]))
 
+    def test_cardinality(self):
+        s = ks.coerce_set(['a', 'b', 'c', 'd', 'e'])
+        self.assertEqual(ks.cardinality(s), 5)
+        v = ks.coerce_binary_vector([1, 0, 1, 0, 0])
+        self.assertEqual(ks.cardinality(v), 5)
+        iv = ks.coerce_incidence_vector(v, s)
+        self.assertEqual(ks.cardinality(iv), 5)
+
+    def test_coerce_subset(self):
+        s = ['a', 'b', 'c', 'd', 'e']
+        self.assertEqual(ks.coerce_subset(['a', 'b'], s), ['a', 'b'])
+        self.assertEqual(ks.coerce_subset(['a', 'z', 'b'], s), ['a', 'b'])
