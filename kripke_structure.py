@@ -27,6 +27,14 @@ BinaryMatrixInput = typing.TypeVar(
     BinaryMatrix,
     np.ndarray)
 
+BinarySquareMatrix = npt.NDArray[npt.Shape["*,*"], npt.Bool]
+
+BinarySquareMatrixInput = typing.TypeVar(
+    'BinarySquareMatrixInput',
+    abc.Iterable,
+    BinarySquareMatrix,
+    np.ndarray)
+
 BinaryValue = typing.NewType('BinaryValue', bool)
 
 BinaryValueInput = typing.TypeVar(
@@ -95,16 +103,42 @@ def flatten(x: abc.Iterable[abc.Any]) -> abc.List[abc.Any]:
 
 def coerce_binary_matrix(x: BinaryMatrixInput) -> BinaryMatrix:
     if isinstance(x, BinaryMatrix):
-        return x
+        if len(x.shape) == 2:
+            # Good, it is a bi-dimensional array
+            return x
+    coerced_x = x
+    if isinstance(coerced_x, np.ndarray):
+        if len(coerced_x.shape) == 2:
+            # It is bi-dimensional,
+            # but d-type was probably wrong
+            coerced_x = np.asarray(coerced_x).astype(bool)
+        else:
+            # Dimension was incorrect,
+            # we must assume the intention was to flatten it
+            logging.warning(f'Incorrect dimension coerced to 1 dimension')
+            coerced_x = coerce_binary_vector(coerced_x)
+    elif isinstance(coerced_x, list) and len(coerced_x) == 2:
+        coerced_x = np.asarray(coerced_x).astype(bool)
     else:
-        x2 = coerce_binary_vector(x)
-        square_side = math.sqrt(len(x2))
-        if int(square_side) != square_side:
-            raise IndexError(f'x is not a square')
-        square_side = int(square_side)
-        x2 = np.reshape(x2, (square_side, square_side))
-        logging.debug(f'coerce_binary_matrix({x}[{type(x)}]) -> {x2}')
-        return x2
+        logging.warning(f'Incorrect dimension coerced to 1 dimension')
+        coerced_x = coerce_binary_vector(coerced_x)
+    logging.debug(f'Coerce {x}[{type(x)}] to binary matrix {coerced_x}')
+    return coerced_x
+
+
+def coerce_binary_square_matrix(x: BinarySquareMatrixInput) -> BinarySquareMatrix:
+    if isinstance(x, BinarySquareMatrix):
+        if len(x.shape) == 2 and x.shape[0] == x.shape[1]:
+            # Good, it is a square matrix
+            return x
+    coerced_x = coerce_binary_vector(x)
+    square_side = math.sqrt(len(coerced_x))
+    if int(square_side) != square_side:
+        raise IndexError(f'x is not a square')
+    square_side = int(square_side)
+    coerced_x = np.reshape(coerced_x, (square_side, square_side))
+    logging.debug(f'Coerce {x}[{type(x)}] to square binary matrix {coerced_x}')
+    return coerced_x
 
 
 def coerce_binary_value(x: BinaryValueInput) -> BinaryValue:
@@ -298,19 +332,19 @@ def get_incidence_vector(s_prime: Set, s: Set) -> IncidenceVector:
 
 
 class KripkeStructure:
-    def __init__(self, s, i, tm, ap, lf):
+    def __init__(self, s, i, tm, ap, lm):
         # Set properties from inside __init__
         self._s = None
         self._i = None
         self._tm = None
         self._ap = None
-        self._lf = None
+        self._lm = None
         # Then call setters for consistency
         self.s = s
         self.i = i
         self.tm = tm
         self.ap = ap
-        self.lf = lf
+        self.lf = lm
 
     @property
     def s(self):
@@ -338,26 +372,26 @@ class KripkeStructure:
         return self._tm
 
     @s.setter
-    def s(self, x):
+    def tm(self, x):
+        x = coerce_binary_square_matrix(x)
+        self._tm = x
+
+    @property
+    def ap(self):
+        """The atomic property set"""
+        return self._ap
+
+    @s.setter
+    def ap(self, x):
+        x = coerce_set(x)
+        self._ap = x
+
+    @property
+    def lm(self):
+        """The labeling function mapping"""
+        return self._lm
+
+    @s.setter
+    def lm(self, x):
         x = coerce_binary_matrix(x)
-        self._s = x
-
-    @property
-    def s(self):
-        """The state set"""
-        return self._s
-
-    @s.setter
-    def s(self, x):
-        x = coerce_set(x)
-        self._s = x
-
-    @property
-    def s(self):
-        """The state set"""
-        return self._s
-
-    @s.setter
-    def s(self, x):
-        x = coerce_set(x)
-        self._s = x
+        self._lm = x

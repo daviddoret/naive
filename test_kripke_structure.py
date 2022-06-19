@@ -23,11 +23,17 @@ class Test(TestCase):
         # self.assertTrue(isinstance(ks.coerce_incidence_vector([True, False]), ks.IncidenceVector))
 
     def test_coerce_binary_matrix(self):
-        m1 = [[1, 1, 1], [1, 0, 1], [0, 0, 0]]
+        m1 = [[1, 1, 1], [1, 0, 1]]
         m2 = ks.coerce_binary_matrix(m1)
         self.assertIsInstance(m2, ks.BinaryMatrix)
+        ks.coerce_binary_matrix([[1, 2, 3], [4, 5]])
+
+    def test_coerce_binary_square_matrix(self):
+        m1 = [[1, 1, 1], [1, 0, 1], [0, 0, 0]]
+        m2 = ks.coerce_binary_square_matrix(m1)
+        self.assertIsInstance(m2, ks.BinarySquareMatrix)
         with self.assertRaises(IndexError):
-            ks.coerce_binary_matrix([[1, 2, 3], [4, 5]])
+            ks.coerce_binary_square_matrix([[1, 2, 3], [4, 5]])
 
     def test_eq(self):
         o1 = [0, 1, 0, 1, 1, 0, 0, 0, 0]
