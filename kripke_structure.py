@@ -17,7 +17,6 @@ import math
 import itertools
 import dataclasses
 
-
 # CLASSES AND VARIABLE TYPES
 # Reference: https://peps.python.org/pep-0484/
 
@@ -68,7 +67,7 @@ SetInput = typing.TypeVar(
     'SetInput',
     Set,
     typing.List[str]
-    )
+)
 
 AtomicPropertySet = Set
 AtomicPropertySetInput = SetInput
@@ -81,15 +80,14 @@ IndexPositionInput = typing.TypeVar(
     'IndexPositionInput',
     IndexPosition,
     int
-    )
+)
 
 Element = str
 ElementInput = typing.TypeVar(
     'ElementInput',
     Element,
     IndexPositionInput,
-    )
-
+)
 
 State = Element
 StateInput = typing.TypeVar(
@@ -97,14 +95,14 @@ StateInput = typing.TypeVar(
     State,
     Element,
     ElementInput
-    )
+)
 
 AtomicProperty = str
 AtomicPropertyInput = typing.TypeVar(
     'AtomicPropertyInput',
     AtomicProperty,
     ElementInput
-    )
+)
 
 SetInput = typing.TypeVar(
     'SetInput',
@@ -123,6 +121,31 @@ SetOrIVInput = typing.TypeVar(
     BinaryVectorInput,
     IncidenceVectorInput,
     SetInput)
+
+
+# IS INSTANCE FUNCTIONS
+
+def is_instance(o: object, t: (type, typing.TypeVar)) -> bool:
+    """Check if an arbitrary object o is of type or TypeVar t
+
+    The native isinstance function does not support parametrized generics.
+    Hence, we need a wrapper function to extend type checking.
+
+    :param o: Any object
+    :param t: A type or TypeVar
+    :return: A boolean
+    """
+    if isinstance(t, type):
+        # Provide support for all types, including:
+        # BinaryVector, IncidenceVector
+        return isinstance(o, t)
+    elif t in (Set, AtomicPropertySet, StateSet):
+        if isinstance(o, abc.Iterable):
+            if all(isinstance(y, str) for y in o):
+                return True
+        return
+    else:
+        raise NotImplementedError(f'Missing implementation for type {t}')
 
 
 # UTILITY FUNCTIONS
@@ -165,7 +188,8 @@ def coerce_binary_matrix(x: BinaryMatrixInput) -> BinaryMatrix:
             # ValueError: setting an array element with a sequence.
             # The requested array has an inhomogeneous shape after 1 dimensions.
             # The detected shape was (2,) + inhomogeneous part.
-            raise ValueError(f'A binary matrix is bi-dimensional by definition. Please assure that {x}[{type(x)}] has an homogeneous shapre.')
+            raise ValueError(
+                f'A binary matrix is bi-dimensional by definition. Please assure that {x}[{type(x)}] has an homogeneous shapre.')
     if len(coerced_x.shape) == 2:
         # It is bi-dimensional,
         # but d-type was probably wrong
@@ -238,12 +262,13 @@ def cardinality(x: object) -> int:
 def coerce_incidence_vector(x: IncidenceVectorInput, s: Set = None) -> IncidenceVector:
     if s is not None:
         s = coerce_set(s)
-    if isinstance(x, (BinaryVector, IncidenceVector)):
+    if isinstance(x, IncidenceVector):
         if s is None:
             # If the base set is not provided,
             # we assume it is the caller's intention
             # to not check the consistency of
             # the incidence vector with its base set.
+            logging.warning('Skip subset test')
             return x
         elif cardinality(x) == cardinality(s):
             return x
@@ -266,7 +291,7 @@ def coerce_set(x: SetInput) -> Set:
     :param x:
     :return:
     """
-    if is_set_instance(x):
+    if is_instance(x, Set):
         return x
     coerced_x = x
     # Prevent infinite loops by checking if x is already flat
@@ -309,9 +334,9 @@ def coerce_subset(s_prime: Set, s: Set) -> Set:
 
 
 def coerce_subset_or_iv(x: object, s: SetInput) -> SetOrIV:
-    if isinstance(x, (BinaryVector, IncidenceVector)):
+    if isinstance(x, IncidenceVector):
         return coerce_incidence_vector(x, s)
-    elif is_set_instance(x):
+    elif is_instance(x, Set):
         return coerce_subset(x, s)
     else:
         # object is not of recognizable specialized type
@@ -330,12 +355,23 @@ def coerce_subset_or_iv(x: object, s: SetInput) -> SetOrIV:
             raise NotImplementedError('Unsupported type')
 
 
-
 def coerce_atomic_property_set(ap: AtomicPropertySetInput):
     return coerce_set(ap)
 
+
 def coerce_state_set(s: StateSetInput):
     return coerce_set(s)
+
+
+def coerce_state_subset(s_prime: StateSetInput, s: StateInput):
+    s = coerce_set(s)
+    if is_instance(s_prime, StateSet):
+        return coerce_subset(s_prime, s)
+    elif isinstance(s_prime, IncidenceVectorInput):
+        s_prime = coerce_incidence_vector(s_prime, s)
+        s_prime = coerce_incidence_vector(s_prime, s)
+    return coerce_set(s)
+
 
 def coerce_element(e: ElementInput, s: SetInput) -> Element:
     """Given element e passed with flexible input type, assure e ∈ S, and return e typed as Element"""
@@ -371,6 +407,7 @@ def coerce_atomic_property(atom: AtomicPropertyInput, ap: AtomicPropertySetInput
     atom = coerce_element(atom, ap)
     return atom
 
+
 def coerce_state(state: StateInput, s: StateSetInput) -> State:
     state = coerce_element(state, s)
     return state
@@ -392,7 +429,7 @@ def equals(x: object, y: object, s: Set = None) -> bool:
     if isinstance(x, np.ndarray) and isinstance(y, np.ndarray):
         # Provide generic support for BinaryVector, IncidenceVector, BinaryMatrix, etc., etc.
         return np.array_equal(x, y)
-    if is_set_instance(x):
+    if is_instance(x, Set):
         return x == y
     else:
         raise TypeError('Unsupported type')
@@ -428,22 +465,6 @@ def get_state_set(n: int, prefix: str = 's', index_start: int = 0):
     return get_set_from_range(n, prefix, index_start)
 
 
-def is_set_instance(x: object) -> bool:
-    """Check is an object is of type Set
-
-    Set is a parametrized generics.
-    The native isinstance function does now support parametrize generics.
-    Hence, we must define our own type checking function.
-
-    :param x: Any object
-    :return: A boolean
-    """
-    if isinstance(x, abc.Iterable):
-        if all(isinstance(y, str) for y in x):
-            return True
-    return False
-
-
 def get_set(s_prime: SetOrIVInput, s: Set) -> Set:
     """Given a subset S' ⊆ S or its incidence vector, return the corresponding subset"""
     s_prime = coerce_subset_or_iv(s_prime, s)
@@ -454,7 +475,7 @@ def get_set(s_prime: SetOrIVInput, s: Set) -> Set:
         s_prime_set = [str(s[i]) for i in s_prime_idx]
         s_prime_set = coerce_subset(s_prime_set, s)
         return s_prime_set
-    elif is_set_instance(s_prime):
+    elif is_instance(s_prime, Set):
         # s' is already a set
         # coerce it and push it back
         s_prime_set = coerce_subset(s_prime, s)
@@ -472,7 +493,7 @@ def get_incidence_vector(s_prime: SetOrIVInput, s: Set) -> IncidenceVector:
         # coerce it and push it back
         iv = coerce_incidence_vector(s_prime, s)
         return iv
-    elif is_set_instance(s_prime):
+    elif is_instance(s_prime, Set):
         iv = get_zero_binary_vector(cardinality(s))
         for e in s_prime:
             e_index = s.index(e)
@@ -650,7 +671,8 @@ def tt(m: KripkeStructure, s_prime: SetOrIVInput = None, output_type: (type, typ
         return sat_iv
 
 
-def labels(m: KripkeStructureInput, s: StateInput, output_type: (type, typing.TypeVar) = Set) -> AtomicPropertySet:
+def get_labels_from_state(m: KripkeStructureInput, s: StateInput,
+                          output_type: (type, typing.TypeVar) = Set) -> AtomicPropertySet:
     """Given a Kripke structure M (m), and a state s ∈ S, return the set of labels (aka atomic properties) attached to that state.
 
     :param m: The Kripke structure M
@@ -679,8 +701,42 @@ def labels(m: KripkeStructureInput, s: StateInput, output_type: (type, typing.Ty
         return label_iv
 
 
-def a(m: KripkeStructure, s_prime: SetOrIVInput, a: AtomicPropertyInput, output_type: (type, typing.TypeVar) = Set) -> SetOrIV:
-    """Get the satisfaction set of the a state formula
+def get_states_from_label(
+        m: KripkeStructureInput,
+        ap: AtomicPropertyInput,
+        output_type: (type, typing.TypeVar) = Set) \
+        -> StateSet:
+    """Given a Kripke structure M (m), and a label (aka atomic property) a ∈ AP, return the subset of states S' ⊆ S that are attached to that label.
+
+    :param output_type:
+    :param m: The Kripke structure M
+    :param ap: The label (aka atomic property) ap
+    :return: The states subset S'
+    """
+    m = coerce_kripke_structure(m)
+    ap = coerce_atomic_property(ap, m.ap)
+    output_type = coerce_set_or_iv_type(output_type)
+
+    # Get the index label a
+    a_index = m.ap.index(ap)
+
+    # Get the a_index row from the label mapping matrix
+    # This corresponds to the state incidence vector
+    states_iv = m.lm[a_index, :]
+    # Superfluous coercion
+    states_iv = coerce_incidence_vector(states_iv, m.s)
+    if output_type == Set:
+        states_subset = get_set(states_iv, m.s)
+        logging.debug(f'S({ap}) = {states_subset}')
+        return states_subset
+    else:
+        logging.debug(f'S({ap}) = {states_iv}')
+        return states_iv
+
+
+def a(m: KripkeStructure, s_prime: SetOrIVInput, a: AtomicPropertyInput,
+      output_type: (type, typing.TypeVar) = Set) -> SetOrIV:
+    """Get the satisfaction set of the state formula a
 
     Apply the state formula a to the LTS model, or conditionally to a subset of states,
     and return the resulting satisfaction set, or its corresponding incidence vector.
@@ -698,9 +754,9 @@ def a(m: KripkeStructure, s_prime: SetOrIVInput, a: AtomicPropertyInput, output_
     {s ∈ S' ⊆ S | ∀ s ∈ S', a ∈ L(s)}
 
     :param m: The Kripke structure model M
-    :param s_prime: (conditional) The subset S' ⊆ S'. Note that if s' is None,
+    :param s_prime: (conditional) The subset S' ⊆ S. Note that if s_prime is None,
     it is assumed that all states are considered and NOT no states (the empty set).
-    :param a:
+    :param a: The label (aka atomic property).
     :param output_type: (conditional) Set or IncidenceVector with a default of Set
     :return: The satisfaction set
     """
@@ -716,6 +772,8 @@ def a(m: KripkeStructure, s_prime: SetOrIVInput, a: AtomicPropertyInput, output_
     # Prepare an incidence vector of that size with all ones
     sat_iv = get_one_binary_vector(s_cardinality)
 
+    raise NotImplementedError('TODO: COMPLETE THIS')
+
     if s_prime is not None:
         # Work internally with incidence vectors
         s_prime_iv = get_incidence_vector(s_prime, m.s)
@@ -730,5 +788,3 @@ def a(m: KripkeStructure, s_prime: SetOrIVInput, a: AtomicPropertyInput, output_
         return get_set(sat_iv, m.s)
     else:
         return sat_iv
-
-

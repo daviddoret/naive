@@ -57,12 +57,14 @@ class Test(TestCase):
         s = ks.get_state_set(9)
         s_prime_set = ['e1', 'e2', 'e3']
         coerced_s_prime_set = ks.coerce_subset_or_iv(s_prime_set, s)
-        self.assertTrue(ks.is_set_instance(coerced_s_prime_set))
+        self.assertTrue(ks.is_instance(coerced_s_prime_set, ks.Set))
+        self.assertTrue(ks.is_instance(coerced_s_prime_set, ks.StateSet))
         self.assertTrue(all(isinstance(y, str) for y in coerced_s_prime_set))
         self.assertTrue(ks.equals(s_prime_set, coerced_s_prime_set, s))
         s_prime_iv = [0, 1, 0, 1, 1, 0, 0, 0, 0]
         coerced_s_prime_iv = ks.coerce_subset_or_iv(s_prime_iv, s)
         self.assertIsInstance(coerced_s_prime_iv, ks.IncidenceVector)
+        self.assertTrue(ks.is_instance(coerced_s_prime_iv, ks.IncidenceVector))
         self.assertTrue(ks.equals(s_prime_iv, coerced_s_prime_iv))
 
     def test_flatten(self):
@@ -143,16 +145,34 @@ class Test(TestCase):
 
     def test_labels(self):
         m = ks_samples.get_sample_1()
-        self.assertTrue(ks.equals(ks.labels(m, 's0'), ['red']))
-        self.assertTrue(ks.equals(ks.labels(m, 's1', output_type=ks.IncidenceVector), [True, True, False]))
-        self.assertTrue(ks.equals(ks.labels(m, 's2'), ['green', 'blue']))
-        self.assertTrue(ks.equals(ks.labels(m, 's3', output_type=ks.IncidenceVector), [False, False, True]))
-        self.assertTrue(ks.equals(ks.labels(m, 's4'), ['red', 'green', 'blue']))
+        self.assertTrue(ks.equals(ks.get_labels_from_state(m, 's0'), ['red']))
+        self.assertTrue(ks.equals(ks.get_labels_from_state(m, 's1', output_type=ks.IncidenceVector), [True, True, False]))
+        self.assertTrue(ks.equals(ks.get_labels_from_state(m, 's2'), ['green', 'blue']))
+        self.assertTrue(ks.equals(ks.get_labels_from_state(m, 's3', output_type=ks.IncidenceVector), [False, False, True]))
+        self.assertTrue(ks.equals(ks.get_labels_from_state(m, 's4'), ['red', 'green', 'blue']))
+
+    def test_get_states_from_label(self):
+        m = ks_samples.get_sample_1()
+        print(m.ap)
+        x = ks.get_states_from_label(m, 'blue')
+        print(f'blue: {x}')
+        x = ks.get_states_from_label(m, 'green')
+        print(f'green: {x}')
+        x = ks.get_states_from_label(m, 'red')
+        print(f'red: {x}')
+        self.assertTrue(ks.equals(ks.get_states_from_label(m, 'red'), ['s0', 's1', 's4']))
+        self.assertTrue(ks.equals(ks.get_states_from_label(m, 'green', ks.IncidenceVector), [0, 1, 1, 0, 1]))
+        self.assertTrue(ks.equals(ks.get_states_from_label(m, 'blue'), ['s2', 's3', 's4']))
+
+    def test_a(self):
+        m = ks_samples.get_sample_1()
+        print(ks.to_text(m))
+        self.assertTrue(ks.equals(ks.a(m, None, 'blue'), ['s0', 's1', 's4']))
+
 
 class TestKripkeStructure(TestCase):
     m = ks_samples.get_sample_1()
     print(ks.to_text(m))
     print(m.lm)
-
 
 
