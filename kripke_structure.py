@@ -136,16 +136,22 @@ def is_instance(o: object, t: (type, typing.TypeVar)) -> bool:
     :return: A boolean
     """
     if isinstance(t, type):
-        # Provide support for all types, including:
-        # BinaryVector, IncidenceVector
+        # Provide support for all standard types
         return isinstance(o, t)
-    elif t in (Set, AtomicPropertySet, StateSet):
+    elif t in (Set, SetInput, AtomicPropertySet, AtomicPropertySetInput, StateSet, StateSetInput):
         if isinstance(o, abc.Iterable):
             if all(isinstance(y, str) for y in o):
                 return True
-        return
+        return False
+    elif t in (IncidenceVector, IncidenceVectorInput):
+        if isinstance(o, abc.Iterable):
+            if all(isinstance(y, bool) for y in o):
+                return True
+            if all(isinstance(y, int) for y in o):
+                return True
+        return False
     else:
-        raise NotImplementedError(f'Missing implementation for type {t}')
+        raise NotImplementedError(f'is_instance: Could not determine if {o}[{type(o)}] is of type {t}')
 
 
 # UTILITY FUNCTIONS
@@ -363,14 +369,14 @@ def coerce_state_set(s: StateSetInput):
     return coerce_set(s)
 
 
-def coerce_state_subset(s_prime: StateSetInput, s: StateInput):
-    s = coerce_set(s)
-    if is_instance(s_prime, StateSet):
-        return coerce_subset(s_prime, s)
-    elif isinstance(s_prime, IncidenceVectorInput):
-        s_prime = coerce_incidence_vector(s_prime, s)
-        s_prime = coerce_incidence_vector(s_prime, s)
-    return coerce_set(s)
+def coerce_state_subset(s_prime_flexible: StateSetInput, s_flexible: StateInput):
+    s_flexible = coerce_set(s_flexible)
+    if is_instance(s_prime_flexible, StateSetInput):
+        return coerce_subset(s_prime_flexible, s_flexible)
+    elif is_instance(s_prime_flexible, IncidenceVectorInput):
+        return coerce_incidence_vector(s_prime_flexible, s_flexible)
+    else:
+        raise NotImplementedError(f'coerce_state_subset: Unknown type: {s_prime_flexible}[{type(s_prime_flexible)}]')
 
 
 def coerce_element(e: ElementInput, s: SetInput) -> Element:
@@ -621,7 +627,7 @@ def vmin(v1: BinaryVector, v2: BinaryVector) -> BinaryVector:
     return coerce_binary_vector(np.minimum(v1, v2))
 
 
-def tt(m: KripkeStructure, s_prime: SetOrIVInput = None, output_type: (type, typing.TypeVar) = Set) -> SetOrIV:
+def sat_tt(m: KripkeStructure, s_prime: SetOrIVInput = None, output_type: (type, typing.TypeVar) = Set) -> SetOrIV:
     """Get the satisfaction set of the tt state formula
 
     Apply the state formula tt to the LTS model,
@@ -703,39 +709,60 @@ def get_labels_from_state(m: KripkeStructureInput, s: StateInput,
 
 def get_states_from_label(
         m: KripkeStructureInput,
-        ap: AtomicPropertyInput,
+        s_prime: StateSetInput,
+        label: AtomicPropertyInput,
         output_type: (type, typing.TypeVar) = Set) \
         -> StateSet:
-    """Given a Kripke structure M (m), and a label (aka atomic property) a ∈ AP, return the subset of states S' ⊆ S that are attached to that label.
+    """Return the states linked to a label
 
-    :param output_type:
+    Given a Kripke structure M (m),
+    (conditionally) given a subset S' of S,
+    given a label (aka atomic property) ∈ AP,
+    return the subset of states S'' ⊆ S (or S') that are attached to that label.
+
     :param m: The Kripke structure M
-    :param ap: The label (aka atomic property) ap
-    :return: The states subset S'
+    :param s_prime: None to exhaustively analyse M, or a subset of S to limit the analysis otherwise.
+    :param label: The label (aka atomic property) ap
+    :param output_type: Set or IncidenceVector depending on the desired output
+    :return: The subset S'' ⊆ S
     """
     m = coerce_kripke_structure(m)
-    ap = coerce_atomic_property(ap, m.ap)
+    if s_prime is None:
+        # Exhaustive analysis of M
+        s_prime = m.s
+    else:
+        # Limited analysis of M to a subset S' ⊆ S
+        s_prime = coerce_state_subset(s_prime, m.s)
+    s_prime_iv = get_incidence_vector(s_prime, m.s)
+    label = coerce_atomic_property(label, m.ap)
     output_type = coerce_set_or_iv_type(output_type)
 
     # Get the index label a
-    a_index = m.ap.index(ap)
+    a_index = m.ap.index(label)
 
     # Get the a_index row from the label mapping matrix
     # This corresponds to the state incidence vector
-    states_iv = m.lm[a_index, :]
+    # This is equivalent to Sat(S)
+    labeled_states_iv = m.lm[a_index, :]
+
+    # Take the element-wise min of S' and Sat(S),
+    # which is equivalent to the set intersection.
+    s_prime_prime_iv = vmin(s_prime_iv, labeled_states_iv)
+
     # Superfluous coercion
-    states_iv = coerce_incidence_vector(states_iv, m.s)
+    s_prime_prime_iv = coerce_incidence_vector(s_prime_prime_iv, m.s)
+
     if output_type == Set:
-        states_subset = get_set(states_iv, m.s)
-        logging.debug(f'S({ap}) = {states_subset}')
-        return states_subset
+        s_prime_prime_subset = get_set(s_prime_prime_iv, m.s)
+        logging.debug(f'States({label}) = {s_prime_prime_subset}')
+        return s_prime_prime_subset
     else:
-        logging.debug(f'S({ap}) = {states_iv}')
-        return states_iv
+        logging.debug(f'States({label}) = {s_prime_prime_iv}')
+        return s_prime_prime_iv
 
 
-def a(m: KripkeStructure, s_prime: SetOrIVInput, a: AtomicPropertyInput,
-      output_type: (type, typing.TypeVar) = Set) -> SetOrIV:
+def sat_a(m: KripkeStructure, s_prime: SetOrIVInput, label: AtomicPropertyInput,
+          output_type: (type, typing.TypeVar) = Set) -> SetOrIV:
     """Get the satisfaction set of the state formula a
 
     Apply the state formula a to the LTS model, or conditionally to a subset of states,
@@ -756,35 +783,9 @@ def a(m: KripkeStructure, s_prime: SetOrIVInput, a: AtomicPropertyInput,
     :param m: The Kripke structure model M
     :param s_prime: (conditional) The subset S' ⊆ S. Note that if s_prime is None,
     it is assumed that all states are considered and NOT no states (the empty set).
-    :param a: The label (aka atomic property).
+    :param label: The label (aka atomic property).
     :param output_type: (conditional) Set or IncidenceVector with a default of Set
     :return: The satisfaction set
     """
-    m = coerce_kripke_structure(m)
-    if s_prime is not None:
-        s_prime = coerce_subset_or_iv(s_prime, m.s)
-    a = coerce_atomic_property(a, m.ap)
-    output_type = coerce_set_or_iv_type(output_type)
-
-    # Get the size of the incidence vector
-    s_cardinality = cardinality(m.s)
-
-    # Prepare an incidence vector of that size with all ones
-    sat_iv = get_one_binary_vector(s_cardinality)
-
-    raise NotImplementedError('TODO: COMPLETE THIS')
-
-    if s_prime is not None:
-        # Work internally with incidence vectors
-        s_prime_iv = get_incidence_vector(s_prime, m.s)
-        # Limit the result to the requested set
-        sat_iv = vmin(sat_iv, s_prime_iv)
-
-    # Note that if s' is None,
-    # it is assumed that we consider all states
-    # and NOT no states (the empty set).
-
-    if output_type == Set:
-        return get_set(sat_iv, m.s)
-    else:
-        return sat_iv
+    # These are synonymous
+    return get_states_from_label(m, s_prime, label, output_type)

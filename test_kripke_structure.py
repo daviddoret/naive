@@ -139,9 +139,9 @@ class Test(TestCase):
     def test_tt(self):
         m = ks_samples.get_sample_1()
         print(ks.to_text(m))
-        self.assertTrue(ks.equals(ks.tt(m, ['s0', 's2']), ['s0', 's2']))
-        print(ks.tt(m))
-        self.assertTrue(ks.equals(ks.tt(m), m.s))
+        self.assertTrue(ks.equals(ks.sat_tt(m, ['s0', 's2']), ['s0', 's2']))
+        print(ks.sat_tt(m))
+        self.assertTrue(ks.equals(ks.sat_tt(m), m.s))
 
     def test_labels(self):
         m = ks_samples.get_sample_1()
@@ -153,21 +153,19 @@ class Test(TestCase):
 
     def test_get_states_from_label(self):
         m = ks_samples.get_sample_1()
-        print(m.ap)
-        x = ks.get_states_from_label(m, 'blue')
-        print(f'blue: {x}')
-        x = ks.get_states_from_label(m, 'green')
-        print(f'green: {x}')
-        x = ks.get_states_from_label(m, 'red')
-        print(f'red: {x}')
-        self.assertTrue(ks.equals(ks.get_states_from_label(m, 'red'), ['s0', 's1', 's4']))
-        self.assertTrue(ks.equals(ks.get_states_from_label(m, 'green', ks.IncidenceVector), [0, 1, 1, 0, 1]))
-        self.assertTrue(ks.equals(ks.get_states_from_label(m, 'blue'), ['s2', 's3', 's4']))
+        self.assertTrue(ks.equals(ks.get_states_from_label(m, None, 'red'), ['s0', 's1', 's4']))
+        self.assertTrue(ks.equals(ks.get_states_from_label(m, ['s1', 's4'], 'red'), ['s1', 's4']))
+        self.assertTrue(ks.equals(ks.get_states_from_label(m, None, 'green', ks.IncidenceVector), [0, 1, 1, 0, 1]))
+        self.assertTrue(ks.equals(ks.get_states_from_label(m, [1, 1, 1, 0, 0], 'green', ks.IncidenceVector), [0, 1, 1, 0, 0]))
+        self.assertTrue(ks.equals(ks.get_states_from_label(m, None, 'blue'), ['s2', 's3', 's4']))
 
     def test_a(self):
         m = ks_samples.get_sample_1()
-        print(ks.to_text(m))
-        self.assertTrue(ks.equals(ks.a(m, None, 'blue'), ['s0', 's1', 's4']))
+        self.assertTrue(ks.equals(ks.sat_a(m, None, 'red'), ['s0', 's1', 's4']))
+        self.assertTrue(ks.equals(ks.sat_a(m, ['s1', 's4'], 'red'), ['s1', 's4']))
+        self.assertTrue(ks.equals(ks.sat_a(m, None, 'green', ks.IncidenceVector), [0, 1, 1, 0, 1]))
+        self.assertTrue(ks.equals(ks.sat_a(m, [1, 1, 1, 0, 0], 'green', ks.IncidenceVector), [0, 1, 1, 0, 0]))
+        self.assertTrue(ks.equals(ks.sat_a(m, None, 'blue'), ['s2', 's3', 's4']))
 
 
 class TestKripkeStructure(TestCase):

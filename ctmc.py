@@ -26,7 +26,7 @@ class CTMC:
 
 
 def ctmc_latexify(m):
-    return f"""\\left( S\\colon={output.tex(utils.numpy_vector_verticalize(m.s))}, R\\colon={output.tex(m.R)}, \\mathrm{{AP}}\\colon={output.tex(utils.numpy_vector_verticalize(m.a))}, L \\right)"""
+    return f"""\\left( S\\colon={output.tex(utils.numpy_vector_verticalize(m.s))}, R\\colon={output.tex(m.R)}, \\mathrm{{AP}}\\colon={output.tex(utils.numpy_vector_verticalize(m.sat_a))}, L \\right)"""
 
 
 def ctmc_output_latex_math(m):
