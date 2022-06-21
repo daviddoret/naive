@@ -790,7 +790,9 @@ def sat_a(m: KripkeStructure, s_prime: SetOrIVInput, label: AtomicPropertyInput,
     """
     # These are synonymous
     # Coercion takes place in the child method
-    return get_states_from_label(m, s_prime, label, output_type)
+    sat_a_result = get_states_from_label(m, s_prime, label, output_type)
+    logging.debug(f'Sat({label}) = {sat_a_result}')
+    return sat_a_result
 
 
 def sat_not_phi(m: KripkeStructure, s_prime: SetOrIVInput, sat_phi: SetOrIVInput,
@@ -814,6 +816,28 @@ def sat_not_phi(m: KripkeStructure, s_prime: SetOrIVInput, sat_phi: SetOrIVInput
     """
     # These are synonymous
     m = coerce_kripke_structure(m)
-    s_prime = coerce_state_subset(s_prime, m.s)
-    sat_phi = coerce_state_subset(sat_phi, m.s)
-    raise NotImplementedError('TODO')
+    if s_prime is None:
+        # Exhaustive analysis of M
+        s_prime = m.s
+    else:
+        # Limited analysis of M to a subset S' ⊆ S
+        s_prime = coerce_subset_or_iv(s_prime, m.s)
+    sat_phi = coerce_subset_or_iv(sat_phi, m.s)
+
+    # Convert variables to incidence vectors
+    s_prime_iv = get_incidence_vector(s_prime, m.s)
+    sat_phi_iv = get_incidence_vector(sat_phi, m.s)
+
+    not_sat_phi_iv = get_logical_not(sat_phi_iv)
+    min_not_sat_phi_iv = get_minima(s_prime_iv, not_sat_phi_iv)
+
+    # Superfluous coercion
+    min_not_sat_phi_iv = coerce_incidence_vector(min_not_sat_phi_iv, m.s)
+
+    if output_type == Set:
+        min_not_sat_phi_subset = get_set(min_not_sat_phi_iv, m.s)
+        logging.debug(f'Sat(¬{sat_phi}) = {min_not_sat_phi_subset}')
+        return min_not_sat_phi_subset
+    else:
+        logging.debug(f'Sat(¬{sat_phi}) = {min_not_sat_phi_iv}')
+        return min_not_sat_phi_iv

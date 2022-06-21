@@ -176,6 +176,12 @@ class Test(TestCase):
         self.assertTrue(ks.equals(ks.get_logical_not([1, 1, 1, 1, 1]), [0, 0, 0, 0, 0]))
         self.assertTrue(ks.equals(ks.get_logical_not([0, 0, 0, 0, 0]), [1, 1, 1, 1, 1]))
 
+    def test_sat_not_phi(self):
+        m = ks_samples.get_sample_1()
+        self.assertTrue(ks.equals(ks.sat_not_phi(m, None, [1, 1, 1, 0, 0]), ['s3', 's4']))
+        self.assertTrue(ks.equals(ks.sat_not_phi(m, None, [0, 0, 0, 0, 0], output_type=ks.IncidenceVector), [1, 1, 1, 1, 1]))
+        self.assertTrue(ks.equals(ks.sat_not_phi(m, None, ['s0', 's2', 's4']), ['s1', 's3']))
+
 
 class TestKripkeStructure(TestCase):
     m = ks_samples.get_sample_1()
