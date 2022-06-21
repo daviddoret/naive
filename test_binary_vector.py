@@ -44,7 +44,7 @@ class TestBinaryVector(TestCase):
     def test_get_intersection(self):
         v1 = binary_vector.BinaryVector([0, 1, 1, 0, 0, 1])
         v2 = binary_vector.BinaryVector([0, 1, 1, 1, 0, 0])
-        v3 = binary_vector.vmin(v1, v2)
+        v3 = binary_vector.get_minima(v1, v2)
         self.assertEqual(v3, [0, 1, 1, 0, 0, 0])
 
     def test_check_masking(self):
@@ -63,13 +63,13 @@ class TestBinaryVector(TestCase):
 
 
 class Test(TestCase):
-    def test_vmin(self):
+    def test_get_minima(self):
         v1 = binary_vector.BinaryVector([1, 0, 1, 0, 0, 1, 0])
         v2 = binary_vector.BinaryVector([0, 1, 1, 0, 0, 1, 0])
-        v3 = binary_vector.vmin(v1, v2)
+        v3 = binary_vector.get_minima(v1, v2)
         self.assertEqual(v3, [0, 0, 1, 0, 0, 1, 0])
 
         v4 = state.IV([1, 0, 1, 0, 0, 1, 0])
         v5 = state.IV([0, 1, 1, 0, 0, 1, 0])
-        v6 = binary_vector.vmin(v4, v5)
+        v6 = binary_vector.get_minima(v4, v5)
         self.assertEqual(v6, [0, 0, 1, 0, 0, 1, 0])

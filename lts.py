@@ -266,7 +266,7 @@ def tt(m: LTS, s: state.StateInput = None, output_type: type = state.StateSet) -
         # Convert the flexible s parameter to an incidence vector
         s_iv = m.s.get_iv(s)
         # Limit the result to the requested set
-        sat_iv = binary_vector.vmin(sat_iv, s_iv)
+        sat_iv = binary_vector.get_minima(sat_iv, s_iv)
 
     return sat_iv
 
@@ -550,7 +550,7 @@ class And(StateFormula):
         # For an incidence vector of a set,
         # the min operation is equivalent to set union operation:
         # min(IV(s), IV(t)) ≡ s ∩ t
-        sat_iv = binary_vector.vmin(phi_sat_iv, psi_sat_iv)
+        sat_iv = binary_vector.get_minima(phi_sat_iv, psi_sat_iv)
         return sat_iv
 
     def compute(self, m: LTS) -> state.StateSet:

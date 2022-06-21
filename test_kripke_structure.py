@@ -146,9 +146,11 @@ class Test(TestCase):
     def test_labels(self):
         m = ks_samples.get_sample_1()
         self.assertTrue(ks.equals(ks.get_labels_from_state(m, 's0'), ['red']))
-        self.assertTrue(ks.equals(ks.get_labels_from_state(m, 's1', output_type=ks.IncidenceVector), [True, True, False]))
+        self.assertTrue(
+            ks.equals(ks.get_labels_from_state(m, 's1', output_type=ks.IncidenceVector), [True, True, False]))
         self.assertTrue(ks.equals(ks.get_labels_from_state(m, 's2'), ['green', 'blue']))
-        self.assertTrue(ks.equals(ks.get_labels_from_state(m, 's3', output_type=ks.IncidenceVector), [False, False, True]))
+        self.assertTrue(
+            ks.equals(ks.get_labels_from_state(m, 's3', output_type=ks.IncidenceVector), [False, False, True]))
         self.assertTrue(ks.equals(ks.get_labels_from_state(m, 's4'), ['red', 'green', 'blue']))
 
     def test_get_states_from_label(self):
@@ -156,7 +158,8 @@ class Test(TestCase):
         self.assertTrue(ks.equals(ks.get_states_from_label(m, None, 'red'), ['s0', 's1', 's4']))
         self.assertTrue(ks.equals(ks.get_states_from_label(m, ['s1', 's4'], 'red'), ['s1', 's4']))
         self.assertTrue(ks.equals(ks.get_states_from_label(m, None, 'green', ks.IncidenceVector), [0, 1, 1, 0, 1]))
-        self.assertTrue(ks.equals(ks.get_states_from_label(m, [1, 1, 1, 0, 0], 'green', ks.IncidenceVector), [0, 1, 1, 0, 0]))
+        self.assertTrue(
+            ks.equals(ks.get_states_from_label(m, [1, 1, 1, 0, 0], 'green', ks.IncidenceVector), [0, 1, 1, 0, 0]))
         self.assertTrue(ks.equals(ks.get_states_from_label(m, None, 'blue'), ['s2', 's3', 's4']))
 
     def test_a(self):
@@ -166,6 +169,12 @@ class Test(TestCase):
         self.assertTrue(ks.equals(ks.sat_a(m, None, 'green', ks.IncidenceVector), [0, 1, 1, 0, 1]))
         self.assertTrue(ks.equals(ks.sat_a(m, [1, 1, 1, 0, 0], 'green', ks.IncidenceVector), [0, 1, 1, 0, 0]))
         self.assertTrue(ks.equals(ks.sat_a(m, None, 'blue'), ['s2', 's3', 's4']))
+
+    def test_get_logical_not(self):
+        self.assertTrue(ks.equals(ks.get_logical_not([0, 0, 1]), [1, 1, 0]))
+        self.assertTrue(ks.equals(ks.get_logical_not([0]), [1]))
+        self.assertTrue(ks.equals(ks.get_logical_not([1, 1, 1, 1, 1]), [0, 0, 0, 0, 0]))
+        self.assertTrue(ks.equals(ks.get_logical_not([0, 0, 0, 0, 0]), [1, 1, 1, 1, 1]))
 
 
 class TestKripkeStructure(TestCase):

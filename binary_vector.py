@@ -138,7 +138,7 @@ class BinaryVector:
         output.output(self.to_multistring())
 
 
-def vmin(vector_1: BinaryVector, vector_2: BinaryVector) -> BinaryVector:
+def get_minima(vector_1: BinaryVector, vector_2: BinaryVector) -> BinaryVector:
     """Return the element-wise minimum of this set with another set
 
     If the binary vector is the incidence vector of a set,

@@ -611,11 +611,11 @@ def set_element_values_from_iterable(target, source: abc.Iterable):
         target[i] = e
 
 
-def vmin(v1: BinaryVector, v2: BinaryVector) -> BinaryVector:
-    """Return the element-wise minimum of this set with another set
+def get_minima(v1: BinaryVector, v2: BinaryVector) -> BinaryVector:
+    """Return the element-wise minima of a binary vector with regard to another binary vector
 
     If the binary vector is the incidence vector of a set,
-    this is equivalent to the or set operation:
+    this is equivalent to the set intersection operation:
     min(IV(s), IV(t)) ≡ s ∩ t
     """
 
@@ -627,27 +627,35 @@ def vmin(v1: BinaryVector, v2: BinaryVector) -> BinaryVector:
     return coerce_binary_vector(np.minimum(v1, v2))
 
 
-def sat_tt(m: KripkeStructure, s_prime: SetOrIVInput = None, output_type: (type, typing.TypeVar) = Set) -> SetOrIV:
-    """Get the satisfaction set of the tt state formula
+def get_logical_not(v: BinaryVector) -> BinaryVector:
+    """Return the element-wise inverse (or logical not) of a binary vector.
 
-    Apply the state formula tt to the LTS model,
-    or conditionally to a subset of states,
-    and return the resulting satisfaction set.
+    If the binary vector is the incidence vector of a set,
+    this is equivalent to the or set operation:
+    min(IV(s), IV(t)) ≡ s ∩ t
+    """
+
+    v = coerce_binary_vector(v)
+    v_inverse = np.logical_not(v)
+
+    return coerce_binary_vector(v_inverse)
+
+
+def sat_tt(m: KripkeStructure, s_prime: SetOrIVInput = None, output_type: (type, typing.TypeVar) = Set) -> SetOrIV:
+    """Get the satisfaction set of the state formula Sat(tt)
 
     Formally:
     Let M be a Kripke Structure model with states S.
-    Let S' be a subset of S.
+    Conditional: Let S' be a subset of S.
     Let tt be the tautological truth state formula.
-    Let Sat(tt) be the satisfaction set of tt in S'.
+    Let Sat(tt) = {s ∈ S' ⊆ S}.
 
-    In short:
-    {s ∈ S' ⊆ S | ∀ s ∈ S', s ⊨ tt}
-
-    :param m: The Kripke structure model M
-    :param s_prime: (conditional) The subset S' ⊆ S'. Note that if s' is None,
-    it is assumed that all states are considered and NOT no states (the empty set).
-    :param output_type: (conditional) Set or IncidenceVector with a default of Set
-    :return: The satisfaction set
+    :param m: The Kripke structure model M.
+    :param s_prime: (conditional) The subset S' ⊆ S. Note that if s_prime is None, it is assumed that all states are
+    considered and NOT no states (the empty set).
+    :param output_type: (conditional) Set or IncidenceVector. Default equals Set.
+    :return: The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative
+    to the set S of the model, and not S'.
     """
 
     m = coerce_kripke_structure(m)
@@ -665,7 +673,7 @@ def sat_tt(m: KripkeStructure, s_prime: SetOrIVInput = None, output_type: (type,
         # Work internally with incidence vectors
         s_prime_iv = get_incidence_vector(s_prime, m.s)
         # Limit the result to the requested set
-        sat_iv = vmin(sat_iv, s_prime_iv)
+        sat_iv = get_minima(sat_iv, s_prime_iv)
 
     # Note that if s' is None,
     # it is assumed that we consider all states
@@ -747,7 +755,7 @@ def get_states_from_label(
 
     # Take the element-wise min of S' and Sat(S),
     # which is equivalent to the set intersection.
-    s_prime_prime_iv = vmin(s_prime_iv, labeled_states_iv)
+    s_prime_prime_iv = get_minima(s_prime_iv, labeled_states_iv)
 
     # Superfluous coercion
     s_prime_prime_iv = coerce_incidence_vector(s_prime_prime_iv, m.s)
@@ -763,29 +771,49 @@ def get_states_from_label(
 
 def sat_a(m: KripkeStructure, s_prime: SetOrIVInput, label: AtomicPropertyInput,
           output_type: (type, typing.TypeVar) = Set) -> SetOrIV:
-    """Get the satisfaction set of the state formula a
-
-    Apply the state formula a to the LTS model, or conditionally to a subset of states,
-    and return the resulting satisfaction set, or its corresponding incidence vector.
-
-    The returned incidence vector is always relative to the complete set of model states.
+    """Get the satisfaction set of the state formula Sat(a)
 
     Formally:
     Let M be an LTS model with states S.
-    Let S' be a subset of S.
-    Let a be an atomic properties.
-    Let L(s) be the set of atomic properties attached to s.
-    Let Sat(a) be the set such that its elements are elements of S' and have a in their label set L(s).
+    Conditional: Let S' be a subset of S.
+    Let a be a label (aka atomic property).
+    Let L(s) be the set of labels (aka atomic properties) attached to s.
+    Let Sat(a) = {s_i ∈ S' ⊆ S | a ∈ L(s_i)}
 
-    In short:
-    {s ∈ S' ⊆ S | ∀ s ∈ S', a ∈ L(s)}
-
-    :param m: The Kripke structure model M
-    :param s_prime: (conditional) The subset S' ⊆ S. Note that if s_prime is None,
-    it is assumed that all states are considered and NOT no states (the empty set).
+    :param m: The Kripke structure model M.
+    :param s_prime: (conditional) The subset S' ⊆ S. Note that if s_prime is None, it is assumed that all states are
+    considered and NOT no states (the empty set).
     :param label: The label (aka atomic property).
-    :param output_type: (conditional) Set or IncidenceVector with a default of Set
-    :return: The satisfaction set
+    :param output_type: (conditional) Set or IncidenceVector. Default equals Set.
+    :return: The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative
+    to the set S of the model, and not S'.
     """
     # These are synonymous
+    # Coercion takes place in the child method
     return get_states_from_label(m, s_prime, label, output_type)
+
+
+def sat_not_phi(m: KripkeStructure, s_prime: SetOrIVInput, sat_phi: SetOrIVInput,
+                output_type: (type, typing.TypeVar) = Set) -> SetOrIV:
+    """Get the satisfaction set of the state formula Sat(¬Φ)
+
+    Formally:
+    Let M be an LTS model with states S.
+    Conditional: Let S' be a subset of S.
+    Let Φ be a state formula.
+    Lemma: Sat(¬Φ) = S ∖ Sat(Φ).
+    Let Sat(a) = {s_i ∈ S' ⊆ S | s_i ∉ Sat(Φ)}
+
+    :param m: The Kripke structure model M.
+    :param s_prime: (conditional) The subset S' ⊆ S. Note that if s_prime is None, it is assumed that all states are
+    considered and NOT no states (the empty set).
+    :param sat_phi: The satisfaction set Sat(Φ).
+    :param output_type: (conditional) Set or IncidenceVector. Default equals Set.
+    :return: The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative
+    to the set S of the model, and not S'.
+    """
+    # These are synonymous
+    m = coerce_kripke_structure(m)
+    s_prime = coerce_state_subset(s_prime, m.s)
+    sat_phi = coerce_state_subset(sat_phi, m.s)
+    raise NotImplementedError('TODO')
