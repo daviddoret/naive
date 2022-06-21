@@ -1,3 +1,9 @@
+"""
+.. module:: kripke_structure
+   :platform: Unix, Windows
+   :synopsis: A useful module indeed.
+"""
+
 # IMPORTS
 
 # PEP 563 – Postponed Evaluation of Annotations
