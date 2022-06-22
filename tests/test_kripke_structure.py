@@ -128,10 +128,10 @@ class Test(TestCase):
         self.assertEqual(ks.coerce_subset(['a', 'b'], s), ['a', 'b'])
         self.assertEqual(ks.coerce_subset(['a', 'z', 'b'], s), ['a', 'b'])
 
-    def test_vmin(self):
+    def test_get_minima(self):
         v1 = [0, 1, 0, 1, 0, 0, 1, 1]
         v2 = [1, 1, 0, 0, 0, 0, 1, 1]
-        v3 = ks.vmin(v1, v2)
+        v3 = ks.get_minima(v1, v2)
         self.assertTrue(ks.equals(v3, [0, 1, 0, 0, 0, 0, 1, 1]))
 
     def test_tt(self):
