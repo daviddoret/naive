@@ -1,6 +1,12 @@
 # Configuration file for the Sphinx documentation builder.
-#import sys, os
+import pathlib
+import sys
+
 #sys.path.append(os.path.abspath('sphinxext'))
+sys.path.insert(0, pathlib.Path(__file__).parents[2].resolve().as_posix())
+#sys.path.insert(0, os.path.abspath('..'))
+#sys.path.insert(0, os.path.abspath('../..'))
+# Reference: https://stackoverflow.com/questions/10324393/sphinx-build-fail-autodoc-cant-import-find-module
 
 # -- Project information
 
@@ -18,8 +24,12 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
+    'sphinx.ext.coverage',
     'sphinx.ext.intersphinx',
+    'sphinx.ext.napoleon'
 ]
+
+autosummary_generate = True
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3/', None),
