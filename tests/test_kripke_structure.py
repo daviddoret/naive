@@ -1,9 +1,7 @@
 from unittest import TestCase
 import kripke_structure as ks
-import kripke_samples as ks_samples
-import numpy as np
+from samples import kripke_samples as ks_samples
 import logging
-import collections.abc as abc
 
 logging.basicConfig(level=logging.DEBUG)
 

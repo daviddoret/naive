@@ -1,15 +1,12 @@
 import warnings
-import binary_array
 import const
 import mstr
 import state
-import atom
-import binary_vector
+from _trashcan import binary_vector, binary_array, atom
 import output
 import collections
 import transition_matrix
 import abc
-import typing
 
 
 class LTS:

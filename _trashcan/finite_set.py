@@ -6,9 +6,6 @@ import itertools
 # - https://stackoverflow.com/questions/798442/what-is-the-correct-or-best-way-to-subclass-the-python-set-class-adding-a-new
 # - https://docs.python.org/3/library/collections.abc.html#collections.abc.Set
 import binary_vector
-import finite_set
-import mstr
-import binary_vector
 import output
 import mstr
 import const

@@ -1,6 +1,5 @@
 import dataclasses
-import binary_matrix
-import atom
+from _trashcan import binary_matrix, atom
 import state
 import numpy as np
 

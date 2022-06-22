@@ -1,9 +1,7 @@
 from unittest import TestCase
-import dtmc
+from _trashcan import dtmc
 import output
-import state
-import atom
-import stochastic_matrix
+
 
 class TestDTMC(TestCase):
 

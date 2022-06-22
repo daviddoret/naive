@@ -1,6 +1,6 @@
 import lts
 import state
-import atom
+from _trashcan import atom
 import transition_matrix
 
 

@@ -1,5 +1,5 @@
 from unittest import TestCase
-import atom
+from _trashcan import atom
 
 
 class TestLabelSpace(TestCase):

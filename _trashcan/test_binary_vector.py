@@ -1,6 +1,5 @@
 from unittest import TestCase
-import binary_vector
-import output
+from _trashcan import binary_vector
 import state
 
 

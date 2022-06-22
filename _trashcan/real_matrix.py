@@ -2,7 +2,7 @@ import dataclasses
 
 import numpy as np
 
-import binary_matrix
+from _trashcan import binary_matrix
 
 import warnings
 

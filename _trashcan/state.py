@@ -1,5 +1,5 @@
 import warnings
-import binary_vector
+from _trashcan import binary_vector
 import output
 import const
 import collections

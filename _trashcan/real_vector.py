@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import numpy as np
 import output
-import binary_vector
+from _trashcan import binary_vector
 
 
 @dataclass

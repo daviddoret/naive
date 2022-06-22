@@ -1,5 +1,4 @@
-import binary_matrix
-import binary_vector
+from _trashcan import binary_vector, binary_matrix
 
 
 class TransitionMatrix(binary_matrix.BinaryMatrix):

@@ -1,7 +1,7 @@
 from unittest import TestCase
 import labeling_function
-import atom
-import state
+from _trashcan import atom
+
 
 class Test(TestCase):
     def test_labeling_function_1(self):

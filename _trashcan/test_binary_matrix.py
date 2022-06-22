@@ -1,5 +1,5 @@
 from unittest import TestCase
-import binary_matrix
+from _trashcan import binary_matrix
 
 
 class TestBinaryMatrix(TestCase):
