@@ -1,11 +1,12 @@
 # Configuration file for the Sphinx documentation builder.
 import pathlib
 import sys
+import os
 
 #sys.path.append(os.path.abspath('sphinxext'))
-sys.path.insert(0, pathlib.Path(__file__).parents[2].resolve().as_posix())
+#sys.path.insert(0, pathlib.Path(__file__).parents[2].resolve().as_posix())
 #sys.path.insert(0, os.path.abspath('..'))
-#sys.path.insert(0, os.path.abspath('../..'))
+sys.path.insert(0, os.path.abspath('../..'))
 # Reference: https://stackoverflow.com/questions/10324393/sphinx-build-fail-autodoc-cant-import-find-module
 
 # -- Project information

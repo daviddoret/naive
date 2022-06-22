@@ -87,8 +87,13 @@
 <h2>Creating recipes<a class="headerlink" href="#creating-recipes" title="Permalink to this heading"></a></h2>
 <p>To retrieve a list of random ingredients,
 you can use the <code class="docutils literal notranslate"><span class="pre">kripke_structure.coerce_binary_value()</span></code> function:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="kripke_structure.coerce_binary_value">
+<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">coerce_binary_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BinaryValueInput</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">BinaryValue</span></span></span><a class="headerlink" href="#kripke_structure.coerce_binary_value" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <p>The <code class="docutils literal notranslate"><span class="pre">kind</span></code> parameter should be either <code class="docutils literal notranslate"><span class="pre">&quot;meat&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;fish&quot;</span></code>,
-or <code class="docutils literal notranslate"><span class="pre">&quot;veggies&quot;</span></code>. Otherwise, <code class="xref py py-func docutils literal notranslate"><span class="pre">lumache.get_random_ingredients()</span></code>
+or <code class="docutils literal notranslate"><span class="pre">&quot;veggies&quot;</span></code>. Otherwise, <a class="reference internal" href="#kripke_structure.coerce_binary_value" title="kripke_structure.coerce_binary_value"><code class="xref py py-func docutils literal notranslate"><span class="pre">kripke_structure.coerce_binary_value()</span></code></a>
 will raise an exception.</p>
 <dl class="py exception">
 <dt class="sig sig-object py" id="lumache.InvalidKindError">
@@ -97,9 +102,9 @@ will raise an exception.</p>
 </dd></dl>
 
 <p>For example:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">kripke_structure</span> <span class="k">as</span> <span class="nn">ks</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ks</span><span class="o">.</span><span class="n">coerce_binary_value</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
-<span class="go">[&#39;shells&#39;, &#39;gorgonzola&#39;, &#39;parsley&#39;]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">kripke_structure</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">kripke_structure</span><span class="o">.</span><span class="n">coerce_binary_value</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+<span class="go">[True, False, True]</span>
 </pre></div>
 </div>
 </section>
