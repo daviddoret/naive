@@ -150,7 +150,7 @@ def is_instance(o: object, t: (type, typing.TypeVar)) -> bool:
             if all(isinstance(y, str) for y in o):
                 return True
         return False
-    elif t in (IncidenceVector, IncidenceVectorInput):
+    elif t in (BinaryVector, BinaryVectorInput, IncidenceVector ,IncidenceVectorInput):
         if isinstance(o, abc.Iterable):
             if all(isinstance(y, bool) for y in o):
                 return True
@@ -255,21 +255,27 @@ def coerce_binary_vector(x: BinaryVectorInput) -> BinaryVector:
         raise NotImplementedError
 
 
-def cardinality(x: object) -> int:
-    """Return the cardinality of x.
+def set_cardinality(s: SetOrIVInput) -> int:
+    """Return the cardinality of a set *S*.
 
-    :param x:
-    :return:
+    .. math::
+        \\mathrm{set\\_cardinality}\\left(S\\right) \\colon= \\mathrm{card}(S) \\colon= |S|
+
+    Note: if a numeric vector is passed to the function, returns the number of elements in the vector, i.e. the *set cardinality* of the vector, and not the *vector cardinality*.
+
+    :param s: The set *S*.
+    :return: The cardinality of the set *S*.
+    :rtype: int
     """
-    if isinstance(x, (BinaryVector, IncidenceVector)):
-        return len(x)
-    elif isinstance(x, abc.Iterable):
-        if all(isinstance(y, str) for y in x):
-            return len(x)
-        else:
-            raise TypeError
+    if is_instance(s, SetInput):
+        return len(s)
+    elif is_instance(s, BinaryVectorInput):
+        return len(s)
+    elif is_instance(s, np.ndarray):
+        # TODO: Check it is 1 dimensional
+        return len(s)
     else:
-        raise TypeError
+        raise NotImplementedError(f'set_cardinality: Set {s} is of unsupported type {type(s)}')
 
 
 def coerce_incidence_vector(x: IncidenceVectorInput, s: Set = None) -> IncidenceVector:
@@ -283,7 +289,7 @@ def coerce_incidence_vector(x: IncidenceVectorInput, s: Set = None) -> Incidence
             # the incidence vector with its base set.
             logging.warning('Skip subset test')
             return x
-        elif cardinality(x) == cardinality(s):
+        elif set_cardinality(x) == set_cardinality(s):
             return x
         else:
             raise ValueError(f'Incidence vector {x} has inconsistent cardinality with set {s}')
@@ -507,7 +513,7 @@ def get_incidence_vector(s_prime: SetOrIVInput, s: Set) -> IncidenceVector:
         iv = coerce_incidence_vector(s_prime, s)
         return iv
     elif is_instance(s_prime, Set):
-        iv = get_zero_binary_vector(cardinality(s))
+        iv = get_zero_binary_vector(set_cardinality(s))
         for e in s_prime:
             e_index = s.index(e)
             iv[e_index] = True
@@ -685,7 +691,7 @@ def sat_tt(m: KripkeStructure, s_prime: SetOrIVInput = None, output_type: (type,
     output_type = coerce_set_or_iv_type(output_type)
 
     # Get the size of the incidence vector
-    s_cardinality = cardinality(m.s)
+    s_cardinality = set_cardinality(m.s)
 
     # Prepare an incidence vector of that size with all ones
     sat_iv = get_one_binary_vector(s_cardinality)

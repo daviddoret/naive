@@ -16,6 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -61,7 +62,7 @@
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Kripke Structure</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/kripke_structure.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/kripke_structure_section.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -80,20 +81,6 @@
 </tbody>
 </table>
 <span class="target" id="module-kripke_structure"></span><span class="target" id="module-0"></span><dl class="py function">
-<dt class="sig sig-object py" id="kripke_structure.cardinality">
-<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">cardinality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><span class="pre">object</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#kripke_structure.cardinality" title="Permalink to this definition"></a></dt>
-<dd><p>Return the cardinality of x.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="kripke_structure.coerce_element">
 <span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">coerce_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ElementInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SetInput</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#kripke_structure.coerce_element" title="Permalink to this definition"></a></dt>
 <dd><p>Given element e passed with flexible input type, assure e ∈ S, and return e typed as Element</p>
@@ -370,6 +357,26 @@ Let Sat(tt) = {s ∈ S’ ⊆ S}.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative to the set S of the model, and not S’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kripke_structure.set_cardinality">
+<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">set_cardinality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SetOrIVInput</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#kripke_structure.set_cardinality" title="Permalink to this definition"></a></dt>
+<dd><p>Return the cardinality of a set <em>S</em>.</p>
+<div class="math notranslate nohighlight">
+\[\mathrm{set\_cardinality}\left(S\right) \colon= \mathrm{card}(S) \colon= |S|\]</div>
+<p>Note: if a numeric vector is passed to the function, returns the number of elements in the vector, i.e. the <em>set cardinality</em> of the vector, and not the <em>vector cardinality</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>s</strong> – The set <em>S</em>.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The cardinality of the set <em>S</em>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></p>
 </dd>
 </dl>
 </dd></dl>

@@ -1,10 +1,8 @@
 Welcome to Naive's documentation!
 ===================================
 
-**Naive** (/lu'make/) is a Python library for cooks and food lovers
-that creates recipes mixing random ingredients.
-It pulls data from the `Open Food Facts database <https://world.openfoodfacts.org/>`_
-and offers a *simple* and *intuitive* API.
+**Naive** (/naɪˈiːv/) is a model checking Python library. Its salient characteristics are:
+* Instead of
 
 Check out the :doc:`usage` section for further information, including
 how to :ref:`installation` the project.
@@ -19,4 +17,4 @@ Contents
 .. toctree::
 
    usage
-   kripke_structure
+   kripke_structure_section

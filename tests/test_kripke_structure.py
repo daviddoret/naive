@@ -117,11 +117,11 @@ class Test(TestCase):
 
     def test_cardinality(self):
         s = ks.coerce_set(['a', 'b', 'c', 'd', 'e'])
-        self.assertEqual(ks.cardinality(s), 5)
+        self.assertEqual(ks.set_cardinality(s), 5)
         v = ks.coerce_binary_vector([1, 0, 1, 0, 0])
-        self.assertEqual(ks.cardinality(v), 5)
+        self.assertEqual(ks.set_cardinality(v), 5)
         iv = ks.coerce_incidence_vector(v, s)
-        self.assertEqual(ks.cardinality(iv), 5)
+        self.assertEqual(ks.set_cardinality(iv), 5)
 
     def test_coerce_subset(self):
         s = ['a', 'b', 'c', 'd', 'e']
