@@ -134,6 +134,12 @@ class Test(TestCase):
         v3 = ks.get_minima(v1, v2)
         self.assertTrue(ks.equals(v3, [0, 1, 0, 0, 0, 0, 1, 1]))
 
+    def test_get_maxima(self):
+        v1 = [0, 1, 0, 1, 0, 0, 1, 1]
+        v2 = [1, 1, 0, 0, 0, 0, 1, 1]
+        v3 = ks.get_maxima(v1, v2)
+        self.assertTrue(ks.equals(v3, [1, 1, 0, 1, 0, 0, 1, 1]))
+
     def test_tt(self):
         m = ks_samples.get_sample_1()
         print(ks.to_text(m))
@@ -179,6 +185,19 @@ class Test(TestCase):
         self.assertTrue(ks.equals(ks.sat_not_phi(m, None, [1, 1, 1, 0, 0]), ['s3', 's4']))
         self.assertTrue(ks.equals(ks.sat_not_phi(m, None, [0, 0, 0, 0, 0], output_type=ks.IncidenceVector), [1, 1, 1, 1, 1]))
         self.assertTrue(ks.equals(ks.sat_not_phi(m, None, ['s0', 's2', 's4']), ['s1', 's3']))
+
+    def test_sat_phi_or_psi(self):
+        m = ks_samples.get_sample_1()
+        self.assertTrue(ks.equals(ks.sat_phi_or_psi(m, None, [1, 1, 1, 0, 0], [0, 1, 1, 1, 0]), ['s0', 's1', 's2', 's3']))
+        self.assertTrue(ks.equals(ks.sat_phi_or_psi(m, None, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], output_type=ks.IncidenceVector), [0, 0, 0, 0, 0]))
+        self.assertTrue(ks.equals(ks.sat_phi_or_psi(m, None, ['s0', 's2', 's4'], ['s1', 's2', 's4']), ['s0', 's1', 's2', 's4']))
+
+    def test_sat_phi_and_psi(self):
+        m = ks_samples.get_sample_1()
+        self.assertTrue(ks.equals(ks.sat_phi_and_psi(m, None, [1, 1, 1, 0, 0], [0, 1, 1, 1, 0]), ['s1', 's2']))
+        self.assertTrue(ks.equals(ks.sat_phi_and_psi(m, None, [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], output_type=ks.IncidenceVector), [0, 0, 0, 0, 0]))
+        self.assertTrue(ks.equals(ks.sat_phi_and_psi(m, None, ['s0', 's2', 's4'], ['s1', 's2', 's4']), ['s2', 's4']))
+
 
 
 class TestKripkeStructure(TestCase):

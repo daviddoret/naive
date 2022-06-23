@@ -633,6 +633,22 @@ def get_minima(v1: BinaryVector, v2: BinaryVector) -> BinaryVector:
     return coerce_binary_vector(np.minimum(v1, v2))
 
 
+def get_maxima(v1: BinaryVector, v2: BinaryVector) -> BinaryVector:
+    """Return the element-wise maxima of a binary vector with regard to another binary vector
+
+    If the binary vector is the incidence vector of a set,
+    this is equivalent to the set union operation:
+    max(IV(s), IV(t)) ≡ s ∪ t
+    """
+
+    v1 = coerce_binary_vector(v1)
+    v2 = coerce_binary_vector(v2)
+
+    # Populate the values of the resulting vector
+    # as the element-wise min of both vectors
+    return coerce_binary_vector(np.maximum(v1, v2))
+
+
 def get_logical_not(v: BinaryVector) -> BinaryVector:
     """Return the element-wise inverse (or logical not) of a binary vector.
 
@@ -847,3 +863,119 @@ def sat_not_phi(m: KripkeStructure, s_prime: SetOrIVInput, sat_phi: SetOrIVInput
     else:
         logging.debug(f'Sat(¬{sat_phi}) = {min_not_sat_phi_iv}')
         return min_not_sat_phi_iv
+
+
+def sat_phi_or_psi(m: KripkeStructure, s_prime: SetOrIVInput, sat_phi: SetOrIVInput,
+                   sat_psi: SetOrIVInput, output_type: (type, typing.TypeVar) = Set) -> SetOrIV:
+    """Get the satisfaction set of the state formula Sat(Φ ∨ Ψ)
+
+    Formally:
+    Let M be a Kripke structure's model with states S.
+    Conditional: Let S' be a subset of S.
+    Let Φ be a state formula.
+    Let Ψ be a state formula.
+    Lemma: Sat (Φ ∨ Ψ) = Sat (Φ) ∪ Sat (Ψ).
+    Let Sat(Φ ∨ Ψ) = {s_i ∈ S' ⊆ S | s_i ∉ {Sat(Φ) ∪ Sat (Ψ)} }
+    Let max(v1, v2) be the element-wise max operation
+    For incidence vectors: max is equivalent to ∪ on sets
+    Hence, Sat(Φ ∨ Ψ) ~ max(IV(Φ), IV(Ψ).
+
+    :param m: The Kripke structure model M.
+    :param s_prime: (conditional) The subset S' ⊆ S. Note that if s_prime is None, it is assumed that all states are
+    considered and NOT no states (the empty set).
+    :param sat_phi: The satisfaction set Sat(Φ).
+    :param sat_psi: The satisfaction set Sat(Ψ).
+    :param output_type: (conditional) Set or IncidenceVector. Default equals Set.
+    :return: The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative
+    to the set S of the model, and not S'.
+    """
+    # These are synonymous
+    m = coerce_kripke_structure(m)
+    if s_prime is None:
+        # Exhaustive analysis of M
+        s_prime = m.s
+    else:
+        # Limited analysis of M to a subset S' ⊆ S
+        s_prime = coerce_subset_or_iv(s_prime, m.s)
+    sat_phi = coerce_subset_or_iv(sat_phi, m.s)
+    sat_psi = coerce_subset_or_iv(sat_psi, m.s)
+
+    # Convert variables to incidence vectors
+    s_prime_iv = get_incidence_vector(s_prime, m.s)
+    sat_phi_iv = get_incidence_vector(sat_phi, m.s)
+    sat_psi_iv = get_incidence_vector(sat_psi, m.s)
+
+    # Get the element-wise maxima that is equivalent to the union set operation
+    phi_or_psi_iv = get_maxima(sat_phi_iv, sat_psi_iv)
+
+    # Reduce the result to S'
+    phi_or_psi_iv = get_minima(phi_or_psi_iv, s_prime_iv)
+
+    # Superfluous coercion
+    phi_or_psi_iv = coerce_incidence_vector(phi_or_psi_iv, m.s)
+
+    if output_type == Set:
+        phi_or_psi_subset = get_set(phi_or_psi_iv, m.s)
+        logging.debug(f'Sat({sat_phi} ∨ {sat_psi}) = {phi_or_psi_subset}')
+        return phi_or_psi_subset
+    else:
+        logging.debug(f'Sat({sat_phi} ∨ {sat_psi}) = {phi_or_psi_iv}')
+        return phi_or_psi_iv
+
+
+def sat_phi_and_psi(m: KripkeStructure, s_prime: SetOrIVInput, sat_phi: SetOrIVInput,
+                    sat_psi: SetOrIVInput, output_type: (type, typing.TypeVar) = Set) -> SetOrIV:
+    """Get the satisfaction set of the state formula Sat(Φ ∧ Ψ)
+
+    Formally:
+    Let M be a Kripke structure's model with states S.
+    Conditional: Let S' be a subset of S.
+    Let Φ be a state formula.
+    Let Ψ be a state formula.
+    Lemma: Sat (Φ ∧ Ψ) = Sat (Φ) ∩ Sat (Ψ).
+    Let Sat(Φ ∨ Ψ) = {s_i ∈ S' ⊆ S | s_i ∉ {Sat(Φ) ∩ Sat (Ψ)} }
+    Let min(v1, v2) be the element-wise min operation
+    For incidence vectors: min is equivalent to ∩ on sets
+    Hence, Sat(Φ ∨ Ψ) ~ min(IV(Φ), IV(Ψ).
+
+    :param m: The Kripke structure model M.
+    :param s_prime: (conditional) The subset S' ⊆ S. Note that if s_prime is None, it is assumed that all states are
+    considered and NOT no states (the empty set).
+    :param sat_phi: The satisfaction set Sat(Φ).
+    :param sat_psi: The satisfaction set Sat(Ψ).
+    :param output_type: (conditional) Set or IncidenceVector. Default equals Set.
+    :return: The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative
+    to the set S of the model, and not S'.
+    """
+    # These are synonymous
+    m = coerce_kripke_structure(m)
+    if s_prime is None:
+        # Exhaustive analysis of M
+        s_prime = m.s
+    else:
+        # Limited analysis of M to a subset S' ⊆ S
+        s_prime = coerce_subset_or_iv(s_prime, m.s)
+    sat_phi = coerce_subset_or_iv(sat_phi, m.s)
+    sat_psi = coerce_subset_or_iv(sat_psi, m.s)
+
+    # Convert variables to incidence vectors
+    s_prime_iv = get_incidence_vector(s_prime, m.s)
+    sat_phi_iv = get_incidence_vector(sat_phi, m.s)
+    sat_psi_iv = get_incidence_vector(sat_psi, m.s)
+
+    # Get the element-wise minima that is equivalent to the union set operation
+    phi_and_psi_iv = get_minima(sat_phi_iv, sat_psi_iv)
+
+    # Reduce the result to S'
+    phi_and_psi_iv = get_minima(phi_and_psi_iv, s_prime_iv)
+
+    # Superfluous coercion
+    phi_and_psi_iv = coerce_incidence_vector(phi_and_psi_iv, m.s)
+
+    if output_type == Set:
+        phi_or_psi_subset = get_set(phi_and_psi_iv, m.s)
+        logging.debug(f'Sat({sat_phi} ∧ {sat_psi}) = {phi_or_psi_subset}')
+        return phi_or_psi_subset
+    else:
+        logging.debug(f'Sat({sat_phi} ∧ {sat_psi}) = {phi_and_psi_iv}')
+        return phi_and_psi_iv
