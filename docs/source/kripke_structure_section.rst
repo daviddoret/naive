@@ -1,8 +1,13 @@
 Kripke Structure
 ================
 
-.. autosummary::
-   :toctree: generated
+.. currentmodule:: kripke_structure
 
-.. automodule:: kripke_structure
-   :members:
+.. autosummary::
+    :toctree: functions
+
+    coerce_binary_value
+    coerce_binary_vector
+    flatten
+    is_instance
+    set_cardinality

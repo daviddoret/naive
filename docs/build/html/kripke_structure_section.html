@@ -16,10 +16,10 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="kripke_structure.coerce_binary_value" href="functions/kripke_structure.coerce_binary_value.html" />
     <link rel="prev" title="Usage" href="usage.html" /> 
 </head>
 
@@ -43,7 +43,14 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Kripke Structure</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Kripke Structure</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functions/kripke_structure.coerce_binary_value.html">kripke_structure.coerce_binary_value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/kripke_structure.coerce_binary_vector.html">kripke_structure.coerce_binary_vector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/kripke_structure.flatten.html">kripke_structure.flatten</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/kripke_structure.is_instance.html">kripke_structure.is_instance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions/kripke_structure.set_cardinality.html">kripke_structure.set_cardinality</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -78,309 +85,23 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="functions/kripke_structure.coerce_binary_value.html#kripke_structure.coerce_binary_value" title="kripke_structure.coerce_binary_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_binary_value</span></code></a>(x)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="functions/kripke_structure.coerce_binary_vector.html#kripke_structure.coerce_binary_vector" title="kripke_structure.coerce_binary_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_binary_vector</span></code></a>(x)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="functions/kripke_structure.flatten.html#kripke_structure.flatten" title="kripke_structure.flatten"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten</span></code></a>(x)</p></td>
+<td><p>Flatten an iterable</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="functions/kripke_structure.is_instance.html#kripke_structure.is_instance" title="kripke_structure.is_instance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_instance</span></code></a>(o, t)</p></td>
+<td><p>Check if an arbitrary object o is of type or TypeVar t</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="functions/kripke_structure.set_cardinality.html#kripke_structure.set_cardinality" title="kripke_structure.set_cardinality"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_cardinality</span></code></a>(s)</p></td>
+<td><p>Return the cardinality of a set <em>S</em>.</p></td>
+</tr>
 </tbody>
 </table>
-<span class="target" id="module-kripke_structure"></span><span class="target" id="module-0"></span><dl class="py function">
-<dt class="sig sig-object py" id="kripke_structure.coerce_element">
-<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">coerce_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ElementInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SetInput</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#kripke_structure.coerce_element" title="Permalink to this definition"></a></dt>
-<dd><p>Given element e passed with flexible input type, assure e ∈ S, and return e typed as Element</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kripke_structure.coerce_set">
-<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">coerce_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SetInput</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#kripke_structure.coerce_set" title="Permalink to this definition"></a></dt>
-<dd><p>Assure the Set type for x.</p>
-<p>Note: a coerced set is always sorted. This simplifies the usage of incidence vectors with consistent index positions.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kripke_structure.coerce_subset">
-<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">coerce_subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s_prime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#kripke_structure.coerce_subset" title="Permalink to this definition"></a></dt>
-<dd><p>Coerce s’ to a subset of s.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>s_prime</strong> – </p></li>
-<li><p><strong>s</strong> – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kripke_structure.flatten">
-<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">abc.Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">abc.Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">abc.List</span><span class="p"><span class="pre">[</span></span><span class="pre">abc.Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#kripke_structure.flatten" title="Permalink to this definition"></a></dt>
-<dd><p>Flatten an iterable</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kripke_structure.get_incidence_vector">
-<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">get_incidence_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s_prime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SetOrIVInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool_]</span></span></span><a class="headerlink" href="#kripke_structure.get_incidence_vector" title="Permalink to this definition"></a></dt>
-<dd><p>Given a subset S’ ⊆ S or its incidence vector, return the corresponding incidence vector</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kripke_structure.get_labels_from_state">
-<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">get_labels_from_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">KripkeStructureInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StateInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.10)"><span class="pre">type</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.10)"><span class="pre">TypeVar</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">typing.List[str]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AtomicPropertySet</span></span></span><a class="headerlink" href="#kripke_structure.get_labels_from_state" title="Permalink to this definition"></a></dt>
-<dd><p>Given a Kripke structure M (m), and a state s ∈ S, return the set of labels (aka atomic properties) attached to that state.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>m</strong> – The Kripke structure M</p></li>
-<li><p><strong>s</strong> – A state s</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kripke_structure.get_logical_not">
-<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">get_logical_not</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">v:</span> <span class="pre">~nptyping.base_meta_classes.NDArray[~nptyping.base_meta_classes.Shape[*],</span> <span class="pre">~numpy.bool_]</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool_]</span></span></span><a class="headerlink" href="#kripke_structure.get_logical_not" title="Permalink to this definition"></a></dt>
-<dd><p>Return the element-wise inverse (or logical not) of a binary vector.</p>
-<p>If the binary vector is the incidence vector of a set,
-this is equivalent to the or set operation:
-min(IV(s), IV(t)) ≡ s ∩ t</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kripke_structure.get_maxima">
-<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">get_maxima</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">v1:</span> <span class="pre">~nptyping.base_meta_classes.NDArray[~nptyping.base_meta_classes.Shape[*],</span> <span class="pre">~numpy.bool_],</span> <span class="pre">v2:</span> <span class="pre">~nptyping.base_meta_classes.NDArray[~nptyping.base_meta_classes.Shape[*],</span> <span class="pre">~numpy.bool_]</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool_]</span></span></span><a class="headerlink" href="#kripke_structure.get_maxima" title="Permalink to this definition"></a></dt>
-<dd><p>Return the element-wise maxima of a binary vector with regard to another binary vector</p>
-<p>If the binary vector is the incidence vector of a set,
-this is equivalent to the set union operation:
-max(IV(s), IV(t)) ≡ s ∪ t</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kripke_structure.get_minima">
-<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">get_minima</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">v1:</span> <span class="pre">~nptyping.base_meta_classes.NDArray[~nptyping.base_meta_classes.Shape[*],</span> <span class="pre">~numpy.bool_],</span> <span class="pre">v2:</span> <span class="pre">~nptyping.base_meta_classes.NDArray[~nptyping.base_meta_classes.Shape[*],</span> <span class="pre">~numpy.bool_]</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool_]</span></span></span><a class="headerlink" href="#kripke_structure.get_minima" title="Permalink to this definition"></a></dt>
-<dd><p>Return the element-wise minima of a binary vector with regard to another binary vector</p>
-<p>If the binary vector is the incidence vector of a set,
-this is equivalent to the set intersection operation:
-min(IV(s), IV(t)) ≡ s ∩ t</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kripke_structure.get_set">
-<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">get_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s_prime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SetOrIVInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#kripke_structure.get_set" title="Permalink to this definition"></a></dt>
-<dd><p>Given a subset S’ ⊆ S or its incidence vector, return the corresponding subset</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kripke_structure.get_set_from_range">
-<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">get_set_from_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'e'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kripke_structure.get_set_from_range" title="Permalink to this definition"></a></dt>
-<dd><p>Generate a set of n elements, prefixed and numbered with 0 padding</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kripke_structure.get_states_from_label">
-<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">get_states_from_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">KripkeStructureInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_prime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StateSetInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AtomicPropertyInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.10)"><span class="pre">type</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.10)"><span class="pre">TypeVar</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">typing.List[str]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">StateSet</span></span></span><a class="headerlink" href="#kripke_structure.get_states_from_label" title="Permalink to this definition"></a></dt>
-<dd><p>Return the states linked to a label</p>
-<p>Given a Kripke structure M (m),
-(conditionally) given a subset S’ of S,
-given a label (aka atomic property) ∈ AP,
-return the subset of states S’’ ⊆ S (or S’) that are attached to that label.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>m</strong> – The Kripke structure M</p></li>
-<li><p><strong>s_prime</strong> – None to exhaustively analyse M, or a subset of S to limit the analysis otherwise.</p></li>
-<li><p><strong>label</strong> – The label (aka atomic property) ap</p></li>
-<li><p><strong>output_type</strong> – Set or IncidenceVector depending on the desired output</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The subset S’’ ⊆ S</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kripke_structure.is_instance">
-<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">is_instance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">o</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><span class="pre">object</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.10)"><span class="pre">type</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.10)"><span class="pre">TypeVar</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#kripke_structure.is_instance" title="Permalink to this definition"></a></dt>
-<dd><p>Check if an arbitrary object o is of type or TypeVar t</p>
-<p>The native isinstance function does not support parametrized generics.
-Hence, we need a wrapper function to extend type checking.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>o</strong> – Any object</p></li>
-<li><p><strong>t</strong> – A type or TypeVar</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A boolean</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kripke_structure.sat_a">
-<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">sat_a</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">KripkeStructure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_prime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SetOrIVInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AtomicPropertyInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.10)"><span class="pre">type</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.10)"><span class="pre">TypeVar</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">typing.List[str]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SetOrIV</span></span></span><a class="headerlink" href="#kripke_structure.sat_a" title="Permalink to this definition"></a></dt>
-<dd><p>Get the satisfaction set of the state formula Sat(a)</p>
-<p>Formally:
-Let M be an LTS model with states S.
-Conditional: Let S’ be a subset of S.
-Let a be a label (aka atomic property).
-Let L(s) be the set of labels (aka atomic properties) attached to s.
-Let Sat(a) = {s_i ∈ S’ ⊆ S | a ∈ L(s_i)}</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>m</strong> – The Kripke structure model M.</p></li>
-<li><p><strong>s_prime</strong> – (conditional) The subset S’ ⊆ S. Note that if s_prime is None, it is assumed that all states are considered and NOT no states (the empty set).</p></li>
-<li><p><strong>label</strong> – The label (aka atomic property).</p></li>
-<li><p><strong>output_type</strong> – (conditional) Set or IncidenceVector. Default equals Set.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative to the set S of the model, and not S’.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kripke_structure.sat_not_phi">
-<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">sat_not_phi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">KripkeStructure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_prime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SetOrIVInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sat_phi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SetOrIVInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.10)"><span class="pre">type</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.10)"><span class="pre">TypeVar</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">typing.List[str]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SetOrIV</span></span></span><a class="headerlink" href="#kripke_structure.sat_not_phi" title="Permalink to this definition"></a></dt>
-<dd><p>Get the satisfaction set of the state formula Sat(¬Φ)</p>
-<p>Formally:
-Let M be an LTS model with states S.
-Conditional: Let S’ be a subset of S.
-Let Φ be a state formula.
-Lemma: Sat(¬Φ) = S ∖ Sat(Φ).
-Let Sat(a) = {s_i ∈ S’ ⊆ S | s_i ∉ Sat(Φ)}</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>m</strong> – The Kripke structure model M.</p></li>
-<li><p><strong>s_prime</strong> – (conditional) The subset S’ ⊆ S. Note that if s_prime is None, it is assumed that all states are considered and NOT no states (the empty set).</p></li>
-<li><p><strong>sat_phi</strong> – The satisfaction set Sat(Φ).</p></li>
-<li><p><strong>output_type</strong> – (conditional) Set or IncidenceVector. Default equals Set.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative to the set S of the model, and not S’.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kripke_structure.sat_phi_and_psi">
-<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">sat_phi_and_psi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">KripkeStructure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_prime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SetOrIVInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sat_phi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SetOrIVInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sat_psi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SetOrIVInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.10)"><span class="pre">type</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.10)"><span class="pre">TypeVar</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">typing.List[str]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SetOrIV</span></span></span><a class="headerlink" href="#kripke_structure.sat_phi_and_psi" title="Permalink to this definition"></a></dt>
-<dd><p>Get the satisfaction set of the state formula Sat(Φ ∧ Ψ)</p>
-<p>Formally:
-Let M be a Kripke structure’s model with states S.
-Conditional: Let S’ be a subset of S.
-Let Φ be a state formula.
-Let Ψ be a state formula.
-Lemma: Sat (Φ ∧ Ψ) = Sat (Φ) ∩ Sat (Ψ).
-Let Sat(Φ ∨ Ψ) = {s_i ∈ S’ ⊆ S | s_i ∉ {Sat(Φ) ∩ Sat (Ψ)} }
-Let min(v1, v2) be the element-wise min operation
-For incidence vectors: min is equivalent to ∩ on sets
-Hence, Sat(Φ ∨ Ψ) ~ min(IV(Φ), IV(Ψ).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>m</strong> – The Kripke structure model M.</p></li>
-<li><p><strong>s_prime</strong> – (conditional) The subset S’ ⊆ S. Note that if s_prime is None, it is assumed that all states are considered and NOT no states (the empty set).</p></li>
-<li><p><strong>sat_phi</strong> – The satisfaction set Sat(Φ).</p></li>
-<li><p><strong>sat_psi</strong> – The satisfaction set Sat(Ψ).</p></li>
-<li><p><strong>output_type</strong> – (conditional) Set or IncidenceVector. Default equals Set.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative to the set S of the model, and not S’.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kripke_structure.sat_phi_or_psi">
-<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">sat_phi_or_psi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">KripkeStructure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_prime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SetOrIVInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sat_phi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SetOrIVInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sat_psi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SetOrIVInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.10)"><span class="pre">type</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.10)"><span class="pre">TypeVar</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">typing.List[str]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SetOrIV</span></span></span><a class="headerlink" href="#kripke_structure.sat_phi_or_psi" title="Permalink to this definition"></a></dt>
-<dd><p>Get the satisfaction set of the state formula Sat(Φ ∨ Ψ)</p>
-<p>Formally:
-Let M be a Kripke structure’s model with states S.
-Conditional: Let S’ be a subset of S.
-Let Φ be a state formula.
-Let Ψ be a state formula.
-Lemma: Sat (Φ ∨ Ψ) = Sat (Φ) ∪ Sat (Ψ).
-Let Sat(Φ ∨ Ψ) = {s_i ∈ S’ ⊆ S | s_i ∉ {Sat(Φ) ∪ Sat (Ψ)} }
-Let max(v1, v2) be the element-wise max operation
-For incidence vectors: max is equivalent to ∪ on sets
-Hence, Sat(Φ ∨ Ψ) ~ max(IV(Φ), IV(Ψ).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>m</strong> – The Kripke structure model M.</p></li>
-<li><p><strong>s_prime</strong> – (conditional) The subset S’ ⊆ S. Note that if s_prime is None, it is assumed that all states are considered and NOT no states (the empty set).</p></li>
-<li><p><strong>sat_phi</strong> – The satisfaction set Sat(Φ).</p></li>
-<li><p><strong>sat_psi</strong> – The satisfaction set Sat(Ψ).</p></li>
-<li><p><strong>output_type</strong> – (conditional) Set or IncidenceVector. Default equals Set.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative to the set S of the model, and not S’.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kripke_structure.sat_tt">
-<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">sat_tt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">KripkeStructure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_prime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SetOrIVInput</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.10)"><span class="pre">type</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TypeVar" title="(in Python v3.10)"><span class="pre">TypeVar</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">typing.List[str]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SetOrIV</span></span></span><a class="headerlink" href="#kripke_structure.sat_tt" title="Permalink to this definition"></a></dt>
-<dd><p>Get the satisfaction set of the state formula Sat(tt)</p>
-<p>Formally:
-Let M be a Kripke Structure model with states S.
-Conditional: Let S’ be a subset of S.
-Let tt be the tautological truth state formula.
-Let Sat(tt) = {s ∈ S’ ⊆ S}.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>m</strong> – The Kripke structure model M.</p></li>
-<li><p><strong>s_prime</strong> – (conditional) The subset S’ ⊆ S. Note that if s_prime is None, it is assumed that all states are considered and NOT no states (the empty set).</p></li>
-<li><p><strong>output_type</strong> – (conditional) Set or IncidenceVector. Default equals Set.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative to the set S of the model, and not S’.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kripke_structure.set_cardinality">
-<span class="sig-prename descclassname"><span class="pre">kripke_structure.</span></span><span class="sig-name descname"><span class="pre">set_cardinality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SetOrIVInput</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#kripke_structure.set_cardinality" title="Permalink to this definition"></a></dt>
-<dd><p>Return the cardinality of a set <em>S</em>.</p>
-<div class="math notranslate nohighlight">
-\[\mathrm{set\_cardinality}\left(S\right) \colon= \mathrm{card}(S) \colon= |S|\]</div>
-<p>Note: if a numeric vector is passed to the function, returns the number of elements in the vector, i.e. the <em>set cardinality</em> of the vector, and not the <em>vector cardinality</em>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>s</strong> – The set <em>S</em>.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The cardinality of the set <em>S</em>.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 
 
@@ -388,6 +109,7 @@ Let Sat(tt) = {s ∈ S’ ⊆ S}.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="usage.html" class="btn btn-neutral float-left" title="Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="functions/kripke_structure.coerce_binary_value.html" class="btn btn-neutral float-right" title="kripke_structure.coerce_binary_value" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

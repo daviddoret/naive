@@ -258,8 +258,13 @@ def coerce_binary_vector(x: BinaryVectorInput) -> BinaryVector:
 def set_cardinality(s: SetOrIVInput) -> int:
     """Return the cardinality of a set *S*.
 
+    Formally:
+
     .. math::
-        \\mathrm{set\\_cardinality}\\left(S\\right) \\colon= \\mathrm{card}(S) \\colon= |S|
+        \\begin{align*}
+        & \\text{Let } S \\text{ be a set} & \\\\
+        & \\mathit{set\\_cardinality}\\left(S\\right) \\colon= \\mathrm{card}(S) \\colon= |S|
+        \end{align*}
 
     Note: if a numeric vector is passed to the function, returns the number of elements in the vector, i.e. the *set cardinality* of the vector, and not the *vector cardinality*.
 
