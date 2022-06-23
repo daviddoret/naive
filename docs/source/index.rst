@@ -19,4 +19,4 @@ Contents
 .. toctree::
 
    usage
-   kripke_structure.rst
+   kripke_structure

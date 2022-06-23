@@ -4,6 +4,7 @@
    :synopsis: A useful module indeed.
 """
 
+
 # IMPORTS
 
 # PEP 563 – Postponed Evaluation of Annotations
@@ -673,11 +674,9 @@ def sat_tt(m: KripkeStructure, s_prime: SetOrIVInput = None, output_type: (type,
     Let Sat(tt) = {s ∈ S' ⊆ S}.
 
     :param m: The Kripke structure model M.
-    :param s_prime: (conditional) The subset S' ⊆ S. Note that if s_prime is None, it is assumed that all states are
-    considered and NOT no states (the empty set).
+    :param s_prime: (conditional) The subset S' ⊆ S. Note that if s_prime is None, it is assumed that all states are considered and NOT no states (the empty set).
     :param output_type: (conditional) Set or IncidenceVector. Default equals Set.
-    :return: The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative
-    to the set S of the model, and not S'.
+    :return: The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative to the set S of the model, and not S'.
     """
 
     m = coerce_kripke_structure(m)
@@ -803,12 +802,11 @@ def sat_a(m: KripkeStructure, s_prime: SetOrIVInput, label: AtomicPropertyInput,
     Let Sat(a) = {s_i ∈ S' ⊆ S | a ∈ L(s_i)}
 
     :param m: The Kripke structure model M.
-    :param s_prime: (conditional) The subset S' ⊆ S. Note that if s_prime is None, it is assumed that all states are
-    considered and NOT no states (the empty set).
+    :param s_prime: (conditional) The subset S' ⊆ S. Note that if s_prime is None, it is assumed that all states are considered and NOT no states (the empty set).
     :param label: The label (aka atomic property).
     :param output_type: (conditional) Set or IncidenceVector. Default equals Set.
-    :return: The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative
-    to the set S of the model, and not S'.
+    :return: The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative to the set S of the model, and not S'.
+
     """
     # These are synonymous
     # Coercion takes place in the child method
@@ -829,12 +827,10 @@ def sat_not_phi(m: KripkeStructure, s_prime: SetOrIVInput, sat_phi: SetOrIVInput
     Let Sat(a) = {s_i ∈ S' ⊆ S | s_i ∉ Sat(Φ)}
 
     :param m: The Kripke structure model M.
-    :param s_prime: (conditional) The subset S' ⊆ S. Note that if s_prime is None, it is assumed that all states are
-    considered and NOT no states (the empty set).
+    :param s_prime: (conditional) The subset S' ⊆ S. Note that if s_prime is None, it is assumed that all states are considered and NOT no states (the empty set).
     :param sat_phi: The satisfaction set Sat(Φ).
     :param output_type: (conditional) Set or IncidenceVector. Default equals Set.
-    :return: The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative
-    to the set S of the model, and not S'.
+    :return: The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative to the set S of the model, and not S'.
     """
     # These are synonymous
     m = coerce_kripke_structure(m)
@@ -881,13 +877,11 @@ def sat_phi_or_psi(m: KripkeStructure, s_prime: SetOrIVInput, sat_phi: SetOrIVIn
     Hence, Sat(Φ ∨ Ψ) ~ max(IV(Φ), IV(Ψ).
 
     :param m: The Kripke structure model M.
-    :param s_prime: (conditional) The subset S' ⊆ S. Note that if s_prime is None, it is assumed that all states are
-    considered and NOT no states (the empty set).
+    :param s_prime: (conditional) The subset S' ⊆ S. Note that if s_prime is None, it is assumed that all states are considered and NOT no states (the empty set).
     :param sat_phi: The satisfaction set Sat(Φ).
     :param sat_psi: The satisfaction set Sat(Ψ).
     :param output_type: (conditional) Set or IncidenceVector. Default equals Set.
-    :return: The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative
-    to the set S of the model, and not S'.
+    :return: The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative to the set S of the model, and not S'.
     """
     # These are synonymous
     m = coerce_kripke_structure(m)
@@ -939,13 +933,11 @@ def sat_phi_and_psi(m: KripkeStructure, s_prime: SetOrIVInput, sat_phi: SetOrIVI
     Hence, Sat(Φ ∨ Ψ) ~ min(IV(Φ), IV(Ψ).
 
     :param m: The Kripke structure model M.
-    :param s_prime: (conditional) The subset S' ⊆ S. Note that if s_prime is None, it is assumed that all states are
-    considered and NOT no states (the empty set).
+    :param s_prime: (conditional) The subset S' ⊆ S. Note that if s_prime is None, it is assumed that all states are considered and NOT no states (the empty set).
     :param sat_phi: The satisfaction set Sat(Φ).
     :param sat_psi: The satisfaction set Sat(Ψ).
     :param output_type: (conditional) Set or IncidenceVector. Default equals Set.
-    :return: The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative
-    to the set S of the model, and not S'.
+    :return: The satisfaction set. If output_format is IncidenceVector, then the returned incidence vector is relative to the set S of the model, and not S'.
     """
     # These are synonymous
     m = coerce_kripke_structure(m)

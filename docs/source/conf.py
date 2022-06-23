@@ -3,9 +3,6 @@ import pathlib
 import sys
 import os
 
-#sys.path.append(os.path.abspath('sphinxext'))
-#sys.path.insert(0, pathlib.Path(__file__).parents[2].resolve().as_posix())
-#sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('../..'))
 # Reference: https://stackoverflow.com/questions/10324393/sphinx-build-fail-autodoc-cant-import-find-module
 
@@ -36,6 +33,7 @@ intersphinx_mapping = {
     'python': ('https://docs.python.org/3/', None),
     'sphinx': ('https://www.sphinx-doc.org/en/master/', None),
 }
+
 intersphinx_disabled_domains = ['std']
 
 templates_path = ['_templates']
