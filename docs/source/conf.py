@@ -53,3 +53,5 @@ source_suffix = {
     '.txt': 'markdown',
     '.md': 'markdown',
 }
+
+exclude_patterns = ['requirements.txt']
