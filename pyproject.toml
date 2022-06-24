@@ -13,7 +13,6 @@ maintainers = [{name = "David Doret"}]
 description = "A great package."
 readme = "README.md"
 dynamic = ["version", "description"]
-dependencies = ['numpy', 'dataclasses', 'typing', 'nptyping']
 license = { file = "LICENSE" }
 requires-python = ">=3.10"
 
