@@ -1,5 +1,7 @@
 sphinx
 sphinx_rtd_theme
-numpy
+numpy==1.23.0
 nptyping==2.1.3
 typing
+dataclasses
+

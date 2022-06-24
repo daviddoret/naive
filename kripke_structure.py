@@ -15,14 +15,14 @@ import array
 # import collections.abc as abc
 import typing
 # import dataclasses
-import array
+# import array
 import numpy as np
 import logging
 import collections.abc as abc
 import nptyping as npt
 import math
-import itertools
-import dataclasses
+# import itertools
+# import dataclasses
 
 # CLASSES AND VARIABLE TYPES
 # Reference: https://peps.python.org/pep-0484/
