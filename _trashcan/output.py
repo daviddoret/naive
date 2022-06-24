@@ -1,14 +1,10 @@
-import const
 import inspect  # To manage output verbosity
 # from IPython.display import display
 import IPython
 import numpy as np
 from pylatexenc.latex2text import LatexNodes2Text
 #import sympy as sym
-import mstr
-
-
-
+from _trashcan import mstr, const
 
 OUTPUT_MODE = const.OUTPUT_UNICODE
 

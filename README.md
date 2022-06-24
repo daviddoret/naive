@@ -24,6 +24,7 @@ Built from the following sources (thank you!):
 
 <!-- PROJECT LOGO -->
 <!--
+TODO: Add logo
 <br />
 <div align="center">
   <a href="https://github.com/github_username/repo_name">
@@ -35,6 +36,8 @@ Built from the following sources (thank you!):
 
   <p align="center">
     project_description
+    <br />
+    TODO: Include text description here
     <br />
     <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
     <br />

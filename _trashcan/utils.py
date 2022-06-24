@@ -1,5 +1,5 @@
 import numpy as np
-import output
+from _trashcan import output
 import dataclasses
 
 

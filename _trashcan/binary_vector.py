@@ -1,7 +1,6 @@
 import dataclasses
 import numpy as np
-import output
-import mstr
+from _trashcan import mstr, output
 
 
 @dataclasses.dataclass

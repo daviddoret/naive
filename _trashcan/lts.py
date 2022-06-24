@@ -1,9 +1,7 @@
 import warnings
-import const
 import mstr
 import state
-from _trashcan import binary_vector, binary_array, atom
-import output
+from _trashcan import binary_vector, binary_array, atom, const, output
 import collections
 import transition_matrix
 import abc

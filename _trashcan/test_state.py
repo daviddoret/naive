@@ -1,6 +1,6 @@
 from unittest import TestCase
 import state
-import output
+from _trashcan import output
 
 
 class TestStateSpace(TestCase):

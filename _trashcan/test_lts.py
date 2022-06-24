@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 import const
-import output
+from _trashcan import output
 import samples
 import lts
 import state

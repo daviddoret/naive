@@ -1,7 +1,7 @@
 import dataclasses
 import numpy as np
 import sympy as sym
-import output
+from _trashcan import output
 import utils
 import math
 import dtmc
