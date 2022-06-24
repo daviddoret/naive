@@ -12,8 +12,7 @@
    .. rubric:: Functions
 
    .. autosummary::
-   
-      cardinality
+
       coerce_atomic_property
       coerce_atomic_property_set
       coerce_binary_matrix
@@ -47,6 +46,7 @@
       sat_a
       sat_not_phi
       sat_tt
+      set_cardinality
       set_element_values_from_iterable
       to_text
    
