@@ -4,14 +4,13 @@
    :synopsis: A useful module indeed.
 """
 
-
 # IMPORTS
 
 # PEP 563 – Postponed Evaluation of Annotations
 # Source: https://peps.python.org/pep-0563/
 from __future__ import annotations
 
-import array
+# import array
 # import collections.abc as abc
 import typing
 # import dataclasses
@@ -21,6 +20,7 @@ import logging
 import collections.abc as abc
 import nptyping as npt
 import math
+
 # import itertools
 # import dataclasses
 
@@ -72,6 +72,7 @@ IncidenceVectorInput = typing.TypeVar(
 Set = typing.List[str]  # npt.NDArray[npt.Shape["*"], npt.Str0]
 SetInput = typing.TypeVar(
     'SetInput',
+    abc.Iterable,
     Set,
     typing.List[str]
 )
@@ -93,29 +94,27 @@ Element = str
 ElementInput = typing.TypeVar(
     'ElementInput',
     Element,
-    IndexPositionInput,
+    int,
+    str,
 )
 
 State = Element
 StateInput = typing.TypeVar(
     'StateInput',
-    State,
     Element,
-    ElementInput
+    int,
+    State,
+    str
 )
 
 AtomicProperty = str
 AtomicPropertyInput = typing.TypeVar(
     'AtomicPropertyInput',
     AtomicProperty,
-    ElementInput
+    Element,
+    int,
+    str
 )
-
-SetInput = typing.TypeVar(
-    'SetInput',
-    abc.Iterable,
-    typing.List[str],
-    Set)
 
 SetOrIV = typing.TypeVar(
     'SetOrIV',
@@ -125,9 +124,12 @@ SetOrIV = typing.TypeVar(
 
 SetOrIVInput = typing.TypeVar(
     'SetOrIVInput',
-    BinaryVectorInput,
-    IncidenceVectorInput,
-    SetInput)
+    abc.Iterable,
+    BinaryVector,
+    np.ndarray,
+    Set,
+    typing.List[str]
+)
 
 
 # IS INSTANCE FUNCTIONS
@@ -150,7 +152,7 @@ def is_instance(o: object, t: (type, typing.TypeVar)) -> bool:
             if all(isinstance(y, str) for y in o):
                 return True
         return False
-    elif t in (BinaryVector, BinaryVectorInput, IncidenceVector ,IncidenceVectorInput):
+    elif t in (BinaryVector, BinaryVectorInput, IncidenceVector, IncidenceVectorInput):
         if isinstance(o, abc.Iterable):
             if all(isinstance(y, bool) for y in o):
                 return True
@@ -163,7 +165,7 @@ def is_instance(o: object, t: (type, typing.TypeVar)) -> bool:
 
 # UTILITY FUNCTIONS
 
-def flatten(x: abc.Iterable[abc.Any]) -> abc.List[abc.Any]:
+def flatten(x: abc.Iterable[typing.Any]) -> typing.List[typing.Any]:
     """Flatten an iterable"""
 
     if isinstance(x, abc.Iterable):
@@ -201,8 +203,9 @@ def coerce_binary_matrix(x: BinaryMatrixInput) -> BinaryMatrix:
             # ValueError: setting an array element with a sequence.
             # The requested array has an inhomogeneous shape after 1 dimensions.
             # The detected shape was (2,) + inhomogeneous part.
-            raise ValueError(
-                f'A binary matrix is bi-dimensional by definition. Please assure that {x}[{type(x)}] has an homogeneous shapre.')
+            complementary_message = f'A binary matrix is bi-dimensional by definition. Please assure that {x}[{type(x)}] has an homogeneous shape.'
+            e.args = f'{complementary_message}. The original exception was: {e.args}'
+            raise e
     if len(coerced_x.shape) == 2:
         # It is bi-dimensional,
         # but d-type was probably wrong
@@ -721,6 +724,7 @@ def get_labels_from_state(m: KripkeStructureInput, s: StateInput,
                           output_type: (type, typing.TypeVar) = Set) -> AtomicPropertySet:
     """Given a Kripke structure M (m), and a state s ∈ S, return the set of labels (aka atomic properties) attached to that state.
 
+    :param output_type:
     :param m: The Kripke structure M
     :param s: A state s
     :return:
