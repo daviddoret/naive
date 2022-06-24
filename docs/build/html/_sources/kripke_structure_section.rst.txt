@@ -12,8 +12,6 @@ Kripke Structure
     coerce_binary_matrix
     coerce_binary_square_matrix
     coerce_binary_value
-    coerce_binary_value
-    coerce_binary_vector
     coerce_binary_vector
     coerce_element
     coerce_incidence_vector

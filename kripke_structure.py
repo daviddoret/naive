@@ -237,6 +237,12 @@ def coerce_binary_square_matrix(x: BinarySquareMatrixInput) -> BinarySquareMatri
 
 
 def coerce_binary_value(x: BinaryValueInput) -> BinaryValue:
+    """Coerce an object of a compatible Python type to the **BinaryValue** type.
+
+    :param x: A Python object of a compatible type.
+    :return: An object of type BinaryValue.
+    :rtype: BinaryValue
+    """
     if isinstance(x, bool):
         return BinaryValue(x)
     elif isinstance(x, int) and 0 <= x <= 1:
