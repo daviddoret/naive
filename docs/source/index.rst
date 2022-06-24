@@ -17,4 +17,5 @@ Contents
 .. toctree::
 
    usage
+   kripke_structure_classes
    kripke_structure_section

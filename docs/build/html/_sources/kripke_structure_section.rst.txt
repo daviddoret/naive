@@ -6,7 +6,6 @@ Kripke Structure
 .. autosummary::
     :toctree: functions
 
-    KripkeStructure
     coerce_atomic_property
     coerce_atomic_property_set
     coerce_binary_matrix
