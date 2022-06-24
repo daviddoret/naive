@@ -43,7 +43,9 @@ BinarySquareMatrixInput = typing.TypeVar(
     BinarySquareMatrix,
     np.ndarray)
 
-BinaryValue = typing.NewType('BinaryValue', bool)
+BinaryValue = typing.NewType(
+    'BinaryValue',
+    bool)
 
 BinaryValueInput = typing.TypeVar(
     'BinaryValueInput',
@@ -152,7 +154,7 @@ def is_instance(o: object, t: (type, typing.TypeVar)) -> bool:
             if all(isinstance(y, str) for y in o):
                 return True
         return False
-    elif t in (BinaryVector, BinaryVectorInput, IncidenceVector, IncidenceVectorInput):
+    elif t in (BinaryVector, BinaryVectorInput, IncidenceVector, IncidenceVectorInput, IndexPosition, IndexPositionInput):
         if isinstance(o, abc.Iterable):
             if all(isinstance(y, bool) for y in o):
                 return True
@@ -236,14 +238,13 @@ def coerce_binary_square_matrix(x: BinarySquareMatrixInput) -> BinarySquareMatri
 
 def coerce_binary_value(x: BinaryValueInput) -> BinaryValue:
     if isinstance(x, bool):
-        return x
+        return BinaryValue(x)
     elif isinstance(x, int) and 0 <= x <= 1:
-        return bool(x)
+        coerced_x = BinaryValue(bool(x))
+        logging.debug(f'coerce_binary_value({x}[{type(x)}]) -> {coerced_x}')
+        return coerced_x
     else:
-        # I find python's coercion of boolean values too aggressive
-        x2 = min(max(int(x), 0), 1)
-        logging.debug(f'coerce_binary_value({x}[{type(x)}]) -> {x2}')
-        return x2
+        raise TypeError(f'coerce_binary_value: {x} is of unsupported type {type(x)}')
 
 
 def coerce_binary_vector(x: BinaryVectorInput) -> BinaryVector:
@@ -267,7 +268,7 @@ def set_cardinality(s: SetOrIVInput) -> int:
         \\begin{align*}
         & \\text{Let } S \\text{ be a set} & \\\\
         & \\mathit{set\\_cardinality}\\left(S\\right) \\colon= \\mathrm{card}(S) \\colon= |S|
-        \end{align*}
+        \\end{align*}
 
     Note: if a numeric vector is passed to the function, returns the number of elements in the vector, i.e. the *set cardinality* of the vector, and not the *vector cardinality*.
 
@@ -360,7 +361,7 @@ def coerce_subset(s_prime: Set, s: Set) -> Set:
             return coerced_s_prime
 
 
-def coerce_subset_or_iv(x: object, s: SetInput) -> SetOrIV:
+def coerce_subset_or_iv(x: SetOrIVInput, s: SetInput) -> SetOrIV:
     if isinstance(x, IncidenceVector):
         return coerce_incidence_vector(x, s)
     elif is_instance(x, Set):
@@ -415,11 +416,11 @@ def coerce_element(e: ElementInput, s: SetInput) -> Element:
         else:
             logging.error(f'Element {e} is not an element of set {s}')
             raise ValueError(f'Element {e} is not an element of set {s}')
-    elif isinstance(e, IndexPosition):
+    elif is_instance(e, IndexPosition):
         if s is None:
             logging.error(f'Element {e} passed by index but set s is None')
             raise ValueError(f'Element {e} passed by index but set s is None')
-        elif 0 <= IndexPosition < len(s):
+        elif 0 <= e < len(s):
             coerced_e = s[e]
             logging.debug(f'Coerce {e}[{type(e)}] passed by index to element {coerced_e}')
         else:
@@ -450,7 +451,7 @@ def coerce_set_or_iv_type(python_type):
 
 # OPERATORS
 
-def equals(x: object, y: object, s: Set = None) -> bool:
+def equals(x: SetOrIVInput, y: SetOrIVInput, s: Set = None) -> bool:
     x = coerce_subset_or_iv(x, s)
     y = coerce_subset_or_iv(y, s)
     if isinstance(x, np.ndarray) and isinstance(y, np.ndarray):
@@ -721,7 +722,7 @@ def sat_tt(m: KripkeStructure, s_prime: SetOrIVInput = None, output_type: (type,
 
 
 def get_labels_from_state(m: KripkeStructureInput, s: StateInput,
-                          output_type: (type, typing.TypeVar) = Set) -> AtomicPropertySet:
+                          output_type: (type, typing.TypeVar) = Set) -> (AtomicPropertySet, IncidenceVector):
     """Given a Kripke structure M (m), and a state s ∈ S, return the set of labels (aka atomic properties) attached to that state.
 
     :param output_type:
@@ -753,10 +754,10 @@ def get_labels_from_state(m: KripkeStructureInput, s: StateInput,
 
 def get_states_from_label(
         m: KripkeStructureInput,
-        s_prime: StateSetInput,
+        s_prime: (StateSetInput, None),
         label: AtomicPropertyInput,
         output_type: (type, typing.TypeVar) = Set) \
-        -> StateSet:
+        -> (StateSet, IncidenceVector):
     """Return the states linked to a label
 
     Given a Kripke structure M (m),

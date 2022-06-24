@@ -12,10 +12,6 @@ class Test(TestCase):
         self.assertEqual(ks.coerce_binary_value(True), 1)
         self.assertEqual(ks.coerce_binary_value(0), 0)
         self.assertEqual(ks.coerce_binary_value(1), 1)
-        self.assertEqual(ks.coerce_binary_value('0'), 0)
-        self.assertEqual(ks.coerce_binary_value('1'), 1)
-        self.assertEqual(ks.coerce_binary_value(-5), 0)
-        self.assertEqual(ks.coerce_binary_value(17), 1)
 
     def test_coerce_incidence_vector(self):
         v1 = ks.coerce_incidence_vector([1, 0, 1])
