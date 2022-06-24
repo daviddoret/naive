@@ -2,6 +2,10 @@
 requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
+[tool.flit.sdist]
+# include = ["doc/"]
+exclude = ["_trashcan/"]
+
 [project]
 name = "naive"
 authors = [{name = "David Doret"}]
