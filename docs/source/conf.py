@@ -6,7 +6,6 @@
 
 
 # Configuration file for the Sphinx documentation builder.
-import pathlib
 import sys
 import os
 

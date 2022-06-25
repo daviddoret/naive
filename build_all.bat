@@ -1,5 +1,12 @@
 @ECHO OFF
 
-REM Build Documentation
+ECHO.
+@ECHO PIP List for version references
+ECHO.
+pip list
+
+ECHO.
+@ECHO Build Documentation
+ECHO.
 docs/make html
 
