@@ -1,5 +1,5 @@
-Kripke Structure
-================
+Kripke Structure 2
+==================
 
 .. currentmodule:: kripke_structure
 
