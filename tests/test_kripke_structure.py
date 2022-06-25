@@ -1,5 +1,5 @@
 from unittest import TestCase
-import kripke_structure as ks
+import src.naive.kripke_structure as ks
 from samples import kripke_samples as ks_samples
 import logging
 

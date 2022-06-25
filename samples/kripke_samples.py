@@ -1,4 +1,4 @@
-import kripke_structure as ks
+import src.naive.kripke_structure as ks
 
 
 def get_sample_1():

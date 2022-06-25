@@ -31,5 +31,5 @@ Changelog = "https://package.readthedocs.io/en/latest/changelog.html"
 
 [tool.flit.sdist]
 include = ["src/naive/"]
-exclude = ["_trashcan/"]
+exclude = ["_trashcan/","tests","samples"]
 
