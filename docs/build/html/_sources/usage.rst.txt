@@ -24,6 +24,88 @@ will raise an exception.
 
 For example:
 
+>>> import kripke_structurefrom src import kripke_structure
+>>> print(kripke_structure.coerce_binary_value([1, 0, 1]))
+[True, False, True]
+
+For example:
+
+>>> import kripke_structurefrom src import kripke_structure
+>>> print(kripke_structure.coerce_binary_value([1, 0, 1]))
+[True, False, True]
+
+For example:
+
+>>> import kripke_structure
+from src import kripke_structure
+>>> print(kripke_structure.coerce_binary_value([1, 0, 1]))
+[True, False, True]
+
+For example:
+
+>>> import kripke_structure
+from src import kripke_structure
+>>> print(kripke_structure.coerce_binary_value([1, 0, 1]))
+[True, False, True]
+
+For example:
+
+>>> import kripke_structure
+from src import kripke_structure
+>>> print(kripke_structure.coerce_binary_value([1, 0, 1]))
+[True, False, True]
+
+For example:
+
+>>> import kripke_structure
+from src import kripke_structure
+>>> print(kripke_structure.coerce_binary_value([1, 0, 1]))
+[True, False, True]
+
+For example:
+
+>>>
+from src import kripke_structure
+>>> print(kripke_structure.coerce_binary_value([1, 0, 1]))
+[True, False, True]
+
+For example:
+
+>>>
+from src import kripke_structure
+>>> print(kripke_structure.coerce_binary_value([1, 0, 1]))
+[True, False, True]
+
+For example:
+
+>>>
+from src import kripke_structure
+>>> print(kripke_structure.coerce_binary_value([1, 0, 1]))
+[True, False, True]
+
+For example:
+
+>>>
+from src import kripke_structure
+>>> print(kripke_structure.coerce_binary_value([1, 0, 1]))
+[True, False, True]
+
+For example:
+
+>>>
+from src import kripke_structure
+>>> print(kripke_structure.coerce_binary_value([1, 0, 1]))
+[True, False, True]
+
+For example:
+
+>>>
+from src import kripke_structure
+>>> print(kripke_structure.coerce_binary_value([1, 0, 1]))
+[True, False, True]
+
+For example:
+
 >>> import kripke_structure
 >>> print(kripke_structure.coerce_binary_value([1, 0, 1]))
 [True, False, True]
