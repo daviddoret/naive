@@ -13,5 +13,4 @@ Contents
 
 .. toctree::
 
-   kripke_structure_classes
    kripke_structure_section
