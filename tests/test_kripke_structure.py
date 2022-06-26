@@ -7,29 +7,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 class Test(TestCase):
-    def test_coerce_binary_value(self):
-        self.assertEqual(ks.coerce_binary_value(False), 0)
-        self.assertEqual(ks.coerce_binary_value(True), 1)
-        self.assertEqual(ks.coerce_binary_value(0), 0)
-        self.assertEqual(ks.coerce_binary_value(1), 1)
 
-    def test_coerce_incidence_vector(self):
-        v1 = ks.coerce_incidence_vector([1, 0, 1])
-        # self.assertTrue(isinstance(ks.coerce_incidence_vector([True, False]), ks.IncidenceVector))
-
-    def test_coerce_binary_matrix(self):
-        m1 = [[1, 1, 1], [1, 0, 1]]
-        m2 = ks.coerce_binary_matrix(m1)
-        self.assertIsInstance(m2, ks.BinaryMatrix)
-        with self.assertRaises(ValueError):
-            ks.coerce_binary_matrix([[1, 2, 3], [4, 5]])
-
-    def test_coerce_binary_square_matrix(self):
-        m1 = [[1, 1, 1], [1, 0, 1], [0, 0, 0]]
-        m2 = ks.coerce_binary_square_matrix(m1)
-        self.assertIsInstance(m2, ks.BinarySquareMatrix)
-        with self.assertRaises(IndexError):
-            ks.coerce_binary_square_matrix([[1, 2, 3], [4, 5]])
 
     def test_eq(self):
         o1 = [0, 1, 0, 1, 1, 0, 0, 0, 0]

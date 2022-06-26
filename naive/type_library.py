@@ -228,7 +228,7 @@ def coerce_binary_value(x: BinaryValueInput) -> BinaryValue:
     elif isinstance(x, int) and 0 <= x <= 1:
         coerced_x = BinaryValue(bool(x))
         logging.debug(f'coerce_binary_value({x}[{type(x)}]) -> {coerced_x}')
-        return coerced_x
+        return BinaryValue(coerced_x)
     else:
         raise TypeError(f'coerce_binary_value: {x} is of unsupported type {type(x)}')
 
