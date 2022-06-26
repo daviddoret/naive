@@ -8,7 +8,9 @@ pip list
 ECHO.
 @ECHO Build Documentation
 ECHO.
-REM python -m sphinx -T -E -b html -d _build/doctrees -D language=en . _build/html
-
-docs/make html
+ECHO Same command as Read The Docs (except folder name 'build' instead of '_build')
+CD docs\source
+python -m sphinx -T -E -b html -d ../build/doctrees -D language=en . ../build/html
+CD ..\..
+REM docs/make html
 
