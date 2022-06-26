@@ -1,7 +1,7 @@
 """
-.. module:: kripke_structure
+.. module:: kripke_structure_types
    :platform: Unix, Windows
-   :synopsis: A useful module indeed.
+   :synopsis: Everything related to Kripke structure pythonic types
 """
 
 # IMPORTS
@@ -23,17 +23,6 @@ import math
 
 # import itertools
 # import dataclasses
-
-# CLASSES AND VARIABLE TYPES
-# Reference: https://peps.python.org/pep-0484/
-
-BinaryMatrix = npt.NDArray[npt.Shape["*,*"], npt.Bool]
-
-BinaryMatrixInput = typing.TypeVar(
-    'BinaryMatrixInput',
-    abc.Iterable,
-    BinaryMatrix,
-    np.ndarray)
 
 BinarySquareMatrix = npt.NDArray[npt.Shape["*,*"], npt.Bool]
 
@@ -167,25 +156,7 @@ def is_instance(o: object, t: (type, typing.TypeVar)) -> bool:
 
 # UTILITY FUNCTIONS
 
-def flatten(x: abc.Iterable[typing.Any]) -> typing.List[typing.Any]:
-    """Flatten an iterable"""
 
-    if isinstance(x, abc.Iterable):
-        flat_x = []
-        for y in x:
-            # Recursive call for sub-structures
-            # except strings that are understood as atomic
-            if isinstance(y, abc.Iterable) and not isinstance(y, str):
-                # We cannot call directly extend to support n-depth structures
-                flat_x.extend(flatten(y))
-            else:
-                flat_x.append(y)
-        return flat_x
-    else:
-        # The assumption is that x is a scalar
-        # and because the function caller expects an iterable
-        # we can return a list
-        return [x]
 
 
 # OBJECT TYPING, DATA VALIDATION AND TYPE COERCION FUNCTIONS
