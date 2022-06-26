@@ -317,7 +317,7 @@ def coerce_incidence_vector(x: IncidenceVectorInput, s: Set = None) -> Incidence
             # the incidence vector with its base set.
             logging.warning('Skip subset test')
             return x
-        elif set_cardinality(x) == set_cardinality(s):
+        elif len(x) == len(s):
             return x
         else:
             raise ValueError(f'Incidence vector {x} has inconsistent cardinality with set {s}')
@@ -404,3 +404,95 @@ def coerce_atomic_property(atom: AtomicPropertyInput, ap: AtomicPropertySetInput
 def coerce_state(state: StateInput, s: StateSetInput) -> State:
     state = coerce_element(state, s)
     return state
+
+
+def is_instance(o: object, t: (type, typing.TypeVar)) -> bool:
+    """Check if an arbitrary object *o* is of type or TypeVar t
+
+    The native isinstance function does not support parametrized generics.
+    Hence, we need a wrapper function to extend type checking.
+
+    :param o: Any object
+    :param t: A type or TypeVar
+    :return: A boolean
+    """
+    if isinstance(t, type):
+        # Provide support for all standard types
+        return isinstance(o, t)
+    elif t in (Set, SetInput, AtomicPropertySet, AtomicPropertySetInput, StateSet, StateSetInput):
+        if isinstance(o, abc.Iterable):
+            if all(isinstance(y, str) for y in o):
+                return True
+        return False
+    elif t in (
+            BinaryVector, BinaryVectorInput, IncidenceVector, IncidenceVectorInput, IndexPosition, IndexPositionInput):
+        if isinstance(o, abc.Iterable):
+            if all(isinstance(y, bool) for y in o):
+                return True
+            if all(isinstance(y, int) for y in o):
+                return True
+        return False
+    else:
+        raise NotImplementedError(f'is_instance: Could not determine if {o}[{type(o)}] is of type {t}')
+
+
+def coerce_subset(s_prime: Set, s: Set) -> Set:
+    """Coerce s' to a subset of s.
+
+    :param s_prime:
+    :param s:
+    :return:
+    """
+    s_prime = coerce_set(s_prime)
+    if s is None:
+        logging.warning('Skip the subset test')
+        return s_prime
+    else:
+        s = coerce_set(s)
+        if set(s).issuperset(set(s_prime)):
+            return s_prime
+        else:
+            coerced_s_prime = [e for e in s_prime if e in s]
+            coerced_s_prime = coerce_set(coerced_s_prime)
+            logging.warning(f'Coerce {s_prime} to subset {coerced_s_prime} of set {s}')
+            return coerced_s_prime
+
+
+def coerce_subset_or_iv(x: SetOrIVInput, s: SetInput) -> SetOrIV:
+    if isinstance(x, IncidenceVector):
+        return coerce_incidence_vector(x, s)
+    elif is_instance(x, Set):
+        return coerce_subset(x, s)
+    else:
+        # object is not of recognizable specialized type
+        # in consequence we must make an arbitrage
+        if isinstance(x, abc.Iterable):
+            if all(isinstance(y, bool) for y in x):
+                # Note that BinaryVector is equivalent to IncidenceVector
+                return coerce_incidence_vector(x, s)
+            elif all(isinstance(y, int) for y in x):
+                # Note that BinaryVector is equivalent to IncidenceVector
+                return coerce_incidence_vector(x, s)
+            elif all(isinstance(y, str) for y in x):
+                return coerce_set(x)
+            raise NotImplementedError('Unsupported iterable')
+        else:
+            raise NotImplementedError('Unsupported type')
+
+
+def coerce_state_subset(s_prime_flexible: StateSetInput, s_flexible: StateInput):
+    s_flexible = coerce_set(s_flexible)
+    if is_instance(s_prime_flexible, StateSetInput):
+        return coerce_subset(s_prime_flexible, s_flexible)
+    elif is_instance(s_prime_flexible, IncidenceVectorInput):
+        return coerce_incidence_vector(s_prime_flexible, s_flexible)
+    else:
+        raise NotImplementedError(f'coerce_state_subset: Unknown type: {s_prime_flexible}[{type(s_prime_flexible)}]')
+
+
+def coerce_set_or_iv_type(python_type):
+    if python_type == IncidenceVector:
+        return python_type
+    else:
+
+        return Set
