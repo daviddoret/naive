@@ -16,6 +16,19 @@ import nptyping as npt
 # Types and pseudo-types
 # Reference: https://peps.python.org/pep-0484/
 
+
+BinaryValue = typing.NewType(
+    'BinaryValue',
+    bool)
+""""""
+
+BinaryValueInput = typing.TypeVar(
+    'BinaryValueInput',
+    BinaryValue,
+    bool,
+    int
+)
+
 BinaryMatrix = npt.NDArray[npt.Shape["*,*"], npt.Bool]
 """A type alias for binary matrix"""
 
@@ -63,3 +76,20 @@ def flatten(x: abc.Iterable[typing.Any]) -> typing.List[typing.Any]:
         # and because the function caller expects an iterable
         # we can return a list
         return [x]
+
+
+def coerce_binary_value(x: BinaryValueInput) -> BinaryValue:
+    """Coerce an object of a compatible Python type to the **BinaryValue** type.
+
+    :param x: A Python object of a compatible type.
+    :return: An object of type BinaryValue.
+    :rtype: BinaryValue
+    """
+    if isinstance(x, bool):
+        return BinaryValue(x)
+    elif isinstance(x, int) and 0 <= x <= 1:
+        coerced_x = BinaryValue(bool(x))
+        logging.debug(f'coerce_binary_value({x}[{type(x)}]) -> {coerced_x}')
+        return coerced_x
+    else:
+        raise TypeError(f'coerce_binary_value: {x} is of unsupported type {type(x)}')

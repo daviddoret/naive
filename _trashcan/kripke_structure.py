@@ -32,17 +32,6 @@ BinarySquareMatrixInput = typing.TypeVar(
     BinarySquareMatrix,
     np.ndarray)
 
-BinaryValue = typing.NewType(
-    'BinaryValue',
-    bool)
-
-BinaryValueInput = typing.TypeVar(
-    'BinaryValueInput',
-    BinaryValue,
-    bool,
-    int
-)
-
 BinaryVector = npt.NDArray[npt.Shape["*"], npt.Bool]
 
 BinaryVectorInput = typing.TypeVar(
@@ -207,21 +196,6 @@ def coerce_binary_square_matrix(x: BinarySquareMatrixInput) -> BinarySquareMatri
     return coerced_x
 
 
-def coerce_binary_value(x: BinaryValueInput) -> BinaryValue:
-    """Coerce an object of a compatible Python type to the **BinaryValue** type.
-
-    :param x: A Python object of a compatible type.
-    :return: An object of type BinaryValue.
-    :rtype: BinaryValue
-    """
-    if isinstance(x, bool):
-        return BinaryValue(x)
-    elif isinstance(x, int) and 0 <= x <= 1:
-        coerced_x = BinaryValue(bool(x))
-        logging.debug(f'coerce_binary_value({x}[{type(x)}]) -> {coerced_x}')
-        return coerced_x
-    else:
-        raise TypeError(f'coerce_binary_value: {x} is of unsupported type {type(x)}')
 
 
 def coerce_binary_vector(x: BinaryVectorInput) -> BinaryVector:
