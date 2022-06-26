@@ -30,6 +30,17 @@ BinaryValueInput = typing.TypeVar(
     bool,
     int
 )
+"""A TypeVar that represent types commonly accepted as equivalent to :py:data:`BinaryValue`
+
+Commonly accepted types:
+
+* :py:data:`BinaryValue`.
+
+* :py:class:`bool`.
+
+* :py:class:`int` (mapping: x=0 is equivalent to False, x>0 is equivalent to True).
+
+"""
 
 BinaryMatrix = npt.NDArray[npt.Shape["*,*"], npt.Bool]
 """A type alias for binary matrix"""
