@@ -1,7 +1,7 @@
-"""
-.. module:: type_library
-   :platform: Unix, Windows
-   :synopsis: Everything related to pythonic types
+"""Everything related to pythonic types
+
+This module blablabla
+
 """
 
 # PEP 563 – Postponed Evaluation of Annotations
@@ -28,7 +28,7 @@ BinaryMatrixInput = typing.TypeVar(
 
 
 def flatten(x: abc.Iterable[typing.Any]) -> typing.List[typing.Any]:
-    """Flatten an iterable
+    """Flatten an iterable object.
 
     This utility function converts embedded lists or multidimensional objects to vectors.
 
@@ -42,9 +42,9 @@ def flatten(x: abc.Iterable[typing.Any]) -> typing.List[typing.Any]:
         x (object): Any object but preferably an iterable object of type: abc.Iterable[typing.Any].
 
     Returns:
-         A flat list
-    """
+         A flat list.
 
+    """
     if isinstance(x, abc.Iterable):
         flat_x = []
         for y in x:

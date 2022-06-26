@@ -1,9 +1,29 @@
-Kripke Structure 2
-==================
+Type Library
+===================================
+
+TODO: Include documentation
+
+.. note::
+
+   This project is under active development.
 
 .. currentmodule:: type_library
 
+Types and Type Variables
+------------------------
+
 .. autosummary::
-    :toctree: functions
+    :toctree: pages
+    :recursive:
+
+    BinaryMatrix
+    BinaryMatrixInput
+
+Functions
+---------
+
+.. autosummary::
+    :toctree: pages
+    :recursive:
 
     flatten

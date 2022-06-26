@@ -13,5 +13,4 @@ Contents
 
 .. toctree::
 
-   type_library
-   hello_world
+    type_library
