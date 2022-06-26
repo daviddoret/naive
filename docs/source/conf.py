@@ -9,7 +9,7 @@
 import sys
 import os
 
-sys.path.insert(0, os.path.abspath('../../src/naive'))
+sys.path.insert(0, os.path.abspath('../../naive'))
 # Reference: https://stackoverflow.com/questions/10324393/sphinx-build-fail-autodoc-cant-import-find-module
 
 # -- Project information

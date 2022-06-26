@@ -1,0 +1,1 @@
+auto\auto.bat | tee -a auto\auto.log
