@@ -407,13 +407,12 @@ def coerce_state(state: StateInput, s: StateSetInput) -> State:
 
 
 def is_instance(o: object, t: (type, typing.TypeVar)) -> bool:
-    """Check if an arbitrary object *o* is of type or TypeVar t
+    """Check if an arbitrary object **o** is of NewType, type, type alias, or TypeVar **t**.
 
-    The native isinstance function does not support parametrized generics.
-    Hence, we need a wrapper function to extend type checking.
+    The native isinstance function does not support parametrized generics. Hence, we need a wrapper function to extend type checking.
 
     :param o: Any object
-    :param t: A type or TypeVar
+    :param t: A NewType, type, type alias, or TypeVar
     :return: A boolean
     """
     if isinstance(t, type):

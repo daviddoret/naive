@@ -62,6 +62,11 @@ Functions
     coerce_element
     coerce_incidence_vector
     coerce_set
+    coerce_set_or_iv_type
     coerce_state
     coerce_state_set
+    coerce_state_subset
+    coerce_subset
+    coerce_subset_or_iv
     flatten
+    is_instance

@@ -83,9 +83,14 @@
 <li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_element.html">type_library.coerce_element</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_incidence_vector.html">type_library.coerce_incidence_vector</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_set.html">type_library.coerce_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_set_or_iv_type.html">type_library.coerce_set_or_iv_type</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_state.html">type_library.coerce_state</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_state_set.html">type_library.coerce_state_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_state_subset.html">type_library.coerce_state_subset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_subset.html">type_library.coerce_subset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_subset_or_iv.html">type_library.coerce_subset_or_iv</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pages/type_library.flatten.html">type_library.flatten</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.is_instance.html">type_library.is_instance</a></li>
 </ul>
 </li>
 </ul>
@@ -248,14 +253,29 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.coerce_set.html#type_library.coerce_set" title="type_library.coerce_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_set</span></code></a>(x)</p></td>
 <td><p>Assure the Set type for x.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.coerce_state.html#type_library.coerce_state" title="type_library.coerce_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_state</span></code></a>(state, s)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.coerce_set_or_iv_type.html#type_library.coerce_set_or_iv_type" title="type_library.coerce_set_or_iv_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_set_or_iv_type</span></code></a>(python_type)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.coerce_state_set.html#type_library.coerce_state_set" title="type_library.coerce_state_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_state_set</span></code></a>(s)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.coerce_state.html#type_library.coerce_state" title="type_library.coerce_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_state</span></code></a>(state, s)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.coerce_state_set.html#type_library.coerce_state_set" title="type_library.coerce_state_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_state_set</span></code></a>(s)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.coerce_state_subset.html#type_library.coerce_state_subset" title="type_library.coerce_state_subset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_state_subset</span></code></a>(s_prime_flexible, s_flexible)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.coerce_subset.html#type_library.coerce_subset" title="type_library.coerce_subset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_subset</span></code></a>(s_prime, s)</p></td>
+<td><p>Coerce s' to a subset of s.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.coerce_subset_or_iv.html#type_library.coerce_subset_or_iv" title="type_library.coerce_subset_or_iv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_subset_or_iv</span></code></a>(x, s)</p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.flatten.html#type_library.flatten" title="type_library.flatten"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten</span></code></a>(x)</p></td>
 <td><p>Flatten an iterable object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.is_instance.html#type_library.is_instance" title="type_library.is_instance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_instance</span></code></a>(o, t)</p></td>
+<td><p>Check if an arbitrary object <strong>o</strong> is of type or TypeVar t</p></td>
 </tr>
 </tbody>
 </table>
