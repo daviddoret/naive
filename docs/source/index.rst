@@ -13,4 +13,4 @@ Contents
 
 .. toctree::
 
-   kripke_structure_section
+   hello_world
