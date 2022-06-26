@@ -8,7 +8,12 @@ def get_minima(v1: tl.BinaryVector, v2: tl.BinaryVector) -> tl.BinaryVector:
     If the binary vector is the incidence vector of a set,
     this is equivalent to the set intersection operation:
     min(IV(s), IV(t)) ≡ s ∩ t
+
+    :param v1:
+    :param v2:
+    :return:
     """
+
 
     v1 = tl.coerce_binary_vector(v1)
     v2 = tl.coerce_binary_vector(v2)

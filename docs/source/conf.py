@@ -39,7 +39,9 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',
-    'sphinx.ext.viewcode'
+    'sphinx.ext.viewcode',
+    'sphinx_exec_code'
+    # 'jupyter_sphinx.execute'
 ]
 
 autosummary_generate = True

@@ -14,3 +14,8 @@ alabaster>=0.7,<0.8,!=0.7.5
 commonmark==0.9.1
 recommonmark==0.7.1
 readthedocs-sphinx-ext<2.2
+
+# Integration of Jupyter notebooks in the documentation
+# jupyter-sphinx
+
+sphinx-exec-code
