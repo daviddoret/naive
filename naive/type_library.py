@@ -51,11 +51,11 @@ Commonly accepted types:
 """
 
 BinaryMatrix = npt.NDArray[npt.Shape["*,*"], npt.Bool]
-"""A python type that is equivalent to a binary matrix mathematical object.
+"""A python type that is equivalent to a **binary matrix** mathematical object.
 
-A binary matrix is a rectangular array of binary values, called the elements of the matrix. The horizontal and vertical lines of entries in a matrix are called rows and columns, respectively. (Source: `Wikipedia <https://en.wikipedia.org/wiki/Matrix_(mathematics)>`_).
+A **binary matrix** is a rectangular array of binary values, called the elements of the matrix. The horizontal and vertical lines of elements in a matrix are called rows and columns, respectively. (Source: `Wikipedia <https://en.wikipedia.org/wiki/Matrix_(mathematics)>`_).
 
-Under the hood, a BinaryMatrix is a type alias for a Numpy n-dimensional array (i.e. `NDArray <https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html>`_) of rectangular shape, and bool dtype.
+Under the hood, **BinaryMatrix** is a type alias for a Numpy n-dimensional array (i.e. `NDArray <https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html>`_) of rectangular shape, and bool dtype.
 
 """
 
