@@ -20,6 +20,8 @@ Often, we need a particular class or type to make it semantically clear in our c
 
     BinaryMatrix
     BinaryMatrixInput
+    BinaryValue
+    BinaryValueInput
 
 Functions
 ---------

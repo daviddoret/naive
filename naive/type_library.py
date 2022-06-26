@@ -20,7 +20,9 @@ import nptyping as npt
 BinaryValue = typing.NewType(
     'BinaryValue',
     bool)
-""""""
+"""A NewType equivalent to :math:`\mathbb{B}`
+
+Under the hood, it is a :py:class:`bool`."""
 
 BinaryValueInput = typing.TypeVar(
     'BinaryValueInput',

@@ -16,6 +16,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -46,6 +47,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#types-type-aliases-typevars-and-newtypes">Types, Type Aliases, TypeVars, and NewTypes</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pages/type_library.BinaryMatrix.html">type_library.BinaryMatrix</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pages/type_library.BinaryMatrixInput.html">type_library.BinaryMatrixInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.BinaryValue.html">type_library.BinaryValue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.BinaryValueInput.html">type_library.BinaryValueInput</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a><ul>
@@ -89,7 +92,7 @@
 </div>
 <section id="types-type-aliases-typevars-and-newtypes">
 <h2>Types, Type Aliases, TypeVars, and NewTypes<a class="headerlink" href="#types-type-aliases-typevars-and-newtypes" title="Permalink to this heading"></a></h2>
-<p>Often, we need a particular class or type to make it semantically clear in our code that we are manipulating conceptual objects of a particular nature. But as often, native types and classes satisfy our technical needs. <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.NewType">NewTypes</a> are a very effective solution to this issue. (References: <a class="reference external" href="https://stackoverflow.com/questions/58755948/what-is-the-difference-between-typevar-and-newtype">Stackoverflow question</a>)</p>
+<p>Often, we need a particular class or type to make it semantically clear in our code that we are manipulating conceptual objects of a particular nature. But as often, native types and classes satisfy our technical needs. <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.NewType">NewTypes</a> constitute an efficient solution to this issue. (References: <a class="reference external" href="https://stackoverflow.com/questions/58755948/what-is-the-difference-between-typevar-and-newtype">Stackoverflow question</a>).</p>
 <table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -101,6 +104,12 @@
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.BinaryMatrixInput.html#type_library.BinaryMatrixInput" title="type_library.BinaryMatrixInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinaryMatrixInput</span></code></a></p></td>
 <td><p>A type alias for binary matrix flexible input parameters</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.BinaryValue.html#type_library.BinaryValue" title="type_library.BinaryValue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinaryValue</span></code></a></p></td>
+<td><p>A NewType equivalent to <span class="math notranslate nohighlight">\(\mathbb{B}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.BinaryValueInput.html#type_library.BinaryValueInput" title="type_library.BinaryValueInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinaryValueInput</span></code></a></p></td>
+<td><p>alias of TypeVar('BinaryValueInput', ~type_library.BinaryValue, bool, int)</p></td>
 </tr>
 </tbody>
 </table>
