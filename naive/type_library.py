@@ -51,7 +51,13 @@ Commonly accepted types:
 """
 
 BinaryMatrix = npt.NDArray[npt.Shape["*,*"], npt.Bool]
-"""A type alias for binary matrix"""
+"""A type alias equivalent to binary matrix.
+
+A binary matrix is a rectangular array of binary values, called the elements of the matrix. The horizontal and vertical lines of entries in a matrix are called rows and columns, respectively. (Source: `Wikipedia <https://en.wikipedia.org/wiki/Matrix_(mathematics)>`_).
+
+Under the hood, a BinaryMatrix is a Numpy n-dimensional array of rectangular share and bool dtype.
+
+"""
 
 BinaryMatrixInput = typing.TypeVar(
     'BinaryMatrixInput',
@@ -87,7 +93,22 @@ BinarySquareMatrixInput = typing.TypeVar(
     abc.Iterable,
     BinarySquareMatrix,
     np.ndarray)
-"""
+"""A TypeVar that represent types commonly accepted as equivalent to :py:data:`BinarySquareMatrix`.
+
+Main usages:
+
+* Flexible hinting of functions and methods arguments.
+
+* Implicit identification of object types.
+
+Commonly accepted types:
+
+* :py:class:`abc.Iterable`.
+
+* :py:data:`BinarySquareMatrix`
+
+* :py:class:`np.ndarray`.
+
 """
 
 BinaryVector = npt.NDArray[npt.Shape["*"], npt.Bool]
