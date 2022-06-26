@@ -53,8 +53,15 @@ Functions
     :toctree: pages
     :recursive:
 
+    coerce_atomic_property
+    coerce_atomic_property_set
     coerce_binary_matrix
     coerce_binary_square_matrix
     coerce_binary_value
     coerce_binary_vector
+    coerce_element
+    coerce_incidence_vector
+    coerce_set
+    coerce_state
+    coerce_state_set
     flatten
