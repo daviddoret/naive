@@ -1,4 +1,4 @@
-Linear Algebra
+Binary Algebra
 ===================================
 
 TODO: Include documentation
@@ -7,7 +7,7 @@ TODO: Include documentation
 
    This project is under active development.
 
-.. currentmodule:: linear_algebra
+.. currentmodule:: binary_algebra
 
 Functions
 ---------

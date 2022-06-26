@@ -8,9 +8,15 @@
 # Configuration file for the Sphinx documentation builder.
 import sys
 import os
+import pathlib
 
-sys.path.insert(0, os.path.abspath('../../naive'))
 # Reference: https://stackoverflow.com/questions/10324393/sphinx-build-fail-autodoc-cant-import-find-module
+sys.path.insert(0, os.path.abspath('../../naive'))
+
+# If extensions (or modules to document with autodoc) are in another directory,
+# add these directories to sys.path here.
+# Reference: https://www.sphinx-doc.org/en/master/tutorial/describing-code.html
+sys.path.insert(0, pathlib.Path(__file__).parents[2].resolve().as_posix())
 
 # -- Project information
 
@@ -32,7 +38,8 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
-    'sphinx.ext.napoleon'
+    'sphinx.ext.napoleon',
+    'sphinx.ext.viewcode'
 ]
 
 autosummary_generate = True

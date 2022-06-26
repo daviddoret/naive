@@ -13,5 +13,5 @@ Contents
 
 .. toctree::
 
-    linear_algebra
+    binary_algebra
     type_library
