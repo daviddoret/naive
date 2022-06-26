@@ -13,4 +13,5 @@ Contents
 
 .. toctree::
 
+    linear_algebra
     type_library
