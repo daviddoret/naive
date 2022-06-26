@@ -304,3 +304,103 @@ def coerce_binary_vector(x: BinaryVectorInput) -> BinaryVector:
         return coerced_x
     else:
         raise NotImplementedError
+
+
+def coerce_incidence_vector(x: IncidenceVectorInput, s: Set = None) -> IncidenceVector:
+    if s is not None:
+        s = coerce_set(s)
+    if isinstance(x, IncidenceVector):
+        if s is None:
+            # If the base set is not provided,
+            # we assume it is the caller's intention
+            # to not check the consistency of
+            # the incidence vector with its base set.
+            logging.warning('Skip subset test')
+            return x
+        elif set_cardinality(x) == set_cardinality(s):
+            return x
+        else:
+            raise ValueError(f'Incidence vector {x} has inconsistent cardinality with set {s}')
+    elif isinstance(x, abc.Iterable):
+        coerced_x = flatten(x)
+        coerced_x = np.asarray(coerced_x, dtype=bool)
+        logging.debug(f'Coerce incidence vector {x}[{type(x)}] to {coerced_x}')
+        return coerced_x
+    else:
+        raise NotImplementedError
+
+
+def coerce_set(x: SetInput) -> Set:
+    """Assure the Set type for x.
+
+    Note: a coerced set is always sorted. This simplifies the usage of incidence vectors with consistent index positions.
+
+    :param x:
+    :return:
+    """
+    if is_instance(x, Set):
+        return x
+    coerced_x = x
+    # Prevent infinite loops by checking if x is already flat
+    if not all(not isinstance(y, abc.Iterable) for y in x):
+        # Flatten x if necessary
+        coerced_x = flatten(x)
+    # Assure all elements are of type string
+    coerced_x = [str(e) for e in coerced_x]
+    # Assure all elements are unique values
+    coerced_x = set(coerced_x)
+    # But do not use the python set type that is unordered
+    # and use list instead to assure index positions of elements
+    coerced_x = list(coerced_x)
+    # Assure elements are ordered to simplify the usage of incidence vectors
+    coerced_x = sorted(coerced_x)
+    logging.debug(f'Coerce {x}[{type(x)}] to set {coerced_x}')
+    return coerced_x
+
+
+def coerce_atomic_property_set(ap: AtomicPropertySetInput):
+    return coerce_set(ap)
+
+
+def coerce_state_set(s: StateSetInput):
+    return coerce_set(s)
+
+
+def coerce_element(e: ElementInput, s: SetInput) -> Element:
+    """Given element e passed with flexible input type, assure e ∈ S, and return e typed as Element"""
+    # TODO: Assure support for index-based element
+    s = coerce_set(s)
+    if e is None:
+        logging.error(f'e is None')
+        raise ValueError(f'e is None')
+    elif isinstance(e, Element):
+        if s is None:
+            logging.warning(f'Skip {e} ∈ s test because s is None')
+        if e in s:
+            return e
+        else:
+            logging.error(f'Element {e} is not an element of set {s}')
+            raise ValueError(f'Element {e} is not an element of set {s}')
+    elif is_instance(e, IndexPosition):
+        if s is None:
+            logging.error(f'Element {e} passed by index but set s is None')
+            raise ValueError(f'Element {e} passed by index but set s is None')
+        elif 0 <= e < len(s):
+            coerced_e = s[e]
+            logging.debug(f'Coerce {e}[{type(e)}] passed by index to element {coerced_e}')
+        else:
+            logging.error(f'Element {e}[{type(e)}] passed by index outside s boundaries')
+            raise ValueError(f'Element {e}[{type(e)}] passed by index outside s boundaries')
+    else:
+        logging.error(f'Element {e}[{type(e)}] of unsupported type')
+        raise ValueError(f'Element {e}[{type(e)}] of unsupported type')
+
+
+def coerce_atomic_property(atom: AtomicPropertyInput, ap: AtomicPropertySetInput) -> AtomicProperty:
+    atom = coerce_element(atom, ap)
+    return atom
+
+
+def coerce_state(state: StateInput, s: StateSetInput) -> State:
+    state = coerce_element(state, s)
+    return state
