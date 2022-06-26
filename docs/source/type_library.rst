@@ -18,10 +18,33 @@ Often, we need a particular class or type to make it semantically clear in our c
     :toctree: pages
     :recursive:
 
+    AtomicProperty
+    AtomicPropertyInput
+    AtomicPropertySet
+    AtomicPropertySetInput
     BinaryMatrix
     BinaryMatrixInput
+    BinarySquareMatrix
+    BinarySquareMatrixInput
     BinaryValue
     BinaryValueInput
+    BinaryVector
+    BinaryVectorInput
+    Element
+    ElementInput
+    IncidenceVector
+    IncidenceVectorInput
+    IndexPosition
+    IndexPositionInput
+    Set
+    SetInput
+    SetOrIV
+    SetOrIVInput
+    State
+    StateInput
+    StateSet
+    StateSetInput
+
 
 Functions
 ---------
@@ -30,4 +53,8 @@ Functions
     :toctree: pages
     :recursive:
 
+    coerce_binary_matrix
+    coerce_binary_square_matrix
+    coerce_binary_value
+    coerce_binary_vector
     flatten
