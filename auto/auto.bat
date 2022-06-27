@@ -24,5 +24,5 @@ ECHO.
 ECHO Same command as Read The Docs (except folder name 'build' instead of '_build')
 ECHO.
 CD docs\source
-python -m sphinx -T -E -b html -d ../build/doctrees -D language=en . ../build/html
+python -m sphinx -v -T -E -b html -d ../build/doctrees -D language=en . ../build/html
 

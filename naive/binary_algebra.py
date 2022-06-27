@@ -13,6 +13,17 @@ def equal(x: tl.BinaryVectorInput, y: tl.BinaryVectorInput) -> bool:
         & \\text{Let } w \\text{ be a binary vector with elements }  (w_1, w_2, \\cdots, w_m) & \\\\
         & v = w \\iff ((|v| = |w|) \\land (\\forall i \\in [1, |v|], v_i = w_i))
         \\end{align*}
+
+    Sample:
+
+    .. exec_code::
+
+        print('hello')
+        v = [1, 0, 1]
+        u = [True, False, True]
+        import naive.binary_algebra as ba
+        print(ba.equal(v, u))
+
     """
     x = tl.coerce_binary_vector(x)
     y = tl.coerce_binary_vector(y)

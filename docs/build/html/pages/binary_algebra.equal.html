@@ -97,6 +97,18 @@
 &amp; \text{Let } w \text{ be a binary vector with elements }  (w_1, w_2, \cdots, w_m) &amp; \\
 &amp; v = w \iff ((|v| = |w|) \land (\forall i \in [1, |v|], v_i = w_i))
 \end{align*}\end{split}\]</div>
+<p>Sample:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
+<span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">]</span>
+<span class="kn">import</span> <span class="nn">naive.binary_algebra</span> <span class="k">as</span> <span class="nn">ba</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ba</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">u</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>hello
+True
+</pre></div>
+</div>
 </dd></dl>
 
 </section>

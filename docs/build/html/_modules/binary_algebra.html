@@ -84,6 +84,17 @@
 <span class="sd">        &amp; \\text{Let } w \\text{ be a binary vector with elements }  (w_1, w_2, \\cdots, w_m) &amp; \\\\</span>
 <span class="sd">        &amp; v = w \\iff ((|v| = |w|) \\land (\\forall i \\in [1, |v|], v_i = w_i))</span>
 <span class="sd">        \\end{align*}</span>
+
+<span class="sd">    Sample:</span>
+
+<span class="sd">    .. exec_code::</span>
+
+<span class="sd">        print(&#39;hello&#39;)</span>
+<span class="sd">        v = [1, 0, 1]</span>
+<span class="sd">        u = [True, False, True]</span>
+<span class="sd">        import naive.binary_algebra as ba</span>
+<span class="sd">        print(ba.equal(v, u))</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">coerce_binary_vector</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">coerce_binary_vector</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>

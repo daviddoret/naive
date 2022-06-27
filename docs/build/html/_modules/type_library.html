@@ -549,26 +549,22 @@
             <span class="k">return</span> <span class="n">coerced_s_prime</span></div>
 
 
-<div class="viewcode-block" id="coerce_subset_or_iv"><a class="viewcode-back" href="../pages/type_library.coerce_subset_or_iv.html#type_library.coerce_subset_or_iv">[docs]</a><span class="k">def</span> <span class="nf">coerce_subset_or_iv</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">SetOrIVInput</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">SetInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SetOrIV</span><span class="p">:</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">IncidenceVector</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">coerce_incidence_vector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">is_instance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Set</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">coerce_subset</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+<div class="viewcode-block" id="coerce_subset_or_iv"><a class="viewcode-back" href="../pages/type_library.coerce_subset_or_iv.html#type_library.coerce_subset_or_iv">[docs]</a><span class="k">def</span> <span class="nf">coerce_subset_or_iv</span><span class="p">(</span><span class="n">o</span><span class="p">:</span> <span class="n">SetOrIVInput</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">SetInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SetOrIV</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Coerce an arbitrarily typed object **o** into either a properly typed subset or proper incidence vector of a set S.</span>
+
+<span class="sd">    This function infers the correct type by inspecting the object **o**.</span>
+
+<span class="sd">    :param o: An arbitrarily typed object.</span>
+<span class="sd">    :param s: The set S.</span>
+<span class="sd">    :return: A properly typed subset or incidence vector of S.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">coerce_set</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_instance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">IncidenceVectorInput</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">coerce_incidence_vector</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">is_instance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">SetInput</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">coerce_subset</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># object is not of recognizable specialized type</span>
-        <span class="c1"># in consequence we must make an arbitrage</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">):</span>
-                <span class="c1"># Note that BinaryVector is equivalent to IncidenceVector</span>
-                <span class="k">return</span> <span class="n">coerce_incidence_vector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">):</span>
-                <span class="c1"># Note that BinaryVector is equivalent to IncidenceVector</span>
-                <span class="k">return</span> <span class="n">coerce_incidence_vector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">coerce_set</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Unsupported iterable&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Unsupported type&#39;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Unsupported type&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="coerce_state_subset"><a class="viewcode-back" href="../pages/type_library.coerce_state_subset.html#type_library.coerce_state_subset">[docs]</a><span class="k">def</span> <span class="nf">coerce_state_subset</span><span class="p">(</span><span class="n">s_prime_flexible</span><span class="p">:</span> <span class="n">StateSetInput</span><span class="p">,</span> <span class="n">s_flexible</span><span class="p">:</span> <span class="n">StateInput</span><span class="p">):</span>
