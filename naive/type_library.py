@@ -478,26 +478,22 @@ def coerce_subset(s_prime: Set, s: Set) -> Set:
             return coerced_s_prime
 
 
-def coerce_subset_or_iv(x: SetOrIVInput, s: SetInput) -> SetOrIV:
-    if isinstance(x, IncidenceVector):
-        return coerce_incidence_vector(x, s)
-    elif is_instance(x, Set):
-        return coerce_subset(x, s)
+def coerce_subset_or_iv(o: SetOrIVInput, s: SetInput) -> SetOrIV:
+    """Coerce an arbitrarily typed object **o** into either a properly typed subset or proper incidence vector of a set S.
+
+    This function infers the correct type by inspecting the object **o**.
+
+    :param o: An arbitrarily typed object.
+    :param s: The set S.
+    :return: A properly typed subset or incidence vector of S.
+    """
+    s = coerce_set(s)
+    if is_instance(o, IncidenceVectorInput):
+        return coerce_incidence_vector(o, s)
+    elif is_instance(o, SetInput):
+        return coerce_subset(o, s)
     else:
-        # object is not of recognizable specialized type
-        # in consequence we must make an arbitrage
-        if isinstance(x, abc.Iterable):
-            if all(isinstance(y, bool) for y in x):
-                # Note that BinaryVector is equivalent to IncidenceVector
-                return coerce_incidence_vector(x, s)
-            elif all(isinstance(y, int) for y in x):
-                # Note that BinaryVector is equivalent to IncidenceVector
-                return coerce_incidence_vector(x, s)
-            elif all(isinstance(y, str) for y in x):
-                return coerce_set(x)
-            raise NotImplementedError('Unsupported iterable')
-        else:
-            raise NotImplementedError('Unsupported type')
+        raise NotImplementedError('Unsupported type')
 
 
 def coerce_state_subset(s_prime_flexible: StateSetInput, s_flexible: StateInput):

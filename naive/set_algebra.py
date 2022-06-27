@@ -36,9 +36,8 @@ import naive.binary_algebra as ba
 # OBJECT TYPING, DATA VALIDATION AND TYPE COERCION FUNCTIONS
 
 
-
 def equal(s: tl.SetInput, t: tl.SetInput) -> bool:
-    """Check if two sets are equal.
+    """Check if two sets S and T are equal.
 
     Formally:
 
@@ -48,7 +47,12 @@ def equal(s: tl.SetInput, t: tl.SetInput) -> bool:
         & \\text{Let } T \\text{ be a set with elements }  (t_1, t_2, \\cdots, t_m) & \\\\
         & S = T \\iff ((|S| = |T|) \\land (\\forall e \\in S, e \\in T) \\land (\\forall e \\in T, e \\in S))
         \\end{align*}
+
+    :param s: The set S.
+    :param t: The set T.
+    :return: True if S and T are equal, False otherwise.
     """
+
     s = tl.coerce_set(s)  # Assure uniqueness and canonical ordering
     t = tl.coerce_set(t)  # Assure uniqueness and canonical ordering
     return s == t
@@ -140,7 +144,7 @@ def get_incidence_vector(s_prime: tl.SetOrIVInput, s: tl.Set) -> tl.IncidenceVec
         iv = tl.coerce_incidence_vector(s_prime, s)
         return iv
     elif tl.is_instance(s_prime, tl.Set):
-        iv = tl.get_zero_binary_vector(set_cardinality(s))
+        iv = ba.get_zero_binary_vector(set_cardinality(s))
         for e in s_prime:
             e_index = s.index(e)
             iv[e_index] = True
@@ -154,5 +158,3 @@ def set_element_values_from_iterable(target, source: abc.Iterable):
     # TODO: Add some type checking here as well
     for i, e in enumerate(source):
         target[i] = e
-
-
