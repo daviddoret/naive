@@ -1,4 +1,4 @@
-import _trashcan.kripke_structure as ks
+import naive.kripke_structure as ks
 
 
 def get_sample_1():
