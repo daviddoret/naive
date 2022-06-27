@@ -2,9 +2,17 @@ import naive.type_library as tl
 import numpy as np
 
 
-def equals(x: tl.BinaryVectorInput, y: tl.BinaryVectorInput) -> bool:
+def equal(x: tl.BinaryVectorInput, y: tl.BinaryVectorInput) -> bool:
     """Check if two binary vectors are equal.
 
+    Formally:
+
+    .. math::
+        \\begin{align*}
+        & \\text{Let } v \\text{ be a binary vector with elements } (v_1, v_2, \\cdots, v_n) & \\\\
+        & \\text{Let } w \\text{ be a binary vector with elements }  (w_1, w_2, \\cdots, w_m) & \\\\
+        & v = w \\iff ((|v| = |w|) \\land (\\forall i \\in [1, |v|], v_i = w_i))
+        \\end{align*}
     """
     x = tl.coerce_binary_vector(x)
     y = tl.coerce_binary_vector(y)

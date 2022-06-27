@@ -1,7 +1,7 @@
 import typing
-import type_library as tl
-import binary_algebra as ba
-import set_algebra as sa
+import naive.type_library as tl
+import naive.binary_algebra as ba
+import naive.set_algebra as sa
 import logging
 
 

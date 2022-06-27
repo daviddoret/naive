@@ -1,4 +1,4 @@
-Binary Algebra
+Set Algebra
 ===================================
 
 TODO: Include documentation
@@ -7,7 +7,7 @@ TODO: Include documentation
 
    This project is under active development.
 
-.. currentmodule:: binary_algebra
+.. currentmodule:: set_algebra
 
 Functions
 ---------
@@ -17,9 +17,4 @@ Functions
     :recursive:
 
     equal
-    get_logical_not
-    get_maxima
-    get_minima
-    get_zero_binary_vector
-    get_one_binary_vector
 

@@ -20,8 +20,8 @@ import logging
 import collections.abc as abc
 import nptyping as npt
 import math
-import type_library as tl
-import binary_algebra as ba
+import naive.type_library as tl
+import naive.binary_algebra as ba
 
 
 # import itertools
@@ -34,6 +34,24 @@ import binary_algebra as ba
 
 
 # OBJECT TYPING, DATA VALIDATION AND TYPE COERCION FUNCTIONS
+
+
+
+def equal(s: tl.SetInput, t: tl.SetInput) -> bool:
+    """Check if two sets are equal.
+
+    Formally:
+
+    .. math::
+        \\begin{align*}
+        & \\text{Let } S \\text{ be a set with elements } (s_1, s_2, \\cdots, s_n) & \\\\
+        & \\text{Let } T \\text{ be a set with elements }  (t_1, t_2, \\cdots, t_m) & \\\\
+        & S = T \\iff ((|S| = |T|) \\land (\\forall e \\in S, e \\in T) \\land (\\forall e \\in T, e \\in S))
+        \\end{align*}
+    """
+    s = tl.coerce_set(s)  # Assure uniqueness and canonical ordering
+    t = tl.coerce_set(t)  # Assure uniqueness and canonical ordering
+    return s == t
 
 
 def set_cardinality(s: tl.SetOrIVInput) -> int:

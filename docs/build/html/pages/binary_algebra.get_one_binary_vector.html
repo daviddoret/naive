@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>binary_algebra.get_minima &mdash; naive 0.1 documentation</title>
+  <title>binary_algebra.get_one_binary_vector &mdash; naive 0.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,8 +19,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="binary_algebra.get_zero_binary_vector" href="binary_algebra.get_zero_binary_vector.html" />
-    <link rel="prev" title="binary_algebra.get_maxima" href="binary_algebra.get_maxima.html" /> 
+    <link rel="next" title="Type Library" href="../type_library.html" />
+    <link rel="prev" title="binary_algebra.get_zero_binary_vector" href="binary_algebra.get_zero_binary_vector.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,9 +47,9 @@
 <li class="toctree-l3"><a class="reference internal" href="binary_algebra.equal.html">binary_algebra.equal</a></li>
 <li class="toctree-l3"><a class="reference internal" href="binary_algebra.get_logical_not.html">binary_algebra.get_logical_not</a></li>
 <li class="toctree-l3"><a class="reference internal" href="binary_algebra.get_maxima.html">binary_algebra.get_maxima</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">binary_algebra.get_minima</a></li>
+<li class="toctree-l3"><a class="reference internal" href="binary_algebra.get_minima.html">binary_algebra.get_minima</a></li>
 <li class="toctree-l3"><a class="reference internal" href="binary_algebra.get_zero_binary_vector.html">binary_algebra.get_zero_binary_vector</a></li>
-<li class="toctree-l3"><a class="reference internal" href="binary_algebra.get_one_binary_vector.html">binary_algebra.get_one_binary_vector</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">binary_algebra.get_one_binary_vector</a></li>
 </ul>
 </li>
 </ul>
@@ -72,9 +72,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../binary_algebra.html">Binary Algebra</a> &raquo;</li>
-      <li>binary_algebra.get_minima</li>
+      <li>binary_algebra.get_one_binary_vector</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/pages/binary_algebra.get_minima.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/pages/binary_algebra.get_one_binary_vector.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -82,27 +82,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="binary-algebra-get-minima">
-<h1>binary_algebra.get_minima<a class="headerlink" href="#binary-algebra-get-minima" title="Permalink to this heading"></a></h1>
+  <section id="binary-algebra-get-one-binary-vector">
+<h1>binary_algebra.get_one_binary_vector<a class="headerlink" href="#binary-algebra-get-one-binary-vector" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="binary_algebra.get_minima">
-<span class="sig-prename descclassname"><span class="pre">binary_algebra.</span></span><span class="sig-name descname"><span class="pre">get_minima</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v1:</span> <span class="pre">~naive.type_library.BinaryVectorInput</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v2:</span> <span class="pre">~naive.type_library.BinaryVectorInput)</span> <span class="pre">-&gt;</span> <span class="pre">nptyping.NDArray.(nptyping.Shape.*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nptyping.Bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/binary_algebra.html#get_minima"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binary_algebra.get_minima" title="Permalink to this definition"></a></dt>
-<dd><p>Return the element-wise minima of a binary vector with regard to another binary vector</p>
-<p>If the binary vector is the incidence vector of a set,
-this is equivalent to the set intersection operation:
-min(IV(s), IV(t)) ≡ s ∩ t</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>v1</strong> – </p></li>
-<li><p><strong>v2</strong> – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
-</dd></dl>
+<dt class="sig sig-object py" id="binary_algebra.get_one_binary_vector">
+<span class="sig-prename descclassname"><span class="pre">binary_algebra.</span></span><span class="sig-name descname"><span class="pre">get_one_binary_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size:</span> <span class="pre">int)</span> <span class="pre">-&gt;</span> <span class="pre">nptyping.NDArray.(nptyping.Shape.*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nptyping.Bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/binary_algebra.html#get_one_binary_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#binary_algebra.get_one_binary_vector" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 </section>
 
@@ -110,8 +95,8 @@ min(IV(s), IV(t)) ≡ s ∩ t</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="binary_algebra.get_maxima.html" class="btn btn-neutral float-left" title="binary_algebra.get_maxima" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="binary_algebra.get_zero_binary_vector.html" class="btn btn-neutral float-right" title="binary_algebra.get_zero_binary_vector" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="binary_algebra.get_zero_binary_vector.html" class="btn btn-neutral float-left" title="binary_algebra.get_zero_binary_vector" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../type_library.html" class="btn btn-neutral float-right" title="Type Library" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
