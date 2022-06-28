@@ -16,7 +16,7 @@ Functions
     :toctree: pages
     :recursive:
 
-    equal
+    binary_vector_equal
     get_logical_not
     get_maxima
     get_minima

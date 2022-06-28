@@ -323,8 +323,11 @@ def coerce_binary_vector(x: BinaryVectorInput) -> BinaryVector:
         coerced_x = np.asarray(coerced_x, dtype=bool)
         logging.debug(f'coerce_binary_vector({x}[{type(x)}]) -> {coerced_x}')
         return coerced_x
+    elif x is None:
+        logging.warning(f'coerce_binary_vector({x})')
+        return None
     else:
-        raise NotImplementedError
+        raise NotImplementedError(f'coerce_binary_vector({x}[{type(x)}])')
 
 
 def coerce_incidence_vector(x: IncidenceVectorInput, s: Set = None) -> IncidenceVector:

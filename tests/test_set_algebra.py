@@ -38,7 +38,7 @@ class Test(TestCase):
         coerced_s_prime_iv = tl.coerce_subset_or_iv(s_prime_iv, s)
         self.assertIsInstance(coerced_s_prime_iv, tl.IncidenceVector)
         self.assertTrue(tl.is_instance(coerced_s_prime_iv, tl.IncidenceVector))
-        self.assertTrue(ba.equal(s_prime_iv, coerced_s_prime_iv))
+        self.assertTrue(ba.binary_vector_equal(s_prime_iv, coerced_s_prime_iv))
 
     def test_get_set_from_range(self):
         self.assertTrue(sa.equal(sa.get_set_from_range(3), ['e0', 'e1', 'e2']))
@@ -65,9 +65,9 @@ class Test(TestCase):
         s_prime_set = ['s02', 's04', 's05']
         s_prime_iv = sa.get_incidence_vector(s_prime_set, s)
         correct_iv = [0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0]
-        self.assertTrue(ba.equal(s_prime_iv, correct_iv))
+        self.assertTrue(ba.binary_vector_equal(s_prime_iv, correct_iv))
         correct_iv_iv = sa.get_incidence_vector(correct_iv, s)
-        self.assertTrue(ba.equal(correct_iv_iv, correct_iv))
+        self.assertTrue(ba.binary_vector_equal(correct_iv_iv, correct_iv))
 
     def test_cardinality(self):
         s = tl.coerce_set(['a', 'b', 'c', 'd', 'e'])

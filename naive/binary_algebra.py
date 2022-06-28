@@ -2,7 +2,7 @@ import naive.type_library as tl
 import numpy as np
 
 
-def equal(x: tl.BinaryVectorInput, y: tl.BinaryVectorInput) -> bool:
+def binary_vector_equal(v: tl.BinaryVectorInput, w: tl.BinaryVectorInput) -> bool:
     """Check if two binary vectors are equal.
 
     Formally:
@@ -14,20 +14,24 @@ def equal(x: tl.BinaryVectorInput, y: tl.BinaryVectorInput) -> bool:
         & v = w \\iff ((|v| = |w|) \\land (\\forall i \\in [1, |v|], v_i = w_i))
         \\end{align*}
 
-    Sample:
+    Sample 1:
 
-    .. exec_code::
+        .. exec_code::
+            :filename: binary_vector_equal_sample_1.py
 
-        print('hello')
-        v = [1, 0, 1]
-        u = [True, False, True]
-        import naive.binary_algebra as ba
-        print(ba.equal(v, u))
+    Sample 2:
+
+        .. exec_code::
+            :filename: binary_vector_equal_sample_2.py
 
     """
-    x = tl.coerce_binary_vector(x)
-    y = tl.coerce_binary_vector(y)
-    return np.array_equal(x, y)
+    if v is None or w is None:
+        # Undefined is incomparable
+        return False
+    else:
+        v = tl.coerce_binary_vector(v)
+        w = tl.coerce_binary_vector(w)
+        return np.array_equal(v, w)
 
 
 def get_logical_not(v: tl.BinaryVectorInput) -> tl.BinaryVector:
@@ -81,8 +85,46 @@ def get_maxima(v1: tl.BinaryVectorInput, v2: tl.BinaryVectorInput) -> tl.BinaryV
 
 
 def get_zero_binary_vector(size: int) -> tl.BinaryVector:
-    return np.zeros(size, dtype=bool)
+    return tl.coerce_binary_vector(np.zeros(size, dtype=bool))
+
+
+def get_zero_binary_matrix(rows: int, columns) -> tl.BinaryMatrix:
+    return tl.coerce_binary_matrix(np.zeros((rows, columns), dtype=bool))
 
 
 def get_one_binary_vector(size: int) -> tl.BinaryVector:
-    return np.ones(size, dtype=bool)
+    return tl.coerce_binary_vector(np.ones(size, dtype=bool))
+
+
+def textify_binary_vector(v: tl.BinaryVectorInput) -> str:
+    if v is None:
+        return 'undefined'  # We interpret None as undefined
+    elif len(v) == 0:
+        return '[]'  # The empty set
+    else:
+        v = tl.coerce_binary_vector(v)
+        v = np.array(v, dtype=int)
+        v = np.array2string(v, precision=0, separator=' ')
+        return v
+
+
+def textify_binary_matrix(m: tl.BinaryMatrixInput) -> str:
+    if m is None:
+        return 'undefined'  # We interpret None as undefined
+    elif len(m) == 0:
+        return '[]'  # The empty set
+    else:
+        m = tl.coerce_binary_matrix(m)
+        m = np.array(m, dtype=int)
+        m = np.array2string(m, precision=0, separator=' ')
+        return m
+
+
+def print_binary_vector(v: tl.BinaryVectorInput):
+    print(textify_binary_vector(v))
+
+
+def print_binary_matrix(m: tl.BinaryMatrixInput):
+    print(textify_binary_matrix(m))
+
+
