@@ -2,38 +2,6 @@ import naive.type_library as tl
 import numpy as np
 
 
-def binary_vector_equal(v: tl.BinaryVectorInput, w: tl.BinaryVectorInput) -> bool:
-    """Check if two binary vectors are equal.
-
-    Formally:
-
-    .. math::
-        \\begin{align*}
-        & \\text{Let } v \\text{ be a binary vector with elements } (v_1, v_2, \\cdots, v_n) & \\\\
-        & \\text{Let } w \\text{ be a binary vector with elements }  (w_1, w_2, \\cdots, w_m) & \\\\
-        & v = w \\iff ((|v| = |w|) \\land (\\forall i \\in [1, |v|], v_i = w_i))
-        \\end{align*}
-
-    Sample 1:
-
-        .. exec_code::
-            :filename: binary_vector_equal_sample_1.py
-
-    Sample 2:
-
-        .. exec_code::
-            :filename: binary_vector_equal_sample_2.py
-
-    """
-    if v is None or w is None:
-        # Undefined is incomparable
-        return False
-    else:
-        v = tl.coerce_binary_vector(v)
-        w = tl.coerce_binary_vector(w)
-        return np.array_equal(v, w)
-
-
 def get_logical_not(v: tl.BinaryVectorInput) -> tl.BinaryVector:
     """Return the element-wise inverse (or logical not) of a binary vector.
 
@@ -126,5 +94,3 @@ def print_binary_vector(v: tl.BinaryVectorInput):
 
 def print_binary_matrix(m: tl.BinaryMatrixInput):
     print(textify_binary_matrix(m))
-
-

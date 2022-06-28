@@ -1,8 +1,10 @@
+import naive.type_library as tl
+import naive.binary_algebra as ba
 import naive.kripke_structure as ks
 
 
 def get_sample_1():
-    s = ks.get_state_set(5)
+    s = ba.get_state_set(5)
     i = [s[0], s[3], s[4]]
     tm = [
         [0, 1, 0, 1, 0],

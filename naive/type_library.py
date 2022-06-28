@@ -1,6 +1,6 @@
 """Everything related to pythonic types
 
-This module blablabla
+TODO: Add description
 
 """
 
@@ -111,11 +111,92 @@ Commonly accepted types:
 
 """
 
-BinaryVector = npt.NDArray[npt.Shape["*"], npt.Bool]
-"""A row vector of binary values.
 
-TODO: Rename to row binary vector, respectively column binary vector.
-"""
+def textify_binary_vector(v: BinaryVectorInput) -> str:
+    if v is None:
+        return 'undefined'  # We interpret None as undefined
+    elif len(v) == 0:
+        return '∅'  # The empty set
+    elif not isinstance(v, BinaryVector):
+        v = coerce_binary_vector(v)
+    v = np.array(v, dtype=int)
+    v = np.array2string(v, precision=0, separator=' ')
+    return v
+
+
+def binary_vector_equal(v: BinaryVectorInput, w: BinaryVectorInput) -> bool:
+    """Check if two binary vectors are equal.
+
+    Formally:
+
+    .. math::
+        \\begin{align*}
+        & \\text{Let } v \\text{ be a binary vector with elements } (v_1, v_2, \\cdots, v_n) & \\\\
+        & \\text{Let } w \\text{ be a binary vector with elements }  (w_1, w_2, \\cdots, w_m) & \\\\
+        & v = w \\iff ((|v| = |w|) \\land (\\forall i \\in [1, |v|], v_i = w_i))
+        \\end{align*}
+
+    Sample 1:
+
+        .. exec_code::
+            :filename: binary_vector_equal_sample_1.py
+
+    Sample 2:
+
+        .. exec_code::
+            :filename: binary_vector_equal_sample_2.py
+
+    """
+    if v is None and w is None:
+        # The special case undefined = undefined is defined as True
+        # This is debatable
+        # The fragile rationale of this decision is consistency with Python's None == None
+        return True
+    elif v is None or w is None:
+        # Undefined is incomparable
+        return False
+    else:
+        v = coerce_binary_vector(v)
+        w = coerce_binary_vector(w)
+        if len(v) == 0 and len(w) == 0:
+            # The special case ∅ = ∅ is defined as True
+            # This is debatable
+            return True
+        else:
+            return np.array_equal(v, w)
+
+
+class BinaryVector(np.ndarray):
+    """A row vector of binary values.
+
+    TODO: Rename to row binary vector, respectively column binary vector. Or add direction as an attribute.
+
+    Sources:
+    https://numpy.org/doc/stable/user/basics.subclassing.html
+    """
+
+    def __new__(cls, obj=None, /, *, size=None, default_value=None):
+        if obj is None and size is None:
+            return None
+        elif obj is not None:
+            obj = flatten(obj)
+        elif size is not None:
+            default_value = bool(default_value)
+            obj = [default_value] * size
+        obj = np.asarray(obj, dtype=bool)
+        obj = np.asarray(obj).view(cls)  # Re-type the instance
+        return obj
+
+    def __str__(self):
+        return textify_binary_vector(self)
+
+    def __eq__(self, obj):
+        return binary_vector_equal(self, obj)
+
+
+"""A shortcut alias for the BinaryVector class."""
+BV = BinaryVector
+
 
 BinaryVectorInput = typing.TypeVar(
     'BinaryVectorInput',
@@ -136,7 +217,111 @@ IncidenceVectorInput = typing.TypeVar(
     IncidenceVector,
     np.ndarray)
 
-Set = typing.List[str]  # npt.NDArray[npt.Shape["*"], npt.Str0]
+
+
+def coerce_element2(e: tl.ElementInput) -> tl.Element:
+    if e is None:
+        return None
+    elif isinstance(e, tl.Element):
+        return e
+    else:
+        coerced_e = tl.Element(e)
+        logging.debug(f'Coerce {e}[{type(e)}] to {coerced_e}[{type(coerced_e)}]')
+        return coerced_e
+
+
+def textify_set(s: tl.SetInput) -> str:
+    if s is None:
+        return 'undefined'  # We interpret None as undefined
+    elif len(s) == 0:
+        return '∅'  # The empty set
+    elif not isinstance(s, Set):
+        s = tl.coerce_set(s)
+    t = ', '.join(s)
+    t = f'{{{t}}}'
+    return t
+
+
+def set_equal(s: tl.SetInput, t: tl.SetInput) -> bool:
+    """Check if two finite sets **s** and **t** are equal.
+
+    Formally:
+
+    .. math::
+        \\begin{align*}
+        & \\text{Let } s \\text{ be a finite set with elements } (s_1, s_2, \\cdots, s_n) & \\\\
+        & \\text{Let } t \\text{ be a finite set with elements }  (t_1, t_2, \\cdots, t_m) & \\\\
+        & s = t \\iff ((|s| = |t|) \\land (\\forall i \\in [1, |s|], s_i = t_i))
+        \\end{align*}
+
+    Sample 1:
+
+        .. exec_code::
+            :filename: set_sample_1.py
+
+    Sample 2:
+
+        .. exec_code::
+            :filename: set_sample_2.py
+
+    """
+    if s is None and t is None:
+        # The special case undefined = undefined is defined as True
+        # This is debatable
+        # The fragile rationale of this decision is consistency with Python's None == None
+        return True
+    elif s is None or t is None:
+        # Undefined is incomparable
+        return False
+    else:
+        s = tl.coerce_set(s)
+        t = tl.coerce_set(t)
+        if len(s) == 0 and len(t) == 0:
+            # The special case ∅ = ∅ is defined as True
+            # This is debatable
+            return True
+        else:
+            return np.array_equal(v, w)
+
+
+class Set(list):
+    """A finite set.
+
+    Bibliography:
+        - https://stackoverflow.com/questions/4868291/how-to-subclass-array-array-and-have-its-derived-constructor-take-no-parameters
+    """
+
+    def __init__(self, *args):
+        super().__init__()
+        self.append(args)
+
+    def __str__(self):
+        return textify_set(self)
+
+    def __eq__(self, obj):
+        return set_equal(self, obj)
+
+    def append(self, obj: (ElementInput, SetInput)):
+        # Flatten if necessary
+        obj = flatten(obj)
+        # Assure all elements are unique values
+        obj = set(obj)
+        # But do not use the python set type that is unordered
+        # and use list instead to assure index positions of elements
+        obj = list(obj)
+        # Assure elements are ordered to simplify the usage of incidence vectors
+        obj = sorted(obj)
+        for e in obj:
+            if e not in self:
+                # Assure all elements are of type Element
+                e = coerce_element2(e)
+                super().append(e)
+
+
+"""An alias for Finite Set"""
+FS = Set
+
+
 SetInput = typing.TypeVar(
     'SetInput',
     abc.Iterable,
@@ -318,16 +503,13 @@ def coerce_binary_vector(x: BinaryVectorInput) -> BinaryVector:
     """
     if isinstance(x, (BinaryVector, IncidenceVector)):
         return x
-    elif isinstance(x, abc.Iterable):
-        coerced_x = flatten(x)
-        coerced_x = np.asarray(coerced_x, dtype=bool)
-        logging.debug(f'coerce_binary_vector({x}[{type(x)}]) -> {coerced_x}')
-        return coerced_x
     elif x is None:
         logging.warning(f'coerce_binary_vector({x})')
         return None
     else:
-        raise NotImplementedError(f'coerce_binary_vector({x}[{type(x)}])')
+        coerced_x = BinaryVector(x)
+        logging.debug(f'coerce_binary_vector({x}[{type(x)}]) -> {coerced_x}')
+        return coerced_x
 
 
 def coerce_incidence_vector(x: IncidenceVectorInput, s: Set = None) -> IncidenceVector:
@@ -400,6 +582,7 @@ def coerce_element(e: ElementInput, s: SetInput) -> Element:
     elif isinstance(e, Element):
         if s is None:
             logging.warning(f'Skip {e} ∈ s test because s is None')
+            return e
         if e in s:
             return e
         else:

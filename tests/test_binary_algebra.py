@@ -1,4 +1,5 @@
 from unittest import TestCase
+import naive.type_library as tl
 import naive.binary_algebra as ba
 import logging
 
@@ -7,48 +8,57 @@ logging.basicConfig(level=logging.DEBUG)
 
 class Test(TestCase):
 
-    def test_eq(self):
-        o1 = [0, 1, 0, 1, 1, 0, 0, 0, 0]
-        o2 = [0, 1, 0, 1, 0, 0, 0, 0, 0]
-        o3 = [0, 1, 0, 1, 1, 0, 0, 0, 0]
-        self.assertTrue(ba.binary_vector_equal(o1, o3))
-        self.assertFalse(ba.binary_vector_equal(o1, o2))
-        self.assertFalse(ba.binary_vector_equal(o2, o3))
 
     def test_get_zero_binary_vector(self):
-        self.assertTrue(ba.binary_vector_equal(ba.get_zero_binary_vector(1), [0]))
-        self.assertTrue(ba.binary_vector_equal(ba.get_zero_binary_vector(2), [0, 0]))
-        self.assertTrue(ba.binary_vector_equal(ba.get_zero_binary_vector(3), [0, 0, 0]))
+        self.assertTrue(tl.binary_vector_equal(ba.get_zero_binary_vector(1), [0]))
+        self.assertTrue(tl.binary_vector_equal(ba.get_zero_binary_vector(2), [0, 0]))
+        self.assertTrue(tl.binary_vector_equal(ba.get_zero_binary_vector(3), [0, 0, 0]))
 
-        self.assertFalse(ba.binary_vector_equal(ba.get_zero_binary_vector(2), [0]))
-        self.assertFalse(ba.binary_vector_equal(ba.get_zero_binary_vector(3), [0, 0]))
-        self.assertFalse(ba.binary_vector_equal(ba.get_zero_binary_vector(1), [0, 0, 0]))
+        self.assertFalse(tl.binary_vector_equal(ba.get_zero_binary_vector(2), [0]))
+        self.assertFalse(tl.binary_vector_equal(ba.get_zero_binary_vector(3), [0, 0]))
+        self.assertFalse(tl.binary_vector_equal(ba.get_zero_binary_vector(1), [0, 0, 0]))
 
     def test_get_one_binary_vector(self):
-        self.assertTrue(ba.binary_vector_equal(ba.get_one_binary_vector(1), [1]))
-        self.assertTrue(ba.binary_vector_equal(ba.get_one_binary_vector(2), [1, 1]))
-        self.assertTrue(ba.binary_vector_equal(ba.get_one_binary_vector(3), [1, 1, 1]))
+        self.assertTrue(tl.binary_vector_equal(ba.get_one_binary_vector(1), [1]))
+        self.assertTrue(tl.binary_vector_equal(ba.get_one_binary_vector(2), [1, 1]))
+        self.assertTrue(tl.binary_vector_equal(ba.get_one_binary_vector(3), [1, 1, 1]))
 
-        self.assertFalse(ba.binary_vector_equal(ba.get_one_binary_vector(2), [1]))
-        self.assertFalse(ba.binary_vector_equal(ba.get_one_binary_vector(3), [1, 1]))
-        self.assertFalse(ba.binary_vector_equal(ba.get_one_binary_vector(1), [1, 1, 1]))
+        self.assertFalse(tl.binary_vector_equal(ba.get_one_binary_vector(2), [1]))
+        self.assertFalse(tl.binary_vector_equal(ba.get_one_binary_vector(3), [1, 1]))
+        self.assertFalse(tl.binary_vector_equal(ba.get_one_binary_vector(1), [1, 1, 1]))
 
     def test_get_minima(self):
         v1 = [0, 1, 0, 1, 0, 0, 1, 1]
         v2 = [1, 1, 0, 0, 0, 0, 1, 1]
         v3 = ba.get_minima(v1, v2)
-        self.assertTrue(ba.binary_vector_equal(v3, [0, 1, 0, 0, 0, 0, 1, 1]))
+        self.assertTrue(tl.binary_vector_equal(v3, [0, 1, 0, 0, 0, 0, 1, 1]))
 
     def test_get_maxima(self):
         v1 = [0, 1, 0, 1, 0, 0, 1, 1]
         v2 = [1, 1, 0, 0, 0, 0, 1, 1]
         v3 = ba.get_maxima(v1, v2)
-        self.assertTrue(ba.binary_vector_equal(v3, [1, 1, 0, 1, 0, 0, 1, 1]))
+        self.assertTrue(tl.binary_vector_equal(v3, [1, 1, 0, 1, 0, 0, 1, 1]))
 
     def test_get_logical_not(self):
-        self.assertTrue(ba.binary_vector_equal(ba.get_logical_not([0, 0, 1]), [1, 1, 0]))
-        self.assertTrue(ba.binary_vector_equal(ba.get_logical_not([0]), [1]))
-        self.assertTrue(ba.binary_vector_equal(ba.get_logical_not([1, 1, 1, 1, 1]), [0, 0, 0, 0, 0]))
-        self.assertTrue(ba.binary_vector_equal(ba.get_logical_not([0, 0, 0, 0, 0]), [1, 1, 1, 1, 1]))
+        v = ba.get_logical_not([])
+        t = tl.is_instance(v, tl.BinaryVector)
+        self.assertEqual(tl.BV([]), ba.get_logical_not([]))
+        self.assertEqual(tl.BV([1, 1, 0]), ba.get_logical_not([0, 0, 1]))
+        self.assertEqual(tl.BV([0, 0, 1]), ba.get_logical_not([1, 1, 0]))
+        self.assertEqual(tl.BV([1, 1, 1]), ba.get_logical_not([0, 0, 0]))
+        self.assertEqual(tl.BV([0, 0, 0]), ba.get_logical_not([1, 1, 1]))
+        self.assertEqual(tl.BV([0]), ba.get_logical_not([1]))
+        self.assertEqual(tl.BV([1]), ba.get_logical_not([0]))
+        self.assertEqual(tl.BV([0, 0, 1, 1, 1, 0]), ba.get_logical_not([1, 1, 0, 0, 0, 1]))
+        self.assertEqual(tl.BV([1, 1, 0, 0, 0, 1]), ba.get_logical_not([0, 0, 1, 1, 1, 0]))
+        # Note that the not Python operator cannot be overridden
+        # internally, Python will call not(first) != second
+        # for this reason, we must expressly use the binary_vector_equal function
+        # and cannot use the native equality
+        # Source: https://stackoverflow.com/questions/39754808/overriding-not-operator-in-python
+        self.assertFalse(tl.binary_vector_equal(tl.BV([]), None))
+        self.assertFalse(tl.binary_vector_equal(tl.BV([0]), None))
+        self.assertFalse(tl.binary_vector_equal(tl.BV([0, 1]), None))
+
 
 
