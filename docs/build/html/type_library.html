@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Type Library &mdash; naive 0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="type_library.AtomicProperty" href="pages/type_library.AtomicProperty.html" />
+    <link rel="prev" title="set_algebra.equal" href="pages/set_algebra.equal.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> naive
+          </a>
+              <div class="version">
+                0.1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="binary_algebra.html">Binary Algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="set_algebra.html">Set Algebra</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Type Library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#types-type-aliases-typevars-and-newtypes">Types, Type Aliases, TypeVars, and NewTypes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.AtomicProperty.html">type_library.AtomicProperty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.AtomicPropertyInput.html">type_library.AtomicPropertyInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.AtomicPropertySet.html">type_library.AtomicPropertySet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.AtomicPropertySetInput.html">type_library.AtomicPropertySetInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.BinaryMatrix.html">type_library.BinaryMatrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.BinaryMatrixInput.html">type_library.BinaryMatrixInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.BinarySquareMatrix.html">type_library.BinarySquareMatrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.BinarySquareMatrixInput.html">type_library.BinarySquareMatrixInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.BinaryValue.html">type_library.BinaryValue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.BinaryValueInput.html">type_library.BinaryValueInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.BinaryVector.html">type_library.BinaryVector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.BinaryVectorInput.html">type_library.BinaryVectorInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.Element.html">type_library.Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.ElementInput.html">type_library.ElementInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.IncidenceVector.html">type_library.IncidenceVector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.IncidenceVectorInput.html">type_library.IncidenceVectorInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.IndexPosition.html">type_library.IndexPosition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.IndexPositionInput.html">type_library.IndexPositionInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.Set.html">type_library.Set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.SetInput.html">type_library.SetInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.SetOrIV.html">type_library.SetOrIV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.SetOrIVInput.html">type_library.SetOrIVInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.State.html">type_library.State</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.StateInput.html">type_library.StateInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.StateSet.html">type_library.StateSet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.StateSetInput.html">type_library.StateSetInput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_atomic_property.html">type_library.coerce_atomic_property</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_atomic_property_set.html">type_library.coerce_atomic_property_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_binary_matrix.html">type_library.coerce_binary_matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_binary_square_matrix.html">type_library.coerce_binary_square_matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_binary_value.html">type_library.coerce_binary_value</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_binary_vector.html">type_library.coerce_binary_vector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_element.html">type_library.coerce_element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_incidence_vector.html">type_library.coerce_incidence_vector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_set.html">type_library.coerce_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_set_or_iv_type.html">type_library.coerce_set_or_iv_type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_state.html">type_library.coerce_state</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_state_set.html">type_library.coerce_state_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_state_subset.html">type_library.coerce_state_subset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_subset.html">type_library.coerce_subset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.coerce_subset_or_iv.html">type_library.coerce_subset_or_iv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.flatten.html">type_library.flatten</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/type_library.is_instance.html">type_library.is_instance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">naive</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Type Library</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/type_library.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="type-library">
+<h1>Type Library<a class="headerlink" href="#type-library" title="Permalink to this heading"></a></h1>
+<p>TODO: Include documentation</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This project is under active development.</p>
+</div>
+<section id="types-type-aliases-typevars-and-newtypes">
+<h2>Types, Type Aliases, TypeVars, and NewTypes<a class="headerlink" href="#types-type-aliases-typevars-and-newtypes" title="Permalink to this heading"></a></h2>
+<p>Often, we need a particular class or type to make it semantically clear in our code that we are manipulating conceptual objects of a particular nature. But as often, native types and classes satisfy our technical needs. <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.NewType">NewTypes</a> constitute an efficient solution to this issue. (References: <a class="reference external" href="https://stackoverflow.com/questions/58755948/what-is-the-difference-between-typevar-and-newtype">Stackoverflow question</a>).</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.AtomicProperty.html#type_library.AtomicProperty" title="type_library.AtomicProperty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomicProperty</span></code></a></p></td>
+<td><p>alias of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.AtomicPropertyInput.html#type_library.AtomicPropertyInput" title="type_library.AtomicPropertyInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomicPropertyInput</span></code></a></p></td>
+<td><p>alias of TypeVar('AtomicPropertyInput', str, str, int, str)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.AtomicPropertySet.html#type_library.AtomicPropertySet" title="type_library.AtomicPropertySet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomicPropertySet</span></code></a></p></td>
+<td><p>alias of <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.AtomicPropertySetInput.html#type_library.AtomicPropertySetInput" title="type_library.AtomicPropertySetInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomicPropertySetInput</span></code></a></p></td>
+<td><p>alias of TypeVar('SetInput', ~collections.abc.Iterable, ~typing.List[str], ~typing.List[str])</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.BinaryMatrix.html#type_library.BinaryMatrix" title="type_library.BinaryMatrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinaryMatrix</span></code></a></p></td>
+<td><p>A python type that is equivalent to a <strong>binary matrix</strong> mathematical object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.BinaryMatrixInput.html#type_library.BinaryMatrixInput" title="type_library.BinaryMatrixInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinaryMatrixInput</span></code></a></p></td>
+<td><p>A TypeVar that represent types commonly accepted as equivalent to <a class="reference internal" href="pages/type_library.BinaryMatrix.html#type_library.BinaryMatrix" title="type_library.BinaryMatrix"><code class="xref py py-data docutils literal notranslate"><span class="pre">BinaryMatrix</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.BinarySquareMatrix.html#type_library.BinarySquareMatrix" title="type_library.BinarySquareMatrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinarySquareMatrix</span></code></a></p></td>
+<td><p>A <a class="reference internal" href="pages/type_library.BinaryMatrix.html#type_library.BinaryMatrix" title="type_library.BinaryMatrix"><code class="xref py py-data docutils literal notranslate"><span class="pre">BinaryMatrix</span></code></a> with the same number of rows and columns.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.BinarySquareMatrixInput.html#type_library.BinarySquareMatrixInput" title="type_library.BinarySquareMatrixInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinarySquareMatrixInput</span></code></a></p></td>
+<td><p>A TypeVar that represent types commonly accepted as equivalent to <a class="reference internal" href="pages/type_library.BinarySquareMatrix.html#type_library.BinarySquareMatrix" title="type_library.BinarySquareMatrix"><code class="xref py py-data docutils literal notranslate"><span class="pre">BinarySquareMatrix</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.BinaryValue.html#type_library.BinaryValue" title="type_library.BinaryValue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinaryValue</span></code></a></p></td>
+<td><p>A NewType equivalent to <span class="math notranslate nohighlight">\(\mathbb{B}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.BinaryValueInput.html#type_library.BinaryValueInput" title="type_library.BinaryValueInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinaryValueInput</span></code></a></p></td>
+<td><p>A TypeVar that represent types commonly accepted as equivalent to <a class="reference internal" href="pages/type_library.BinaryValue.html#type_library.BinaryValue" title="type_library.BinaryValue"><code class="xref py py-data docutils literal notranslate"><span class="pre">BinaryValue</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.BinaryVector.html#type_library.BinaryVector" title="type_library.BinaryVector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinaryVector</span></code></a></p></td>
+<td><p>A row vector of binary values.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.BinaryVectorInput.html#type_library.BinaryVectorInput" title="type_library.BinaryVectorInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinaryVectorInput</span></code></a></p></td>
+<td><p>alias of TypeVar('BinaryVectorInput', ~collections.abc.Iterable, nptyping.NDArray.(nptyping.Shape.*, nptyping.Bool), numpy.ndarray)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.Element.html#type_library.Element" title="type_library.Element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Element</span></code></a></p></td>
+<td><p>alias of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.ElementInput.html#type_library.ElementInput" title="type_library.ElementInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElementInput</span></code></a></p></td>
+<td><p>alias of TypeVar('ElementInput', str, int, str)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.IncidenceVector.html#type_library.IncidenceVector" title="type_library.IncidenceVector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IncidenceVector</span></code></a></p></td>
+<td><p>An incidence vector.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.IncidenceVectorInput.html#type_library.IncidenceVectorInput" title="type_library.IncidenceVectorInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IncidenceVectorInput</span></code></a></p></td>
+<td><p>alias of TypeVar('IncidenceVectorInput', ~collections.abc.Iterable, nptyping.NDArray.(nptyping.Shape.*, nptyping.Bool), nptyping.NDArray.(nptyping.Shape.*, nptyping.Bool), numpy.ndarray)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.IndexPosition.html#type_library.IndexPosition" title="type_library.IndexPosition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IndexPosition</span></code></a></p></td>
+<td><p>alias of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.IndexPositionInput.html#type_library.IndexPositionInput" title="type_library.IndexPositionInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IndexPositionInput</span></code></a></p></td>
+<td><p>alias of TypeVar('IndexPositionInput', int, int)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.Set.html#type_library.Set" title="type_library.Set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Set</span></code></a></p></td>
+<td><p>alias of <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.SetInput.html#type_library.SetInput" title="type_library.SetInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SetInput</span></code></a></p></td>
+<td><p>alias of TypeVar('SetInput', ~collections.abc.Iterable, ~typing.List[str], ~typing.List[str])</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.SetOrIV.html#type_library.SetOrIV" title="type_library.SetOrIV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SetOrIV</span></code></a></p></td>
+<td><p>alias of TypeVar('SetOrIV', nptyping.NDArray.(nptyping.Shape.*, nptyping.Bool), nptyping.NDArray.(nptyping.Shape.*, nptyping.Bool), ~typing.List[str])</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.SetOrIVInput.html#type_library.SetOrIVInput" title="type_library.SetOrIVInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SetOrIVInput</span></code></a></p></td>
+<td><p>alias of TypeVar('SetOrIVInput', ~collections.abc.Iterable, nptyping.NDArray.(nptyping.Shape.*, nptyping.Bool), numpy.ndarray, ~typing.List[str], ~typing.List[str])</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.State.html#type_library.State" title="type_library.State"><code class="xref py py-obj docutils literal notranslate"><span class="pre">State</span></code></a></p></td>
+<td><p>alias of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.StateInput.html#type_library.StateInput" title="type_library.StateInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StateInput</span></code></a></p></td>
+<td><p>alias of TypeVar('StateInput', str, int, str, str)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.StateSet.html#type_library.StateSet" title="type_library.StateSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StateSet</span></code></a></p></td>
+<td><p>alias of <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.StateSetInput.html#type_library.StateSetInput" title="type_library.StateSetInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StateSetInput</span></code></a></p></td>
+<td><p>alias of TypeVar('SetInput', ~collections.abc.Iterable, ~typing.List[str], ~typing.List[str])</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.coerce_atomic_property.html#type_library.coerce_atomic_property" title="type_library.coerce_atomic_property"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_atomic_property</span></code></a>(atom, ap)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.coerce_atomic_property_set.html#type_library.coerce_atomic_property_set" title="type_library.coerce_atomic_property_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_atomic_property_set</span></code></a>(ap)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.coerce_binary_matrix.html#type_library.coerce_binary_matrix" title="type_library.coerce_binary_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_binary_matrix</span></code></a>(x)</p></td>
+<td><p>YYY</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.coerce_binary_square_matrix.html#type_library.coerce_binary_square_matrix" title="type_library.coerce_binary_square_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_binary_square_matrix</span></code></a>(x)</p></td>
+<td><p>XXX</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.coerce_binary_value.html#type_library.coerce_binary_value" title="type_library.coerce_binary_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_binary_value</span></code></a>(x)</p></td>
+<td><p>Coerce an object of a compatible Python type to the <strong>BinaryValue</strong> type.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.coerce_binary_vector.html#type_library.coerce_binary_vector" title="type_library.coerce_binary_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_binary_vector</span></code></a>(x)</p></td>
+<td><p>YYY</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.coerce_element.html#type_library.coerce_element" title="type_library.coerce_element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_element</span></code></a>(e, s)</p></td>
+<td><p>Given element e passed with flexible input type, assure e ∈ S, and return e typed as Element</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.coerce_incidence_vector.html#type_library.coerce_incidence_vector" title="type_library.coerce_incidence_vector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_incidence_vector</span></code></a>(x[, s])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.coerce_set.html#type_library.coerce_set" title="type_library.coerce_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_set</span></code></a>(x)</p></td>
+<td><p>Assure the Set type for x.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.coerce_set_or_iv_type.html#type_library.coerce_set_or_iv_type" title="type_library.coerce_set_or_iv_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_set_or_iv_type</span></code></a>(python_type)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.coerce_state.html#type_library.coerce_state" title="type_library.coerce_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_state</span></code></a>(state, s)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.coerce_state_set.html#type_library.coerce_state_set" title="type_library.coerce_state_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_state_set</span></code></a>(s)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.coerce_state_subset.html#type_library.coerce_state_subset" title="type_library.coerce_state_subset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_state_subset</span></code></a>(s_prime_flexible, s_flexible)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.coerce_subset.html#type_library.coerce_subset" title="type_library.coerce_subset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_subset</span></code></a>(s_prime, s)</p></td>
+<td><p>Coerce s' to a subset of s.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.coerce_subset_or_iv.html#type_library.coerce_subset_or_iv" title="type_library.coerce_subset_or_iv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce_subset_or_iv</span></code></a>(o, s)</p></td>
+<td><p>Coerce an arbitrarily typed object <strong>o</strong> into either a properly typed subset or proper incidence vector of a set S.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/type_library.flatten.html#type_library.flatten" title="type_library.flatten"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten</span></code></a>(x)</p></td>
+<td><p>Flatten an iterable object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/type_library.is_instance.html#type_library.is_instance" title="type_library.is_instance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_instance</span></code></a>(o, t)</p></td>
+<td><p>Check if an arbitrary object <strong>o</strong> is of NewType, type, type alias, or TypeVar <strong>t</strong>.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pages/set_algebra.equal.html" class="btn btn-neutral float-left" title="set_algebra.equal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pages/type_library.AtomicProperty.html" class="btn btn-neutral float-right" title="type_library.AtomicProperty" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, David Doret.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
