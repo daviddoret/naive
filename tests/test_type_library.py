@@ -36,15 +36,17 @@ class Test(TestCase):
         o1 = [0, 1, 0, 1, 1, 0, 0, 0, 0]
         o2 = [0, 1, 0, 1, 0, 0, 0, 0, 0]
         o3 = [0, 1, 0, 1, 1, 0, 0, 0, 0]
-        self.assertTrue(tl.binary_vector_equal(o1, o3))
-        self.assertFalse(tl.binary_vector_equal(o1, o2))
-        self.assertFalse(tl.binary_vector_equal(o2, o3))
+        self.assertTrue(tl.bv_equal_bv(o1, o3))
+        self.assertFalse(tl.bv_equal_bv(o1, o2))
+        self.assertFalse(tl.bv_equal_bv(o2, o3))
 
 
 class TestBinaryVector(TestCase):
 
     def test_new(self):
-        self.assertTrue(tl.BV(None) is None)
+        self.assertFalse(tl.BV(), None)
+        self.assertEqual(tl.BV(), [])
+        self.assertEqual(tl.BV(None), [])
         self.assertEqual(tl.BV([]), [])
         self.assertEqual(tl.BV([0]), [0])
         self.assertEqual(tl.BV([1]), [1])
@@ -58,13 +60,14 @@ class TestBinaryVector(TestCase):
 class TestSet(TestCase):
 
     def test_init(self):
-        TODO: RESUME WORK HERE
-        self.assertTrue(tl.FS(None) is None)
+        self.assertFalse(tl.FS(), None)
+        self.assertEqual(tl.FS(), [])
+        self.assertFalse(tl.FS(None) is None)
         self.assertEqual(tl.FS([]), [])
         self.assertEqual(tl.FS([0]), ['0'])
         self.assertEqual(tl.FS(['e1']), ['e1'])
         self.assertEqual(tl.FS(['red', 'green', 'blue']), ['red', 'green', 'blue'])
-        self.assertEqual(tl.FS(size=3), ['e1'])
-        self.assertEqual(tl.FS(size=5), [0, 0, 0, 0, 0])
-        self.assertEqual(tl.FS(size=3, default_value=1), [1, 1, 1])
-        self.assertEqual(tl.FS(size=5, default_value=1), [1, 1, 1, 1, 1])
+        self.assertEqual(tl.FS(size=3), ['e₁', 'e₂', 'e₃'])
+        self.assertEqual(tl.FS(size=5), ['e₁', 'e₂', 'e₃', 'e₄', 'e₅'])
+        self.assertEqual(tl.FS(size=2, prefix='x'), ['x₁', 'x₂'])
+        self.assertEqual(tl.FS(size=4, prefix='y', init=0), ['y₀', 'y₁', 'y₂', 'y₃'])

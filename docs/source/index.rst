@@ -13,6 +13,4 @@ Contents
 
 .. toctree::
 
-    binary_algebra
-    set_algebra
     type_library

@@ -30,13 +30,15 @@ Often, we need a particular class or type to make it semantically clear in our c
     BinaryValueInput
     BinaryVector
     BinaryVectorInput
+    BV
     Element
     ElementInput
+    FiniteSet
+    FS
     IncidenceVector
     IncidenceVectorInput
     IndexPosition
     IndexPositionInput
-    Set
     SetInput
     SetOrIV
     SetOrIVInput

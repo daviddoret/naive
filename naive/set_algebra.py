@@ -88,16 +88,16 @@ def set_cardinality(s: tl.SetOrIVInput) -> int:
 
 # OPERATORS
 
-def equals(x: tl.SetOrIVInput, y: tl.SetOrIVInput, s: tl.Set = None) -> bool:
+def equals(x: tl.SetOrIVInput, y: tl.SetOrIVInput, s: tl.FiniteSet = None) -> bool:
     x = tl.coerce_subset_or_iv(x, s)
     y = tl.coerce_subset_or_iv(y, s)
     if isinstance(x, np.ndarray) and isinstance(y, np.ndarray):
         # Provide generic support for BinaryVector, IncidenceVector, BinaryMatrix, etc., etc.
         return np.array_equal(x, y)
-    if tl.is_instance(x, tl.Set):
+    if tl.is_instance(x, tl.FiniteSet):
         return x == y
     else:
-        raise TypeError('Unsupported type')
+        raise TypeError(u'Unsupported type')
 
 
 def get_set_from_range(n: int, prefix: str = 'e', index_start: int = 0):
@@ -115,7 +115,7 @@ def get_state_set(n: int, prefix: str = 's', index_start: int = 0):
     return get_set_from_range(n, prefix, index_start)
 
 
-def get_set(s_prime: tl.SetOrIVInput, s: tl.Set) -> tl.Set:
+def get_set(s_prime: tl.SetOrIVInput, s: tl.FiniteSet) -> tl.FiniteSet:
     """Given a subset S' ⊆ S or its incidence vector, return the corresponding subset"""
     s_prime = tl.coerce_subset_or_iv(s_prime, s)
     s = tl.coerce_set(s)
@@ -125,16 +125,16 @@ def get_set(s_prime: tl.SetOrIVInput, s: tl.Set) -> tl.Set:
         s_prime_set = [str(s[i]) for i in s_prime_idx]
         s_prime_set = tl.coerce_subset(s_prime_set, s)
         return s_prime_set
-    elif tl.is_instance(s_prime, tl.Set):
+    elif tl.is_instance(s_prime, tl.FiniteSet):
         # s' is already a set
         # coerce it and push it back
         s_prime_set = tl.coerce_subset(s_prime, s)
         return s_prime_set
     else:
-        raise TypeError('Something weird happened, a bug is hiding')
+        raise TypeError(u'Something weird happened, a bug is hiding')
 
 
-def get_incidence_vector(s_prime: tl.SetOrIVInput, s: tl.Set) -> tl.IncidenceVector:
+def get_incidence_vector(s_prime: tl.SetOrIVInput, s: tl.FiniteSet) -> tl.IncidenceVector:
     """Given a subset S' ⊆ S or its incidence vector, return the corresponding incidence vector"""
     s_prime = tl.coerce_subset_or_iv(s_prime, s)
     s = tl.coerce_set(s)
@@ -143,7 +143,7 @@ def get_incidence_vector(s_prime: tl.SetOrIVInput, s: tl.Set) -> tl.IncidenceVec
         # coerce it and push it back
         iv = tl.coerce_incidence_vector(s_prime, s)
         return iv
-    elif tl.is_instance(s_prime, tl.Set):
+    elif tl.is_instance(s_prime, tl.FiniteSet):
         iv = ba.get_zero_binary_vector(set_cardinality(s))
         for e in s_prime:
             e_index = s.index(e)
@@ -151,7 +151,7 @@ def get_incidence_vector(s_prime: tl.SetOrIVInput, s: tl.Set) -> tl.IncidenceVec
         iv = tl.coerce_incidence_vector(iv, s)
         return iv
     else:
-        raise TypeError('Something weird happened, a bug is hiding')
+        raise TypeError(u'Something weird happened, a bug is hiding')
 
 
 def set_element_values_from_iterable(target, source: abc.Iterable):

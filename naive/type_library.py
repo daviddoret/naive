@@ -2,6 +2,9 @@
 
 TODO: Add description
 
+Bibliography:
+    * Types and pseudo-types: https://peps.python.org/pep-0484/
+
 """
 
 # PEP 563 – Postponed Evaluation of Annotations
@@ -15,14 +18,70 @@ import nptyping as npt
 import logging
 import math
 
-# Types and pseudo-types
-# Reference: https://peps.python.org/pep-0484/
+
+def subscript(s):
+    """
+
+
+    Bibliography:
+        * https://stackoverflow.com/questions/13875507/convert-numeric-strings-to-superscript
+
+    :param s:
+    :return:
+    """
+    subscript_dictionary = {'0': '₀',
+                            '1': '₁',
+                            '2': '₂',
+                            '3': '₃',
+                            '4': '₄',
+                            '5': '₅',
+                            '6': '₆',
+                            '7': '₇',
+                            '8': '₈',
+                            '9': '₉'}
+    return ''.join(subscript_dictionary.get(char, char) for char in s)
+
+
+def superscript(s):
+    """
+
+    Bibliography:
+        * https://stackoverflow.com/questions/13875507/convert-numeric-strings-to-superscript
+
+    Args:
+        :param s:
+        :return:
+    """
+    subscript_dictionary = {'0': '⁰',
+                            '1': '¹',
+                            '2': '²',
+                            '3': '³',
+                            '4': '⁴',
+                            '5': '⁵',
+                            '6': '⁶',
+                            '7': '⁷',
+                            '8': '⁸',
+                            '9': '⁹'}
+    return ''.join(subscript_dictionary.get(char, char) for char in s)
+
+
+def clean_math_variable(s: str) -> str:
+    """Clean a string from characters that are unusual in math variable names.
+
+    Basically we keep alphanumeric characters, including greek letters, subscripts and superscripts.
+
+    Incidentally, the idea is to avoid ambiguities and confusions that may arise from unwanted characters such as punctuation and mathematical operators.
+
+    :param s: A raw variable name that potentially contains unusual characters.
+    :return: A clean variable name that is safe from unusual characters.
+    """
+    return ''.join([c for c in str(s) if c.isalpha() or c.isdigit()])
 
 
 BinaryValue = typing.NewType(
     'BinaryValue',
     bool)
-"""A NewType equivalent to :math:`\mathbb{B}`
+"""A NewType equivalent to :math:`\\mathbb{B}`
 
 Under the hood, it is a :py:class:`bool`."""
 
@@ -112,11 +171,11 @@ Commonly accepted types:
 """
 
 
-def textify_binary_vector(v: BinaryVectorInput) -> str:
+def textify_bv(v: BinaryVectorInput) -> str:
     if v is None:
         return 'undefined'  # We interpret None as undefined
     elif len(v) == 0:
-        return '∅'  # The empty set
+        return u'\u2205'  # The empty set
     elif not isinstance(v, BinaryVector):
         v = coerce_binary_vector(v)
     v = np.array(v, dtype=int)
@@ -124,7 +183,7 @@ def textify_binary_vector(v: BinaryVectorInput) -> str:
     return v
 
 
-def binary_vector_equal(v: BinaryVectorInput, w: BinaryVectorInput) -> bool:
+def bv_equal_bv(v: BinaryVectorInput, w: BinaryVectorInput) -> bool:
     """Check if two binary vectors are equal.
 
     Formally:
@@ -159,7 +218,7 @@ def binary_vector_equal(v: BinaryVectorInput, w: BinaryVectorInput) -> bool:
         v = coerce_binary_vector(v)
         w = coerce_binary_vector(w)
         if len(v) == 0 and len(w) == 0:
-            # The special case ∅ = ∅ is defined as True
+            # The special case [] = [] is defined as True
             # This is debatable
             return True
         else:
@@ -169,34 +228,53 @@ def binary_vector_equal(v: BinaryVectorInput, w: BinaryVectorInput) -> bool:
 class BinaryVector(np.ndarray):
     """A row vector of binary values.
 
-    TODO: Rename to row binary vector, respectively column binary vector. Or add direction as an attribute.
+    Todos:
+        * Rename to row binary vector, respectively column binary vector. Or add direction as an attribute.
 
     Sources:
-    https://numpy.org/doc/stable/user/basics.subclassing.html
+        * https://numpy.org/doc/stable/user/basics.subclassing.html
     """
 
-    def __new__(cls, obj=None, /, *, size=None, default_value=None):
-        if obj is None and size is None:
-            return None
-        elif obj is not None:
-            obj = flatten(obj)
-        elif size is not None:
+    def __new__(cls, o=None, /, *, size=None, default_value=None):
+        """Instantiate a new BinaryVector.
+
+        Under the hood, this method uses the Numpy view method to subtype NDArray.
+
+        Args:
+            o (object): A source object from which to infer the vector.
+            size (int): (Conditional) The size of the vector. Warning: if **o** comprises more elements than **size**, the superfluous elements are truncated with a warning.
+            default_value (bool, int): (Conditional) If elements must be populated to reach size, the default value of these new elements.
+        """
+        # This method's signature raises a "not compatible to __init__" warning.
+        # I couldn't yet find a way to solve it.
+        # TODO: Find a cleaner technical solution.
+        if o is None:
+            # When no source object is passed to the constructor,
+            # or alternatively if o=None is passed to the constructor,
+            # this is interpreted as "I want an empty set, please".
+            o = []
+        o = flatten(o)  # Incidentally assure that isinstance(obj) == list.
+        if size is not None:
+            missing_elements = size - len(o)
             default_value = bool(default_value)
-            obj = [default_value] * size
-        obj = np.asarray(obj, dtype=bool)
-        obj = np.asarray(obj).view(cls)  # Re-type the instance
-        return obj
+            o.extend([default_value] * missing_elements)
+            if len(o) > size:
+                # This situation only arises if o was too large from the very beginning
+                logging.warning(f'')
+                o = o[: size]
+        o = np.asarray(o, dtype=bool)
+        o = np.asarray(o).view(cls)  # Re-type the instance
+        return o
 
     def __str__(self):
-        return textify_binary_vector(self)
+        return textify_bv(self)
 
     def __eq__(self, obj):
-        return binary_vector_equal(self, obj)
+        return bv_equal_bv(self, obj)
 
 
 """A shortcut alias for the BinaryVector class."""
 BV = BinaryVector
-
 
 BinaryVectorInput = typing.TypeVar(
     'BinaryVectorInput',
@@ -218,32 +296,40 @@ IncidenceVectorInput = typing.TypeVar(
     np.ndarray)
 
 
+def coerce_element2(e: ElementInput) -> (Element, None):
+    """Coerce an object **e** to type Element.
 
-def coerce_element2(e: tl.ElementInput) -> tl.Element:
+    If **e** is None, return None.
+    If **e** is of type Element, return e.
+    Else cast e to type Element.
+
+    :param e: The raw element **e**.
+    :return: The canonically typed element **e**.
+    """
     if e is None:
         return None
-    elif isinstance(e, tl.Element):
+    elif isinstance(e, Element):
         return e
     else:
-        coerced_e = tl.Element(e)
-        logging.debug(f'Coerce {e}[{type(e)}] to {coerced_e}[{type(coerced_e)}]')
+        coerced_e = Element(e)
+        logging.debug(f'{e}[{type(e)}] coerced to {coerced_e}[{type(coerced_e)}]')
         return coerced_e
 
 
-def textify_set(s: tl.SetInput) -> str:
+def textify_fs(s: SetInput) -> str:
     if s is None:
         return 'undefined'  # We interpret None as undefined
     elif len(s) == 0:
-        return '∅'  # The empty set
-    elif not isinstance(s, Set):
-        s = tl.coerce_set(s)
+        return u'\u2205'  # The empty set
+    elif not isinstance(s, FiniteSet):
+        s = coerce_set(s)
     t = ', '.join(s)
     t = f'{{{t}}}'
     return t
 
 
-def set_equal(s: tl.SetInput, t: tl.SetInput) -> bool:
-    """Check if two finite sets **s** and **t** are equal.
+def fs_equal_fs(s: SetInput, t: SetInput) -> bool:
+    """Check if two finite sets *S* (**s**) and *T* (**t**) are equal.
 
     Formally:
 
@@ -257,7 +343,7 @@ def set_equal(s: tl.SetInput, t: tl.SetInput) -> bool:
     Sample 1:
 
         .. exec_code::
-            :filename: set_sample_1.py
+            :filename: finite_set_sample_1.py
 
     Sample 2:
 
@@ -274,65 +360,128 @@ def set_equal(s: tl.SetInput, t: tl.SetInput) -> bool:
         # Undefined is incomparable
         return False
     else:
-        s = tl.coerce_set(s)
-        t = tl.coerce_set(t)
+        s = coerce_set(s)
+        t = coerce_set(t)
         if len(s) == 0 and len(t) == 0:
-            # The special case ∅ = ∅ is defined as True
+            # The special case [] = [] is defined as True
             # This is debatable
             return True
         else:
-            return np.array_equal(v, w)
+            return np.array_equal(s, t)
 
 
-class Set(list):
+class FiniteSet(list):
     """A finite set.
 
     Bibliography:
         - https://stackoverflow.com/questions/4868291/how-to-subclass-array-array-and-have-its-derived-constructor-take-no-parameters
+
+
+    Sample 1:
+
+        .. jupyter-execute::
+
+            import sys
+            import os
+            #os.chdir('C:\\Users\\david\\PycharmProjects\\naive')
+            #os.chdir('C:/Users/david/PycharmProjects/naive')
+            #import naive.type_library as tl
+            #o = tl.Element('hello')
+            #print(o)
+            print(f'sys.path: {sys.path}')
+            print(f'os.get_cwd(): {os.get_cwd()}')
+            print('hello ∅ world')
+
+    Sample 1:
+
+        .. exec_code::
+            :filename: finite_set_sample_1.py
+
     """
 
-    def __init__(self, *args):
+    def __init__(self, *args, size=None, prefix=None, init=1):
+        """Instantiate a new FiniteSet.
+
+        Under the hood, this method uses the Numpy view method to subtype NDArray.
+
+        Args:
+            *args (optional): Source (possibly iterable) objects from which to infer the vector.
+            size (int, optional): (Conditional) The size of the finite set. Warning: if ** *args ** comprises more elements than **size**, the superfluous elements are truncated with a warning.
+            prefix (str, optional): (Conditional) A prefix if new elements must be included in the set to reach size. Defaults to 'e'.
+            init (int, optional): (Conditional) An initial value if new elements must be included in the set to reach size. Defaults to 1.
+        """
         super().__init__()
         self.append(args)
+        if size is not None:
+            self.append_from_range(size, prefix, init)
 
     def __str__(self):
-        return textify_set(self)
+        return textify_fs(self)
 
     def __eq__(self, obj):
-        return set_equal(self, obj)
+        return fs_equal_fs(self, obj)
 
     def append(self, obj: (ElementInput, SetInput)):
-        # Flatten if necessary
-        obj = flatten(obj)
-        # Assure all elements are unique values
-        obj = set(obj)
-        # But do not use the python set type that is unordered
-        # and use list instead to assure index positions of elements
-        obj = list(obj)
-        # Assure elements are ordered to simplify the usage of incidence vectors
-        obj = sorted(obj)
-        for e in obj:
-            if e not in self:
-                # Assure all elements are of type Element
-                e = coerce_element2(e)
-                super().append(e)
+        """Add an element **e** to the set.
+
+        By definition, set
+        """
+        if obj is not None:
+            if isinstance(obj, Element):
+                super().append(obj)
+            else:
+                # Flatten if necessary
+                obj = flatten(obj)
+                # Assure all elements are unique values
+                obj = set(obj)
+                # But do not use the python set type that is unordered
+                # and use list instead to assure index positions of elements
+                obj = list(obj)
+                # Assure elements are ordered to simplify the usage of incidence vectors
+                obj = sorted(obj)
+                for e in obj:
+                    if e not in self:
+                        # Assure all elements are of type Element
+                        e = coerce_element2(e)
+                        super().append(e)
+
+    def append_from_range(self, size: int, prefix: str, init: int):
+        """Add a range of prefixed elements to the set.
+
+        :param size:
+        :param prefix:
+        :param init:
+        :return:
+        """
+        if size is None:
+            size = 0
+        if prefix is None:
+            prefix = 'e'
+        if init is None:
+            init = 1
+        elif init < 0:
+            init = 0
+        fixed_length = len(str(size))
+        pad = '₀' * (fixed_length - 1)
+        for i in range(init, init + size):
+            element_name = f'{prefix}{(pad + subscript(str(i)))[-fixed_length:]}'
+            self.append(Element(element_name))
 
 
 """An alias for Finite Set"""
-FS = Set
-
+FS = FiniteSet
 
 SetInput = typing.TypeVar(
     'SetInput',
     abc.Iterable,
-    Set,
+    FiniteSet,
     typing.List[str]
 )
 
-AtomicPropertySet = Set
+AtomicPropertySet = FiniteSet
 AtomicPropertySetInput = SetInput
 
-StateSet = Set
+StateSet = FiniteSet
 StateSetInput = SetInput
 
 IndexPosition = int
@@ -342,7 +491,14 @@ IndexPositionInput = typing.TypeVar(
     int
 )
 
-Element = str
+
+class Element(str):
+    def __new__(cls, o: (str, None) = None, *args, **kwargs):
+        o = clean_math_variable(o)
+        o = str.__new__(cls, o)
+        return o
+
+
 ElementInput = typing.TypeVar(
     'ElementInput',
     Element,
@@ -372,14 +528,14 @@ SetOrIV = typing.TypeVar(
     'SetOrIV',
     BinaryVector,
     IncidenceVector,
-    Set)
+    FiniteSet)
 
 SetOrIVInput = typing.TypeVar(
     'SetOrIVInput',
     abc.Iterable,
     BinaryVector,
     np.ndarray,
-    Set,
+    FiniteSet,
     typing.List[str]
 )
 
@@ -495,7 +651,7 @@ def coerce_binary_square_matrix(x: BinarySquareMatrixInput) -> BinarySquareMatri
     return coerced_x
 
 
-def coerce_binary_vector(x: BinaryVectorInput) -> BinaryVector:
+def coerce_binary_vector(x: BinaryVectorInput) -> (BinaryVector, None):
     """YYY
 
     :param x:
@@ -512,7 +668,7 @@ def coerce_binary_vector(x: BinaryVectorInput) -> BinaryVector:
         return coerced_x
 
 
-def coerce_incidence_vector(x: IncidenceVectorInput, s: Set = None) -> IncidenceVector:
+def coerce_incidence_vector(x: IncidenceVectorInput, s: FiniteSet = None) -> IncidenceVector:
     if s is not None:
         s = coerce_set(s)
     if isinstance(x, IncidenceVector):
@@ -521,7 +677,7 @@ def coerce_incidence_vector(x: IncidenceVectorInput, s: Set = None) -> Incidence
             # we assume it is the caller's intention
             # to not check the consistency of
             # the incidence vector with its base set.
-            logging.warning('Skip subset test')
+            logging.warning(u'Skip subset test')
             return x
         elif len(x) == len(s):
             return x
@@ -536,7 +692,7 @@ def coerce_incidence_vector(x: IncidenceVectorInput, s: Set = None) -> Incidence
         raise NotImplementedError
 
 
-def coerce_set(x: SetInput) -> Set:
+def coerce_set(x: SetInput) -> (FiniteSet, None):
     """Assure the Set type for x.
 
     Note: a coerced set is always sorted. This simplifies the usage of incidence vectors with consistent index positions.
@@ -544,23 +700,12 @@ def coerce_set(x: SetInput) -> Set:
     :param x:
     :return:
     """
-    if is_instance(x, Set):
+    if x is None:
+        return None
+    elif is_instance(x, FiniteSet):
         return x
-    coerced_x = x
-    # Prevent infinite loops by checking if x is already flat
-    if not all(not isinstance(y, abc.Iterable) for y in x):
-        # Flatten x if necessary
-        coerced_x = flatten(x)
-    # Assure all elements are of type string
-    coerced_x = [str(e) for e in coerced_x]
-    # Assure all elements are unique values
-    coerced_x = set(coerced_x)
-    # But do not use the python set type that is unordered
-    # and use list instead to assure index positions of elements
-    coerced_x = list(coerced_x)
-    # Assure elements are ordered to simplify the usage of incidence vectors
-    coerced_x = sorted(coerced_x)
-    logging.debug(f'Coerce {x}[{type(x)}] to set {coerced_x}')
+    coerced_x = FiniteSet(x)
+    logging.debug(f'{x}[{type(x)}] coerced to {coerced_x}[{type(coerced_x)}]')
     return coerced_x
 
 
@@ -625,7 +770,7 @@ def is_instance(o: object, t: (type, typing.TypeVar)) -> bool:
     if isinstance(t, type):
         # Provide support for all standard types
         return isinstance(o, t)
-    elif t in (Set, SetInput, AtomicPropertySet, AtomicPropertySetInput, StateSet, StateSetInput):
+    elif t in (FiniteSet, SetInput, AtomicPropertySet, AtomicPropertySetInput, StateSet, StateSetInput):
         if isinstance(o, abc.Iterable):
             if all(isinstance(y, str) for y in o):
                 return True
@@ -642,7 +787,7 @@ def is_instance(o: object, t: (type, typing.TypeVar)) -> bool:
         raise NotImplementedError(f'is_instance: Could not determine if {o}[{type(o)}] is of type {t}')
 
 
-def coerce_subset(s_prime: Set, s: Set) -> Set:
+def coerce_subset(s_prime: FiniteSet, s: FiniteSet) -> FiniteSet:
     """Coerce s' to a subset of s.
 
     :param s_prime:
@@ -651,7 +796,7 @@ def coerce_subset(s_prime: Set, s: Set) -> Set:
     """
     s_prime = coerce_set(s_prime)
     if s is None:
-        logging.warning('Skip the subset test')
+        logging.warning(u'Skip the subset test')
         return s_prime
     else:
         s = coerce_set(s)
@@ -679,7 +824,7 @@ def coerce_subset_or_iv(o: SetOrIVInput, s: SetInput) -> SetOrIV:
     elif is_instance(o, SetInput):
         return coerce_subset(o, s)
     else:
-        raise NotImplementedError('Unsupported type')
+        raise NotImplementedError(u'Unsupported type')
 
 
 def coerce_state_subset(s_prime_flexible: StateSetInput, s_flexible: StateInput):
@@ -697,4 +842,4 @@ def coerce_set_or_iv_type(python_type):
         return python_type
     else:
 
-        return Set
+        return FiniteSet

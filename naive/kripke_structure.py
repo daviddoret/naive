@@ -100,7 +100,7 @@ def to_text(o: object) -> str:
         raise NotImplementedError
 
 
-def sat_tt(m: KripkeStructure, s_prime: tl.SetOrIVInput = None, output_type: (type, typing.TypeVar) = tl.Set) -> tl.SetOrIV:
+def sat_tt(m: KripkeStructure, s_prime: tl.SetOrIVInput = None, output_type: (type, typing.TypeVar) = tl.FiniteSet) -> tl.SetOrIV:
     """Get the satisfaction set of the state formula Sat(tt)
 
     Formally:
@@ -136,14 +136,14 @@ def sat_tt(m: KripkeStructure, s_prime: tl.SetOrIVInput = None, output_type: (ty
     # it is assumed that we consider all states
     # and NOT no states (the empty set).
 
-    if output_type == tl.Set:
+    if output_type == tl.FiniteSet:
         return sa.get_set(sat_iv, m.s)
     else:
         return sat_iv
 
 
 def get_labels_from_state(m: KripkeStructureInput, s: tl.StateInput,
-                          output_type: (type, typing.TypeVar) = tl.Set) -> (tl.AtomicPropertySet, tl.IncidenceVector):
+                          output_type: (type, typing.TypeVar) = tl.FiniteSet) -> (tl.AtomicPropertySet, tl.IncidenceVector):
     """Given a Kripke structure M (m), and a state s ∈ S, return the set of labels (aka atomic properties) attached to that state.
 
     :param output_type:
@@ -164,7 +164,7 @@ def get_labels_from_state(m: KripkeStructureInput, s: tl.StateInput,
     # Superfluous coercion
     label_iv = tl.coerce_incidence_vector(label_iv, m.ap)
 
-    if output_type == tl.Set:
+    if output_type == tl.FiniteSet:
         label_set = sa.get_set(label_iv, m.ap)
         logging.debug(f'L({s}) = {label_set}')
         return label_set
@@ -177,7 +177,7 @@ def get_states_from_label(
         m: KripkeStructureInput,
         s_prime: (tl.StateSetInput, None),
         label: tl.AtomicPropertyInput,
-        output_type: (type, typing.TypeVar) = tl.Set) \
+        output_type: (type, typing.TypeVar) = tl.FiniteSet) \
         -> (tl.StateSet, tl.IncidenceVector):
     """Return the states linked to a label
 
@@ -218,7 +218,7 @@ def get_states_from_label(
     # Superfluous coercion
     s_prime_prime_iv = tl.coerce_incidence_vector(s_prime_prime_iv, m.s)
 
-    if output_type == tl.Set:
+    if output_type == tl.FiniteSet:
         s_prime_prime_subset = sa.get_set(s_prime_prime_iv, m.s)
         logging.debug(f'States({label}) = {s_prime_prime_subset}')
         return s_prime_prime_subset
@@ -228,7 +228,7 @@ def get_states_from_label(
 
 
 def sat_a(m: KripkeStructure, s_prime: tl.SetOrIVInput, label: tl.AtomicPropertyInput,
-          output_type: (type, typing.TypeVar) = tl.Set) -> tl.SetOrIV:
+          output_type: (type, typing.TypeVar) = tl.FiniteSet) -> tl.SetOrIV:
     """Get the satisfaction set of the state formula Sat(a)
 
     Formally:
@@ -253,7 +253,7 @@ def sat_a(m: KripkeStructure, s_prime: tl.SetOrIVInput, label: tl.AtomicProperty
 
 
 def sat_not_phi(m: KripkeStructure, s_prime: tl.SetOrIVInput, sat_phi: tl.SetOrIVInput,
-                output_type: (type, typing.TypeVar) = tl.Set) -> tl.SetOrIV:
+                output_type: (type, typing.TypeVar) = tl.FiniteSet) -> tl.SetOrIV:
     """Get the satisfaction set of the state formula Sat(¬Φ)
 
     Formally:
@@ -289,7 +289,7 @@ def sat_not_phi(m: KripkeStructure, s_prime: tl.SetOrIVInput, sat_phi: tl.SetOrI
     # Superfluous coercion
     min_not_sat_phi_iv = tl.coerce_incidence_vector(min_not_sat_phi_iv, m.s)
 
-    if output_type == tl.Set:
+    if output_type == tl.FiniteSet:
         min_not_sat_phi_subset = sa.get_set(min_not_sat_phi_iv, m.s)
         logging.debug(f'Sat(¬{sat_phi}) = {min_not_sat_phi_subset}')
         return min_not_sat_phi_subset
@@ -299,7 +299,7 @@ def sat_not_phi(m: KripkeStructure, s_prime: tl.SetOrIVInput, sat_phi: tl.SetOrI
 
 
 def sat_phi_or_psi(m: KripkeStructure, s_prime: tl.SetOrIVInput, sat_phi: tl.SetOrIVInput,
-                   sat_psi: tl.SetOrIVInput, output_type: (type, typing.TypeVar) = tl.Set) -> tl.SetOrIV:
+                   sat_psi: tl.SetOrIVInput, output_type: (type, typing.TypeVar) = tl.FiniteSet) -> tl.SetOrIV:
     """Get the satisfaction set of the state formula Sat(Φ ∨ Ψ)
 
     Formally:
@@ -345,7 +345,7 @@ def sat_phi_or_psi(m: KripkeStructure, s_prime: tl.SetOrIVInput, sat_phi: tl.Set
     # Superfluous coercion
     phi_or_psi_iv = tl.coerce_incidence_vector(phi_or_psi_iv, m.s)
 
-    if output_type == tl.Set:
+    if output_type == tl.FiniteSet:
         phi_or_psi_subset = sa.get_set(phi_or_psi_iv, m.s)
         logging.debug(f'Sat({sat_phi} ∨ {sat_psi}) = {phi_or_psi_subset}')
         return phi_or_psi_subset
@@ -355,7 +355,7 @@ def sat_phi_or_psi(m: KripkeStructure, s_prime: tl.SetOrIVInput, sat_phi: tl.Set
 
 
 def sat_phi_and_psi(m: KripkeStructure, s_prime: tl.SetOrIVInput, sat_phi: tl.SetOrIVInput,
-                    sat_psi: tl.SetOrIVInput, output_type: (type, typing.TypeVar) = tl.Set) -> tl.SetOrIV:
+                    sat_psi: tl.SetOrIVInput, output_type: (type, typing.TypeVar) = tl.FiniteSet) -> tl.SetOrIV:
     """Get the satisfaction set of the state formula Sat(Φ ∧ Ψ)
 
     Formally:
@@ -401,7 +401,7 @@ def sat_phi_and_psi(m: KripkeStructure, s_prime: tl.SetOrIVInput, sat_phi: tl.Se
     # Superfluous coercion
     phi_and_psi_iv = tl.coerce_incidence_vector(phi_and_psi_iv, m.s)
 
-    if output_type == tl.Set:
+    if output_type == tl.FiniteSet:
         phi_or_psi_subset = sa.get_set(phi_and_psi_iv, m.s)
         logging.debug(f'Sat({sat_phi} ∧ {sat_psi}) = {phi_or_psi_subset}')
         return phi_or_psi_subset
