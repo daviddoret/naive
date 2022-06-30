@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='naive',
-      version='0.2',
+      version='0.3',
       description='Testing installation of Package',
       url='#',
       author='David Doret',

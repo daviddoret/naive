@@ -19,6 +19,9 @@ RMDIR /Q /S docs\source\pages
 RMDIR /Q /S docs\build
 
 
+pip uninstall naive -y
+pip install naive
+
 ECHO.
 @ECHO Build Documentation
 ECHO Same command as Read The Docs (except folder name 'build' instead of '_build')

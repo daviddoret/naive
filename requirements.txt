@@ -2,5 +2,5 @@ numpy>=1.23.0
 nptyping>=2.2.0
 typing>=3.7.4.3
 dataclasses>=0.6
-rich
+
 

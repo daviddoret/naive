@@ -380,14 +380,6 @@ class FiniteSet(list):
     Sample 1:
 
         .. jupyter-execute::
-            :hide-code:
-
-            import sys
-            import os
-            os.chdir(r'C:\Users\david\PycharmProjects\naive')
-            print('hello')
-
-        .. jupyter-execute::
 
             import sys
             import os
@@ -395,7 +387,7 @@ class FiniteSet(list):
             #print(o)
             print(f'sys.path: {sys.path}')
             print(f'os.getcwd(): {os.getcwd()}')
-            print('hello ∅ world')
+            print('hello xxx world')
             import naive.type_library as tl
 
     """
