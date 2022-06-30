@@ -340,15 +340,15 @@ def fs_equal_fs(s: SetInput, t: SetInput) -> bool:
         & s = t \\iff ((|s| = |t|) \\land (\\forall i \\in [1, |s|], s_i = t_i))
         \\end{align*}
 
-    Sample 1:
+    .. Comment Sample 1:
 
-        .. exec_code::
-            :filename: finite_set_sample_1.py
+    .. Comment    .. exec_code::
+    .. Comment        :filename: finite_set_sample_1.py
 
-    Sample 2:
+    .. Comment Sample 2:
 
-        .. exec_code::
-            :filename: set_sample_2.py
+    .. Comment    .. exec_code::
+    .. Comment        :filename: set_sample_2.py
 
     """
     if s is None and t is None:
@@ -380,22 +380,23 @@ class FiniteSet(list):
     Sample 1:
 
         .. jupyter-execute::
+            :hide-code:
 
             import sys
             import os
-            #os.chdir('C:\\Users\\david\\PycharmProjects\\naive')
-            #os.chdir('C:/Users/david/PycharmProjects/naive')
-            #import naive.type_library as tl
+            os.chdir(r'C:\Users\david\PycharmProjects\naive')
+            print('hello')
+
+        .. jupyter-execute::
+
+            import sys
+            import os
             #o = tl.Element('hello')
             #print(o)
             print(f'sys.path: {sys.path}')
-            print(f'os.get_cwd(): {os.get_cwd()}')
+            print(f'os.getcwd(): {os.getcwd()}')
             print('hello ∅ world')
-
-    Sample 1:
-
-        .. exec_code::
-            :filename: finite_set_sample_1.py
+            import naive.type_library as tl
 
     """
 

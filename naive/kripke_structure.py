@@ -283,7 +283,7 @@ def sat_not_phi(m: KripkeStructure, s_prime: tl.SetOrIVInput, sat_phi: tl.SetOrI
     s_prime_iv = sa.get_incidence_vector(s_prime, m.s)
     sat_phi_iv = sa.get_incidence_vector(sat_phi, m.s)
 
-    not_sat_phi_iv = sa.get_logical_not(sat_phi_iv)
+    not_sat_phi_iv = ba.get_logical_not(sat_phi_iv)
     min_not_sat_phi_iv = ba.get_minima(s_prime_iv, not_sat_phi_iv)
 
     # Superfluous coercion

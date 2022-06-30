@@ -18,10 +18,10 @@ import pathlib
 # Reference: https://stackoverflow.com/questions/10324393/sphinx-build-fail-autodoc-cant-import-find-module
 #sys.path.insert(0, os.path.abspath(u'../../naive'))
 # sys.path.insert(0, os.path.abspath('..'))
-sys.path.insert(0, os.path.abspath('C:\\Users\\david\\PycharmProjects\\naive'))
-print(f'sys.path: {sys.path}')
-package_path = os.path.abspath('../..')
-os.environ['PYTHONPATH'] = ':'.join((package_path, os.environ.get('PYTHONPATH', '')))
+#sys.path.insert(0, os.path.abspath('C:\\Users\\david\\PycharmProjects\\naive'))
+#print(f'sys.path: {sys.path}')
+#package_path = os.path.abspath('../..')
+#os.environ['PYTHONPATH'] = ':'.join((package_path, os.environ.get('PYTHONPATH', '')))
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here.
@@ -112,12 +112,10 @@ autodoc_mock_imports = ["typing", "numpy", "collections.abc", "nptyping"]
 # sphinx-exec-code configuration
 # source: https://sphinx-exec-code.readthedocs.io/en/latest/configuration.html
 # exec_code_working_dir = pathlib.Path(u'../../samples')
-exec_code_folders = ['../..']
-exec_code_example_dir = pathlib.Path(u'../../samples')
+#exec_code_folders = ['../..']
+#exec_code_example_dir = pathlib.Path(u'../../samples')
 
 
 import os
 os.chdir('C:\\Users\\david\\PycharmProjects\\naive')
 sys.path.insert(0, 'C:\\Users\\david\\PycharmProjects\\naive')
-print(f'sys.path: {sys.path}')
-print(f'os.getcwd(): {os.getcwd()}')
