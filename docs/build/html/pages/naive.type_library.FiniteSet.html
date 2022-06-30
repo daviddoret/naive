@@ -152,21 +152,14 @@
 <blockquote>
 <div><div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="c1">#o = tl.Element(&#39;hello&#39;)</span>
-<span class="c1">#print(o)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sys.path: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;os.getcwd(): </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;hello xxx world&#39;</span><span class="p">)</span>
-<span class="kn">import</span> <span class="nn">naive.type_library</span> <span class="k">as</span> <span class="nn">tl</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">naive.type_library</span> <span class="k">as</span> <span class="nn">tl</span>
+<span class="n">o</span> <span class="o">=</span> <span class="n">tl</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>sys.path: [&#39;C:\\Users\\david\\PycharmProjects\\naive\\docs&#39;, &#39;C:\\Users\\david\\PycharmProjects\\naive:&#39;, &#39;C:\\Program Files\\Python310\\python310.zip&#39;, &#39;C:\\Program Files\\Python310\\DLLs&#39;, &#39;C:\\Program Files\\Python310\\lib&#39;, &#39;C:\\Program Files\\Python310&#39;, &#39;C:\\Users\\david\\PycharmProjects\\naive\\venv&#39;, &#39;&#39;, &#39;C:\\Users\\david\\PycharmProjects\\naive\\venv\\lib\\site-packages&#39;, &#39;C:\\Users\\david\\PycharmProjects\\naive\\venv\\lib\\site-packages\\win32&#39;, &#39;C:\\Users\\david\\PycharmProjects\\naive\\venv\\lib\\site-packages\\win32\\lib&#39;, &#39;C:\\Users\\david\\PycharmProjects\\naive\\venv\\lib\\site-packages\\Pythonwin&#39;]
-os.getcwd(): C:\Users\david\PycharmProjects\naive\docs
-hello xxx world
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>hello
 </pre></div>
 </div>
 </div>
