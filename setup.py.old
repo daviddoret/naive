@@ -1,11 +1,14 @@
 from setuptools import setup
 
+package_dir = {'': 'src'},
+py_modules = ["type_library", "binary_algebra", "set_algebra"],
+
 setup(name='naive',
-      version='0.3',
+      version='0.',
       description='Testing installation of Package',
       url='#',
       author='David Doret',
       author_email='',
       license='MIT',
-      packages=['naive'],
+      packages=['numpy, typing, nptyping, dataclasses'],
       zip_safe=False)

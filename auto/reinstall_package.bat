@@ -1,4 +1,5 @@
 
 
 pip uninstall naive -y
-pip install naive
+REM pip install naive
+pip install -e .

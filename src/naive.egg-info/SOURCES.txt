@@ -1,6 +1,7 @@
 LICENSE
 README.txt
 pyproject.toml
+setup.cfg
 src/__init__.py
 src/naive/__init__.py
 src/naive/__main__.py
@@ -9,7 +10,6 @@ src/naive/conf.py
 src/naive/hello_world.py
 src/naive/kripke_structure.py
 src/naive/set_algebra.py
-src/naive/setup.py
 src/naive/type_library.py
 src/naive.egg-info/PKG-INFO
 src/naive.egg-info/SOURCES.txt
