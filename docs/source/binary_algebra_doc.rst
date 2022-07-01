@@ -7,7 +7,7 @@ TODO: Include documentation
 
    This project is under active development.
 
-.. module:: naive.binary_algebra
+.. currentmodule:: naive.binary_algebra
 
 Functions
 ---------

@@ -195,16 +195,6 @@ def bv_equal_bv(v: BinaryVectorInput, w: BinaryVectorInput) -> bool:
         & v = w \\iff ((|v| = |w|) \\land (\\forall i \\in [1, |v|], v_i = w_i))
         \\end{align}
 
-    Sample 1:
-
-        .. exec_code::
-            :filename: binary_vector_equal_sample_1.py
-
-    Sample 2:
-
-        .. exec_code::
-            :filename: binary_vector_equal_sample_2.py
-
     """
     if v is None and w is None:
         # The special case undefined = undefined is defined as True
@@ -339,16 +329,6 @@ def fs_equal_fs(s: SetInput, t: SetInput) -> bool:
         & \\text{Let } t \\text{ be a finite set with elements }  (t_1, t_2, \\cdots, t_m) & \\\\
         & s = t \\iff ((|s| = |t|) \\land (\\forall i \\in [1, |s|], s_i = t_i))
         \\end{align}
-
-    .. Comment Sample 1:
-
-    .. Comment    .. exec_code::
-    .. Comment        :filename: finite_set_sample_1.py
-
-    .. Comment Sample 2:
-
-    .. Comment    .. exec_code::
-    .. Comment        :filename: set_sample_2.py
 
     """
     if s is None and t is None:

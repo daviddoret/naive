@@ -1,8 +1,7 @@
 Welcome to Naive's documentation!
 ===================================
 
-**Naive** (/naɪˈiːv/) is a model checking Python library. Its salient characteristics are:
-TODO: Include documentation
+**Naive** (/naɪˈiːv/) is a model checking Python library. Its salient characteristics are: blablablabla
 
 .. note::
 

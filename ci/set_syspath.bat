@@ -1,5 +1,7 @@
+@ECHO OFF
+@ECHO.
 @ECHO set_syspath.bat
 
-cd .\auto
+cd .\ci
 python -m set_syspath
 cd ..

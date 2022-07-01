@@ -1,16 +1,17 @@
 
 @ECHO SET PATH
 
-CALL .\auto\set_syspath.bat
+CALL .\ci\set_syspath.bat
 
 @ECHO BUILD PACKAGE
 
-CALL .\auto\build_package.bat
+CALL .\ci\build_package.bat
 
 @ECHO REINSTALL PACKAGE
 
-CALL .\auto\reinstall_package.bat
+CALL .\ci\reinstall_package.bat
 
 @ECHO BUILD DOCUMENTATION
 
-CALL .\docs\make html
+CALL .\ci\build_documentation.bat
+
