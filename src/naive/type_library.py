@@ -189,11 +189,11 @@ def bv_equal_bv(v: BinaryVectorInput, w: BinaryVectorInput) -> bool:
     Formally:
 
     .. math::
-        \\begin{align*}
+        \\begin{align}
         & \\text{Let } v \\text{ be a binary vector with elements } (v_1, v_2, \\cdots, v_n) & \\\\
         & \\text{Let } w \\text{ be a binary vector with elements }  (w_1, w_2, \\cdots, w_m) & \\\\
         & v = w \\iff ((|v| = |w|) \\land (\\forall i \\in [1, |v|], v_i = w_i))
-        \\end{align*}
+        \\end{align}
 
     Sample 1:
 
@@ -334,11 +334,11 @@ def fs_equal_fs(s: SetInput, t: SetInput) -> bool:
     Formally:
 
     .. math::
-        \\begin{align*}
+        \\begin{align}
         & \\text{Let } s \\text{ be a finite set with elements } (s_1, s_2, \\cdots, s_n) & \\\\
         & \\text{Let } t \\text{ be a finite set with elements }  (t_1, t_2, \\cdots, t_m) & \\\\
         & s = t \\iff ((|s| = |t|) \\land (\\forall i \\in [1, |s|], s_i = t_i))
-        \\end{align*}
+        \\end{align}
 
     .. Comment Sample 1:
 
@@ -393,7 +393,7 @@ class FiniteSet(list):
         Under the hood, this method uses the Numpy view method to subtype NDArray.
 
         Args:
-            *args (optional): Source (possibly iterable) objects from which to infer the vector.
+            \*args (optional): Source (possibly iterable) objects from which to infer the vector.
             size (int, optional): (Conditional) The size of the finite set. Warning: if ** *args ** comprises more elements than **size**, the superfluous elements are truncated with a warning.
             prefix (str, optional): (Conditional) A prefix if new elements must be included in the set to reach size. Defaults to 'e'.
             init (int, optional): (Conditional) An initial value if new elements must be included in the set to reach size. Defaults to 1.

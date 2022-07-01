@@ -1,4 +1,4 @@
-Set Algebra
+Binary Algebra
 ===================================
 
 TODO: Include documentation
@@ -7,7 +7,7 @@ TODO: Include documentation
 
    This project is under active development.
 
-.. currentmodule:: naive.set_algebra
+.. module:: naive.binary_algebra
 
 Functions
 ---------
@@ -16,5 +16,7 @@ Functions
     :toctree: pages
     :recursive:
 
-    equal
+    get_logical_not
+    get_maxima
+    get_minima
 

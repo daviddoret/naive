@@ -7,7 +7,7 @@ TODO: Include documentation
 
    This project is under active development.
 
-.. currentmodule:: naive.set_algebra
+.. module:: naive.set_algebra
 
 Functions
 ---------

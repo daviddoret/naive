@@ -1,0 +1,1 @@
+call .\auto\full_process.bat

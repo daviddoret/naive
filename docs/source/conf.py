@@ -29,6 +29,10 @@ print(f'sys.path: {sys.path}')
 print(f'os.getcwd(): {os.getcwd()}')
 print(' ')
 
+import naive.type_library
+import naive.binary_algebra
+import naive.set_algebra
+
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here.

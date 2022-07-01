@@ -1,5 +1,7 @@
 import sys, os
 
+print('set_syspath.py')
+
 package_path = os.path.abspath('..\\src\\naive')
 
 sys.path.insert(0, package_path)

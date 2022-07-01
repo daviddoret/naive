@@ -44,10 +44,11 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../type_library.html">Type Library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../binary_algebra.html">Binary Algebra</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../set_algebra.html">Set Algebra</a></li>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../set_algebra_doc.html">Set Algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../binary_algebra_doc.html">Binary Algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../type_library_doc.html">Type Library</a></li>
 </ul>
 
         </div>
@@ -266,11 +267,11 @@
 <span class="sd">    Formally:</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        \\begin{align*}</span>
+<span class="sd">        \\begin{align}</span>
 <span class="sd">        &amp; \\text{Let } v \\text{ be a binary vector with elements } (v_1, v_2, \\cdots, v_n) &amp; \\\\</span>
 <span class="sd">        &amp; \\text{Let } w \\text{ be a binary vector with elements }  (w_1, w_2, \\cdots, w_m) &amp; \\\\</span>
 <span class="sd">        &amp; v = w \\iff ((|v| = |w|) \\land (\\forall i \\in [1, |v|], v_i = w_i))</span>
-<span class="sd">        \\end{align*}</span>
+<span class="sd">        \\end{align}</span>
 
 <span class="sd">    Sample 1:</span>
 
@@ -411,11 +412,11 @@
 <span class="sd">    Formally:</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        \\begin{align*}</span>
+<span class="sd">        \\begin{align}</span>
 <span class="sd">        &amp; \\text{Let } s \\text{ be a finite set with elements } (s_1, s_2, \\cdots, s_n) &amp; \\\\</span>
 <span class="sd">        &amp; \\text{Let } t \\text{ be a finite set with elements }  (t_1, t_2, \\cdots, t_m) &amp; \\\\</span>
 <span class="sd">        &amp; s = t \\iff ((|s| = |t|) \\land (\\forall i \\in [1, |s|], s_i = t_i))</span>
-<span class="sd">        \\end{align*}</span>
+<span class="sd">        \\end{align}</span>
 
 <span class="sd">    .. Comment Sample 1:</span>
 
@@ -470,7 +471,7 @@
 <span class="sd">        Under the hood, this method uses the Numpy view method to subtype NDArray.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            *args (optional): Source (possibly iterable) objects from which to infer the vector.</span>
+<span class="sd">            \*args (optional): Source (possibly iterable) objects from which to infer the vector.</span>
 <span class="sd">            size (int, optional): (Conditional) The size of the finite set. Warning: if ** *args ** comprises more elements than **size**, the superfluous elements are truncated with a warning.</span>
 <span class="sd">            prefix (str, optional): (Conditional) A prefix if new elements must be included in the set to reach size. Defaults to &#39;e&#39;.</span>
 <span class="sd">            init (int, optional): (Conditional) An initial value if new elements must be included in the set to reach size. Defaults to 1.</span>

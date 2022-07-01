@@ -16,8 +16,8 @@ from __future__ import annotations
 # import array
 import numpy as np
 import collections.abc as abc
-import src.naive.type_library as tl
-import src.naive.binary_algebra as ba
+import naive.type_library as tl
+import naive.binary_algebra as ba
 
 
 # import itertools

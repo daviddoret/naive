@@ -1,4 +1,8 @@
 
+@ECHO SET PATH
+
+CALL .\auto\set_syspath.bat
+
 @ECHO BUILD PACKAGE
 
 CALL .\auto\build_package.bat

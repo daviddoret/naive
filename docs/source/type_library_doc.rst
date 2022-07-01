@@ -7,7 +7,7 @@ TODO: Include documentation
 
    This project is under active development.
 
-.. currentmodule:: naive.type_library
+.. module:: naive.type_library
 
 Types, Type Aliases, TypeVars, and NewTypes
 -------------------------------------------

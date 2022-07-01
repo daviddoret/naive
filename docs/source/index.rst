@@ -6,15 +6,23 @@ TODO: Include documentation
 
 .. note::
 
-   This project is under active development.
+    This project is under active development.
 
 Contents
 --------
 
 .. toctree::
+    :maxdepth: 2
+    :caption: Table of Contents
 
-    type_library
-    binary_algebra
-    set_algebra
+    set_algebra_doc
+    binary_algebra_doc
+    type_library_doc
 
 
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
