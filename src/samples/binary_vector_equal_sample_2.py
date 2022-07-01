@@ -1,8 +1,7 @@
 """Binary Vector Equality Operator - Code Sample 2
 
 This code sample illustrates how the equality operator behaves on a small sample of distinctive binary vectors"""
-import naive.binary_algebra as ba
-import naive.type_library as tl
+import src.naive.type_library as tl
 
 v1 = tl.BV([])  # This is equivalent to the empty set
 v2 = tl.BV([0])

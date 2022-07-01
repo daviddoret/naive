@@ -18,8 +18,7 @@ ECHO.
 RMDIR /Q /S docs\source\pages
 RMDIR /Q /S docs\build
 
-pip uninstall naive -y
-pip install naive
+
 
 ECHO.
 @ECHO Build Documentation

@@ -1,4 +1,4 @@
-import naive.type_library as tl
+import src.naive.type_library as tl
 #import rich
 
 print(u'If nothing is passed to the constructor, an empty set is returned:')

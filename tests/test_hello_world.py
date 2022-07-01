@@ -1,5 +1,5 @@
 from unittest import TestCase
-import naive.hello_world as hi
+import src.naive.hello_world as hi
 
 
 class Test(TestCase):

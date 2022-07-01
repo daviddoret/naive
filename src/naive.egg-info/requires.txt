@@ -1,0 +1,4 @@
+numpy>=1.13.3
+nptyping>=2.1.3
+typing>=3.7.4.3
+dataclasses>=0.6

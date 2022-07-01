@@ -1,6 +1,5 @@
-import naive.type_library as tl
-import naive.binary_algebra as ba
-import naive.kripke_structure as ks
+import src.naive.binary_algebra as ba
+import src.naive.kripke_structure as ks
 
 
 def get_sample_1():

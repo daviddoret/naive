@@ -12,16 +12,12 @@ from __future__ import annotations
 
 # import array
 # import collections.abc as abc
-import typing
 # import dataclasses
 # import array
 import numpy as np
-import logging
 import collections.abc as abc
-import nptyping as npt
-import math
-import naive.type_library as tl
-import naive.binary_algebra as ba
+import src.naive.type_library as tl
+import src.naive.binary_algebra as ba
 
 
 # import itertools

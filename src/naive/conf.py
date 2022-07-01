@@ -117,5 +117,5 @@ autodoc_mock_imports = ["typing", "numpy", "collections.abc", "nptyping"]
 
 
 import os
-os.chdir('C:\\Users\\david\\PycharmProjects\\naive')
-sys.path.insert(0, 'C:\\Users\\david\\PycharmProjects\\naive')
+os.chdir('/')
+sys.path.insert(0, '/')

@@ -113,7 +113,7 @@ autodoc_mock_imports = ["typing", "numpy", "collections.abc", "nptyping"]
 # source: https://sphinx-exec-code.readthedocs.io/en/latest/configuration.html
 # exec_code_working_dir = pathlib.Path(u'../../samples')
 exec_code_folders = ['../..']
-exec_code_example_dir = pathlib.Path(u'../../samples')
+exec_code_example_dir = pathlib.Path(u'../../src/samples')
 
 
 import os

@@ -1,5 +1,5 @@
 from unittest import TestCase
-import naive.type_library as tl
+import src.naive.type_library as tl
 
 
 class Test(TestCase):

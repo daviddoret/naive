@@ -1,6 +1,6 @@
 from unittest import TestCase
-import naive.type_library as tl
-import naive.binary_algebra as ba
+import src.naive.type_library as tl
+import src.naive.binary_algebra as ba
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
