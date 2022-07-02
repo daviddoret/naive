@@ -131,12 +131,35 @@ autodoc_mock_imports = ["typing", "numpy", "collections.abc", "nptyping"]
 exec_code_folders = ['..\\..\\src']
 exec_code_example_dir = pathlib.Path('..\\..\\src\\samples')
 
+# https://stackoverflow.com/questions/5599254/how-to-use-sphinxs-autodoc-to-document-a-classs-init-self-method
+# https://www.sphinx-doc.org/ar/master/usage/extensions/autodoc.html#confval-autodoc_default_options
+autoclass_content = 'class'
+#autodoc_default_flags = [
+#    'members',
+#    'undoc-members',
+#    'private-members',
+#    'special-members',
+#    'inherited-members',
+#    'show-inheritance',
+#    'ignore-module-all',
+#    'exclude-members'
+#]
+autodoc_default_options = {
+    'members': True,
+    'member-order': 'alphabetical',
+    'special-members': True,
+    # 'undoc-members': True,
+    # 'exclude-members': '__weakref__'
+    #'imported-members':
+    'show-inheritance': True
+}
 
+# Napoleon configuration
 napoleon_google_docstring = True
 napoleon_numpy_docstring = True
-napoleon_include_init_with_doc = False
+napoleon_include_init_with_doc = True
 napoleon_include_private_with_doc = False
-napoleon_include_special_with_doc = False
+napoleon_include_special_with_doc = True
 napoleon_use_admonition_for_examples = False
 napoleon_use_admonition_for_notes = False
 napoleon_use_admonition_for_references = False

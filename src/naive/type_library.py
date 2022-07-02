@@ -17,6 +17,8 @@ import collections.abc as abc
 import nptyping as npt
 import logging
 import math
+from .binary_value import BinaryValue
+from .binary_value import BinaryValueInput
 from .clean_math_variable import clean_math_variable
 from .coerce import coerce
 from .coercion_error import CoercionError
@@ -26,26 +28,6 @@ from .subscript import subscript
 from .superscript import superscript
 
 
-
-
-
-
-
-
-
-BinaryValue = typing.NewType(
-    'BinaryValue',
-    bool)
-"""A NewType equivalent to :math:`\\mathbb{B}`
-
-Under the hood, it is a :py:class:`bool`."""
-
-BinaryValueInput = typing.TypeVar(
-    'BinaryValueInput',
-    BinaryValue,
-    bool,
-    int
-)
 """A TypeVar that represent types commonly accepted as equivalent to :py:data:`BinaryValue`.
 
 Main usages:

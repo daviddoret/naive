@@ -118,7 +118,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="naive.coerce">
 <span class="sig-prename descclassname"><span class="pre">naive.</span></span><span class="sig-name descname"><span class="pre">coerce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">o</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><span class="pre">object</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.10)"><span class="pre">type</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/naive/coerce.html#coerce"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.coerce" title="Permalink to this definition"></a></dt>
-<dd><p>Coerces an object <cite>o</cite> to type <cite>cls</cite>.</p>
+<dd><p>Coerces an object <strong>o</strong> to type <strong>cls</strong>.</p>
 <p>This function is useful to implement single line argument type coercion in functions and methods.</p>
 <p>The assumption behind <strong>coerce</strong> is that all classes implement a coercive constructor. Raises a <strong>CoercionError</strong> if the coercion fails.</p>
 <dl class="field-list simple">
@@ -141,6 +141,24 @@
 </ul>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">naive</span>
+<span class="n">n</span> <span class="o">=</span> <span class="s2">&quot;5&quot;</span>
+<span class="n">n_prime</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">coerce</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">naive</span><span class="o">.</span><span class="n">NN0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">n_prime</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">n_prime</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;naive.natural_number_0.NaturalNumber0&#39;&gt;
+5
+</pre></div>
+</div>
+</div>
+</div>
 <p class="rubric">Notes</p>
 <p>High-level algorithm:</p>
 <ol class="arabic simple">

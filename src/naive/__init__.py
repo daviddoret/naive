@@ -7,6 +7,8 @@ __version__ = "0.1.5"
 #import importlib.metadata
 #__version__ = importlib.metadata.version("naive")
 
+from .binary_value import BinaryValue
+from .binary_value import BinaryValueInput
 from .clean_math_variable import clean_math_variable
 from .coerce import coerce
 from .coercion_error import CoercionError
@@ -16,4 +18,5 @@ from .subscript import subscript
 from .superscript import superscript
 
 """A shorthand for NaturalNumber0."""
+BV = BinaryValue
 NN0 = NaturalNumber0

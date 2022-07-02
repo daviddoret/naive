@@ -22,6 +22,16 @@ def coerce(o: (None, object), cls: type) -> (None, object):
         CoercionWarning: If ambiguous type coercion was necessary.
         CoercionError: If type coercion failed.
 
+    Example:
+
+        .. jupyter-execute::
+
+            import naive
+            n = "5"
+            n_prime = naive.coerce(n, naive.NN0)
+            print(type(n_prime))
+            print(n_prime)
+
     Notes:
         High-level algorithm:
 

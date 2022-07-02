@@ -85,7 +85,7 @@
 
 
 <div class="viewcode-block" id="coerce"><a class="viewcode-back" href="../../pages/naive.coerce.html#naive.coerce">[docs]</a><span class="k">def</span> <span class="nf">coerce</span><span class="p">(</span><span class="n">o</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span> <span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Coerces an object `o` to type `cls`.</span>
+    <span class="sd">&quot;&quot;&quot;Coerces an object **o** to type **cls**.</span>
 
 <span class="sd">    This function is useful to implement single line argument type coercion in functions and methods.</span>
 
@@ -101,6 +101,16 @@
 <span class="sd">    Raises:</span>
 <span class="sd">        CoercionWarning: If ambiguous type coercion was necessary.</span>
 <span class="sd">        CoercionError: If type coercion failed.</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">        .. jupyter-execute::</span>
+
+<span class="sd">            import naive</span>
+<span class="sd">            n = &quot;5&quot;</span>
+<span class="sd">            n_prime = naive.coerce(n, naive.NN0)</span>
+<span class="sd">            print(type(n_prime))</span>
+<span class="sd">            print(n_prime)</span>
 
 <span class="sd">    Notes:</span>
 <span class="sd">        High-level algorithm:</span>

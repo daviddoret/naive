@@ -1,4 +1,5 @@
 from unittest import TestCase
+import src.naive
 import src.naive.type_library as tl
 import src.naive.binary_algebra as ba
 import logging
