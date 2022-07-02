@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>naive.type_library.coerce_binary_matrix &mdash; naive 0.1 documentation</title>
+  <title>naive.type_library.clean_math_variable &mdash; naive 0.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/jupyter-sphinx.css" type="text/css" />
@@ -25,8 +25,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="naive.type_library.coerce_binary_square_matrix" href="naive.type_library.coerce_binary_square_matrix.html" />
-    <link rel="prev" title="naive.type_library.coerce_atomic_property_set" href="naive.type_library.coerce_atomic_property_set.html" /> 
+    <link rel="next" title="naive.type_library.coerce" href="naive.type_library.coerce.html" />
+    <link rel="prev" title="naive.type_library.StateSetInput" href="naive.type_library.StateSetInput.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -54,23 +54,11 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../type_library_doc.html">Type Library</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../type_library_doc.html#types-type-aliases-typevars-and-newtypes">Types, Type Aliases, TypeVars, and NewTypes</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../type_library_doc.html#functions">Functions</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="naive.type_library.coerce_atomic_property.html">naive.type_library.coerce_atomic_property</a></li>
-<li class="toctree-l3"><a class="reference internal" href="naive.type_library.coerce_atomic_property_set.html">naive.type_library.coerce_atomic_property_set</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">naive.type_library.coerce_binary_matrix</a></li>
-<li class="toctree-l3"><a class="reference internal" href="naive.type_library.coerce_binary_square_matrix.html">naive.type_library.coerce_binary_square_matrix</a></li>
-<li class="toctree-l3"><a class="reference internal" href="naive.type_library.coerce_binary_value.html">naive.type_library.coerce_binary_value</a></li>
-<li class="toctree-l3"><a class="reference internal" href="naive.type_library.coerce_binary_vector.html">naive.type_library.coerce_binary_vector</a></li>
-<li class="toctree-l3"><a class="reference internal" href="naive.type_library.coerce_element.html">naive.type_library.coerce_element</a></li>
-<li class="toctree-l3"><a class="reference internal" href="naive.type_library.coerce_incidence_vector.html">naive.type_library.coerce_incidence_vector</a></li>
-<li class="toctree-l3"><a class="reference internal" href="naive.type_library.coerce_set.html">naive.type_library.coerce_set</a></li>
-<li class="toctree-l3"><a class="reference internal" href="naive.type_library.coerce_set_or_iv_type.html">naive.type_library.coerce_set_or_iv_type</a></li>
-<li class="toctree-l3"><a class="reference internal" href="naive.type_library.coerce_state.html">naive.type_library.coerce_state</a></li>
-<li class="toctree-l3"><a class="reference internal" href="naive.type_library.coerce_state_set.html">naive.type_library.coerce_state_set</a></li>
-<li class="toctree-l3"><a class="reference internal" href="naive.type_library.coerce_state_subset.html">naive.type_library.coerce_state_subset</a></li>
-<li class="toctree-l3"><a class="reference internal" href="naive.type_library.coerce_subset.html">naive.type_library.coerce_subset</a></li>
-<li class="toctree-l3"><a class="reference internal" href="naive.type_library.coerce_subset_or_iv.html">naive.type_library.coerce_subset_or_iv</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">naive.type_library.clean_math_variable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="naive.type_library.coerce.html">naive.type_library.coerce</a></li>
 <li class="toctree-l3"><a class="reference internal" href="naive.type_library.flatten.html">naive.type_library.flatten</a></li>
 <li class="toctree-l3"><a class="reference internal" href="naive.type_library.is_instance.html">naive.type_library.is_instance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="naive.type_library.subscript.html">naive.type_library.subscript</a></li>
 </ul>
 </li>
 </ul>
@@ -92,9 +80,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../type_library_doc.html">Type Library</a> &raquo;</li>
-      <li>naive.type_library.coerce_binary_matrix</li>
+      <li>naive.type_library.clean_math_variable</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/pages/naive.type_library.coerce_binary_matrix.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/pages/naive.type_library.clean_math_variable.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -126,18 +114,20 @@
     text-align: unset;
 }
 </style>
-<section id="naive-type-library-coerce-binary-matrix">
-<h1>naive.type_library.coerce_binary_matrix<a class="headerlink" href="#naive-type-library-coerce-binary-matrix" title="Permalink to this heading"></a></h1>
+<section id="naive-type-library-clean-math-variable">
+<h1>naive.type_library.clean_math_variable<a class="headerlink" href="#naive-type-library-clean-math-variable" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="naive.type_library.coerce_binary_matrix">
-<span class="sig-prename descclassname"><span class="pre">naive.type_library.</span></span><span class="sig-name descname"><span class="pre">coerce_binary_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BinaryMatrixInput</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool_]</span></span></span><a class="reference internal" href="../_modules/naive/type_library.html#coerce_binary_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.type_library.coerce_binary_matrix" title="Permalink to this definition"></a></dt>
-<dd><p>YYY</p>
+<dt class="sig sig-object py" id="naive.type_library.clean_math_variable">
+<span class="sig-prename descclassname"><span class="pre">naive.type_library.</span></span><span class="sig-name descname"><span class="pre">clean_math_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/naive/clean_math_variable.html#clean_math_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.type_library.clean_math_variable" title="Permalink to this definition"></a></dt>
+<dd><p>Clean a string from characters that are unusual in math variable names.</p>
+<p>Basically we keep alphanumeric characters, including greek letters, subscripts and superscripts.</p>
+<p>Incidentally, the idea is to avoid ambiguities and confusions that may arise from unwanted characters such as punctuation and mathematical operators.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> – </p>
+<dd class="field-odd"><p><strong>s</strong> – A raw variable name that potentially contains unusual characters.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
+<dd class="field-even"><p>A clean variable name that is safe from unusual characters.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -148,8 +138,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="naive.type_library.coerce_atomic_property_set.html" class="btn btn-neutral float-left" title="naive.type_library.coerce_atomic_property_set" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="naive.type_library.coerce_binary_square_matrix.html" class="btn btn-neutral float-right" title="naive.type_library.coerce_binary_square_matrix" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="naive.type_library.StateSetInput.html" class="btn btn-neutral float-left" title="naive.type_library.StateSetInput" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="naive.type_library.coerce.html" class="btn btn-neutral float-right" title="naive.type_library.coerce" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

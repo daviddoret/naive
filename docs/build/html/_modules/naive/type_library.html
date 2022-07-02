@@ -95,65 +95,19 @@
 <span class="kn">import</span> <span class="nn">nptyping</span> <span class="k">as</span> <span class="nn">npt</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">.clean_math_variable</span> <span class="kn">import</span> <span class="n">clean_math_variable</span>
+<span class="kn">from</span> <span class="nn">.coerce</span> <span class="kn">import</span> <span class="n">coerce</span>
+<span class="kn">from</span> <span class="nn">.NaturalNumber0</span> <span class="kn">import</span> <span class="n">NaturalNumber0</span>
+<span class="kn">from</span> <span class="nn">.subscript</span> <span class="kn">import</span> <span class="n">subscript</span>
+<span class="kn">from</span> <span class="nn">.superscript</span> <span class="kn">import</span> <span class="n">superscript</span>
+
+<span class="sd">&quot;&quot;&quot;A shorthand for NaturalNumber0.&quot;&quot;&quot;</span>
+<span class="n">NN0</span> <span class="o">=</span> <span class="n">NaturalNumber0</span>
 
 
-<span class="k">def</span> <span class="nf">subscript</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
 
 
-<span class="sd">    Bibliography:</span>
-<span class="sd">        * https://stackoverflow.com/questions/13875507/convert-numeric-strings-to-superscript</span>
 
-<span class="sd">    :param s:</span>
-<span class="sd">    :return:</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">subscript_dictionary</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;0&#39;</span><span class="p">:</span> <span class="s1">&#39;₀&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="s1">&#39;₁&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;2&#39;</span><span class="p">:</span> <span class="s1">&#39;₂&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;3&#39;</span><span class="p">:</span> <span class="s1">&#39;₃&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;4&#39;</span><span class="p">:</span> <span class="s1">&#39;₄&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;5&#39;</span><span class="p">:</span> <span class="s1">&#39;₅&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;6&#39;</span><span class="p">:</span> <span class="s1">&#39;₆&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;7&#39;</span><span class="p">:</span> <span class="s1">&#39;₇&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;8&#39;</span><span class="p">:</span> <span class="s1">&#39;₈&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;9&#39;</span><span class="p">:</span> <span class="s1">&#39;₉&#39;</span><span class="p">}</span>
-    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subscript_dictionary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="n">char</span><span class="p">)</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">s</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">superscript</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">    Bibliography:</span>
-<span class="sd">        * https://stackoverflow.com/questions/13875507/convert-numeric-strings-to-superscript</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        :param s:</span>
-<span class="sd">        :return:</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">subscript_dictionary</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;0&#39;</span><span class="p">:</span> <span class="s1">&#39;⁰&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="s1">&#39;¹&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;2&#39;</span><span class="p">:</span> <span class="s1">&#39;²&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;3&#39;</span><span class="p">:</span> <span class="s1">&#39;³&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;4&#39;</span><span class="p">:</span> <span class="s1">&#39;⁴&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;5&#39;</span><span class="p">:</span> <span class="s1">&#39;⁵&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;6&#39;</span><span class="p">:</span> <span class="s1">&#39;⁶&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;7&#39;</span><span class="p">:</span> <span class="s1">&#39;⁷&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;8&#39;</span><span class="p">:</span> <span class="s1">&#39;⁸&#39;</span><span class="p">,</span>
-                            <span class="s1">&#39;9&#39;</span><span class="p">:</span> <span class="s1">&#39;⁹&#39;</span><span class="p">}</span>
-    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subscript_dictionary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="n">char</span><span class="p">)</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">s</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">clean_math_variable</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Clean a string from characters that are unusual in math variable names.</span>
-
-<span class="sd">    Basically we keep alphanumeric characters, including greek letters, subscripts and superscripts.</span>
-
-<span class="sd">    Incidentally, the idea is to avoid ambiguities and confusions that may arise from unwanted characters such as punctuation and mathematical operators.</span>
-
-<span class="sd">    :param s: A raw variable name that potentially contains unusual characters.</span>
-<span class="sd">    :return: A clean variable name that is safe from unusual characters.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">isalpha</span><span class="p">()</span> <span class="ow">or</span> <span class="n">c</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()])</span>
 
 
 <span class="n">BinaryValue</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">NewType</span><span class="p">(</span>
@@ -434,14 +388,82 @@
 <span class="sd">    Bibliography:</span>
 <span class="sd">        - https://stackoverflow.com/questions/4868291/how-to-subclass-array-array-and-have-its-derived-constructor-take-no-parameters</span>
 
+<span class="sd">    Usage:</span>
 
-<span class="sd">    Sample 1:</span>
+<span class="sd">        .. jupyter-execute::</span>
+<span class="sd">            :hide-output:</span>
+
+<span class="sd">            import naive.type_library as tl</span>
 
 <span class="sd">        .. jupyter-execute::</span>
 
-<span class="sd">            import naive.type_library as tl</span>
-<span class="sd">            o = tl.Element(&#39;hello&#39;)</span>
-<span class="sd">            print(o)</span>
+<span class="sd">            # If nothing is passed to the constructor, an empty set is returned:</span>
+<span class="sd">            s = tl.FiniteSet()</span>
+<span class="sd">            print(s)</span>
+
+<span class="sd">        .. jupyter-execute::</span>
+
+<span class="sd">            # Finite sets may be built from a series of string-equivalent objects:</span>
+<span class="sd">            s = tl.FiniteSet(u&#39;Platypus&#39;, &#39;Euler&#39;, &#39;Boson&#39;)</span>
+<span class="sd">            print(s)</span>
+
+<span class="sd">        .. jupyter-execute::</span>
+
+<span class="sd">            # ...or iterable objects:</span>
+<span class="sd">            s = tl.FiniteSet([&#39;Platypus&#39;, &#39;Euler&#39;, &#39;Boson&#39;])</span>
+<span class="sd">            print(s)</span>
+
+<span class="sd">        .. jupyter-execute::</span>
+
+<span class="sd">            # FS is shorthand for FiniteSet:</span>
+<span class="sd">            s = tl.FS(u&#39;FS&#39;, &#39;FiniteSet&#39;)</span>
+<span class="sd">            print(s)</span>
+
+<span class="sd">        .. jupyter-execute::</span>
+
+<span class="sd">            # Mathematical sets are unordered by definition,</span>
+<span class="sd">            # but naive implementation is automatically ordered:</span>
+<span class="sd">            s = tl.FiniteSet(&#39;h&#39;, &#39;g&#39;, &#39;b&#39;, &#39;a&#39;, &#39;c&#39;, &#39;f&#39;, &#39;g&#39;)</span>
+<span class="sd">            print(s)</span>
+<span class="sd">            # The reason for this design choice are:</span>
+<span class="sd">            #  1) readability,</span>
+<span class="sd">            #  2) compatibility with incidence vectors.</span>
+
+<span class="sd">        .. jupyter-execute::</span>
+
+<span class="sd">            # The constructor is adaptive and flattens whatever input it gets:</span>
+<span class="sd">            s = tl.FS(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, [&#39;d&#39;, &#39;e&#39;, [&#39;f&#39;]])</span>
+<span class="sd">            print(s)</span>
+
+<span class="sd">        .. jupyter-execute::</span>
+
+<span class="sd">            # The size shortcut helps create sets of canonically named elements:</span>
+<span class="sd">            s = tl.FS(size=5)</span>
+<span class="sd">            print(s)</span>
+
+<span class="sd">        .. jupyter-execute::</span>
+
+<span class="sd">            # ...with a custom prefix:</span>
+<span class="sd">            s = tl.FS(size=3, prefix=&#39;x&#39;)</span>
+<span class="sd">            print(s)</span>
+
+<span class="sd">        .. jupyter-execute::</span>
+
+<span class="sd">            # ...0-based index:</span>
+<span class="sd">            s = tl.FS(size=3, prefix=&#39;y&#39;, init=0)</span>
+<span class="sd">            print(s)</span>
+
+<span class="sd">        .. jupyter-execute::</span>
+
+<span class="sd">            # Note that spaces (&quot; &quot;) and commas (&quot;,&quot;) are forbidden in element names to avoid ambiguity:</span>
+<span class="sd">            s = tl.FS(&#39;hack, the, list&#39;)</span>
+<span class="sd">            print(s)</span>
+
+<span class="sd">        .. jupyter-execute::</span>
+
+<span class="sd">            # Note that indexes are voluntarily padded for easier alphanumeric ordering:</span>
+<span class="sd">            s = tl.FS(size=12, prefix=&#39;y&#39;, init=1)</span>
+<span class="sd">            print(s)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -624,7 +646,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="coerce_binary_value"><a class="viewcode-back" href="../../pages/naive.type_library.coerce_binary_value.html#naive.type_library.coerce_binary_value">[docs]</a><span class="k">def</span> <span class="nf">coerce_binary_value</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">BinaryValueInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BinaryValue</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">coerce_binary_value</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">BinaryValueInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BinaryValue</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Coerce an object of a compatible Python type to the **BinaryValue** type.</span>
 
 <span class="sd">    :param x: A Python object of a compatible type.</span>
@@ -638,10 +660,10 @@
         <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;coerce_binary_value(</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">[</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s1">]) -&gt; </span><span class="si">{</span><span class="n">coerced_x</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">BinaryValue</span><span class="p">(</span><span class="n">coerced_x</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;coerce_binary_value: </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1"> is of unsupported type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;coerce_binary_value: </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1"> is of unsupported type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="coerce_binary_matrix"><a class="viewcode-back" href="../../pages/naive.type_library.coerce_binary_matrix.html#naive.type_library.coerce_binary_matrix">[docs]</a><span class="k">def</span> <span class="nf">coerce_binary_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">BinaryMatrixInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BinaryMatrix</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">coerce_binary_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">BinaryMatrixInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BinaryMatrix</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;YYY</span>
 
 <span class="sd">    :param x:</span>
@@ -674,10 +696,10 @@
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Incorrect dimension coerced to 1 dimension&#39;</span><span class="p">)</span>
         <span class="n">coerced_x</span> <span class="o">=</span> <span class="n">coerce_binary_vector</span><span class="p">(</span><span class="n">coerced_x</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Coerce </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">[</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s1">] to binary matrix </span><span class="si">{</span><span class="n">coerced_x</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">coerced_x</span></div>
+    <span class="k">return</span> <span class="n">coerced_x</span>
 
 
-<div class="viewcode-block" id="coerce_binary_square_matrix"><a class="viewcode-back" href="../../pages/naive.type_library.coerce_binary_square_matrix.html#naive.type_library.coerce_binary_square_matrix">[docs]</a><span class="k">def</span> <span class="nf">coerce_binary_square_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">BinarySquareMatrixInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BinarySquareMatrix</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">coerce_binary_square_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">BinarySquareMatrixInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BinarySquareMatrix</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;XXX</span>
 
 <span class="sd">    :param x:</span>
@@ -694,10 +716,10 @@
     <span class="n">square_side</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">square_side</span><span class="p">)</span>
     <span class="n">coerced_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">coerced_x</span><span class="p">,</span> <span class="p">(</span><span class="n">square_side</span><span class="p">,</span> <span class="n">square_side</span><span class="p">))</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Coerce </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">[</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s1">] to square binary matrix </span><span class="si">{</span><span class="n">coerced_x</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">coerced_x</span></div>
+    <span class="k">return</span> <span class="n">coerced_x</span>
 
 
-<div class="viewcode-block" id="coerce_binary_vector"><a class="viewcode-back" href="../../pages/naive.type_library.coerce_binary_vector.html#naive.type_library.coerce_binary_vector">[docs]</a><span class="k">def</span> <span class="nf">coerce_binary_vector</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">BinaryVectorInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">BinaryVector</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">coerce_binary_vector</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">BinaryVectorInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">BinaryVector</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;YYY</span>
 
 <span class="sd">    :param x:</span>
@@ -711,10 +733,10 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">coerced_x</span> <span class="o">=</span> <span class="n">BinaryVector</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;coerce_binary_vector(</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">[</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s1">]) -&gt; </span><span class="si">{</span><span class="n">coerced_x</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">coerced_x</span></div>
+        <span class="k">return</span> <span class="n">coerced_x</span>
 
 
-<div class="viewcode-block" id="coerce_incidence_vector"><a class="viewcode-back" href="../../pages/naive.type_library.coerce_incidence_vector.html#naive.type_library.coerce_incidence_vector">[docs]</a><span class="k">def</span> <span class="nf">coerce_incidence_vector</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">IncidenceVectorInput</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">FiniteSet</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IncidenceVector</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">coerce_incidence_vector</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">IncidenceVectorInput</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">FiniteSet</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IncidenceVector</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">coerce_set</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">IncidenceVector</span><span class="p">):</span>
@@ -735,10 +757,10 @@
         <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Coerce incidence vector </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">[</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s1">] to </span><span class="si">{</span><span class="n">coerced_x</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">coerced_x</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 
-<div class="viewcode-block" id="coerce_set"><a class="viewcode-back" href="../../pages/naive.type_library.coerce_set.html#naive.type_library.coerce_set">[docs]</a><span class="k">def</span> <span class="nf">coerce_set</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">SetInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">FiniteSet</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">coerce_set</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">SetInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">FiniteSet</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Assure the Set type for x.</span>
 
 <span class="sd">    Note: a coerced set is always sorted. This simplifies the usage of incidence vectors with consistent index positions.</span>
@@ -752,18 +774,18 @@
         <span class="k">return</span> <span class="n">x</span>
     <span class="n">coerced_x</span> <span class="o">=</span> <span class="n">FiniteSet</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">[</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s1">] coerced to </span><span class="si">{</span><span class="n">coerced_x</span><span class="si">}</span><span class="s1">[</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">coerced_x</span><span class="p">)</span><span class="si">}</span><span class="s1">]&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">coerced_x</span></div>
+    <span class="k">return</span> <span class="n">coerced_x</span>
 
 
-<div class="viewcode-block" id="coerce_atomic_property_set"><a class="viewcode-back" href="../../pages/naive.type_library.coerce_atomic_property_set.html#naive.type_library.coerce_atomic_property_set">[docs]</a><span class="k">def</span> <span class="nf">coerce_atomic_property_set</span><span class="p">(</span><span class="n">ap</span><span class="p">:</span> <span class="n">AtomicPropertySetInput</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">coerce_set</span><span class="p">(</span><span class="n">ap</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">coerce_atomic_property_set</span><span class="p">(</span><span class="n">ap</span><span class="p">:</span> <span class="n">AtomicPropertySetInput</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">coerce_set</span><span class="p">(</span><span class="n">ap</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="coerce_state_set"><a class="viewcode-back" href="../../pages/naive.type_library.coerce_state_set.html#naive.type_library.coerce_state_set">[docs]</a><span class="k">def</span> <span class="nf">coerce_state_set</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="n">StateSetInput</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">coerce_set</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">coerce_state_set</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="n">StateSetInput</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">coerce_set</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="coerce_element"><a class="viewcode-back" href="../../pages/naive.type_library.coerce_element.html#naive.type_library.coerce_element">[docs]</a><span class="k">def</span> <span class="nf">coerce_element</span><span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">ElementInput</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">SetInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Element</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">coerce_element</span><span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">ElementInput</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">SetInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Element</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Given element e passed with flexible input type, assure e ∈ S, and return e typed as Element&quot;&quot;&quot;</span>
     <span class="c1"># TODO: Assure support for index-based element</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">coerce_set</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
@@ -791,17 +813,17 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Element </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">[</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s1">] passed by index outside s boundaries&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Element </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">[</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s1">] of unsupported type&#39;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Element </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">[</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s1">] of unsupported type&#39;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Element </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">[</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s1">] of unsupported type&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="coerce_atomic_property"><a class="viewcode-back" href="../../pages/naive.type_library.coerce_atomic_property.html#naive.type_library.coerce_atomic_property">[docs]</a><span class="k">def</span> <span class="nf">coerce_atomic_property</span><span class="p">(</span><span class="n">atom</span><span class="p">:</span> <span class="n">AtomicPropertyInput</span><span class="p">,</span> <span class="n">ap</span><span class="p">:</span> <span class="n">AtomicPropertySetInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtomicProperty</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">coerce_atomic_property</span><span class="p">(</span><span class="n">atom</span><span class="p">:</span> <span class="n">AtomicPropertyInput</span><span class="p">,</span> <span class="n">ap</span><span class="p">:</span> <span class="n">AtomicPropertySetInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtomicProperty</span><span class="p">:</span>
     <span class="n">atom</span> <span class="o">=</span> <span class="n">coerce_element</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">ap</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">atom</span></div>
+    <span class="k">return</span> <span class="n">atom</span>
 
 
-<div class="viewcode-block" id="coerce_state"><a class="viewcode-back" href="../../pages/naive.type_library.coerce_state.html#naive.type_library.coerce_state">[docs]</a><span class="k">def</span> <span class="nf">coerce_state</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">StateInput</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">StateSetInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">State</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">coerce_state</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">StateInput</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">StateSetInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">State</span><span class="p">:</span>
     <span class="n">state</span> <span class="o">=</span> <span class="n">coerce_element</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">state</span></div>
+    <span class="k">return</span> <span class="n">state</span>
 
 
 <div class="viewcode-block" id="is_instance"><a class="viewcode-back" href="../../pages/naive.type_library.is_instance.html#naive.type_library.is_instance">[docs]</a><span class="k">def</span> <span class="nf">is_instance</span><span class="p">(</span><span class="n">o</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -833,7 +855,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;is_instance: Could not determine if </span><span class="si">{</span><span class="n">o</span><span class="si">}</span><span class="s1">[</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">o</span><span class="p">)</span><span class="si">}</span><span class="s1">] is of type </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="coerce_subset"><a class="viewcode-back" href="../../pages/naive.type_library.coerce_subset.html#naive.type_library.coerce_subset">[docs]</a><span class="k">def</span> <span class="nf">coerce_subset</span><span class="p">(</span><span class="n">s_prime</span><span class="p">:</span> <span class="n">FiniteSet</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">FiniteSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FiniteSet</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">coerce_subset</span><span class="p">(</span><span class="n">s_prime</span><span class="p">:</span> <span class="n">FiniteSet</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">FiniteSet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FiniteSet</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Coerce s&#39; to a subset of s.</span>
 
 <span class="sd">    :param s_prime:</span>
@@ -852,10 +874,10 @@
             <span class="n">coerced_s_prime</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">s_prime</span> <span class="k">if</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
             <span class="n">coerced_s_prime</span> <span class="o">=</span> <span class="n">coerce_set</span><span class="p">(</span><span class="n">coerced_s_prime</span><span class="p">)</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Coerce </span><span class="si">{</span><span class="n">s_prime</span><span class="si">}</span><span class="s1"> to subset </span><span class="si">{</span><span class="n">coerced_s_prime</span><span class="si">}</span><span class="s1"> of set </span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">coerced_s_prime</span></div>
+            <span class="k">return</span> <span class="n">coerced_s_prime</span>
 
 
-<div class="viewcode-block" id="coerce_subset_or_iv"><a class="viewcode-back" href="../../pages/naive.type_library.coerce_subset_or_iv.html#naive.type_library.coerce_subset_or_iv">[docs]</a><span class="k">def</span> <span class="nf">coerce_subset_or_iv</span><span class="p">(</span><span class="n">o</span><span class="p">:</span> <span class="n">SetOrIVInput</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">SetInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SetOrIV</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">coerce_subset_or_iv</span><span class="p">(</span><span class="n">o</span><span class="p">:</span> <span class="n">SetOrIVInput</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">SetInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SetOrIV</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Coerce an arbitrarily typed object **o** into either a properly typed subset or proper incidence vector of a set S.</span>
 
 <span class="sd">    This function infers the correct type by inspecting the object **o**.</span>
@@ -870,25 +892,25 @@
     <span class="k">elif</span> <span class="n">is_instance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">SetInput</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">coerce_subset</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Unsupported type&#39;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;Unsupported type&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="coerce_state_subset"><a class="viewcode-back" href="../../pages/naive.type_library.coerce_state_subset.html#naive.type_library.coerce_state_subset">[docs]</a><span class="k">def</span> <span class="nf">coerce_state_subset</span><span class="p">(</span><span class="n">s_prime_flexible</span><span class="p">:</span> <span class="n">StateSetInput</span><span class="p">,</span> <span class="n">s_flexible</span><span class="p">:</span> <span class="n">StateInput</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">coerce_state_subset</span><span class="p">(</span><span class="n">s_prime_flexible</span><span class="p">:</span> <span class="n">StateSetInput</span><span class="p">,</span> <span class="n">s_flexible</span><span class="p">:</span> <span class="n">StateInput</span><span class="p">):</span>
     <span class="n">s_flexible</span> <span class="o">=</span> <span class="n">coerce_set</span><span class="p">(</span><span class="n">s_flexible</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">is_instance</span><span class="p">(</span><span class="n">s_prime_flexible</span><span class="p">,</span> <span class="n">StateSetInput</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">coerce_subset</span><span class="p">(</span><span class="n">s_prime_flexible</span><span class="p">,</span> <span class="n">s_flexible</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">is_instance</span><span class="p">(</span><span class="n">s_prime_flexible</span><span class="p">,</span> <span class="n">IncidenceVectorInput</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">coerce_incidence_vector</span><span class="p">(</span><span class="n">s_prime_flexible</span><span class="p">,</span> <span class="n">s_flexible</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;coerce_state_subset: Unknown type: </span><span class="si">{</span><span class="n">s_prime_flexible</span><span class="si">}</span><span class="s1">[</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">s_prime_flexible</span><span class="p">)</span><span class="si">}</span><span class="s1">]&#39;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;coerce_state_subset: Unknown type: </span><span class="si">{</span><span class="n">s_prime_flexible</span><span class="si">}</span><span class="s1">[</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">s_prime_flexible</span><span class="p">)</span><span class="si">}</span><span class="s1">]&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="coerce_set_or_iv_type"><a class="viewcode-back" href="../../pages/naive.type_library.coerce_set_or_iv_type.html#naive.type_library.coerce_set_or_iv_type">[docs]</a><span class="k">def</span> <span class="nf">coerce_set_or_iv_type</span><span class="p">(</span><span class="n">python_type</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">coerce_set_or_iv_type</span><span class="p">(</span><span class="n">python_type</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">python_type</span> <span class="o">==</span> <span class="n">IncidenceVector</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">python_type</span>
     <span class="k">else</span><span class="p">:</span>
 
-        <span class="k">return</span> <span class="n">FiniteSet</span></div>
+        <span class="k">return</span> <span class="n">FiniteSet</span>
 </pre></div>
 
            </div>

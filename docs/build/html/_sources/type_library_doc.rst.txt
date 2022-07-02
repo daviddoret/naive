@@ -39,6 +39,8 @@ Often, we need a particular class or type to make it semantically clear in our c
     IncidenceVectorInput
     IndexPosition
     IndexPositionInput
+    NaturalNumber0
+    NN0
     SetInput
     SetOrIV
     SetOrIVInput
@@ -55,20 +57,8 @@ Functions
     :toctree: pages
     :recursive:
 
-    coerce_atomic_property
-    coerce_atomic_property_set
-    coerce_binary_matrix
-    coerce_binary_square_matrix
-    coerce_binary_value
-    coerce_binary_vector
-    coerce_element
-    coerce_incidence_vector
-    coerce_set
-    coerce_set_or_iv_type
-    coerce_state
-    coerce_state_set
-    coerce_state_subset
-    coerce_subset
-    coerce_subset_or_iv
+    clean_math_variable
+    coerce
     flatten
     is_instance
+    subscript

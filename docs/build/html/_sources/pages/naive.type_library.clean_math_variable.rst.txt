@@ -1,6 +1,6 @@
-naive.type\_library.coerce\_binary\_value
+naive.type\_library.clean\_math\_variable
 =========================================
 
 .. currentmodule:: naive.type_library
 
-.. autofunction:: coerce_binary_value
+.. autofunction:: clean_math_variable

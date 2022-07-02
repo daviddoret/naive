@@ -51,7 +51,7 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
-    'sphinx_exec_code',
+    #'sphinx_exec_code',
     'jupyter_sphinx' # https://jupyter-sphinx.readthedocs.io/en/latest/
     #'jupyter-execute'
     #'jupyter_sphinx.execute'

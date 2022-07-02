@@ -17,65 +17,19 @@ import collections.abc as abc
 import nptyping as npt
 import logging
 import math
+from .clean_math_variable import clean_math_variable
+from .coerce import coerce
+from .NaturalNumber0 import NaturalNumber0
+from .subscript import subscript
+from .superscript import superscript
+
+"""A shorthand for NaturalNumber0."""
+NN0 = NaturalNumber0
 
 
-def subscript(s):
-    """
 
 
-    Bibliography:
-        * https://stackoverflow.com/questions/13875507/convert-numeric-strings-to-superscript
 
-    :param s:
-    :return:
-    """
-    subscript_dictionary = {'0': '₀',
-                            '1': '₁',
-                            '2': '₂',
-                            '3': '₃',
-                            '4': '₄',
-                            '5': '₅',
-                            '6': '₆',
-                            '7': '₇',
-                            '8': '₈',
-                            '9': '₉'}
-    return ''.join(subscript_dictionary.get(char, char) for char in s)
-
-
-def superscript(s):
-    """
-
-    Bibliography:
-        * https://stackoverflow.com/questions/13875507/convert-numeric-strings-to-superscript
-
-    Args:
-        :param s:
-        :return:
-    """
-    subscript_dictionary = {'0': '⁰',
-                            '1': '¹',
-                            '2': '²',
-                            '3': '³',
-                            '4': '⁴',
-                            '5': '⁵',
-                            '6': '⁶',
-                            '7': '⁷',
-                            '8': '⁸',
-                            '9': '⁹'}
-    return ''.join(subscript_dictionary.get(char, char) for char in s)
-
-
-def clean_math_variable(s: str) -> str:
-    """Clean a string from characters that are unusual in math variable names.
-
-    Basically we keep alphanumeric characters, including greek letters, subscripts and superscripts.
-
-    Incidentally, the idea is to avoid ambiguities and confusions that may arise from unwanted characters such as punctuation and mathematical operators.
-
-    :param s: A raw variable name that potentially contains unusual characters.
-    :return: A clean variable name that is safe from unusual characters.
-    """
-    return ''.join([c for c in str(s) if c.isalpha() or c.isdigit()])
 
 
 BinaryValue = typing.NewType(
@@ -356,14 +310,82 @@ class FiniteSet(list):
     Bibliography:
         - https://stackoverflow.com/questions/4868291/how-to-subclass-array-array-and-have-its-derived-constructor-take-no-parameters
 
+    Usage:
 
-    Sample 1:
+        .. jupyter-execute::
+            :hide-output:
+
+            import naive.type_library as tl
 
         .. jupyter-execute::
 
-            import naive.type_library as tl
-            o = tl.Element('hello')
-            print(o)
+            # If nothing is passed to the constructor, an empty set is returned:
+            s = tl.FiniteSet()
+            print(s)
+
+        .. jupyter-execute::
+
+            # Finite sets may be built from a series of string-equivalent objects:
+            s = tl.FiniteSet(u'Platypus', 'Euler', 'Boson')
+            print(s)
+
+        .. jupyter-execute::
+
+            # ...or iterable objects:
+            s = tl.FiniteSet(['Platypus', 'Euler', 'Boson'])
+            print(s)
+
+        .. jupyter-execute::
+
+            # FS is shorthand for FiniteSet:
+            s = tl.FS(u'FS', 'FiniteSet')
+            print(s)
+
+        .. jupyter-execute::
+
+            # Mathematical sets are unordered by definition,
+            # but naive implementation is automatically ordered:
+            s = tl.FiniteSet('h', 'g', 'b', 'a', 'c', 'f', 'g')
+            print(s)
+            # The reason for this design choice are:
+            #  1) readability,
+            #  2) compatibility with incidence vectors.
+
+        .. jupyter-execute::
+
+            # The constructor is adaptive and flattens whatever input it gets:
+            s = tl.FS('a', 'b', 'c', ['d', 'e', ['f']])
+            print(s)
+
+        .. jupyter-execute::
+
+            # The size shortcut helps create sets of canonically named elements:
+            s = tl.FS(size=5)
+            print(s)
+
+        .. jupyter-execute::
+
+            # ...with a custom prefix:
+            s = tl.FS(size=3, prefix='x')
+            print(s)
+
+        .. jupyter-execute::
+
+            # ...0-based index:
+            s = tl.FS(size=3, prefix='y', init=0)
+            print(s)
+
+        .. jupyter-execute::
+
+            # Note that spaces (" ") and commas (",") are forbidden in element names to avoid ambiguity:
+            s = tl.FS('hack, the, list')
+            print(s)
+
+        .. jupyter-execute::
+
+            # Note that indexes are voluntarily padded for easier alphanumeric ordering:
+            s = tl.FS(size=12, prefix='y', init=1)
+            print(s)
 
     """
 
