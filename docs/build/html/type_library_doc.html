@@ -68,6 +68,8 @@
 <li class="toctree-l3"><a class="reference internal" href="pages/naive.type_library.BinaryVector.html">naive.type_library.BinaryVector</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pages/naive.type_library.BinaryVectorInput.html">naive.type_library.BinaryVectorInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pages/naive.type_library.BV.html">naive.type_library.BV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/naive.type_library.CoercionError.html">naive.type_library.CoercionError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/naive.type_library.CoercionWarning.html">naive.type_library.CoercionWarning</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pages/naive.type_library.Element.html">naive.type_library.Element</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pages/naive.type_library.ElementInput.html">naive.type_library.ElementInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pages/naive.type_library.FiniteSet.html">naive.type_library.FiniteSet</a></li>
@@ -202,6 +204,12 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="pages/naive.type_library.BV.html#naive.type_library.BV" title="naive.type_library.BV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BV</span></code></a></p></td>
 <td><p>alias of <a class="reference internal" href="pages/naive.type_library.BinaryVector.html#naive.type_library.BinaryVector" title="naive.type_library.BinaryVector"><code class="xref py py-class docutils literal notranslate"><span class="pre">BinaryVector</span></code></a></p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/naive.type_library.CoercionError.html#naive.type_library.CoercionError" title="naive.type_library.CoercionError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CoercionError</span></code></a></p></td>
+<td><p>A user-defined error raised when a type coercion fails.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="pages/naive.type_library.CoercionWarning.html#naive.type_library.CoercionWarning" title="naive.type_library.CoercionWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CoercionWarning</span></code></a></p></td>
+<td><p>A user-defined warning sent when aggressive type coercion was necessary.</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pages/naive.type_library.Element.html#naive.type_library.Element" title="naive.type_library.Element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Element</span></code></a>([o])</p></td>
 <td><p></p></td>
 </tr>
@@ -226,11 +234,11 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="pages/naive.type_library.IndexPositionInput.html#naive.type_library.IndexPositionInput" title="naive.type_library.IndexPositionInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IndexPositionInput</span></code></a></p></td>
 <td><p>alias of TypeVar('IndexPositionInput', int, int)</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pages/naive.type_library.NaturalNumber0.html#naive.type_library.NaturalNumber0" title="naive.type_library.NaturalNumber0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NaturalNumber0</span></code></a>(o)</p></td>
-<td><p>A class that behaves similarly <span class="math notranslate nohighlight">\(n \in \mathbb{N}_0\)</span></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pages/naive.type_library.NaturalNumber0.html#naive.type_library.NaturalNumber0" title="naive.type_library.NaturalNumber0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NaturalNumber0</span></code></a>([o])</p></td>
+<td><p>A class that behaves similarly to <span class="math notranslate nohighlight">\(n \in \mathbb{N}_0\)</span></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pages/naive.type_library.NN0.html#naive.type_library.NN0" title="naive.type_library.NN0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NN0</span></code></a></p></td>
-<td><p>alias of <a class="reference internal" href="pages/naive.type_library.NaturalNumber0.html#naive.type_library.NaturalNumber0" title="naive.NaturalNumber0.NaturalNumber0"><code class="xref py py-class docutils literal notranslate"><span class="pre">NaturalNumber0</span></code></a></p></td>
+<td><p>alias of <a class="reference internal" href="pages/naive.type_library.NaturalNumber0.html#naive.type_library.NaturalNumber0" title="naive.natural_number_0.NaturalNumber0"><code class="xref py py-class docutils literal notranslate"><span class="pre">NaturalNumber0</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pages/naive.type_library.SetInput.html#naive.type_library.SetInput" title="naive.type_library.SetInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SetInput</span></code></a></p></td>
 <td><p>alias of TypeVar('SetInput', ~collections.abc.Iterable, ~naive.type_library.FiniteSet, ~typing.List[str])</p></td>

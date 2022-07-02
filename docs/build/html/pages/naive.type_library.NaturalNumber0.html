@@ -68,6 +68,8 @@
 <li class="toctree-l3"><a class="reference internal" href="naive.type_library.BinaryVector.html">naive.type_library.BinaryVector</a></li>
 <li class="toctree-l3"><a class="reference internal" href="naive.type_library.BinaryVectorInput.html">naive.type_library.BinaryVectorInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="naive.type_library.BV.html">naive.type_library.BV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="naive.type_library.CoercionError.html">naive.type_library.CoercionError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="naive.type_library.CoercionWarning.html">naive.type_library.CoercionWarning</a></li>
 <li class="toctree-l3"><a class="reference internal" href="naive.type_library.Element.html">naive.type_library.Element</a></li>
 <li class="toctree-l3"><a class="reference internal" href="naive.type_library.ElementInput.html">naive.type_library.ElementInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="naive.type_library.FiniteSet.html">naive.type_library.FiniteSet</a></li>
@@ -145,9 +147,11 @@
 <h1>naive.type_library.NaturalNumber0<a class="headerlink" href="#naive-type-library-naturalnumber0" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="naive.type_library.NaturalNumber0">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">naive.type_library.</span></span><span class="sig-name descname"><span class="pre">NaturalNumber0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">o</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><span class="pre">object</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/naive/NaturalNumber0.html#NaturalNumber0"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.type_library.NaturalNumber0" title="Permalink to this definition"></a></dt>
-<dd><p>A class that behaves similarly <span class="math notranslate nohighlight">\(n \in \mathbb{N}_0\)</span></p>
-<p>The class constructor aggressively coerces its input and raises a warning in non-obvious situations.</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">naive.type_library.</span></span><span class="sig-name descname"><span class="pre">NaturalNumber0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">o</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><span class="pre">object</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/naive/natural_number_0.html#NaturalNumber0"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.type_library.NaturalNumber0" title="Permalink to this definition"></a></dt>
+<dd><p>A class that behaves similarly to <span class="math notranslate nohighlight">\(n \in \mathbb{N}_0\)</span></p>
+<p>The class constructor coerces its input.</p>
+<p>Issues a <em>CoercionWarning</em> in ambiguous situations.</p>
+<p>Raises a <em>CoercionError</em> if type coercion fails.</p>
 <p>Limitation: the natural number maximum is obviously bounded by the computing environment.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="naive.type_library.NaturalNumber0.__init__">

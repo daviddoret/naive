@@ -19,6 +19,8 @@ import logging
 import math
 from .clean_math_variable import clean_math_variable
 from .coerce import coerce
+from .coercion_error import CoercionError
+from .coercion_warning import CoercionWarning
 from .natural_number_0 import NaturalNumber0
 from .subscript import subscript
 from .superscript import superscript

@@ -78,6 +78,8 @@
   <h1>Source code for naive.coerce</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">.coercion_error</span> <span class="kn">import</span> <span class="n">CoercionError</span>
+<span class="kn">from</span> <span class="nn">.coercion_warning</span> <span class="kn">import</span> <span class="n">CoercionWarning</span>
 
 
 <div class="viewcode-block" id="coerce"><a class="viewcode-back" href="../../pages/naive.type_library.coerce.html#naive.type_library.coerce">[docs]</a><span class="k">def</span> <span class="nf">coerce</span><span class="p">(</span><span class="n">o</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span> <span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
@@ -101,14 +103,6 @@
 <span class="sd">    :rtype: (**None**, **object**).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="sd">&quot;&quot;&quot;A user-defined warning to allow warning filters.&quot;&quot;&quot;</span>
-    <span class="k">class</span> <span class="nc">CoercionWarning</span><span class="p">(</span><span class="ne">UserWarning</span><span class="p">):</span>
-        <span class="k">pass</span>
-
-    <span class="sd">&quot;&quot;&quot;A user-defined error to facilitate troubleshooting.&quot;&quot;&quot;</span>
-    <span class="k">class</span> <span class="nc">CoercionError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-        <span class="k">pass</span>
-
     <span class="k">if</span> <span class="n">o</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
@@ -119,10 +113,7 @@
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CoercionError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Object &quot;</span><span class="si">{</span><span class="n">o</span><span class="si">}</span><span class="s1">&quot; of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">o</span><span class="p">)</span><span class="si">}</span><span class="s1"> could not be coerced to type </span><span class="si">{</span><span class="bp">cls</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;Object &quot;</span><span class="si">{</span><span class="n">o</span><span class="si">}</span><span class="s1">&quot; of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">o</span><span class="p">)</span><span class="si">}</span><span class="s1"> was coerced to object &quot;</span><span class="si">{</span><span class="n">coerced_o</span><span class="si">}</span><span class="s1">&quot; of type </span><span class="si">{</span><span class="bp">cls</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">,</span>
-                <span class="n">CoercionWarning</span><span class="p">,</span>
-                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Object &quot;</span><span class="si">{</span><span class="n">o</span><span class="si">}</span><span class="s1">&quot; of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">o</span><span class="p">)</span><span class="si">}</span><span class="s1"> was coerced to object &quot;</span><span class="si">{</span><span class="n">coerced_o</span><span class="si">}</span><span class="s1">&quot; of type </span><span class="si">{</span><span class="bp">cls</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">,</span> <span class="n">CoercionWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">o</span><span class="p">)</span></div>
 
 
