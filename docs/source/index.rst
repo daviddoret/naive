@@ -1,7 +1,13 @@
 Welcome to Naive's documentation!
 ===================================
 
-**Naive** (/naɪˈiːv/) is a model checking Python library. Its salient characteristics are: blablablabla
+**Naive** (/naɪˈiːv/) is a model checking Python library. Its salient characteristics are:
+
+* Aggressive but transparent (i.e. warnings issuance) type coercion,
+
+* Mimicking mathematical objects with Python classes (i.e. an approach we may coin semantic development),
+
+* Prioritize readability over code performance.
 
 .. note::
 
@@ -14,10 +20,8 @@ Contents
     :maxdepth: 2
     :caption: Table of Contents
 
-    set_algebra_doc
-    binary_algebra_doc
-    type_library_doc
-
+    classes_doc
+    functions_doc
 
 Indices and tables
 ==================

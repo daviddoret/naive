@@ -63,6 +63,7 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
     'sphinx_exec_code',
+    'sphinx_copybutton',  # for adding “copy to clipboard” buttons to all text/code boxes
     'jupyter_sphinx' # https://jupyter-sphinx.readthedocs.io/en/latest/
     #'jupyter-execute'
     #'jupyter_sphinx.execute'
@@ -73,7 +74,7 @@ extensions = [
 #'sphinx.ext.mathjax' (Sphinx loads this by default) for math formulas
 #'sphinxcontrib.bibtex' for bibliographic references
 #'sphinxcontrib.rsvgconverter' for SVG->PDF conversion in LaTeX output
-#'sphinx_copybutton' for adding “copy to clipboard” buttons to all text/code boxes
+#
 #'sphinx_gallery.load_style' to load CSS styles for thumbnail galleries
 
 #suppress_warnings = [
@@ -104,6 +105,10 @@ templates_path = ['_templates']
 # -- Options for HTML output
 
 html_theme = 'sphinx_rtd_theme'
+#html_theme = 'python_docs_theme'
+#import kotti_docs_theme
+#html_theme = 'kotti_docs_theme'
+#html_theme_path = [kotti_docs_theme.get_theme_dir()]
 
 # -- Options for EPUB output
 epub_show_urls = 'footnote'
@@ -127,8 +132,17 @@ exec_code_folders = ['..\\..\\src']
 exec_code_example_dir = pathlib.Path('..\\..\\src\\samples')
 
 
-#import os
-#os.chdir('C:\\Users\\david\\PycharmProjects\\naive')
-#sys.path.insert(0, 'C:\\Users\\david\\PycharmProjects\\naive')
-#print(f'sys.path: {sys.path}')
-#print(f'os.getcwd(): {os.getcwd()}')
+napoleon_google_docstring = True
+napoleon_numpy_docstring = True
+napoleon_include_init_with_doc = False
+napoleon_include_private_with_doc = False
+napoleon_include_special_with_doc = False
+napoleon_use_admonition_for_examples = False
+napoleon_use_admonition_for_notes = False
+napoleon_use_admonition_for_references = False
+napoleon_use_ivar = False
+napoleon_use_param = True
+napoleon_use_rtype = True
+napoleon_preprocess_types = True
+napoleon_type_aliases = None
+napoleon_attr_annotations = True

@@ -25,8 +25,7 @@ from .natural_number_0 import NaturalNumber0
 from .subscript import subscript
 from .superscript import superscript
 
-"""A shorthand for NaturalNumber0."""
-NN0 = NaturalNumber0
+
 
 
 

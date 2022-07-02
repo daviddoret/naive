@@ -9,20 +9,29 @@ def coerce(o: (None, object), cls: type) -> (None, object):
 
     This function is useful to implement single line argument type coercion in functions and methods.
 
-    If **o** is **None**, returns **None**.
+    The assumption behind **coerce** is that all classes implement a coercive constructor. Raises a **CoercionError** if the coercion fails.
 
-    Else if **o** is of type **cls**, returns **o**.
+    Args:
+        o (object): An object of undetermined type, but compatible with **cls**.
+        cls (type): A class that implements a coercive constructor.
 
-    Else if **o** is not of type **cls**, creates an instance of **cls** by calling its default constructor, i.e. *cls(o)* and raises a *CoercionWarning*.
+    Returns:
+        object: **None**, or an object of type **cls**.
 
-    Raises a *CoercionError* if the coercion fails.
+    Raises:
+        CoercionWarning: If ambiguous type coercion was necessary.
+        CoercionError: If type coercion failed.
 
-    The assumption behind **coerce** is that all classes implement a coercive constructor.
+    Notes:
+        High-level algorithm:
 
-    :param o: An object of undetermined type but presumably compatible with **cls**.
-    :param cls: A class that implements a coercive constructor.
-    :return: **None**, or an object of type **cls**.
-    :rtype: (**None**, **object**).
+        1. If **o** is **None**, returns **None**.
+
+        2. Else if **o** is of type **cls**, returns **o**.
+
+        3. Else if **o** is not of type **cls**, creates an instance of **cls** by calling its default constructor, i.e. ``cls(o)`` and issue a **CoercionWarning**.
+
+
     """
 
     if o is None:

@@ -1,4 +1,4 @@
-Set Algebra
+Functions
 ===================================
 
 TODO: Include documentation
@@ -7,7 +7,7 @@ TODO: Include documentation
 
    This project is under active development.
 
-.. currentmodule:: naive.set_algebra
+.. currentmodule:: naive
 
 Functions
 ---------
@@ -16,5 +16,8 @@ Functions
     :toctree: pages
     :recursive:
 
-    equal
+    clean_math_variable
+    coerce
+    subscript
+
 

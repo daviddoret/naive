@@ -7,6 +7,7 @@
   <title>Welcome to Naive’s documentation! &mdash; naive 0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="_static/jupyter-sphinx.css" type="text/css" />
       <link rel="stylesheet" href="_static/thebelab.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,6 +19,8 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
         <script src="_static/thebelab-helper.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -25,7 +28,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Set Algebra" href="set_algebra_doc.html" /> 
+    <link rel="next" title="Type Library" href="classes_doc.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,9 +51,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="set_algebra_doc.html">Set Algebra</a></li>
-<li class="toctree-l1"><a class="reference internal" href="binary_algebra_doc.html">Binary Algebra</a></li>
-<li class="toctree-l1"><a class="reference internal" href="type_library_doc.html">Type Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes_doc.html">Type Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions_doc.html">Functions</a></li>
 </ul>
 
         </div>
@@ -103,7 +105,12 @@
 </style>
 <section id="welcome-to-naive-s-documentation">
 <h1>Welcome to Naive’s documentation!<a class="headerlink" href="#welcome-to-naive-s-documentation" title="Permalink to this heading"></a></h1>
-<p><strong>Naive</strong> (/naɪˈiːv/) is a model checking Python library. Its salient characteristics are: blablablabla</p>
+<p><strong>Naive</strong> (/naɪˈiːv/) is a model checking Python library. Its salient characteristics are:</p>
+<ul class="simple">
+<li><p>Aggressive but transparent (i.e. warnings issuance) type coercion,</p></li>
+<li><p>Mimicking mathematical objects with Python classes (i.e. an approach we may coin semantic development),</p></li>
+<li><p>Prioritize readability over code performance.</p></li>
+</ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This project is under active development.</p>
@@ -113,17 +120,12 @@
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="set_algebra_doc.html">Set Algebra</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="set_algebra_doc.html#functions">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes_doc.html">Type Library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classes_doc.html#classes">Classes</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="binary_algebra_doc.html">Binary Algebra</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="binary_algebra_doc.html#functions">Functions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="type_library_doc.html">Type Library</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="type_library_doc.html#types-type-aliases-typevars-and-newtypes">Types, Type Aliases, TypeVars, and NewTypes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="type_library_doc.html#functions">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions_doc.html">Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functions_doc.html#id1">Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -143,7 +145,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="set_algebra_doc.html" class="btn btn-neutral float-right" title="Set Algebra" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="classes_doc.html" class="btn btn-neutral float-right" title="Type Library" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
