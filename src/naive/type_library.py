@@ -19,7 +19,7 @@ import logging
 import math
 from .clean_math_variable import clean_math_variable
 from .coerce import coerce
-from .NaturalNumber0 import NaturalNumber0
+from .natural_number_0 import NaturalNumber0
 from .subscript import subscript
 from .superscript import superscript
 

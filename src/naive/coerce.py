@@ -1,5 +1,7 @@
 from __future__ import annotations
 import warnings
+from .coercion_error import CoercionError
+from .coercion_warning import CoercionWarning
 
 
 def coerce(o: (None, object), cls: type) -> (None, object):
@@ -23,14 +25,6 @@ def coerce(o: (None, object), cls: type) -> (None, object):
     :rtype: (**None**, **object**).
     """
 
-    """A user-defined warning to allow warning filters."""
-    class CoercionWarning(UserWarning):
-        pass
-
-    """A user-defined error to facilitate troubleshooting."""
-    class CoercionError(Exception):
-        pass
-
     if o is None:
         return None
     elif isinstance(o, cls):
@@ -41,10 +35,7 @@ def coerce(o: (None, object), cls: type) -> (None, object):
         except Exception as e:
             raise CoercionError(f'Object "{o}" of type {type(o)} could not be coerced to type {cls}.') from e
         else:
-            warnings.warn(
-                f'Object "{o}" of type {type(o)} was coerced to object "{coerced_o}" of type {cls}.',
-                CoercionWarning,
-                stacklevel=2)
+            warnings.warn(f'Object "{o}" of type {type(o)} was coerced to object "{coerced_o}" of type {cls}.', CoercionWarning, stacklevel=2)
         return cls(o)
 
 

@@ -31,6 +31,8 @@ Often, we need a particular class or type to make it semantically clear in our c
     BinaryVector
     BinaryVectorInput
     BV
+    CoercionError
+    CoercionWarning
     Element
     ElementInput
     FiniteSet
