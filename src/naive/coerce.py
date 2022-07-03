@@ -1,7 +1,13 @@
 from __future__ import annotations
 import warnings
-from .coercion_error import CoercionError
-from .coercion_warning import CoercionWarning
+from src.naive.coercion_error import CoercionError
+from src.naive.coercion_warning import CoercionWarning
+
+
+
+
+
+
 
 
 def coerce(o: (None, object), cls: type) -> (None, object):

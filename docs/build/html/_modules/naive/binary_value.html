@@ -83,16 +83,30 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">.coercion_warning</span> <span class="kn">import</span> <span class="n">CoercionWarning</span>
 <span class="kn">from</span> <span class="nn">.coerce</span> <span class="kn">import</span> <span class="n">coerce</span>
+<span class="kn">from</span> <span class="nn">.forbidden_operation_error</span> <span class="kn">import</span> <span class="n">ForbiddenOperationError</span>
 
 
 <div class="viewcode-block" id="BinaryValue"><a class="viewcode-back" href="../../pages/naive.BinaryValue.html#naive.BinaryValue">[docs]</a><span class="k">class</span> <span class="nc">BinaryValue</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A class that behaves similarly to :math:`b \\in \\mathbb{B}`.</span>
+    <span class="sd">&quot;&quot;&quot;A mutable binary variable.</span>
 
 <span class="sd">    Alias: :data:`naive.BV`</span>
 
+<span class="sd">    The objective of this class is to approach the behavior of :math:`b \\in \\mathbb{B}` in mathematics.</span>
+
+<span class="sd">     Example:</span>
+
+<span class="sd">         .. jupyter-execute::</span>
+
+<span class="sd">             import naive</span>
+<span class="sd">             b1 = naive.BV(False)</span>
+<span class="sd">             b2 = naive.BV(True)</span>
+<span class="sd">             print(f&#39;(b1 = b2) = ({b1} = {b2}) = {b1 == b2}&#39;)</span>
+<span class="sd">             b2.bool = True</span>
+<span class="sd">             print(f&#39;(b1 = b2) = ({b1} = {b2}) = {b1 == b2}&#39;)</span>
+
 <span class="sd">    Notes:</span>
-<span class="sd">        The python :type:`bool` native type cannot be subclassed.</span>
-<span class="sd">        The solution consists in implementing the :type:`__bool__` method.</span>
+<span class="sd">        The python :std:doc:type:`bool` native type cannot be subclassed.</span>
+<span class="sd">        To implement a bool-like class, :std:doc:meth:`__bool__` method is implemented.</span>
 
 <span class="sd">    Bibliography:</span>
 <span class="sd">        * https://docs.python.org/3/reference/datamodel.html#object.__bool__</span>
@@ -102,10 +116,12 @@
 <div class="viewcode-block" id="BinaryValue.__init__"><a class="viewcode-back" href="../../pages/naive.BinaryValue.html#naive.BinaryValue.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">:</span> <span class="n">BinaryValueInput</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Instantiates a **BinaryValue**.</span>
 
-<span class="sd">         The class constructor makes a best effort at coercing its input. It issues a **CoercionWarning** in ambiguous situations. It raises a **CoercionError** if type coercion fails.</span>
+<span class="sd">         The class constructor coerces its input.</span>
+<span class="sd">         It issues a **CoercionWarning** in ambiguous situations.</span>
+<span class="sd">         It raises a **CoercionError** if type coercion fails.</span>
 
 <span class="sd">         Args:</span>
-<span class="sd">             o (object): A source object from which to instantiate the **BinaryValue**.</span>
+<span class="sd">             o (BinaryValueInput): A source object from which to instantiate the **BinaryValue**.</span>
 
 <span class="sd">         Returns:</span>
 <span class="sd">             BinaryValue: A new binary value.</span>
@@ -113,15 +129,6 @@
 <span class="sd">         Raises:</span>
 <span class="sd">             CoercionWarning: If ambiguous type coercion was necessary.</span>
 <span class="sd">             CoercionError: If type coercion failed.</span>
-
-<span class="sd">         Example:</span>
-
-<span class="sd">             .. jupyter-execute::</span>
-
-<span class="sd">                 import naive</span>
-<span class="sd">                 b = naive.BV(False)</span>
-<span class="sd">                 print(type(b))</span>
-<span class="sd">                 print(b)</span>
 
 <span class="sd">         &quot;&quot;&quot;</span>
 
@@ -135,14 +142,46 @@
             <span class="n">o</span> <span class="o">=</span> <span class="n">coerced_bool</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inner_bool</span> <span class="o">=</span> <span class="n">o</span></div>
 
-<div class="viewcode-block" id="BinaryValue.__eq__"><a class="viewcode-back" href="../../pages/naive.BinaryValue.html#naive.BinaryValue.__eq__">[docs]</a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">BinaryValueInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="BinaryValue.__bool__"><a class="viewcode-back" href="../../pages/naive.BinaryValue.html#naive.BinaryValue.__bool__">[docs]</a>    <span class="k">def</span> <span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Provides support for implicit and explicit (i.e. ``bool(x)``) conversions to :std:doc:type:`bool`.</span>
 
-<span class="sd">        :param other:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_bool</span></div>
+
+<div class="viewcode-block" id="BinaryValue.__eq__"><a class="viewcode-back" href="../../pages/naive.BinaryValue.html#naive.BinaryValue.__eq__">[docs]</a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">BinaryValueInput</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Provides explicit support for equality.</span>
+
+<span class="sd">        Even though all python objects are implicitly convertible to bool (calling :std:doc:meth:`__bool__`),</span>
+<span class="sd">        we want the equality operator to rather approach mathematical equality.</span>
+<span class="sd">        Hence, we explicitly convert **other** to **BinaryValue** which issues warnings and raises exceptions as necessary.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other(BinaryValueInput): A compatible boolean object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: The truth value of the equality operator.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">coerce</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">BinaryValue</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">other</span></div></div>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get/set property</span>
+
+<span class="sd">        **BinaryValue** is mutable RESUME HERE</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_bool</span>
+
+    <span class="nd">@bool</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">BinaryValueInput</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inner_bool</span> <span class="o">=</span> <span class="n">b</span>
+
+    <span class="nd">@bool</span><span class="o">.</span><span class="n">deleter</span>
+    <span class="k">def</span> <span class="nf">bool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span><span class="p">(</span><span class="n">ForbiddenOperationError</span><span class="p">(</span><span class="s1">&#39;Come on... Why would you delete this property?&#39;</span><span class="p">))</span></div>
+
+
 
 <span class="sd">&quot;&quot;&quot;This :type:`typing.TypeVar` lists allowed types for implicit type coercion.&quot;&quot;&quot;</span>
 <span class="n">BinaryValueInput</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span>

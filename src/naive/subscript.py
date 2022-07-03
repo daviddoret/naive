@@ -1,4 +1,7 @@
-def subscript(s: str) -> str:
+from src.naive.coerce import coerce
+
+
+def subscript(s: (str, int)) -> str:
     """Converts to subscript digits the digits in a Unicode string `s`.
 
     This function is especially useful to render beautiful indexed math variables (e.g. x₁, x₂, x₃) with raw text.
@@ -32,4 +35,5 @@ def subscript(s: str) -> str:
                             '7': u'₇',
                             '8': u'₈',
                             '9': u'₉'}
+    s = coerce(s, str)
     return u''.join(subscript_dictionary.get(char, char) for char in s)

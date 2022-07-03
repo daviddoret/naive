@@ -5,16 +5,9 @@
 
 
 import naive
-b = naive.BV(False)
-print(type(b))
-print(b)
-
-
-# In[2]:
-
-
-import naive
-b = naive.BV(False)
-print(type(b))
-print(b)
+b1 = naive.BV(False)
+b2 = naive.BV(True)
+print(f'(b1 = b2) = ({b1} = {b2}) = {b1 == b2}')
+b2.bool = True
+print(f'(b1 = b2) = ({b1} = {b2}) = {b1 == b2}')
 

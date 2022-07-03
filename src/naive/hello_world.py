@@ -1,4 +1,4 @@
-def say_hello(my_name: str = 'anonymous') -> str:
+def hello_world(my_name: str = 'anonymous') -> str:
     """Say hello
 
     :param my_name: Your name

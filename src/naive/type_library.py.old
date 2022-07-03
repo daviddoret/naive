@@ -17,12 +17,13 @@ import collections.abc as abc
 import nptyping as npt
 import logging
 import math
-from .binary_value import BinaryValue
+from .binary_value import BinaryVariable
 from .binary_value import BinaryValueInput
-from .clean_math_variable import clean_math_variable
+from .clean_math_symbol import clean_math_symbol
 from .coerce import coerce
 from .coercion_error import CoercionError
 from .coercion_warning import CoercionWarning
+from .flatten import flatten
 from .natural_number_0 import NaturalNumber0
 from .subscript import subscript
 from .superscript import superscript
@@ -467,7 +468,7 @@ IndexPositionInput = typing.TypeVar(
 
 class Element(str):
     def __new__(cls, o: (str, None) = None, *args, **kwargs):
-        o = clean_math_variable(o)
+        o = clean_math_symbol(o)
         o = str.__new__(cls, o)
         return o
 
@@ -513,57 +514,21 @@ SetOrIVInput = typing.TypeVar(
 )
 
 
-def flatten(x: object) -> typing.List[typing.Any]:
-    """Flatten an iterable object.
-
-    This utility function converts embedded lists or multidimensional objects to vectors.
-
-    If x is already a flat list, returns a new list instance with the same elements.
-
-    If x is not iterable, returns an iterable version of x, that is: [x].
-
-    If x is None, returns an empty list, that is [].
-
-    Args:
-        x (object): Any object but preferably an iterable object of type: abc.Iterable[typing.Any].
-
-    Returns:
-         A flat list.
-
-    """
-    if isinstance(x, abc.Iterable):
-        flat_x = []
-        for y in x:
-            # Recursive call for sub-structures
-            # except strings that are understood as atomic
-            if isinstance(y, abc.Iterable) and not isinstance(y, str):
-                # We cannot call directly extend to support n-depth structures
-                flat_x.extend(flatten(y))
-            else:
-                flat_x.append(y)
-        return flat_x
-    if x is None:
-        return []
-    else:
-        # The assumption is that x is a scalar
-        # and because the function caller expects an iterable
-        # we can return a list
-        return [x]
 
 
-def coerce_binary_value(x: BinaryValueInput) -> BinaryValue:
+def coerce_binary_value(x: BinaryValueInput) -> BinaryVariable:
     """Coerce an object of a compatible Python type to the **BinaryValue** type.
 
     :param x: A Python object of a compatible type.
     :return: An object of type BinaryValue.
-    :rtype: BinaryValue
+    :rtype: BinaryVariable
     """
     if isinstance(x, bool):
-        return BinaryValue(x)
+        return BinaryVariable(x)
     elif isinstance(x, int) and 0 <= x <= 1:
-        coerced_x = BinaryValue(bool(x))
+        coerced_x = BinaryVariable(bool(x))
         logging.debug(f'coerce_binary_value({x}[{type(x)}]) -> {coerced_x}')
-        return BinaryValue(coerced_x)
+        return BinaryVariable(coerced_x)
     else:
         raise TypeError(f'coerce_binary_value: {x} is of unsupported type {type(x)}')
 

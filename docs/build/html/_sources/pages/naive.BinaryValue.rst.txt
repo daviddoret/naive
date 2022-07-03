@@ -19,4 +19,10 @@ naive.BinaryValue
 
    
    
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BinaryValue.bool
+   
    

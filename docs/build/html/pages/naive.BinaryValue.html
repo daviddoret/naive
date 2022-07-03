@@ -123,11 +123,35 @@
 <dt class="sig sig-object py" id="naive.BinaryValue">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">naive.</span></span><span class="sig-name descname"><span class="pre">BinaryValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">o</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BinaryValueInput</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/naive/binary_value.html#BinaryValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.BinaryValue" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>A class that behaves similarly to <span class="math notranslate nohighlight">\(b \in \mathbb{B}\)</span>.</p>
+<p>A mutable binary variable.</p>
 <p>Alias: <a class="reference internal" href="naive.BV.html#naive.BV" title="naive.BV"><code class="xref py py-data docutils literal notranslate"><span class="pre">naive.BV</span></code></a></p>
+<p>The objective of this class is to approach the behavior of <span class="math notranslate nohighlight">\(b \in \mathbb{B}\)</span> in mathematics.</p>
+<blockquote>
+<div><p>Example:</p>
+<blockquote>
+<div><div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">naive</span>
+<span class="n">b1</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">BV</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">b2</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">BV</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;(b1 = b2) = (</span><span class="si">{</span><span class="n">b1</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="n">b2</span><span class="si">}</span><span class="s1">) = </span><span class="si">{</span><span class="n">b1</span> <span class="o">==</span> <span class="n">b2</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">b2</span><span class="o">.</span><span class="n">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;(b1 = b2) = (</span><span class="si">{</span><span class="n">b1</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="n">b2</span><span class="si">}</span><span class="s1">) = </span><span class="si">{</span><span class="n">b1</span> <span class="o">==</span> <span class="n">b2</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>(b1 = b2) = (&lt;naive.binary_value.BinaryValue object at 0x0000029B5AA01420&gt; = &lt;naive.binary_value.BinaryValue object at 0x0000029B5AA002B0&gt;) = False
+(b1 = b2) = (&lt;naive.binary_value.BinaryValue object at 0x0000029B5AA01420&gt; = &lt;naive.binary_value.BinaryValue object at 0x0000029B5AA002B0&gt;) = False
+</pre></div>
+</div>
+</div>
+</div>
+</div></blockquote>
+</div></blockquote>
 <p class="rubric">Notes</p>
-<p>The python <a href="#id1"><span class="problematic" id="id2">:type:`bool`</span></a> native type cannot be subclassed.
-The solution consists in implementing the <a href="#id3"><span class="problematic" id="id4">:type:`__bool__`</span></a> method.</p>
+<p>The python <a href="#id1"><span class="problematic" id="id2">:std:doc:type:`bool`</span></a> native type cannot be subclassed.
+To implement a bool-like class, <a href="#id3"><span class="problematic" id="id4">:std:doc:meth:`__bool__`</span></a> method is implemented.</p>
 <dl class="simple">
 <dt>Bibliography:</dt><dd><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/reference/datamodel.html#object.__bool__">https://docs.python.org/3/reference/datamodel.html#object.__bool__</a></p></li>
@@ -139,10 +163,12 @@ The solution consists in implementing the <a href="#id3"><span class="problemati
 <dt class="sig sig-object py" id="naive.BinaryValue.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">o</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BinaryValueInput</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/naive/binary_value.html#BinaryValue.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.BinaryValue.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Instantiates a <strong>BinaryValue</strong>.</p>
-<p>The class constructor makes a best effort at coercing its input. It issues a <strong>CoercionWarning</strong> in ambiguous situations. It raises a <strong>CoercionError</strong> if type coercion fails.</p>
+<p>The class constructor coerces its input.
+It issues a <strong>CoercionWarning</strong> in ambiguous situations.
+It raises a <strong>CoercionError</strong> if type coercion fails.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>o</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – A source object from which to instantiate the <strong>BinaryValue</strong>.</p>
+<dd class="field-odd"><p><strong>o</strong> (<a class="reference internal" href="naive.BinaryValueInput.html#naive.BinaryValueInput" title="naive.BinaryValueInput"><code class="xref py py-class docutils literal notranslate"><span class="pre">BinaryValueInput</span></code></a>) – A source object from which to instantiate the <strong>BinaryValue</strong>.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A new binary value.</p>
@@ -157,23 +183,6 @@ The solution consists in implementing the <a href="#id3"><span class="problemati
 </ul>
 </dd>
 </dl>
-<p class="rubric">Example</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">naive</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">BV</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;naive.binary_value.BinaryValue&#39;&gt;
-&lt;naive.binary_value.BinaryValue object at 0x000002A79F321FC0&gt;
-</pre></div>
-</div>
-</div>
-</div>
 </dd></dl>
 
 <p class="rubric">Methods</p>
@@ -188,15 +197,45 @@ The solution consists in implementing the <a href="#id3"><span class="problemati
 </tr>
 </tbody>
 </table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#naive.BinaryValue.bool" title="naive.BinaryValue.bool"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a></p></td>
+<td><p>Get/set property</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="naive.BinaryValue.__bool__">
+<span class="sig-name descname"><span class="pre">__bool__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/naive/binary_value.html#BinaryValue.__bool__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.BinaryValue.__bool__" title="Permalink to this definition"></a></dt>
+<dd><p>Provides support for implicit and explicit (i.e. <code class="docutils literal notranslate"><span class="pre">bool(x)</span></code>) conversions to <a href="#id5"><span class="problematic" id="id6">:std:doc:type:`bool`</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="naive.BinaryValue.__eq__">
 <span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BinaryValueInput</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/naive/binary_value.html#BinaryValue.__eq__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.BinaryValue.__eq__" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Provides explicit support for equality.</p>
+<p>Even though all python objects are implicitly convertible to bool (calling <a href="#id7"><span class="problematic" id="id8">:std:doc:meth:`__bool__`</span></a>),
+we want the equality operator to rather approach mathematical equality.
+Hence, we explicitly convert <strong>other</strong> to <strong>BinaryValue</strong> which issues warnings and raises exceptions as necessary.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>other</strong> – </p>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="naive.BinaryValueInput.html#naive.BinaryValueInput" title="naive.BinaryValueInput"><code class="xref py py-class docutils literal notranslate"><span class="pre">BinaryValueInput</span></code></a>) – A compatible boolean object.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
+<dd class="field-even"><p>The truth value of the equality operator.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -210,10 +249,12 @@ The solution consists in implementing the <a href="#id3"><span class="problemati
 <dt class="sig sig-object py" id="id0">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">o</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BinaryValueInput</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/naive/binary_value.html#BinaryValue.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
 <dd><p>Instantiates a <strong>BinaryValue</strong>.</p>
-<p>The class constructor makes a best effort at coercing its input. It issues a <strong>CoercionWarning</strong> in ambiguous situations. It raises a <strong>CoercionError</strong> if type coercion fails.</p>
+<p>The class constructor coerces its input.
+It issues a <strong>CoercionWarning</strong> in ambiguous situations.
+It raises a <strong>CoercionError</strong> if type coercion fails.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>o</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>) – A source object from which to instantiate the <strong>BinaryValue</strong>.</p>
+<dd class="field-odd"><p><strong>o</strong> (<a class="reference internal" href="naive.BinaryValueInput.html#naive.BinaryValueInput" title="naive.BinaryValueInput"><code class="xref py py-class docutils literal notranslate"><span class="pre">BinaryValueInput</span></code></a>) – A source object from which to instantiate the <strong>BinaryValue</strong>.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A new binary value.</p>
@@ -228,29 +269,19 @@ The solution consists in implementing the <a href="#id3"><span class="problemati
 </ul>
 </dd>
 </dl>
-<p class="rubric">Example</p>
-<div class="jupyter_cell jupyter_container docutils container">
-<div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">naive</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">BV</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;naive.binary_value.BinaryValue&#39;&gt;
-&lt;naive.binary_value.BinaryValue object at 0x000002A79F321AE0&gt;
-</pre></div>
-</div>
-</div>
-</div>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="naive.BinaryValue.__weakref__">
 <span class="sig-name descname"><span class="pre">__weakref__</span></span><a class="headerlink" href="#naive.BinaryValue.__weakref__" title="Permalink to this definition"></a></dt>
 <dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="naive.BinaryValue.bool">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bool</span></span><a class="headerlink" href="#naive.BinaryValue.bool" title="Permalink to this definition"></a></dt>
+<dd><p>Get/set property</p>
+<p><strong>BinaryValue</strong> is mutable RESUME HERE</p>
 </dd></dl>
 
 </dd></dl>

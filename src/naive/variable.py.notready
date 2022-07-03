@@ -1,0 +1,18 @@
+from .scope_management import Scope
+from .scope_management import PowerContext
+from .scope_management import UserContext
+from .scope_management import SystemContext
+from .scope_management import contexts
+from .symbol import Symbol
+
+class MathVariable(Symbol):
+    """A mathematical variable.
+
+    A mathematical variable is a mathematical symbol that stands for a known or unknown value."""
+
+
+    KNOWN / UNKNOWN
+
+    GET VALUE
+
+    SET VALUE

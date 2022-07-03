@@ -63,6 +63,7 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
     'sphinx_exec_code',
+    'sphinxcontrib.bibtex', # for bibliographic references
     'sphinx_copybutton',  # for adding “copy to clipboard” buttons to all text/code boxes
     'jupyter_sphinx' # https://jupyter-sphinx.readthedocs.io/en/latest/
     #'jupyter-execute'
@@ -70,11 +71,11 @@ extensions = [
 ]
 
 
+bibtex_bibfiles = ['bibliography.bib']
+
 #Other interesting extensions are:
 #'sphinx.ext.mathjax' (Sphinx loads this by default) for math formulas
-#'sphinxcontrib.bibtex' for bibliographic references
 #'sphinxcontrib.rsvgconverter' for SVG->PDF conversion in LaTeX output
-#
 #'sphinx_gallery.load_style' to load CSS styles for thumbnail galleries
 
 #suppress_warnings = [

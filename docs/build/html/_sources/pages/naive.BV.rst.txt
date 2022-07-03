@@ -19,4 +19,10 @@ naive.BV
 
    
    
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BV.bool
+   
    
