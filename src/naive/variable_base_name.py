@@ -1,6 +1,8 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, annotations
 import warnings
+import typing
 from src.naive.coercion_error import CoercionError
+from src.naive.coercion_warning import CoercionWarning
 
 
 class VariableBaseName(str):
@@ -9,7 +11,7 @@ class VariableBaseName(str):
     Todo:
         * Implement finer support for unicode mathematical alphabetical symbols from this reference https://en.wikipedia.org/wiki/Mathematical_Alphanumeric_Symbols
     """
-    def __new__(cls, base_name: str):
+    def __new__(cls, base_name: str) -> VariableBaseName:
         """Assure that the variable base name is clean from undesirable characters.
 
         Args:
@@ -22,8 +24,16 @@ class VariableBaseName(str):
             raise CoercionError('A variable base name cannot be None')
         base_name = str(base_name)
         sanitized_base_name = ''.join([c for c in str(base_name) if c.isalpha()])
-        if len(base_name) != len(sanitized_base_name):
-            warnings.warn(f'The sanitization of variable base name "{base_name}" resulted in new base name "".')
+        if base_name != sanitized_base_name:
+            warnings.warn(f'The sanitization of variable base name "{base_name}" resulted in new base name "{sanitized_base_name}".', CoercionWarning)
         if len(sanitized_base_name) == 0:
             raise CoercionError('A variable base name cannot be an empty string')
         return super().__new__(cls, sanitized_base_name)
+
+
+"""Supported types for coercion."""
+CoercibleVariableBaseName = typing.TypeVar(
+    'CoercibleVariableBaseName',
+    VariableBaseName,
+    str
+)

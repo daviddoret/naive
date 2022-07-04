@@ -2,9 +2,11 @@ from __future__ import annotations
 import warnings
 from src.naive.coercion_error import CoercionError
 from src.naive.coercion_warning import CoercionWarning
+from src.naive.variable_value import VariableValue
+import src.naive.settings as settings
 
 
-class NaturalNumber1(int):
+class NaturalNumber1Value(VariableValue, int):
     """Natural numbers (ℕ.
 
     Alias: :data:`naive.NN1`
@@ -14,7 +16,11 @@ class NaturalNumber1(int):
 
 
     """
-    def __new__(cls: type, o: (None, object) = None) -> NaturalNumber1:
+
+    """Class attribute for text representation."""
+    class_notation = settings.NATURAL_NUMBER_0_DOMAIN_NOTATION
+
+    def __new__(cls: type, o: (None, object) = None) -> NaturalNumber1Value:
         """Instantiates a **NaturalNumber1**.
 
         The class constructor makes a best effort at coercing its input. It issues a **CoercionWarning** in ambiguous situations. It raises a **CoercionError** if type coercion fails.
@@ -23,7 +29,7 @@ class NaturalNumber1(int):
             o (object): A source object from which to instantiate the **NaturalNumber1**.
 
         Returns:
-            NaturalNumber1: A new natural number.
+            NaturalNumber1Value: A new natural number.
 
         Raises:
             CoercionWarning: If ambiguous type coercion was necessary.
@@ -57,4 +63,6 @@ class NaturalNumber1(int):
         return n
 
 
+"""An alias for NaturalNumber1Value"""
+NN1V = NaturalNumber1Value
 

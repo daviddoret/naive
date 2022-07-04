@@ -2,9 +2,11 @@ from __future__ import annotations
 import warnings
 from src.naive.coercion_error import CoercionError
 from src.naive.coercion_warning import CoercionWarning
+from src.naive.variable_value import VariableValue
+import src.naive.settings as settings
 
 
-class NaturalNumber0(int):
+class NaturalNumber0Value(VariableValue, int):
     """A class that behaves similarly to :math:`n \\in \\mathbb{N}_0`.
 
     Alias: :data:`naive.NN0`
@@ -14,7 +16,11 @@ class NaturalNumber0(int):
 
 
     """
-    def __new__(cls: type, o: (None, object) = None) -> NaturalNumber0:
+
+    """Class attribute for text representation."""
+    class_notation = settings.NATURAL_NUMBER_0_DOMAIN_NOTATION
+
+    def __new__(cls: type, o: (None, object) = None) -> NaturalNumber0Value:
         """Instantiates a **NaturalNumber0**.
 
         The class constructor makes a best effort at coercing its input. It issues a **CoercionWarning** in ambiguous situations. It raises a **CoercionError** if type coercion fails.
@@ -23,7 +29,7 @@ class NaturalNumber0(int):
             o (object): A source object from which to instantiate the **NaturalNumber0**.
 
         Returns:
-            NaturalNumber0: A new natural number.
+            NaturalNumber0Value: A new natural number.
 
         Raises:
             CoercionWarning: If ambiguous type coercion was necessary.
@@ -54,5 +60,11 @@ class NaturalNumber0(int):
         if o < 0:
             raise CoercionError(f'Int "{o}" < 0 could not be coerced.')
         n = super().__new__(cls, o)
+        cls.class_notation = 'N0'
         return n
+
+"""An alias for NaturalNumber1Value"""
+NN0V = NaturalNumber0Value
+
+
 
