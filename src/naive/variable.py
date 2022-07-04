@@ -13,8 +13,14 @@ class Variable:
         * Implement a metaclass for domain.
     """
 
-    def __init__(self, domain: type, base_name: CoercibleVariableBaseName, indexes: VariableIndexes = variable_no_index, value: VariableValue = variable_unknown_value):
+    def __init__(self, domain: type, base_name: CoercibleVariableBaseName, indexes: VariableIndexes = None, value: VariableValue = None):
         base_name = coerce(base_name, VariableBaseName)
+        if indexes is None:
+            indexes = variable_no_index
+        if value is None:
+            value = variable_unknown_value
+        else:
+            value = coerce(value, domain)
         self._domain = domain
         self._base_name = base_name
         self._indexes = indexes

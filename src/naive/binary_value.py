@@ -4,9 +4,11 @@ import warnings
 from src.naive.coercion_warning import CoercionWarning
 from src.naive.coerce import coerce
 from src.naive.forbidden_operation_error import ForbiddenOperationError
+from src.naive.variable import VariableValue
+import src.naive.settings as settings
 
 
-class BinaryVariable:
+class BinaryValue(VariableValue):
     """A mutable binary variable.
 
     Alias: :data:`naive.BV`
@@ -33,7 +35,10 @@ class BinaryVariable:
         * https://stackoverflow.com/questions/2172189/why-i-cant-extend-bool-in-python
     """
 
-    def __init__(self, o: BinaryValueInput):
+    """Class attribute for text representation."""
+    class_notation = settings.BINARY_NUMBER_DOMAIN_NOTATION
+
+    def __init__(self, o: CoercibleBinaryValue):
         """Instantiates a **BinaryValue**.
 
          The class constructor coerces its input.
@@ -41,10 +46,10 @@ class BinaryVariable:
          It raises a **CoercionError** if type coercion fails.
 
          Args:
-             o (BinaryValueInput): A source object from which to instantiate the **BinaryValue**.
+             o (CoercibleBinaryValue): A source object from which to instantiate the **BinaryValue**.
 
          Returns:
-             BinaryVariable: A new binary value.
+             BinaryValue: A new binary value.
 
          Raises:
              CoercionWarning: If ambiguous type coercion was necessary.
@@ -69,7 +74,7 @@ class BinaryVariable:
         """
         return self._inner_bool
 
-    def __eq__(self, other: BinaryValueInput) -> bool:
+    def __eq__(self, other: CoercibleBinaryValue) -> bool:
         """Provides explicit support for equality.
 
         Even though all python objects are implicitly convertible to bool (calling :std:doc:meth:`__bool__`),
@@ -77,36 +82,32 @@ class BinaryVariable:
         Hence, we explicitly convert **other** to **BinaryValue** which issues warnings and raises exceptions as necessary.
 
         Args:
-            other(BinaryValueInput): A compatible boolean object.
+            other(CoercibleBinaryValue): A compatible boolean object.
 
         Returns:
             bool: The truth value of the equality operator.
         """
-        other = coerce(other, BinaryVariable)
-        return bool(self) == bool(other)
+        other = coerce(other, BinaryValue)
+        result = bool(self) == bool(other) # Explicit conversion is superfluous but clearer
+        return result
 
-    @property
-    def bool(self):
-        """Get/set property
+    def __str__(self):
+        if self:
+            return settings.BINARY_VALUE_1_NOTATION
+        else:
+            return settings.BINARY_VALUE_0_NOTATION
 
-        **BinaryValue** is mutable RESUME HERE
-        """
-        return self._inner_bool
-
-    @bool.setter
-    def bool(self, b: BinaryValueInput):
-        self._inner_bool = b
-
-    @bool.deleter
-    def bool(self):
-        raise(ForbiddenOperationError('Come on... Why would you delete this property?'))
+    def __repr__(self):
+        return str(self)
 
 
+BV = BinaryValue
 
-"""This :type:`typing.TypeVar` lists allowed types for implicit type coercion."""
-BinaryValueInput = typing.TypeVar(
-    'BinaryValueInput',
-    BinaryVariable,
+
+"""Safe types for type coercion."""
+CoercibleBinaryValue = typing.TypeVar(
+    'CoercibleBinaryValue',
+    BinaryValue,
     bool,
     int
 )

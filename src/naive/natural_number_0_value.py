@@ -60,7 +60,6 @@ class NaturalNumber0Value(VariableValue, int):
         if o < 0:
             raise CoercionError(f'Int "{o}" < 0 could not be coerced.')
         n = super().__new__(cls, o)
-        cls.class_notation = 'N0'
         return n
 
 """An alias for NaturalNumber1Value"""

@@ -28,7 +28,7 @@ __version__ = "0.1.6"
 # import superscript as naive
 # import variable_base_name as naive
 from src.naive.hello_world import hello_world
-from src.naive.binary_value import BinaryVariable, BinaryValueInput
+from src.naive.binary_value import BinaryValue, CoercibleBinaryValue
 from src.naive.clean_math_symbol import clean_math_symbol
 from src.naive.coerce import coerce
 from src.naive.coercion_error import CoercionError
@@ -48,6 +48,6 @@ import src.naive.settings as settings
 
 
 """A shorthand for NaturalNumber0."""
-#BV = BinaryVariable
+#BV = BinaryValue
 NV0 = NaturalVector0
 NV1 = NaturalVector1
