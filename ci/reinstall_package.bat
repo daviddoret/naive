@@ -1,7 +1,7 @@
 @ECHO.
 @ECHO REINSTALL PACKAGE
 @ECHO.
-REM Bibliography:
+REM BIBLIOGRAPHY
 REM - https://snarky.ca/why-you-should-use-python-m-pip/
 
 @ECHO PIP UNINSTALL

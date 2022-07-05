@@ -20,7 +20,7 @@ recommonmark==0.7.1
 readthedocs-sphinx-ext<2.2
 
 # Integration of Jupyter notebooks in the documentation
-# jupyter-sphinx
+jupyter-sphinx
 
 sphinx-exec-code
 
