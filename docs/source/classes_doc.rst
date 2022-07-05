@@ -18,6 +18,6 @@ All the classes, class aliases, VarTypes, NewTypes, and types that are available
     :toctree: pages
     :recursive:
 
-    coercion_error.CoercionError
-    coercion_warning.CoercionWarning
+    CoercionError
+    CoercionWarning
 
