@@ -2,6 +2,9 @@
 REM @ECHO SET PATH
 REM CALL .\ci\set_syspath.bat
 
+@ECHO INCREMENT MINOR VERSION
+CALL .\ci\increment_minor_version.bat
+
 @ECHO BUILD PACKAGE
 CALL .\ci\build_package.bat
 
