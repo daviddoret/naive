@@ -123,7 +123,7 @@ source_suffix = {
 exclude_patterns = ['requirements.txt']
 
 # Reference: https://stackoverflow.com/questions/62226506/python-sphinx-autosummary-failed-to-import-module
-autodoc_mock_imports = ["typing", "numpy", "collections.abc", "nptyping"]
+autodoc_mock_imports = ["annotations", "warnings", "typing", "numpy", "collections.abc", "nptyping"]
 
 # sphinx-exec-code configuration
 # source: https://sphinx-exec-code.readthedocs.io/en/latest/configuration.html

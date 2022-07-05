@@ -16,7 +16,7 @@ Functions
     :toctree: pages
     :recursive:
 
-    coerce
-    hello_world
+    coerce.coerce
+    hello_world.hello_world
 
 
