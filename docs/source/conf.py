@@ -23,7 +23,6 @@ project_root = pathlib.Path(__file__).parents[2].resolve()
 print(f'project_root: {project_root}')
 sys.path.insert(0, project_root.as_posix())
 
-
 # Reference: https://stackoverflow.com/questions/10324393/sphinx-build-fail-autodoc-cant-import-find-module
 package_path = project_root.as_posix() #os.path.abspath('src')
 os.environ['PYTHONPATH'] = ':'.join((package_path, os.environ.get('PYTHONPATH', '')))

@@ -1,21 +1,15 @@
 from __future__ import annotations
 import warnings
-from src.naive.coercion_error import CoercionError
-from src.naive.coercion_warning import CoercionWarning
-
-
-
-
-
-
+from src.naive.coercion_error import *
+from src.naive.coercion_warning import *
 
 
 def coerce(o: (None, object), cls: type) -> (None, object):
     """Coerces an object **o** to type **cls**.
 
-    This function is useful to implement single line argument type coercion in functions and methods.
+    This function is useful to implement single line argument type coercion for the validation of arguments in functions and methods.
 
-    The assumption behind **coerce** is that all classes implement a coercive constructor. Raises a **CoercionError** if the coercion fails.
+    The assumption behind **coerce** is that all classes implement a coercive constructor.
 
     Args:
         o (object): An object of undetermined type, but compatible with **cls**.
@@ -49,7 +43,6 @@ def coerce(o: (None, object), cls: type) -> (None, object):
 
 
     """
-
     if o is None:
         return None
     elif isinstance(o, cls):
