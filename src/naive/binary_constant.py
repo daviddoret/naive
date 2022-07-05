@@ -5,7 +5,8 @@ from src.naive.coercion_warning import CoercionWarning
 from src.naive.coerce import coerce
 from src.naive.forbidden_operation_error import ForbiddenOperationError
 from src.naive.variable import Constant
-import src.naive.settings as settings
+from src.naive.domain_library import *
+import src.naive.notation as settings
 
 
 class BinaryConstant(Constant):
@@ -99,6 +100,10 @@ class BinaryConstant(Constant):
 
     def __repr__(self):
         return str(self)
+
+    @property
+    def domain(self) -> Domain:
+        return domains.b
 
 
 BC = BinaryConstant

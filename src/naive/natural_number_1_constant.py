@@ -3,8 +3,9 @@ import warnings
 import typing
 from src.naive.coercion_error import CoercionError
 from src.naive.coercion_warning import CoercionWarning
-from src.naive.variable_value import Constant
-import src.naive.settings as settings
+from src.naive.variable_definition import Constant
+import src.naive.domain_library as domain
+import src.naive.notation as settings
 
 
 class NaturalNumber1Constant(Constant, int):
@@ -62,6 +63,10 @@ class NaturalNumber1Constant(Constant, int):
             raise CoercionError(f'Int "{o}" < 1 could not be coerced.')
         n = super().__new__(cls, o)
         return n
+
+    @property
+    def domain(self) -> domain.Domain:
+        return domain.domains.n1
 
 
 """An alias for NaturalNumber1Constant"""

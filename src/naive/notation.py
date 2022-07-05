@@ -1,10 +1,8 @@
-"""Package settings
+"""Mathematical notation"""
 
-todo:
-    * Consider using a python settings package such as python-settings or simple-settings
-"""
+# TODO: Consider using a python notation package such as python-notation or simple-notation
+# TODO: Distinguish Unicode and LaTeX encodings
 
-# Math notation
 UNKNOWN_NOTATION = '?'
 VARIABLE_NO_INDEX = ''
 NATURAL_NUMBER_0_DOMAIN_NOTATION = 'ℕ₀'
@@ -17,4 +15,5 @@ BINARY_VALUE_1_NOTATION = '⊤'
 DEFAULT_USER_ENVIRONMENT_BASE_NAME = 'U'
 ELEMENT_OF_NOTATION = '∈'
 EQUALITY_NOTATION = '='
+DEFINITION_NOTATION = '≔'
 VARIABLE_SCOPE_SEPARATOR_NOTATION = '.'

@@ -1,6 +1,6 @@
 from abc import ABC
 from src.naive.natural_number_1_constant import NaturalNumber1Constant, NN1C
-import src.naive.settings as settings
+import src.naive.notation as settings
 
 
 class VariableIndexPosition(ABC):

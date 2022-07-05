@@ -6,11 +6,12 @@ from src.naive.coerce import coerce
 from src.naive.coercion_error import CoercionError
 from src.naive.coercion_warning import CoercionWarning
 import src.naive.variable as variable
-from src.naive.variable_value import VariableContent
-import src.naive.settings as settings
+import src.naive.domain_library as domain
+from src.naive.variable_definition import VariableDefinition
+import src.naive.notation as settings
 
 
-class NTuple(VariableContent):
+class NTuple(VariableDefinition):
     """An N-Tuple of mathematical variables."""
 
     """Class attribute for text representation."""
@@ -63,7 +64,7 @@ class NTuple(VariableContent):
 
     def get_variable_by_fully_qualified_name(self, fully_qualified_name):
         with self._variables_list_lock:
-            gen = (v for v in self._variables_list if v.fully_qualified_name == fully_qualified_name)
+            gen = (v for v in self._variables_list if v.qualified_name == fully_qualified_name)
             match = next(gen, None) # Assumption: names are unique in this context.
             if match is None:
                 return None
@@ -80,3 +81,8 @@ class NTuple(VariableContent):
                 return match
 
     # TODO: Implement get_variable_by_indexes (meaning "variable indexes")
+
+    @property
+    def domain(self) -> domain.Domain:
+        return domain.domains.n_tuple
+

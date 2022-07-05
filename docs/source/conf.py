@@ -170,3 +170,7 @@ napoleon_use_rtype = True
 napoleon_preprocess_types = True
 napoleon_type_aliases = None
 napoleon_attr_annotations = True
+
+napoleon_custom_sections = [
+    ('Sample use cases', 'example_style'),
+    ('Design choice', 'example_style')]

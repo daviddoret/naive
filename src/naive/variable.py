@@ -1,11 +1,10 @@
 from __future__ import annotations
-from src.naive.variable_base_name import VariableBaseName, CoercibleVariableBaseName
-from src.naive.variable_indexes import VariableIndexes, variable_no_index
-from src.naive.variable_value import Constant, unknown, VariableContent
-from src.naive.n_tuple_variable_content import NTuple
-from src.naive.coerce import coerce
-import src.naive.environment_variable_content as environment
-import src.naive.settings as settings
+from src.naive.variable_base_name import *
+from src.naive.variable_indexes import *
+from src.naive.variable_definition import *
+from src.naive.coerce import *
+from src.naive.domain_library import *
+import src.naive.notation as notation
 
 
 class Variable:
@@ -14,17 +13,19 @@ class Variable:
     A mathematical variable is a mathematical symbol that stands for a known or unknown value.
 
     """
+
     # TODO: Implement a metaclass for domain. This leads to technical conflicts and would require further analysis.
     def __init__(
             self,
-            domain: type,
+            domain: Domain,
             base_name: CoercibleVariableBaseName,
             indexes: VariableIndexes = None,
-            value: VariableContent = None,
+            value: VariableDefinition = None,
             scope: Variable = None):
+        domain = coerce(domain, Domain)
         base_name = coerce(base_name, VariableBaseName)
         indexes = coerce(indexes, VariableIndexes)
-        value = coerce(value, VariableContent)
+        value = coerce(value, VariableDefinition)
         scope = coerce(scope, Variable)
         # For future development:
         # If scope is None, we cannot retrieve the default user environment
@@ -39,9 +40,14 @@ class Variable:
         self._scope = scope
 
     def __str__(self):
-        if not hasattr(self._domain, 'class_notation'):
-            raise AttributeError('Domain is missing class_notation class attribute')
-        return self.name + ' ∈ ' + getattr(self._domain, 'class_notation') + ' = ' + str(self._value)
+        return \
+            str(self.name) + \
+            ' ' + \
+            notation.ELEMENT_OF_NOTATION + \
+            ' ' + \
+            str(self.domain) + \
+            notation.DEFINITION_NOTATION + \
+            str(self.value)
 
     def __repr__(self):
         return str(self)
@@ -52,19 +58,19 @@ class Variable:
         return str(self._base_name) + (str(self._indexes) if self._indexes else '')
 
     @property
-    def fully_qualified_name(self) -> str:
-        """The fully qualified variable name is composed of the recursive parent name."""
+    def qualified_name(self) -> str:
+        """The qualified variable name is composed of the recursive parent name."""
         # TODO: design flaw: we should prevent circular variable scope relationships.
         if self.scope is None:
             # This variable is a root environment.
-            return self.value.fully_qualified_name
+            return self.name
         else:
             # This variable is not a root environment.
             # Continue to climb the scope hierarchy
             # until we reach the root environment.
-            return self.scope.fully_qualified_name + \
-                   settings.VARIABLE_SCOPE_SEPARATOR_NOTATION + \
-                   self.value.fully_qualified_name
+            return self.scope.qualified_name + \
+                   notation.VARIABLE_SCOPE_SEPARATOR_NOTATION + \
+                   self.name
 
     # TODO: Re-implement variable hash but put some thought in it first.
     # def __hash__(self):

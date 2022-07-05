@@ -5,12 +5,12 @@ from src.naive.coerce import coerce
 from src.naive.coercion_error import CoercionError
 from src.naive.coercion_warning import CoercionWarning
 import src.naive.variable as variable
-from src.naive.variable_value import VariableContent
-import src.naive.settings as settings
+from src.naive.variable_definition import VariableDefinition
+import src.naive.notation as settings
 import src.naive.variable_base_name as variable_base_name
 import src.naive.variable_indexes as variable_indexes
 
-class Environment(VariableContent):
+class Environment(VariableDefinition):
     """An root N-Tuple of mathematical variables.
 
     Todo:
@@ -43,7 +43,7 @@ class Environment(VariableContent):
     def append_variable(self, domain: type,
                         base_name: variable_base_name.CoercibleVariableBaseName,
                         indexes: variable_indexes.VariableIndexes = None,
-                        value: VariableContent = None,
+                        value: VariableDefinition = None,
                         scope: variable.Variable = None
                         ) -> None:
 
@@ -59,7 +59,7 @@ class Environment(VariableContent):
 
     def get_variable_by_fully_qualified_name(self, fully_qualified_name):
         # TODO: This method is not safe. Check position value first and manage index error gracefuly.
-        match = (v for v in self._variables_list if v.fully_qualified_name == fully_qualified_name)
+        match = (v for v in self._variables_list if v.qualified_name == fully_qualified_name)
         v = match[0]
         return v
 

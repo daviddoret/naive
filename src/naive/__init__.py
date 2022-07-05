@@ -28,7 +28,7 @@ __version__ = "0.1.6"
 # import superscript as naive
 # import variable_base_name as naive
 from src.naive.hello_world import hello_world
-from src.naive.binary_constant import BinaryConstant, CoercibleBinaryConstant
+from src.naive.binary_constant import *
 from src.naive.clean_math_symbol import clean_math_symbol
 from src.naive.coerce import coerce
 from src.naive.coercion_error import CoercionError
@@ -42,10 +42,11 @@ from src.naive.n_tuple_variable_content import NTuple
 from src.naive.subscript import subscript
 from src.naive.superscript import superscript
 from src.naive.variable_base_name import VariableBaseName
-from src.naive.variable_value import Constant, unknown
+from src.naive.variable_definition import Constant, binary_unknown
 from src.naive.variable_indexes import VariableIndexes
 from src.naive.variable import Variable
-import src.naive.settings as settings
+from src.naive.domain_library import Domain, DomainSet, domains
+import src.naive.notation as settings
 
 
 """A shorthand for NaturalNumber0."""
