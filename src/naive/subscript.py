@@ -1,4 +1,4 @@
-from src.naive.coerce import coerce
+from src.naive import coerce
 
 
 def subscript(s: (str, int)) -> str:
@@ -25,6 +25,7 @@ def subscript(s: (str, int)) -> str:
         * https://stackoverflow.com/questions/13875507/convert-numeric-strings-to-superscript
 
     """
+    s = coerce(s, str)
     subscript_dictionary = {'0': u'₀',
                             '1': u'₁',
                             '2': u'₂',
@@ -35,5 +36,4 @@ def subscript(s: (str, int)) -> str:
                             '7': u'₇',
                             '8': u'₈',
                             '9': u'₉'}
-    s = coerce(s, str)
     return u''.join(subscript_dictionary.get(char, char) for char in s)

@@ -1,8 +1,8 @@
 from unittest import TestCase
-import src.naive.hello_world as hi
+import src.naive as naive
 
 
 class Test(TestCase):
     def test_say_hello(self):
-        self.assertEqual(hi.hello_world(), "hello anonymous")
-        self.assertEqual(hi.hello_world('foobar'), "hello foobar")
+        self.assertEqual(naive.hello_world(), "hello anonymous")
+        self.assertEqual(naive.hello_world('foobar'), "hello foobar")

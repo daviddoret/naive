@@ -3,6 +3,7 @@ README.txt
 pyproject.toml
 setup.cfg
 src/naive/__init__.py
+src/naive/__init__explicit.py
 src/naive/binary_algebra.py
 src/naive/binary_array.py
 src/naive/binary_constant.py
@@ -11,7 +12,6 @@ src/naive/clean_math_symbol.py
 src/naive/coerce.py
 src/naive/coercion_error.py
 src/naive/coercion_warning.py
-src/naive/conf.py
 src/naive/domain_library.py
 src/naive/environment_variable_content.py
 src/naive/flatten.py

@@ -1,4 +1,7 @@
-def superscript(s):
+from src.naive import coerce
+
+
+def superscript(s: str) -> str:
     """
 
     Bibliography:
@@ -8,6 +11,7 @@ def superscript(s):
         :param s:
         :return:
     """
+    s = coerce(s, str)
     subscript_dictionary = {'0': '⁰',
                             '1': '¹',
                             '2': '²',

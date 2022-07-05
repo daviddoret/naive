@@ -15,12 +15,17 @@ import pathlib
 #os.environ['PYTHONPATH'] = ':'.join((package_path, os.environ.get('PYTHONPATH', '')))
 #os.environ['PYTHONPATH'] = ':'.join(('C:/Users/david/PycharmProjects/naive', os.environ.get('PYTHONPATH', '')))
 
+# If extensions (or modules to document with autodoc) are in another directory,
+# add these directories to sys.path here.
+# Reference: https://www.sphinx-doc.org/en/master/tutorial/describing-code.html
+# Project root
+project_root = pathlib.Path(__file__).parents[2].resolve()
+print(f'project_root: {project_root}')
+sys.path.insert(0, project_root.as_posix())
+
+
 # Reference: https://stackoverflow.com/questions/10324393/sphinx-build-fail-autodoc-cant-import-find-module
-#sys.path.insert(0, os.path.abspath(u'../../naive'))
-# sys.path.insert(0, os.path.abspath('..'))
-#sys.path.insert(0, os.path.abspath('C:\\Users\\david\\PycharmProjects\\naive'))
-#package_path = os.path.abspath('../..')
-package_path = os.path.abspath('src')
+package_path = project_root.as_posix() #os.path.abspath('src')
 os.environ['PYTHONPATH'] = ':'.join((package_path, os.environ.get('PYTHONPATH', '')))
 print(f'package_path: {package_path}')
 python_path = os.environ['PYTHONPATH']
@@ -29,18 +34,10 @@ print(f'sys.path: {sys.path}')
 print(f'os.getcwd(): {os.getcwd()}')
 print(' ')
 
-import naive.type_library
-import naive.binary_algebra
-import naive.set_algebra
-
-
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here.
-# Reference: https://www.sphinx-doc.org/en/master/tutorial/describing-code.html
-# sys.path.insert(0, pathlib.Path(__file__).parents[2].resolve().as_posix())
+import src.naive as naive
+naive.hello_world('Mira')
 
 # -- Project information
-
 project = 'naive'
 copyright = '2022, David Doret'
 author = 'David Doret'

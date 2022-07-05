@@ -16,8 +16,6 @@ Functions
     :toctree: pages
     :recursive:
 
-    clean_math_variable
-    coerce
-    subscript
+    hello_world
 
 

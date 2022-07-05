@@ -4,32 +4,24 @@
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-
 # Configuration file for the Sphinx documentation builder.
 import sys
 import os
 import pathlib
-
-# Reference: https://jupyter-sphinx.readthedocs.io/en/latest/
-#package_path = os.path.abspath('../..')
-#os.environ['PYTHONPATH'] = ':'.join((package_path, os.environ.get('PYTHONPATH', '')))
-#os.environ['PYTHONPATH'] = ':'.join(('C:/Users/david/PycharmProjects/naive', os.environ.get('PYTHONPATH', '')))
-
-# Reference: https://stackoverflow.com/questions/10324393/sphinx-build-fail-autodoc-cant-import-find-module
-#sys.path.insert(0, os.path.abspath(u'../../naive'))
-# sys.path.insert(0, os.path.abspath('..'))
-#sys.path.insert(0, os.path.abspath('C:\\Users\\david\\PycharmProjects\\naive'))
-#print(f'sys.path: {sys.path}')
-#package_path = os.path.abspath('../..')
-#os.environ['PYTHONPATH'] = ':'.join((package_path, os.environ.get('PYTHONPATH', '')))
-
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here.
 # Reference: https://www.sphinx-doc.org/en/master/tutorial/describing-code.html
-# sys.path.insert(0, pathlib.Path(__file__).parents[2].resolve().as_posix())
+sys.path.insert(0, pathlib.Path(__file__).parents[2].resolve().as_posix())
 
-# -- Project information
+import src.naive
+src.naive.hello_world('Joe')
 
+# References
+#  - https://jupyter-sphinx.readthedocs.io/en/latest/
+#  - https://stackoverflow.com/questions/10324393/sphinx-build-fail-autodoc-cant-import-find-module
+
+
+# Project information
 project = 'naive'
 copyright = '2022, David Doret'
 author = 'David Doret'
@@ -37,7 +29,7 @@ author = 'David Doret'
 release = '0.1'
 version = '0.1.0'
 
-# -- General configuration
+# General configuration
 
 extensions = [
     'nbsphinx',

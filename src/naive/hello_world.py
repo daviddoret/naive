@@ -1,7 +1,12 @@
 def hello_world(my_name: str = 'anonymous') -> str:
-    """Say hello
+    """Say hello to anyone in the world.
 
-    :param my_name: Your name
-    :return: A greeting message
+    Args:
+        my_name (str): Someone's name
+
+    Returns:
+        str: A greeting message for someone
     """
-    return f'hello {my_name}'
+    s = f'hello {my_name}'
+    print(s)
+    return s
