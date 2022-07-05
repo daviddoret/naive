@@ -2,6 +2,7 @@ LICENSE
 README.txt
 pyproject.toml
 setup.cfg
+setup.py
 src/naive/__init__.py
 src/naive/__init__explicit.py
 src/naive/binary_algebra.py
@@ -35,6 +36,7 @@ src/naive/variable_indexes.py
 src/naive.egg-info/PKG-INFO
 src/naive.egg-info/SOURCES.txt
 src/naive.egg-info/dependency_links.txt
+src/naive.egg-info/not-zip-safe
 src/naive.egg-info/requires.txt
 src/naive.egg-info/top_level.txt
 src/samples/__init__.py

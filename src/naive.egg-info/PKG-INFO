@@ -1,9 +1,10 @@
 Metadata-Version: 2.1
 Name: naive
 Version: -version-
-Summary: a package that meows
+Summary: Under development
 Home-page: https://github.com/daviddoret/naive
 Author: David Doret
+Author-email: 
 License: MIT
 Keywords: naive,model checking
 Classifier: Development Status :: 3 - Alpha
