@@ -61,7 +61,7 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
-    'sphinx_exec_code',
+    #'sphinx_exec_code',
     'sphinxcontrib.bibtex', # for bibliographic references
     'sphinx_copybutton',  # for adding “copy to clipboard” buttons to all text/code boxes
     'jupyter_sphinx' # https://jupyter-sphinx.readthedocs.io/en/latest/
