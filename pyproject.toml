@@ -19,3 +19,5 @@ push = true
     "{pep440_version}",
 ]
 "src/naive/__init__.py" = ["{version}"]
+
+"setup.py" = ["{version}"]
