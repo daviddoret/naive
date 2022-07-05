@@ -5,8 +5,8 @@
 
 
 import naive
-b1 = naive.BV(False)
-b2 = naive.BV(True)
+b1 = naive.BC(False)
+b2 = naive.BC(True)
 print(f'(b1 = b2) = ({b1} = {b2}) = {b1 == b2}')
 b2.bool = True
 print(f'(b1 = b2) = ({b1} = {b2}) = {b1 == b2}')

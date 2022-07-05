@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, annotations
 """naive: TODO: Add short description here"""
 
 # Version of the naive package
@@ -28,26 +28,27 @@ __version__ = "0.1.6"
 # import superscript as naive
 # import variable_base_name as naive
 from src.naive.hello_world import hello_world
-from src.naive.binary_value import BinaryValue, CoercibleBinaryValue
+from src.naive.binary_constant import BinaryConstant, CoercibleBinaryConstant
 from src.naive.clean_math_symbol import clean_math_symbol
 from src.naive.coerce import coerce
 from src.naive.coercion_error import CoercionError
 from src.naive.coercion_warning import CoercionWarning
 from src.naive.flatten import flatten
-from src.naive.natural_number_0_value import NaturalNumber0Value, NN0V
-from src.naive.natural_number_1_value import NaturalNumber1Value, NN1V
+from src.naive.natural_number_0_constant import NaturalNumber0Constant, NN0C
+from src.naive.natural_number_1_constant import NaturalNumber1Constant, NN1C
 from src.naive.natural_vector_0 import NaturalVector0
 from src.naive.natural_vector_1 import NaturalVector1
+from src.naive.n_tuple_variable_content import NTuple
 from src.naive.subscript import subscript
 from src.naive.superscript import superscript
 from src.naive.variable_base_name import VariableBaseName
-from src.naive.variable_value import VariableValue, variable_unknown_value
+from src.naive.variable_value import Constant, unknown
 from src.naive.variable_indexes import VariableIndexes
 from src.naive.variable import Variable
 import src.naive.settings as settings
 
 
 """A shorthand for NaturalNumber0."""
-#BV = BinaryValue
+#BC = BinaryConstant
 NV0 = NaturalVector0
 NV1 = NaturalVector1

@@ -45,17 +45,17 @@ class Test(TestCase):
 class TestBinaryVector(TestCase):
 
     def test_new(self):
-        self.assertFalse(tl.BV(), None)
-        self.assertEqual(tl.BV(), [])
-        self.assertEqual(tl.BV(None), [])
-        self.assertEqual(tl.BV([]), [])
-        self.assertEqual(tl.BV([0]), [0])
-        self.assertEqual(tl.BV([1]), [1])
-        self.assertEqual(tl.BV([1, 0]), [1, 0])
-        self.assertEqual(tl.BV(size=3), [0, 0, 0])
-        self.assertEqual(tl.BV(size=5), [0, 0, 0, 0, 0])
-        self.assertEqual(tl.BV(size=3, default_value=1), [1, 1, 1])
-        self.assertEqual(tl.BV(size=5, default_value=1), [1, 1, 1, 1, 1])
+        self.assertFalse(tl.BC(), None)
+        self.assertEqual(tl.BC(), [])
+        self.assertEqual(tl.BC(None), [])
+        self.assertEqual(tl.BC([]), [])
+        self.assertEqual(tl.BC([0]), [0])
+        self.assertEqual(tl.BC([1]), [1])
+        self.assertEqual(tl.BC([1, 0]), [1, 0])
+        self.assertEqual(tl.BC(size=3), [0, 0, 0])
+        self.assertEqual(tl.BC(size=5), [0, 0, 0, 0, 0])
+        self.assertEqual(tl.BC(size=3, default_value=1), [1, 1, 1])
+        self.assertEqual(tl.BC(size=5, default_value=1), [1, 1, 1, 1, 1])
 
 
 class TestSet(TestCase):

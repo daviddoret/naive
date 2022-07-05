@@ -22,7 +22,8 @@ class VariableBaseName(str):
         """
         if base_name is None:
             raise CoercionError('A variable base name cannot be None')
-        base_name = str(base_name)
+        if not isinstance(base_name, str):
+            base_name = str(base_name)
         sanitized_base_name = ''.join([c for c in str(base_name) if c.isalpha()])
         if base_name != sanitized_base_name:
             warnings.warn(f'The sanitization of variable base name "{base_name}" resulted in new base name "{sanitized_base_name}".', CoercionWarning)
@@ -30,6 +31,8 @@ class VariableBaseName(str):
             raise CoercionError('A variable base name cannot be an empty string')
         return super().__new__(cls, sanitized_base_name)
 
+    def duplicate(self):
+        return VariableBaseName(self)
 
 """Supported types for coercion."""
 CoercibleVariableBaseName = typing.TypeVar(
