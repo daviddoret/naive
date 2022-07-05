@@ -22,7 +22,7 @@ import pathlib
 project_root = pathlib.Path(__file__).parents[2].resolve()
 print(f'project_root: {project_root}')
 sys.path.insert(0, project_root.as_posix())
-naive_source = pathlib.Path(str(project_root) + r'\src\naive').resolve()
+naive_source = pathlib.Path(str(project_root) + r'/src/naive')
 print(f'naive_source: {naive_source}')
 sys.path.insert(0, naive_source.as_posix())
 
