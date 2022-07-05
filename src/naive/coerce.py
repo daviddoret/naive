@@ -1,7 +1,7 @@
 from __future__ import annotations
 import warnings
-from src.naive.coercion_error import *
-from src.naive.coercion_warning import *
+from coercion_error import CoercionError
+from coercion_warning import CoercionWarning
 
 
 def coerce(o: (None, object), cls: type) -> (None, object):
@@ -26,11 +26,12 @@ def coerce(o: (None, object), cls: type) -> (None, object):
 
         .. jupyter-execute::
 
-            import naive
+            # import naive
             n = "5"
-            n_prime = naive.coerce(n, naive.NN0)
-            print(type(n_prime))
-            print(n_prime)
+            print(n)
+            #n_prime = naive.coerce(n, naive.NN0)
+            #print(type(n_prime))
+            #print(n_prime)
 
     Notes:
         High-level algorithm:

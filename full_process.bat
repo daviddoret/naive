@@ -1,1 +1,1 @@
-call .\auto\full_process.bat
+call .\ci\full_process.bat
