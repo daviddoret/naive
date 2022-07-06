@@ -18,6 +18,9 @@ All the classes, class aliases, VarTypes, NewTypes, and types that are available
     :toctree: pages
     :recursive:
 
+    BinaryValue
     CoercionError
     CoercionWarning
+    NaturalNumber0
+    NaturalNumber1
 

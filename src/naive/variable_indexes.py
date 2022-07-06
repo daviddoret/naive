@@ -1,5 +1,5 @@
 from abc import ABC
-from src.naive.natural_number_1_constant import NaturalNumber1Constant, NN1C
+from src.naive.natural_number_1 import NaturalNumber1, NN1
 import src.naive.notation as settings
 
 
@@ -7,7 +7,7 @@ class VariableIndexPosition(ABC):
     pass
 
 
-class VariableNN1IndexPosition(NN1C, int):
+class VariableNN1IndexPosition(NN1, int):
     def __new__(cls, *args, **kwargs):
         super().__new__(cls, *args, **kwargs)
 

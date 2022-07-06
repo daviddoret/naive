@@ -9,10 +9,10 @@ from src.naive.domain_library import *
 import src.naive.notation as settings
 
 
-class BinaryConstant(Constant):
+class BinaryNumber(Constant):
     """A mutable binary variable.
 
-    Alias: :data:`naive.BC`
+    Alias: :data:`naive.BN`
 
     The objective of this class is to approach the behavior of :math:`b \\in \\mathbb{B}` in mathematics.
 
@@ -21,8 +21,8 @@ class BinaryConstant(Constant):
          .. jupyter-execute::
 
              import naive
-             b1 = naive.BC(False)
-             b2 = naive.BC(True)
+             b1 = naive.BN(False)
+             b2 = naive.BN(True)
              print(f'(b1 = b2) = ({b1} = {b2}) = {b1 == b2}')
              b2.bool = True
              print(f'(b1 = b2) = ({b1} = {b2}) = {b1 == b2}')
@@ -39,7 +39,7 @@ class BinaryConstant(Constant):
     """Class attribute for text representation."""
     class_notation = settings.BINARY_NUMBER_DOMAIN_NOTATION
 
-    def __init__(self, o: CoercibleBinaryConstant):
+    def __init__(self, o: CoercibleBinaryNumber):
         """Instantiates a **BinaryValue**.
 
          The class constructor coerces its input.
@@ -47,10 +47,10 @@ class BinaryConstant(Constant):
          It raises a **CoercionError** if type coercion fails.
 
          Args:
-             o (CoercibleBinaryConstant): A source object from which to instantiate the **BinaryValue**.
+             o (CoercibleBinaryNumber): A source object from which to instantiate the **BinaryValue**.
 
          Returns:
-             BinaryConstant: A new binary value.
+             BinaryNumber: A new binary value.
 
          Raises:
              CoercionWarning: If ambiguous type coercion was necessary.
@@ -75,20 +75,20 @@ class BinaryConstant(Constant):
         """
         return self._inner_bool
 
-    def __eq__(self, other: CoercibleBinaryConstant) -> bool:
+    def __eq__(self, other: CoercibleBinaryNumber) -> bool:
         """Provides explicit support for equality.
 
         Even though all python objects are implicitly convertible to bool (calling :std:doc:meth:`__bool__`),
         we want the equality operator to rather approach mathematical equality.
-        Hence, we explicitly convert **other** to **BinaryConstant** which issues warnings and raises exceptions as necessary.
+        Hence, we explicitly convert **other** to **BinaryNumber** which issues warnings and raises exceptions as necessary.
 
         Args:
-            other(CoercibleBinaryConstant): A compatible boolean object.
+            other(CoercibleBinaryNumber): A compatible boolean object.
 
         Returns:
             bool: The truth value of the equality operator.
         """
-        other = coerce(other, BinaryConstant)
+        other = coerce(other, BinaryNumber)
         result = bool(self) == bool(other) # Explicit conversion is superfluous but clearer
         return result
 
@@ -106,13 +106,13 @@ class BinaryConstant(Constant):
         return domains.b
 
 
-BC = BinaryConstant
+BN = BinaryNumber
 
 
 """Safe types for type coercion."""
-CoercibleBinaryConstant = typing.TypeVar(
-    'CoercibleBinaryConstant',
-    BinaryConstant,
+CoercibleBinaryNumber = typing.TypeVar(
+    'CoercibleBinaryNumber',
+    BinaryNumber,
     bool,
     int
 )

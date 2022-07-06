@@ -43,23 +43,23 @@ class Test(TestCase):
     def test_get_logical_not(self):
         v = ba.get_logical_not([])
         t = tl.is_instance(v, tl.BinaryVector)
-        self.assertEqual(tl.BC([]), ba.get_logical_not([]))
-        self.assertEqual(tl.BC([1, 1, 0]), ba.get_logical_not([0, 0, 1]))
-        self.assertEqual(tl.BC([0, 0, 1]), ba.get_logical_not([1, 1, 0]))
-        self.assertEqual(tl.BC([1, 1, 1]), ba.get_logical_not([0, 0, 0]))
-        self.assertEqual(tl.BC([0, 0, 0]), ba.get_logical_not([1, 1, 1]))
-        self.assertEqual(tl.BC([0]), ba.get_logical_not([1]))
-        self.assertEqual(tl.BC([1]), ba.get_logical_not([0]))
-        self.assertEqual(tl.BC([0, 0, 1, 1, 1, 0]), ba.get_logical_not([1, 1, 0, 0, 0, 1]))
-        self.assertEqual(tl.BC([1, 1, 0, 0, 0, 1]), ba.get_logical_not([0, 0, 1, 1, 1, 0]))
+        self.assertEqual(tl.BN([]), ba.get_logical_not([]))
+        self.assertEqual(tl.BN([1, 1, 0]), ba.get_logical_not([0, 0, 1]))
+        self.assertEqual(tl.BN([0, 0, 1]), ba.get_logical_not([1, 1, 0]))
+        self.assertEqual(tl.BN([1, 1, 1]), ba.get_logical_not([0, 0, 0]))
+        self.assertEqual(tl.BN([0, 0, 0]), ba.get_logical_not([1, 1, 1]))
+        self.assertEqual(tl.BN([0]), ba.get_logical_not([1]))
+        self.assertEqual(tl.BN([1]), ba.get_logical_not([0]))
+        self.assertEqual(tl.BN([0, 0, 1, 1, 1, 0]), ba.get_logical_not([1, 1, 0, 0, 0, 1]))
+        self.assertEqual(tl.BN([1, 1, 0, 0, 0, 1]), ba.get_logical_not([0, 0, 1, 1, 1, 0]))
         # Note that the not Python operator cannot be overridden
         # internally, Python will call not(first) != second
         # for this reason, we must expressly use the binary_vector_equal function
         # and cannot use the native equality
         # Source: https://stackoverflow.com/questions/39754808/overriding-not-operator-in-python
-        self.assertFalse(tl.bv_equal_bv(tl.BC([]), None))
-        self.assertFalse(tl.bv_equal_bv(tl.BC([0]), None))
-        self.assertFalse(tl.bv_equal_bv(tl.BC([0, 1]), None))
+        self.assertFalse(tl.bv_equal_bv(tl.BN([]), None))
+        self.assertFalse(tl.bv_equal_bv(tl.BN([0]), None))
+        self.assertFalse(tl.bv_equal_bv(tl.BN([0, 1]), None))
 
 
 

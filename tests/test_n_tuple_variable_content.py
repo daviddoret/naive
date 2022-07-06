@@ -6,9 +6,9 @@ class TestNTuple(TestCase):
     def test_append_variable(self):
         t = naive.NTuple()
         v = naive.Variable(naive.NTuple, 't', None, t, None)
-        v.value.append_variable(naive.Variable(naive.NN0C, 'a', None, naive.NN0C(1), None))
-        v.value.append_variable(naive.Variable(naive.NN0C, 'b', None, naive.NN0C(0), None))
-        v.value.append_variable(naive.Variable(naive.NN1C, 'c', None, naive.NN1C(12), None))
+        v.value.append_variable(naive.Variable(naive.NN0, 'a', None, naive.NN0(1), None))
+        v.value.append_variable(naive.Variable(naive.NN0, 'b', None, naive.NN0(0), None))
+        v.value.append_variable(naive.Variable(naive.NN1, 'c', None, naive.NN1(12), None))
         v.value.append_variable(naive.Variable(naive.BinaryConstant, 'd', None, naive.BinaryConstant(False), None))
         v.value.append_variable(naive.Variable(naive.BinaryConstant, 'e', None, naive.BinaryConstant(True), None))
         print(v.value.get_variable_by_position(1))
