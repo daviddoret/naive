@@ -38,8 +38,8 @@ print(f'sys.path: {sys.path}')
 print(f'os.getcwd(): {os.getcwd()}')
 print(' ')
 
-# import src.naive as naive
-# naive.hello_world('Mira')
+import naive
+naive.hello_world('Mira')
 
 # -- Project information
 project = 'naive'
