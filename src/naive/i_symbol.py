@@ -1,6 +1,6 @@
-from i_representable_abstract_class import IRepresentable
+from representable_class import Representable
 
 
-class ISymbol(IRepresentable):
+class ISymbol(Representable):
     pass
 

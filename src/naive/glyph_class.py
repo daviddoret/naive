@@ -1,7 +1,7 @@
-from i_representable_abstract_class import IRepresentable
+from representable_class import Representable
 
 
-class Glyph(IRepresentable):
+class Glyph(Representable):
     """A glyph is an elemental representation item."""
 
     def __init__(self, *args, **kwargs):
