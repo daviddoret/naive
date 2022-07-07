@@ -1,6 +1,4 @@
 from unittest import TestCase
-
-import rformats
 import src.naive as naive
 
 
