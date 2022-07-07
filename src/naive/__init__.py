@@ -2,8 +2,15 @@
 # REPRESENTATION FORMATS
 from _class_persisting_representable import PersistingRepresentable
 from _class_symbol import Symbol
+from _class_variable_indexes import VariableIndexes
+from _class_variable import Variable
+from _class_variable_base import VariableBase
 from _function_flatten import flatten
+from _function_get_representation import get_representation
+from _function_subscriptify import subscriptify
+from _function_coerce import coerce
 from _abc_representable import ABCRepresentable
+
 
 import rformats
 import glyphs

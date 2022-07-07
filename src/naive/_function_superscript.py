@@ -1,4 +1,4 @@
-from src.naive import coerce
+from src.naive import _function_coerce
 
 
 def superscript(s: str) -> str:

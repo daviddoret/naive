@@ -1,4 +1,6 @@
 from _abc_representable import ABCRepresentable
+from _function_get_representation import get_representation
+from _function_subscriptify import subscriptify
 import notation
 
 
@@ -11,19 +13,8 @@ class VariableIndexes(ABCRepresentable):
             # TODO: Implement type Index and check it with isinstance().
             self._indexes.append(index)
 
-    @property
-    def utf8(self) -> str:
-        return notation.VARIABLE_INDEXES_SEPARATOR.join([index.utf8 for index in self._indexes])
-
-    @property
-    def latex(self) -> str:
-        return notation.VARIABLE_INDEXES_SEPARATOR.join([index.latex for index in self._indexes])
-
-    @property
-    def html(self) -> str:
-        return notation.VARIABLE_INDEXES_SEPARATOR.join([index.html for index in self._indexes])
-
-    @property
-    def ascii(self) -> str:
-        return notation.VARIABLE_INDEXES_SEPARATOR.join([index.ascii for index in self._indexes])
-
+    def get_representation(self, rformat: str = None, *args, **kwargs) -> str:
+        return subscriptify(
+            notation.VARIABLE_INDEXES_SEPARATOR.join(
+                [get_representation(index, rformat) for index in self._indexes])
+                ,rformat)

@@ -1,11 +1,11 @@
 from __future__ import annotations
 import warnings
-from coercion_error import CoercionError
-from coercion_warning import CoercionWarning
+from _exception_coercion_error import CoercionError
+from _exception_coercion_warning import CoercionWarning
 
 
 def coerce(o: (None, object), cls: type) -> (None, object):
-    """Coerces an object **o** to type **cls**.
+    """Coerces an object **representation** to type **cls**.
 
     This function is useful to implement single line argument type coercion for the validation of arguments in functions and methods.
 
@@ -36,19 +36,22 @@ def coerce(o: (None, object), cls: type) -> (None, object):
     Notes:
         High-level algorithm:
 
-        1. If **o** is **None**, returns **None**.
+        1. If **representation** is **None**, returns **None**.
 
-        2. Else if **o** is of type **cls**, returns **o**.
+        2. Else if **representation** is of type **cls**, returns **representation**.
 
-        3. Else if **o** is not of type **cls**, creates an instance of **cls** by calling its default constructor, i.e. ``cls(o)`` and issue a **CoercionWarning**.
+        3. Else if **representation** is not of type **cls**, creates an instance of **cls** by calling its default constructor, i.e. ``cls(representation)`` and issue a **CoercionWarning**.
 
 
     """
     if o is None:
         return None
     elif isinstance(o, cls):
+        # The object is already of the expected type.
         return o
     else:
+        # The object is not of the expected type,
+        # we must attempt to force its conversion.
         try:
             coerced_o = cls(o)
         except Exception as e:

@@ -1,4 +1,4 @@
-from glyph_class import Glyph
+from _class_glyph import Glyph
 
 # Number sets
 standard_x_lowercase = Glyph(utf8='x', latex=r'x', html='x', ascii='x')
