@@ -1,7 +1,6 @@
 
 # REPRESENTATION FORMATS
 from representable_class import Representable
-from representation_class import Representation
 from symbol_class import Symbol
 
 import rformats as rformats
