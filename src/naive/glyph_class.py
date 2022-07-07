@@ -1,7 +1,7 @@
-from representable_class import Representable
+from _class_persisting_representable import PersistingRepresentable
 
 
-class Glyph(Representable):
+class Glyph(PersistingRepresentable):
     """A glyph is an elemental representation item."""
 
     def __init__(self, *args, **kwargs):

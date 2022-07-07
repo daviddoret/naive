@@ -8,7 +8,7 @@ setattr(), and getattr() to store object representations in the corresponding fo
 
 """The ASCII representation format. 
 
-Implemented as pythonic Bytes, e.g.: b'Hello world'."""
+Implemented as standard pythonic strings, but assured to be ASCII-compatible."""
 ASCII = 'ascii'
 
 """The UTF-8 representation format. 

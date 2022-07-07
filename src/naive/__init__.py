@@ -1,10 +1,13 @@
 
 # REPRESENTATION FORMATS
-from representable_class import Representable
-from symbol_class import Symbol
+from _class_persisting_representable import PersistingRepresentable
+from _class_symbol import Symbol
+from _function_flatten import flatten
+from _abc_representable import ABCRepresentable
 
-import rformats as rformats
-import glyphs as glyphs
+import rformats
+import glyphs
+import notation
 
 # SYMBOL DEFINITION
 from i_defining_element_abstract_class import ISymbolDefiningElement
