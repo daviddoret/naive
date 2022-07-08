@@ -1,6 +1,11 @@
 from setuptools import setup
 import importlib.metadata
-__version__ = importlib.metadata.version('naive')
+# PACKAGE VERSION
+import importlib.metadata
+try:
+    __version__ = importlib.metadata.version('naive')
+except:
+    __version__ = '1.1.1'  # Initial version for the first build.
 
 setup(name='naive',
       version=__version__,
