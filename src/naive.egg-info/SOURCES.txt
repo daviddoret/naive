@@ -1,5 +1,8 @@
 LICENSE
+MANIFEST.in
+README.md
 README.txt
+VERSION.txt
 pyproject.toml
 setup.cfg
 setup.py

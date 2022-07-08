@@ -1,1 +1,3 @@
-TODO: Include text description here
+naive: a starting project....
+
+This is a far too early version, please wait for more information.

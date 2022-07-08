@@ -24,6 +24,9 @@ jupyter-sphinx>=0.4.0
 
 # sphinx-exec-code
 
+pandoc
+pypandoc
+
 # Packages required to let sphinx-exec-code execute naive code
 
 numpy>=1.23.0
