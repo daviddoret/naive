@@ -1,6 +1,3 @@
-from src.naive import _function_coerce
-from _function_get_representation import get_representation
-from _abc_representable import ABCRepresentable
 import rformats
 
 
