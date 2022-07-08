@@ -1,5 +1,21 @@
+# BIBLIOGRAPHY
+#   * https://realpython.com/python-modules-packages/
 
-# REPRESENTATION FORMATS
+
+# LOGGING
+import logging
+logging.info('Naive Package: __init__.py: Initialization started')
+
+
+# PACKAGE VERSION
+import importlib.metadata
+try:
+    __version__ = importlib.metadata.version('naive')
+except:
+    __version__ = '1.1.1'
+
+
+# NAIVE OBJECT IMPORTATION
 from _abc_representable import ABCRepresentable
 from _class_glyph import Glyph
 from _class_persisting_representable import PersistingRepresentable
@@ -16,13 +32,11 @@ from _function_subscriptify import subscriptify
 from _function_superscriptify import superscriptify
 
 
+# NAIVE MODULE IMPORTATION
 import rformats
 import glyphs
 import notation
 
-# SYMBOL DEFINITION
-from i_defining_element_abstract_class import ISymbolDefiningElement
-from i_defined_element_abstract_class import ISymbolDefinedElement
-from i_definition_abstract_class import ISymbolDefinition
 
-
+# LOGGING
+logging.info('Naive Package: __init__.py: Initialization completed')
