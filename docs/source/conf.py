@@ -72,6 +72,7 @@ def setup(app):
 extensions = [
     'nbsphinx',
     # 'myst_parser',
+    'sphinx.ext.autosectionlabel',
     'sphinx.ext.duration',
     'sphinx.ext.doctest',
     'sphinx.ext.autodoc',

@@ -1,4 +1,4 @@
-The ``coerce`` function
+``coerce``
 =======================
 
 .. currentmodule:: naive

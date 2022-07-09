@@ -1,4 +1,4 @@
-The ``flatten`` function
+``flatten``
 ========================
 
 .. currentmodule:: naive

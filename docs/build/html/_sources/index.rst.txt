@@ -20,9 +20,9 @@ Contents
     :maxdepth: 2
     :caption: Table of Contents
 
-    class_glyph_doc
-    class_persisting_representable_doc
-    functions_doc
+    section_installation_doc
+    section_library_doc
+    section_samples_doc
 
 Indices and tables
 ==================

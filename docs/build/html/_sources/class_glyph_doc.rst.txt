@@ -1,4 +1,4 @@
-The ``Glyph`` class
+``Glyph``
 ===================
 
 .. currentmodule:: naive

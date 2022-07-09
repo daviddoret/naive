@@ -1,4 +1,4 @@
-The ``PersistingRepresentable`` class
+``PersistingRepresentable``
 =====================================
 
 .. currentmodule:: naive
