@@ -23,5 +23,5 @@ CALL make html
 REM https://www.sphinx-doc.org/en/master/man/sphinx-build.html
 REM python -m sphinx -a -v -T -E -W -b html ../build/doctrees ../build/html
 
-CD ..\..
+CD ..
 ECHO Current Directory: %CD%

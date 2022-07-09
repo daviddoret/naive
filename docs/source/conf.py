@@ -38,16 +38,34 @@ print(f'sys.path: {sys.path}')
 print(f'os.getcwd(): {os.getcwd()}')
 print(' ')
 
-import naive
-naive.hello_world('Mira')
+# import naive
+# naive.hello_world('Mira')
 
 # -- Project information
 project = 'naive'
 copyright = '2022, David Doret'
 author = 'David Doret'
 
-release = '0.1'
-version = '0.1.0'
+# TODO: Reuse the package version
+release = '1.1.3'
+version = '1.1.3'
+
+# The autodoc_member_order allows you to override the default alphabetical ordering for members, to one that groups by their type, i.e. if they are methods, or attributes/properties, etc.
+# References:
+#   * https://developer.ridgerun.com/wiki/index.php/How_to_generate_sphinx_documentation_for_python_code_running_in_an_embedded_system
+autodoc_member_order = 'groupwise'
+
+# The init method (by default a special method and private) will not get documented. Sphinx offers a special_members directive to include special members in the documentation, but there are many other special members that you don't want documented. This hack will only get your __init__ method documented using autodoc-skip-member.
+# References:
+#   * https://developer.ridgerun.com/wiki/index.php/How_to_generate_sphinx_documentation_for_python_code_running_in_an_embedded_system
+# Ensure that the __init__ method gets documented.
+def skip(app, what, name, obj, skip, options):
+    if name == "__init__":
+        return False
+    return skip
+
+def setup(app):
+    app.connect("autodoc-skip-member", skip)
 
 # -- General configuration
 
@@ -122,8 +140,20 @@ source_suffix = {
     '.md': 'markdown',
 }
 
-exclude_patterns = ['requirements.txt']
+# 3. Add exclusion patterns
+# If you want to omit generating documentation for some of the modules in your application's python code (for example everything under a tests/ directory), or a spi.py module that you only use as a library, then use the exclude_patterns directive.
+# References:
+#   * https://developer.ridgerun.com/wiki/index.php/How_to_generate_sphinx_documentation_for_python_code_running_in_an_embedded_system
+# List of patterns, relative to source directory, that match files and
+# directories to ignore when looking for source files.
+exclude_patterns = ['build', 'tests', 'test', 'trashcan', 'requirements.txt']
 
+# The following code snippet allows you to have a list of modules that you can mock for the purposes of generating documentation. In this example we are mocking the smbus and pygst modules.
+# Note that you need python-mock
+# import mock, sys
+# MOCK_MODULES = ['smbus','pygst']
+# for mod_name in MOCK_MODULES:
+#    sys.modules[mod_name] = mock.Mock()
 # Reference: https://stackoverflow.com/questions/62226506/python-sphinx-autosummary-failed-to-import-module
 autodoc_mock_imports = ["annotations", "warnings", "typing", "numpy", "collections.abc", "nptyping"]
 
@@ -174,4 +204,4 @@ napoleon_attr_annotations = True
 
 napoleon_custom_sections = [
     ('Sample use cases', 'example_style'),
-    ('Design choice', 'example_style')]
+    ('Design choices', 'example_style')]

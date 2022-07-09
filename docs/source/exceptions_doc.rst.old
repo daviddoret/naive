@@ -1,0 +1,22 @@
+Exceptions
+===================================
+
+TODO: Include documentation
+
+.. note::
+
+   This project is under active development.
+
+.. currentmodule:: naive
+
+Exceptions
+----------
+
+.. autosummary::
+    :toctree: pages
+    :recursive:
+
+    CoercionError
+    CoercionWarning
+
+
