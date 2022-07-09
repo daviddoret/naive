@@ -33,7 +33,7 @@ python:
 #        - docs
 #    - method: setuptools
 #      path: another/package
-  system_packages: true
+#  system_packages: true
 
 
 # Build PDF & ePub
