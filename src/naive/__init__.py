@@ -19,10 +19,10 @@ logging.info(f'__version__: {__version__}')
 # NAIVE OBJECT IMPORTATION
 from _abc_representable import ABCRepresentable
 from _class_glyph import Glyph
-from _class_persisting_representable import PersistingRepresentable
+from _class_persisting_representable import PersistingRepresentable, CoerciblePersistingRepresentable
 from _class_symbol import Symbol
 from _class_variable import Variable
-from _class_variable_base import VariableBase
+from _class_variable_base import VariableBase, CoercibleVariableBase
 from _class_variable_indexes import VariableIndexes
 from _exception_coercion_error import CoercionError
 from _exception_coercion_warning import CoercionWarning
@@ -37,6 +37,7 @@ from _function_superscriptify import superscriptify
 import rformats
 import glyphs
 import notation
+import domains
 
 
 # LOGGING

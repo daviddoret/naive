@@ -1,4 +1,5 @@
 from __future__ import annotations
+import typing
 from _abc_representable import ABCRepresentable
 import rformats
 
@@ -6,7 +7,7 @@ import rformats
 class PersistingRepresentable(ABCRepresentable):
     """A helper class for objects that support representation in multiple formats by storing representations in object properties."""
 
-    def __init__(self, representable: (None, ABCRepresentable) = None, *args, **kwargs):
+    def __init__(self, representable: (None, CoerciblePersistingRepresentable) = None, *args, **kwargs):
         """Initializes the object and stores its representations in available formats.
 
         Args:
@@ -17,11 +18,15 @@ class PersistingRepresentable(ABCRepresentable):
 
         super().__init__(*args, **kwargs)
 
-
-        # If a PersistingRepresentable object was passed as argument,
-        # imitate this object'representation representation.
-        if representable is not None:
+        if isinstance(representable, ABCRepresentable):
+            # If a PersistingRepresentable object was passed as argument,
+            # imitate this object's representations.
             self.imitate(representable)
+        elif representable is not None:
+            # Otherwise, we must assume it was a string or other
+            # string-like Unicode representation.
+            representable = str(representable)
+            self._representations[rformats.UTF8] = representable
 
         # If representations are provided in specific formats,
         # store these representations.
@@ -60,4 +65,13 @@ class PersistingRepresentable(ABCRepresentable):
         for rformat in rformats.CATALOG:
             # TODO: Minor design flaw: this process will also copy unsupported properties that default to UTF-8.
             self._representations[rformat] = o.get_representation(rformat)
+
+
+"""Safe types for type coercion."""
+CoerciblePersistingRepresentable = typing.TypeVar(
+    'PersistingRepresentable',
+    ABCRepresentable,
+    bytes, # Support for raw ASCII strings.
+    str
+)
 

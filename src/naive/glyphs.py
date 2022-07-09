@@ -5,6 +5,7 @@ standard_x_lowercase = Glyph(utf8='x', latex=r'x', html='x', ascii='x')
 standard_y_lowercase = Glyph(utf8='y', latex=r'y', html='y', ascii='y')
 standard_z_lowercase = Glyph(utf8='z', latex=r'z', html='z', ascii='z')
 mathbb_a_uppercase = Glyph(utf8='𝔸', latex=r'\mathbb{A}', html='&Aopf;', ascii='A')
+mathbb_b_uppercase = Glyph(utf8='𝔹', latex=r'\mathbb{B}', html='&Bopf;', ascii='B')
 mathbb_n_uppercase = Glyph(utf8='ℕ', latex=r'\mathbb{N}', html='&Nopf;', ascii='N')
 mathbb_z_uppercase = Glyph(utf8='ℤ', latex=r'\mathbb{Z}', html='&Zopf;', ascii='Z')
 # {\displaystyle \mathbb {C} }\mathbb{C} 	ℂ	Complex number	\mathbb{C}, \Complex	&Copf;	U+2102

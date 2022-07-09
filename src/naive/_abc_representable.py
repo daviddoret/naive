@@ -6,7 +6,7 @@ class ABCRepresentable(abc.ABC):
     """An abstract class for objects that support representation in multiple formats.
 
     See also:
-        * PersistingRepresentable class.
+        * :class:`PersistingRepresentable` class.
     """
 
     def __init__(self, *args, **kwargs):
@@ -21,7 +21,7 @@ class ABCRepresentable(abc.ABC):
 
     @abc.abstractmethod
     def get_representation(self, rformat: str = None, *args, **kwargs) -> str:
-        """Get the object'representation representation in the desired format.
+        """Get the object's representation in the desired format.
 
         Args:
             rformat (str): The representation format.
@@ -29,7 +29,7 @@ class ABCRepresentable(abc.ABC):
             kwargs:
 
         Returns:
-            The object'representation representation in the representation format.
+            The object's representation in the desired format.
         """
         raise NotImplementedError('Abstract method must be implemented in subclass.')
 

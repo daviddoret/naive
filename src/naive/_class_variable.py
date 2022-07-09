@@ -2,23 +2,32 @@ from _class_variable_base import VariableBase
 from _class_variable_indexes import VariableIndexes
 from _abc_representable import ABCRepresentable
 from _function_get_representation import get_representation
-from _function_subscriptify import subscriptify
+from _function_coerce import coerce
+from _function_flatten import flatten
 import rformats
 
 
 class Variable(ABCRepresentable):
-    """A mathematical object that may be defined from a defining object.
+    """A mathematical variable object.
 
-    The representation of a variable is composed of the variable base,
+     A variable is defined as an element that may be defined by a defining object.
+
+    The representation of a variable is composed of a variable base,
     conditionally followed by variable indexes.
     """
 
-    def __init__(self, base: VariableBase, indexes: (None, VariableIndexes), *args, **kwargs):
-        # TODO: Implement type coercion
-        self._base = base
-        self._indexes = indexes
+    def __init__(self, base: VariableBase, *args):
+        """Initializes a variable.
 
-        super().__init__(base, indexes, *args, **kwargs)
+        Args:
+            base (VariableBase): The variable base (cf. class :class:´VariableBase´).
+            *args: Variable length list of index elements (cf. class :class:´VariableIndexes´).
+        """
+        # TODO: Implement type coercion
+        self._base = coerce(base, VariableBase)
+        self._indexes = coerce(flatten(*args), VariableIndexes)
+
+        super().__init__(base, *args)
 
     def get_representation(self, rformat: str = None, *args, **kwargs) -> str:
         if rformat is None:

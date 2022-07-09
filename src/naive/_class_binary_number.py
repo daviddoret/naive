@@ -1,17 +1,18 @@
 from __future__ import annotations
 import typing
 import warnings
-from src.naive import CoercionWarning
-from src.naive import coerce
+from _exception_coercion_warning import CoercionWarning
+from _function_coerce import coerce
 from src.naive import Constant
-from src.naive.domain_library import *
+from src.naive._class_domain import *
+from _typevar_coercible_binary_number import CoercibleBinaryNumber
 import src.naive.notation as settings
 
 
 class BinaryNumber(Constant):
     """A mutable binary variable.
 
-    Alias: :data:`naive.BN`
+    Alias: :data:`BN`
 
     The objective of this class is to approach the behavior of :math:`b \\in \\mathbb{B}` in mathematics.
 
@@ -105,9 +106,6 @@ class BinaryNumber(Constant):
         return domains.b
 
 
-BN = BinaryNumber
-
-
 """Safe types for type coercion."""
 CoercibleBinaryNumber = typing.TypeVar(
     'CoercibleBinaryNumber',
@@ -115,3 +113,6 @@ CoercibleBinaryNumber = typing.TypeVar(
     bool,
     int
 )
+
+
+

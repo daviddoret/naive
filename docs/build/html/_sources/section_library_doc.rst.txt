@@ -24,13 +24,15 @@ Data
 
 .. toctree::
     :maxdepth: 2
-    :caption: Table of Contents
 
 Exceptions
 -----------
 
 .. toctree::
     :maxdepth: 2
+    :glob:
+
+    exception_*_doc
 
 
 Functions

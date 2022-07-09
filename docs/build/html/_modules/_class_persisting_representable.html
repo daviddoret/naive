@@ -80,6 +80,7 @@
              
   <h1>Source code for _class_persisting_representable</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">import</span> <span class="nn">typing</span>
 <span class="kn">from</span> <span class="nn">_abc_representable</span> <span class="kn">import</span> <span class="n">ABCRepresentable</span>
 <span class="kn">import</span> <span class="nn">rformats</span>
 
@@ -87,7 +88,7 @@
 <div class="viewcode-block" id="PersistingRepresentable"><a class="viewcode-back" href="../class_persisting_representable_doc.html#naive.PersistingRepresentable">[docs]</a><span class="k">class</span> <span class="nc">PersistingRepresentable</span><span class="p">(</span><span class="n">ABCRepresentable</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A helper class for objects that support representation in multiple formats by storing representations in object properties.&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="PersistingRepresentable.__init__"><a class="viewcode-back" href="../class_persisting_representable_doc.html#naive.PersistingRepresentable.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">representable</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ABCRepresentable</span><span class="p">)</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="PersistingRepresentable.__init__"><a class="viewcode-back" href="../class_persisting_representable_doc.html#naive.PersistingRepresentable.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">representable</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">CoerciblePersistingRepresentable</span><span class="p">)</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initializes the object and stores its representations in available formats.</span>
 
 <span class="sd">        Args:</span>
@@ -98,11 +99,15 @@
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-
-        <span class="c1"># If a PersistingRepresentable object was passed as argument,</span>
-        <span class="c1"># imitate this object&#39;representation representation.</span>
-        <span class="k">if</span> <span class="n">representable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">representable</span><span class="p">,</span> <span class="n">ABCRepresentable</span><span class="p">):</span>
+            <span class="c1"># If a PersistingRepresentable object was passed as argument,</span>
+            <span class="c1"># imitate this object&#39;s representations.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">imitate</span><span class="p">(</span><span class="n">representable</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">representable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Otherwise, we must assume it was a string or other</span>
+            <span class="c1"># string-like Unicode representation.</span>
+            <span class="n">representable</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">representable</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_representations</span><span class="p">[</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">]</span> <span class="o">=</span> <span class="n">representable</span>
 
         <span class="c1"># If representations are provided in specific formats,</span>
         <span class="c1"># store these representations.</span>
@@ -141,6 +146,15 @@
         <span class="k">for</span> <span class="n">rformat</span> <span class="ow">in</span> <span class="n">rformats</span><span class="o">.</span><span class="n">CATALOG</span><span class="p">:</span>
             <span class="c1"># TODO: Minor design flaw: this process will also copy unsupported properties that default to UTF-8.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_representations</span><span class="p">[</span><span class="n">rformat</span><span class="p">]</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">get_representation</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span></div></div>
+
+
+<span class="sd">&quot;&quot;&quot;Safe types for type coercion.&quot;&quot;&quot;</span>
+<span class="n">CoerciblePersistingRepresentable</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span>
+    <span class="s1">&#39;PersistingRepresentable&#39;</span><span class="p">,</span>
+    <span class="n">ABCRepresentable</span><span class="p">,</span>
+    <span class="nb">bytes</span><span class="p">,</span> <span class="c1"># Support for raw ASCII strings.</span>
+    <span class="nb">str</span>
+<span class="p">)</span>
 
 </pre></div>
 
