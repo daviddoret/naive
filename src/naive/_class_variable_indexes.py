@@ -1,6 +1,6 @@
 # from collections.abc import Iterable
 from _abc_representable import ABCRepresentable
-from _function_get_representation import get_representation
+from _function_represent import represent
 from _function_subscriptify import subscriptify
 from _function_flatten import flatten
 import notation
@@ -18,8 +18,8 @@ class VariableIndexes(ABCRepresentable):
     def __iter__(self):
         return self._indexes.__iter__()
 
-    def get_representation(self, rformat: str = None, *args, **kwargs) -> str:
+    def represent(self, rformat: str = None, *args, **kwargs) -> str:
         return subscriptify(
             notation.VARIABLE_INDEXES_SEPARATOR.join(
-                [get_representation(index, rformat) for index in self._indexes])
+                [represent(index, rformat) for index in self._indexes])
                 ,rformat)

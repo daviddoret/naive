@@ -2,7 +2,7 @@ import typing
 import collections.abc as abc
 
 
-def flatten(*args: object) -> typing.List[typing.Any]:
+def flatten(*args: object, skip_none: bool = True) -> typing.List[typing.Any]:
     """Flatten iterable objects of arbitrary depth.
 
     This utility function converts embedded lists or multidimensional objects to vectors.
@@ -15,6 +15,7 @@ def flatten(*args: object) -> typing.List[typing.Any]:
 
     Args:
         x (object): Any object but preferably an iterable object of type: abc.Iterable[typing.Any].
+        skip_none (bool): Do not include None as an element in the resulting list.
 
     Returns:
          A flat list.
@@ -27,7 +28,7 @@ def flatten(*args: object) -> typing.List[typing.Any]:
         if isinstance(y, abc.Iterable) and not isinstance(y, str):
             # We cannot call directly extend to support n-depth structures
             flattened.extend(flatten(*y))
-        else:
+        elif y is not None or not skip_none:
             flattened.append(y)
     return flattened
 

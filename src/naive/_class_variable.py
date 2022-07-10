@@ -1,7 +1,7 @@
 from _class_variable_base import VariableBase
 from _class_variable_indexes import VariableIndexes
 from _abc_representable import ABCRepresentable
-from _function_get_representation import get_representation
+from _function_represent import represent
 from _function_coerce import coerce
 from _function_flatten import flatten
 import rformats
@@ -25,15 +25,17 @@ class Variable(ABCRepresentable):
         """
         # TODO: Implement type coercion
         self._base = coerce(base, VariableBase)
-        self._indexes = coerce(flatten(*args), VariableIndexes)
+        f = flatten(*args)
+        if f is not None and f != [None]:
+            self._indexes = coerce(f, VariableIndexes)
+        else:
+            self._indexes = None
 
         super().__init__(base, *args)
 
-    def get_representation(self, rformat: str = None, *args, **kwargs) -> str:
+    def represent(self, rformat: str = None, *args, **kwargs) -> str:
         if rformat is None:
             rformat = rformats.DEFAULT
         # TODO: Minor bug: only digits are currently supported by subscript().
-        return get_representation(self._base, rformat) + get_representation(self._indexes, rformat)
-
-
-
+        return represent(self._base, rformat) + \
+               represent(self._indexes, rformat)

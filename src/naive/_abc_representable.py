@@ -1,5 +1,4 @@
 import abc
-import rformats
 
 
 class ABCRepresentable(abc.ABC):
@@ -14,13 +13,13 @@ class ABCRepresentable(abc.ABC):
 
     def __str__(self) -> str:
         # TODO: For future development, if images or other media are supported, the output of get_presentation() will need to be converted to text.
-        return self.get_representation()
+        return self.represent()
 
     def __repr__(self):
         return self.__str__()
 
     @abc.abstractmethod
-    def get_representation(self, rformat: str = None, *args, **kwargs) -> str:
+    def represent(self, rformat: str = None, *args, **kwargs) -> str:
         """Get the object's representation in the desired format.
 
         Args:

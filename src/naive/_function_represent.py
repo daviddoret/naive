@@ -2,7 +2,7 @@ from _abc_representable import ABCRepresentable
 import rformats
 
 
-def get_representation(o: object, rformat: str = None, *args, **kwargs) -> str:
+def represent(o: object, rformat: str = None, *args, **kwargs) -> str:
     """Get the object'representation representation in the desired format.
 
     If **representation** is None, return an empty string.
@@ -23,6 +23,6 @@ def get_representation(o: object, rformat: str = None, *args, **kwargs) -> str:
     if rformat is None:
         rformat = rformats.DEFAULT
     if isinstance(o, ABCRepresentable):
-        return o.get_representation(rformat, *args, **kwargs)
+        return o.represent(rformat, *args, **kwargs)
     else:
         return str(o)

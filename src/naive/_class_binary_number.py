@@ -3,13 +3,12 @@ import typing
 import warnings
 from _exception_coercion_warning import CoercionWarning
 from _function_coerce import coerce
-from src.naive import Constant
-from src.naive._class_domain import *
-from _typevar_coercible_binary_number import CoercibleBinaryNumber
-import src.naive.notation as settings
+from _class_domain import Domain
+import notation
+import domains
 
 
-class BinaryNumber(Constant):
+class BinaryNumber:
     """A mutable binary variable.
 
     Alias: :data:`BN`
@@ -37,7 +36,7 @@ class BinaryNumber(Constant):
     """
 
     """Class attribute for text representation."""
-    class_notation = settings.BINARY_NUMBER_DOMAIN_NOTATION
+    class_notation = notation.BINARY_NUMBER_DOMAIN_NOTATION
 
     def __init__(self, o: CoercibleBinaryNumber):
         """Instantiates a **BinaryValue**.
@@ -94,9 +93,9 @@ class BinaryNumber(Constant):
 
     def __str__(self):
         if self:
-            return settings.BINARY_VALUE_1_NOTATION
+            return notation.BINARY_VALUE_1_NOTATION
         else:
-            return settings.BINARY_VALUE_0_NOTATION
+            return notation.BINARY_VALUE_0_NOTATION
 
     def __repr__(self):
         return str(self)
@@ -106,7 +105,11 @@ class BinaryNumber(Constant):
         return domains.b
 
 
-"""Safe types for type coercion."""
+"""A shorthand alias for class :class:`BinaryNumber`."""
+BN = BinaryNumber
+
+
+"""Supported types for coercion to class :class:`BinaryNumber`."""
 CoercibleBinaryNumber = typing.TypeVar(
     'CoercibleBinaryNumber',
     BinaryNumber,

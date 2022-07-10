@@ -39,7 +39,7 @@ class PersistingRepresentable(ABCRepresentable):
                     arg_value = str(arg_value)
                 self._representations[arg_key] = arg_value
 
-    def get_representation(self, rformat: str = None, *args, **kwargs) -> str:
+    def represent(self, rformat: str = None, *args, **kwargs) -> str:
         """Get the object'representation representation in the desired format.
 
         Args:
@@ -64,14 +64,15 @@ class PersistingRepresentable(ABCRepresentable):
         """Imitate the representation of another object."""
         for rformat in rformats.CATALOG:
             # TODO: Minor design flaw: this process will also copy unsupported properties that default to UTF-8.
-            self._representations[rformat] = o.get_representation(rformat)
+            self._representations[rformat] = o.represent(rformat)
 
 
 """Safe types for type coercion."""
 CoerciblePersistingRepresentable = typing.TypeVar(
-    'PersistingRepresentable',
+    'CoerciblePersistingRepresentable',
     ABCRepresentable,
     bytes, # Support for raw ASCII strings.
+    PersistingRepresentable,
     str
 )
 

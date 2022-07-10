@@ -1,7 +1,5 @@
 import glyphs
 from _class_domain import Domain
-from _class_variable import Variable
-
 
 """The binary or boolean domain."""
 b = Domain(glyphs.mathbb_b_uppercase)

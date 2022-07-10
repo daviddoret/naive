@@ -28,7 +28,7 @@ from _exception_coercion_error import CoercionError
 from _exception_coercion_warning import CoercionWarning
 from _function_coerce import coerce
 from _function_flatten import flatten
-from _function_get_representation import get_representation
+from _function_represent import represent
 from _function_subscriptify import subscriptify
 from _function_superscriptify import superscriptify
 

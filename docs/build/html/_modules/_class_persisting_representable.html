@@ -120,7 +120,7 @@
                     <span class="n">arg_value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">arg_value</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_representations</span><span class="p">[</span><span class="n">arg_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">arg_value</span></div>
 
-<div class="viewcode-block" id="PersistingRepresentable.get_representation"><a class="viewcode-back" href="../class_persisting_representable_doc.html#naive.PersistingRepresentable.get_representation">[docs]</a>    <span class="k">def</span> <span class="nf">get_representation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="PersistingRepresentable.represent"><a class="viewcode-back" href="../class_persisting_representable_doc.html#naive.PersistingRepresentable.represent">[docs]</a>    <span class="k">def</span> <span class="nf">represent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get the object&#39;representation representation in the desired format.</span>
 
 <span class="sd">        Args:</span>
@@ -145,14 +145,15 @@
         <span class="sd">&quot;&quot;&quot;Imitate the representation of another object.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">rformat</span> <span class="ow">in</span> <span class="n">rformats</span><span class="o">.</span><span class="n">CATALOG</span><span class="p">:</span>
             <span class="c1"># TODO: Minor design flaw: this process will also copy unsupported properties that default to UTF-8.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_representations</span><span class="p">[</span><span class="n">rformat</span><span class="p">]</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">get_representation</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_representations</span><span class="p">[</span><span class="n">rformat</span><span class="p">]</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span></div></div>
 
 
 <span class="sd">&quot;&quot;&quot;Safe types for type coercion.&quot;&quot;&quot;</span>
 <span class="n">CoerciblePersistingRepresentable</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span>
-    <span class="s1">&#39;PersistingRepresentable&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CoerciblePersistingRepresentable&#39;</span><span class="p">,</span>
     <span class="n">ABCRepresentable</span><span class="p">,</span>
     <span class="nb">bytes</span><span class="p">,</span> <span class="c1"># Support for raw ASCII strings.</span>
+    <span class="n">PersistingRepresentable</span><span class="p">,</span>
     <span class="nb">str</span>
 <span class="p">)</span>
 
