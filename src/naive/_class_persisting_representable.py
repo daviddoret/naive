@@ -40,15 +40,15 @@ class PersistingRepresentable(ABCRepresentable):
                 self._representations[arg_key] = arg_value
 
     def represent(self, rformat: str = None, *args, **kwargs) -> str:
-        """Get the object'representation representation in the desired format.
+        """Get the object's representation in a supported format.
 
         Args:
-            rformat (str): The representation format.
-            args:
-            kwargs:
+            rformat (str): A representation format.
+            args: For future use.
+            kwargs: For future use.
 
         Returns:
-            The object'representation representation in the representation format.
+            The object's representation in the requested format.
         """
         if rformat is None:
             rformat = rformats.DEFAULT

@@ -1,6 +1,11 @@
 from _class_glyph import Glyph
 
 # Number sets
+standard_0 = Glyph(utf8='0', latex=r'0', html='0', ascii='0')
+standard_1 = Glyph(utf8='1', latex=r'1', html='1', ascii='1')
+standard_falsum = Glyph(utf8='⊥', latex=r'\bot', html='&perp;', ascii='F')
+standard_truth = Glyph(utf8='⊤', latex=r'\top', html='&top;', ascii='T')
+standard_not = Glyph(utf8='¬', latex=r'\lnot', html='&not;', ascii='not')
 standard_x_lowercase = Glyph(utf8='x', latex=r'x', html='x', ascii='x')
 standard_y_lowercase = Glyph(utf8='y', latex=r'y', html='y', ascii='y')
 standard_z_lowercase = Glyph(utf8='z', latex=r'z', html='z', ascii='z')

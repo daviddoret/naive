@@ -1,4 +1,5 @@
 import abc
+import typing
 
 
 class ABCRepresentable(abc.ABC):
@@ -33,4 +34,11 @@ class ABCRepresentable(abc.ABC):
         raise NotImplementedError('Abstract method must be implemented in subclass.')
 
 
+"""Safe types for type coercion."""
+CoercibleABCRepresentable = typing.TypeVar(
+    'CoercibleABCRepresentable',
+    ABCRepresentable,
+    bytes, # Support for raw ASCII strings.
+    str
+)
 

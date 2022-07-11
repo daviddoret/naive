@@ -38,6 +38,7 @@ import rformats
 import glyphs
 import notation
 import domains
+import bv
 
 
 # LOGGING
