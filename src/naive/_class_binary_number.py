@@ -1,7 +1,7 @@
 from __future__ import annotations
 import typing
 import warnings
-from _exception_coercion_warning import CoercionWarning
+from _exception_naive_warning import NaiveWarning
 from _function_coerce import coerce
 from _class_domain import Domain
 import notation
@@ -42,8 +42,8 @@ class BinaryNumber:
         """Instantiates a **BinaryValue**.
 
          The class constructor coerces its input.
-         It issues a **CoercionWarning** in ambiguous situations.
-         It raises a **CoercionError** if type coercion fails.
+         It issues a **NaiveWarning** in ambiguous situations.
+         It raises a **NaiveError** if type coercion fails.
 
          Args:
              o (CoercibleBinaryNumber): A source object from which to instantiate the **BinaryValue**.
@@ -52,14 +52,14 @@ class BinaryNumber:
              BinaryNumber: A new binary value.
 
          Raises:
-             CoercionWarning: If ambiguous type coercion was necessary.
-             CoercionError: If type coercion failed.
+             NaiveWarning: If ambiguous type coercion was necessary.
+             NaiveError: If type coercion failed.
 
          """
 
         if o is None:
             o = 0
-            warnings.warn(f'None coerced to 0.', CoercionWarning, stacklevel=2)
+            warnings.warn(f'None coerced to 0.', NaiveWarning, stacklevel=2)
         elif not isinstance(o, bool):
             coerced_bool = bool(o)
             warnings.warn(f'Object "{o} of type {type(o)} coerced to "{coerced_bool}" of type {type(coerced_bool)}.',

@@ -1,7 +1,8 @@
 from __future__ import annotations
+import log
 import warnings
-from _exception_coercion_error import CoercionError
-from _exception_coercion_warning import CoercionWarning
+from _exception_naive_error import NaiveError
+from _exception_naive_warning import NaiveWarning
 
 
 def coerce(o: (None, object), cls: type) -> (None, object):
@@ -19,8 +20,8 @@ def coerce(o: (None, object), cls: type) -> (None, object):
         object: **None**, or an object of type **cls**.
 
     Raises:
-        CoercionWarning: If ambiguous type coercion was necessary.
-        CoercionError: If type coercion failed.
+        NaiveWarning: If ambiguous type coercion was necessary.
+        NaiveError: If type coercion failed.
 
     Example:
 
@@ -40,7 +41,7 @@ def coerce(o: (None, object), cls: type) -> (None, object):
 
         2. Else if **representation** is of type **cls**, returns **representation**.
 
-        3. Else if **representation** is not of type **cls**, creates an instance of **cls** by calling its default constructor, i.e. ``cls(representation)`` and issue a **CoercionWarning**.
+        3. Else if **representation** is not of type **cls**, creates an instance of **cls** by calling its default constructor, i.e. ``cls(representation)`` and issue a **NaiveWarning**.
 
 
     """
@@ -55,9 +56,9 @@ def coerce(o: (None, object), cls: type) -> (None, object):
         try:
             coerced_o = cls(o)
         except Exception as e:
-            raise CoercionError(f'Object "{o}" of type {type(o)} could not be coerced to type {cls}.') from e
+            log.error('Type coercion failure.', o = o, cls = cls)
         else:
-            warnings.warn(f'Object "{o}" of type {type(o)} was coerced to object "{coerced_o}" of type {cls}.', CoercionWarning, stacklevel=2)
+            log.debug('Type coercion success.', o = o, cls = cls)
         return cls(o)
 
 

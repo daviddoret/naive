@@ -63,5 +63,6 @@ CoercibleBooleanValue = typing.TypeVar(
     'CoercibleBooleanValue',
     BooleanValue,
     bool,
-    int
+    int,
+    str # TODO Implement coercion of well known representations.
 )

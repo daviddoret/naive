@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # BIBLIOGRAPHY
 #   * https://realpython.com/python-modules-packages/
 
@@ -24,8 +26,8 @@ from _class_symbol import Symbol
 from _class_variable import Variable
 from _class_variable_base import VariableBase, CoercibleVariableBase
 from _class_variable_indexes import VariableIndexes
-from _exception_coercion_error import CoercionError
-from _exception_coercion_warning import CoercionWarning
+from _exception_naive_error import NaiveError
+from _exception_naive_warning import NaiveWarning
 from _function_coerce import coerce
 from _function_flatten import flatten
 from _function_represent import represent
@@ -39,6 +41,7 @@ import glyphs
 import notation
 import domains
 import bv
+import log
 
 
 # LOGGING
