@@ -28,7 +28,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Glyph" href="class_glyph_doc.html" />
+    <link rel="next" title="BooleanValue" href="class_boolean_value_doc.html" />
     <link rel="prev" title="Installation" href="section_installation_doc.html" /> 
 </head>
 
@@ -55,21 +55,22 @@
 <li class="toctree-l1"><a class="reference internal" href="section_installation_doc.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Library</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#classes">Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="class_boolean_value_doc.html"><code class="docutils literal notranslate"><span class="pre">BooleanValue</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="class_glyph_doc.html"><code class="docutils literal notranslate"><span class="pre">Glyph</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="class_persisting_representable_doc.html"><code class="docutils literal notranslate"><span class="pre">PersistingRepresentable</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#data">Data</a><ul class="simple">
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="#exceptions">Exceptions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="exception_coerction_error_doc.html"><code class="docutils literal notranslate"><span class="pre">CoercionError</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="exception_coerction_warning_doc.html"><code class="docutils literal notranslate"><span class="pre">CoercionWarning</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="exception_naive_error_doc.html"><code class="docutils literal notranslate"><span class="pre">CoercionError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="exception_naive_warning_doc.html"><code class="docutils literal notranslate"><span class="pre">CoercionWarning</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="function_coerce_doc.html"><code class="docutils literal notranslate"><span class="pre">coerce</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="function_flatten_doc.html"><code class="docutils literal notranslate"><span class="pre">flatten</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#modules">Modules</a><ul class="simple">
 </ul>
 </li>
 </ul>
@@ -130,30 +131,26 @@
 <p>This section contains the documentation of all objects contained in the <strong>naive</strong> python library, namely:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#classes"><span class="std std-ref">Classes</span></a></p></li>
-<li><p><a class="reference internal" href="#data"><span class="std std-ref">Data</span></a></p></li>
 <li><p><a class="reference internal" href="#exceptions"><span class="std std-ref">Exceptions</span></a></p></li>
 <li><p><a class="reference internal" href="#functions"><span class="std std-ref">Functions</span></a></p></li>
+<li><p><a class="reference internal" href="#modules"><span class="std std-ref">Modules</span></a></p></li>
 </ul>
 <section id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="class_boolean_value_doc.html"><code class="docutils literal notranslate"><span class="pre">BooleanValue</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="class_glyph_doc.html"><code class="docutils literal notranslate"><span class="pre">Glyph</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="class_persisting_representable_doc.html"><code class="docutils literal notranslate"><span class="pre">PersistingRepresentable</span></code></a></li>
 </ul>
-</div>
-</section>
-<section id="data">
-<h2>Data<a class="headerlink" href="#data" title="Permalink to this heading"></a></h2>
-<div class="toctree-wrapper compound">
 </div>
 </section>
 <section id="exceptions">
 <h2>Exceptions<a class="headerlink" href="#exceptions" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="exception_coerction_error_doc.html"><code class="docutils literal notranslate"><span class="pre">CoercionError</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="exception_coerction_warning_doc.html"><code class="docutils literal notranslate"><span class="pre">CoercionWarning</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="exception_naive_error_doc.html"><code class="docutils literal notranslate"><span class="pre">CoercionError</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="exception_naive_warning_doc.html"><code class="docutils literal notranslate"><span class="pre">CoercionWarning</span></code></a></li>
 </ul>
 </div>
 </section>
@@ -166,6 +163,11 @@
 </ul>
 </div>
 </section>
+<section id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+</div>
+</section>
 </section>
 
 
@@ -173,7 +175,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="section_installation_doc.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="class_glyph_doc.html" class="btn btn-neutral float-right" title="Glyph" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="class_boolean_value_doc.html" class="btn btn-neutral float-right" title="BooleanValue" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -1,11 +1,11 @@
 from __future__ import annotations
 import typing
 
-import bv
-import glyphs
 from _class_persisting_representable import PersistingRepresentable, CoerciblePersistingRepresentable
 from _abc_representable import ABCRepresentable
 from _function_coerce import coerce
+import glyphs
+import log
 
 
 class BooleanValue(PersistingRepresentable):
@@ -33,7 +33,7 @@ class BooleanValue(PersistingRepresentable):
         """Provides support for implicit and explicit (i.e. ``bool(x)``) conversions to :std:doc:type:`bool`.
 
         Returns:
-            bool: a pythonic bool-equivalent object.
+            bool: the canonic mapping of :class:`BooleanValue` with the pythonic bool type.
         """
         return self._inner_value
 
@@ -42,10 +42,10 @@ class BooleanValue(PersistingRepresentable):
 
         Even though all python objects are implicitly convertible to bool (calling :std:doc:meth:`__bool__`),
         we want the equality operator to rather approach mathematical equality.
-        Hence, we explicitly convert **other** to **BinaryNumber** which issues warnings and raises exceptions as necessary.
+        Hence, we explicitly convert **other** to **BooleanValue** which issues warnings and raises exceptions as necessary.
 
         Args:
-            other(CoercibleBinaryNumber): A compatible boolean object.
+            other(CoercibleBooleanValue): A compatible boolean object.
 
         Returns:
             bool: The truth value of the equality operator.
@@ -64,5 +64,36 @@ CoercibleBooleanValue = typing.TypeVar(
     BooleanValue,
     bool,
     int,
-    str # TODO Implement coercion of well known representations.
+    str  # TODO Implement coercion of well known representations.
 )
+
+
+class BVSet:
+
+    def __init__(self):
+        self._falsum = BooleanValue(False)
+        self._truth = BooleanValue(True)
+
+    @property
+    def falsum(self):
+        """BooleanValue: The falsum boolean value."""
+        return self._falsum
+
+    @property
+    def truth(self):
+        """BooleanValue: The truth boolean value."""
+        return self._truth
+
+    @property
+    def f(self):
+        """BooleanValue: A shorthand for the falsum boolean value."""
+        return self.falsum
+
+    @property
+    def t(self):
+        """BooleanValue: A shorthand for the truth boolean value."""
+        return self.truth
+
+
+bv = BVSet()
+"""The set of boolean values."""

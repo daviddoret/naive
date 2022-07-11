@@ -29,7 +29,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="flatten" href="function_flatten_doc.html" />
-    <link rel="prev" title="CoercionWarning" href="exception_coerction_warning_doc.html" /> 
+    <link rel="prev" title="CoercionWarning" href="exception_naive_warning_doc.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -55,13 +55,13 @@
 <li class="toctree-l1"><a class="reference internal" href="section_installation_doc.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="section_library_doc.html">Library</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="section_library_doc.html#classes">Classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="section_library_doc.html#data">Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="section_library_doc.html#exceptions">Exceptions</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="section_library_doc.html#functions">Functions</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">coerce</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="function_flatten_doc.html"><code class="docutils literal notranslate"><span class="pre">flatten</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="section_library_doc.html#modules">Modules</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="section_samples_doc.html">Samples</a></li>
@@ -139,8 +139,8 @@
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="exception_coerction_warning_doc.html#naive.CoercionWarning" title="naive.CoercionWarning"><strong>CoercionWarning</strong></a> – If ambiguous type coercion was necessary.</p></li>
-<li><p><a class="reference internal" href="exception_coerction_error_doc.html#naive.CoercionError" title="naive.CoercionError"><strong>CoercionError</strong></a> – If type coercion failed.</p></li>
+<li><p><a class="reference internal" href="exception_naive_warning_doc.html#naive.NaiveWarning" title="naive.NaiveWarning"><strong>NaiveWarning</strong></a> – If ambiguous type coercion was necessary.</p></li>
+<li><p><a class="reference internal" href="exception_naive_error_doc.html#naive.NaiveError" title="naive.NaiveError"><strong>NaiveError</strong></a> – If type coercion failed.</p></li>
 </ul>
 </dd>
 </dl>
@@ -167,7 +167,7 @@
 <ol class="arabic simple">
 <li><p>If <strong>representation</strong> is <strong>None</strong>, returns <strong>None</strong>.</p></li>
 <li><p>Else if <strong>representation</strong> is of type <strong>cls</strong>, returns <strong>representation</strong>.</p></li>
-<li><p>Else if <strong>representation</strong> is not of type <strong>cls</strong>, creates an instance of <strong>cls</strong> by calling its default constructor, i.e. <code class="docutils literal notranslate"><span class="pre">cls(representation)</span></code> and issue a <strong>CoercionWarning</strong>.</p></li>
+<li><p>Else if <strong>representation</strong> is not of type <strong>cls</strong>, creates an instance of <strong>cls</strong> by calling its default constructor, i.e. <code class="docutils literal notranslate"><span class="pre">cls(representation)</span></code> and issue a <strong>NaiveWarning</strong>.</p></li>
 </ol>
 </dd></dl>
 
@@ -177,7 +177,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="exception_coerction_warning_doc.html" class="btn btn-neutral float-left" title="CoercionWarning" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="exception_naive_warning_doc.html" class="btn btn-neutral float-left" title="CoercionWarning" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="function_flatten_doc.html" class="btn btn-neutral float-right" title="flatten" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

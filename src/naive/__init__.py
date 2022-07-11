@@ -26,6 +26,7 @@ from _class_symbol import Symbol
 from _class_variable import Variable
 from _class_variable_base import VariableBase, CoercibleVariableBase
 from _class_variable_indexes import VariableIndexes
+from _class_boolean_value import BooleanValue, BV, CoercibleBooleanValue, bv
 from _exception_naive_error import NaiveError
 from _exception_naive_warning import NaiveWarning
 from _function_coerce import coerce
@@ -34,13 +35,11 @@ from _function_represent import represent
 from _function_subscriptify import subscriptify
 from _function_superscriptify import superscriptify
 
-
 # NAIVE MODULE IMPORTATION
 import rformats
 import glyphs
 import notation
 import domains
-import bv
 import log
 
 

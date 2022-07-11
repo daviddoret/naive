@@ -28,7 +28,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="CoercionError" href="exception_coerction_error_doc.html" />
+    <link rel="next" title="CoercionError" href="exception_naive_error_doc.html" />
     <link rel="prev" title="Glyph" href="class_glyph_doc.html" /> 
 </head>
 
@@ -55,13 +55,14 @@
 <li class="toctree-l1"><a class="reference internal" href="section_installation_doc.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="section_library_doc.html">Library</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="section_library_doc.html#classes">Classes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="class_boolean_value_doc.html"><code class="docutils literal notranslate"><span class="pre">BooleanValue</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="class_glyph_doc.html"><code class="docutils literal notranslate"><span class="pre">Glyph</span></code></a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">PersistingRepresentable</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="section_library_doc.html#data">Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="section_library_doc.html#exceptions">Exceptions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="section_library_doc.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="section_library_doc.html#modules">Modules</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="section_samples_doc.html">Samples</a></li>
@@ -161,17 +162,17 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="naive.PersistingRepresentable.represent">
 <span class="sig-name descname"><span class="pre">represent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rformat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></span><a class="reference internal" href="_modules/_class_persisting_representable.html#PersistingRepresentable.represent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.PersistingRepresentable.represent" title="Permalink to this definition"></a></dt>
-<dd><p>Get the object’representation representation in the desired format.</p>
+<dd><p>Get the object’s representation in a supported format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rformat</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The representation format.</p></li>
-<li><p><strong>args</strong> – </p></li>
-<li><p><strong>kwargs</strong> – </p></li>
+<li><p><strong>rformat</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – A representation format.</p></li>
+<li><p><strong>args</strong> – For future use.</p></li>
+<li><p><strong>kwargs</strong> – For future use.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The object’representation representation in the representation format.</p>
+<dd class="field-even"><p>The object’s representation in the requested format.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -185,7 +186,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="class_glyph_doc.html" class="btn btn-neutral float-left" title="Glyph" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="exception_coerction_error_doc.html" class="btn btn-neutral float-right" title="CoercionError" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="exception_naive_error_doc.html" class="btn btn-neutral float-right" title="CoercionError" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

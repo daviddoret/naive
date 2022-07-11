@@ -1,5 +1,5 @@
 
 
 class NaiveError(Exception):
-    """A user-defined error raised when a type coercion fails."""
+    """The generic exception type raised by the **naive** library."""
     pass

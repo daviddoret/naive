@@ -4,9 +4,9 @@ Library
 This section contains the documentation of all objects contained in the **naive** python library, namely:
 
 * :ref:`Classes`
-* :ref:`Data`
 * :ref:`Exceptions`
 * :ref:`Functions`
+* :ref:`Modules`
 
 .. currentmodule:: naive
 
@@ -18,12 +18,6 @@ Classes
     :glob:
 
     class_*_doc
-
-Data
----------
-
-.. toctree::
-    :maxdepth: 2
 
 Exceptions
 -----------
@@ -44,4 +38,9 @@ Functions
 
     function_*_doc
 
+Modules
+----------------
+
+.. toctree::
+    :maxdepth: 2
 

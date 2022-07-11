@@ -121,15 +121,15 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_representations</span><span class="p">[</span><span class="n">arg_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">arg_value</span></div>
 
 <div class="viewcode-block" id="PersistingRepresentable.represent"><a class="viewcode-back" href="../class_persisting_representable_doc.html#naive.PersistingRepresentable.represent">[docs]</a>    <span class="k">def</span> <span class="nf">represent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the object&#39;representation representation in the desired format.</span>
+        <span class="sd">&quot;&quot;&quot;Get the object&#39;s representation in a supported format.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            rformat (str): The representation format.</span>
-<span class="sd">            args:</span>
-<span class="sd">            kwargs:</span>
+<span class="sd">            rformat (str): A representation format.</span>
+<span class="sd">            args: For future use.</span>
+<span class="sd">            kwargs: For future use.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            The object&#39;representation representation in the representation format.</span>
+<span class="sd">            The object&#39;s representation in the requested format.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">rformat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">rformat</span> <span class="o">=</span> <span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>

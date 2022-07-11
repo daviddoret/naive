@@ -3,4 +3,4 @@
 
 .. currentmodule:: naive
 
-.. autoexception:: CoercionError
+.. autoexception:: NaiveError

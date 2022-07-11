@@ -205,4 +205,5 @@ napoleon_attr_annotations = True
 
 napoleon_custom_sections = [
     ('Sample use cases', 'example_style'),
-    ('Design choices', 'example_style')]
+    ('Design choices', 'example_style'),
+    ('Type', 'example_style')]
