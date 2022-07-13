@@ -42,14 +42,9 @@ class Function(ABCRepresentable):
         """
         self._domain = coerce(domain, Set)
         self._codomain = coerce(codomain, Set)
-        self._algorithm = algorithm  # coerce(algorithm, typing.Callable)
+        self._algorithm = algorithm  # TODO: Implement algo type properly, then coerce(algorithm, typing.Callable)
         self._base_name = coerce(base_name, FunctionBaseName)
         self._indexes = coerce((*args, indexes), VariableIndexes)
-        #f = flatten(*args)
-        #if f is not None and f != [None]:
-        #    self._indexes = coerce(f, FunctionIndexes)
-        #else:
-        #    self._indexes = None
         super().__init__(base_name, *args)
 
     def __call__(self, *args):
@@ -57,7 +52,7 @@ class Function(ABCRepresentable):
 
     @property
     def algorithm(self) -> typing.Callable:
-        """
+        """A python algorithm able to compute the function's output.
 
         Returns:
              typing.Callable: A python function.
@@ -104,7 +99,7 @@ class Function(ABCRepresentable):
         if rformat is None:
             rformat = rformats.DEFAULT
 
-        variable_list = ','.join(map(lambda i: Variable('x', str(i)).represent(), range(1, self.arity + 1)))
+        variable_list = ','.join(map(lambda i: Variable('x', str(i)).represent(), range(1, self.arity + 2)))
         match rformat:
             case rformats.LATEX:
                 return f'\\begin{{align*}} {represent(self, rformat)} {represent(glyphs.colon, rformat)} {represent(self.domain, rformat)} &{represent(glyphs.to, rformat)} {represent(self.codomain, rformat)} \\\\ {variable_list} & {represent(glyphs.maps_to, rformat)} {represent(self.algorithm, rformat)} \\end{{align*}}'

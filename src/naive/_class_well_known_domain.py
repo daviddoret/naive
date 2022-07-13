@@ -7,7 +7,7 @@ from _function_coerce import coerce
 
 
 class WellKnownDomain(Variable, Set):
-    """A predefined variable that represents a well-known mathematical domain or codomain.
+    """A predefined variable that represents a well-defined set and (co)domain.
 
     Sample use cases:
         * Function domain
@@ -22,5 +22,8 @@ class WellKnownDomain(Variable, Set):
     """
 
     def __init__(self, base_name: VariableBaseName, *args, power=None, dimensions=None):
+        # Bibliography:
+        #   * https://stackoverflow.com/questions/9575409/calling-parent-class-init-with-multiple-inheritance-whats-the-right-way
         super().__init__(base_name, *args, power=power, dimensions=dimensions)
+        super(Variable, self).__init__(base_name, *args, power=power, dimensions=dimensions)
 
