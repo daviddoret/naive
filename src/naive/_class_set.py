@@ -3,13 +3,14 @@ from _class_boolean_value import BooleanValue
 from _function_coerce import coerce
 
 
-class Set:
+class Set():
 
     def __init__(self, *args, dimensions=None, **kwargs):
         dimensions = coerce(dimensions, int)
         if dimensions is None:
             dimensions = 1
         self._dimensions = dimensions
+        super().__init__()  # *args, dimensions, **kwargs)
 
     @property
     def dimensions(self):

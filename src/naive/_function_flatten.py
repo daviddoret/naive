@@ -27,7 +27,9 @@ def flatten(*args: object, skip_none: bool = True) -> typing.List[typing.Any]:
         # except strings that are understood as atomic in this context
         if isinstance(y, abc.Iterable) and not isinstance(y, str):
             # We cannot call directly extend to support n-depth structures
-            flattened.extend(flatten(*y))
+            sub_flattened = flatten(*y)
+            if sub_flattened is not None or not skip_none:
+                flattened.extend(sub_flattened)
         elif y is not None or not skip_none:
             flattened.append(y)
     return flattened

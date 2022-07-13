@@ -10,7 +10,7 @@ class ABCRepresentable(abc.ABC):
     """
 
     def __init__(self, *args, **kwargs):
-        pass
+        super().__init__()
 
     def __str__(self) -> str:
         # TODO: For future development, if images or other media are supported, the output of get_presentation() will need to be converted to text.

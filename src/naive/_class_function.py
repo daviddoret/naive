@@ -10,6 +10,7 @@ from _class_set import Set
 from _class_function_base_name import FunctionBaseName
 from _class_function_indexes import FunctionIndexes
 from _class_variable import Variable
+from _class_variable_indexes import VariableIndexes
 from _abc_representable import ABCRepresentable
 from _function_represent import represent
 from _function_coerce import coerce
@@ -30,7 +31,9 @@ class Function(ABCRepresentable):
             codomain: Set,
             algorithm: typing.Callable,
             base_name: FunctionBaseName,
-            *args):
+            *args,
+            indexes = None,
+            **kwargs):
         """Initializes a function.
 
         Args:
@@ -41,12 +44,12 @@ class Function(ABCRepresentable):
         self._codomain = coerce(codomain, Set)
         self._algorithm = algorithm  # coerce(algorithm, typing.Callable)
         self._base_name = coerce(base_name, FunctionBaseName)
-        f = flatten(*args)
-        if f is not None and f != [None]:
-            self._indexes = coerce(f, FunctionIndexes)
-        else:
-            self._indexes = None
-
+        self._indexes = coerce((*args, indexes), VariableIndexes)
+        #f = flatten(*args)
+        #if f is not None and f != [None]:
+        #    self._indexes = coerce(f, FunctionIndexes)
+        #else:
+        #    self._indexes = None
         super().__init__(base_name, *args)
 
     def __call__(self, *args):

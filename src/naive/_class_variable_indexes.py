@@ -9,17 +9,21 @@ import notation
 class VariableIndexes(ABCRepresentable):
     """The set of indexes that uniquely identify a variable base_name name within its scope."""
 
-    def __init__(self, *args):
+    def __init__(self, *args, indexes = None):
         self._indexes = []
-        for index in flatten(args):
-            # TODO: Implement type Index and check it with isinstance(). It was temporarily implemented here as strings.
-            self._indexes.append(str(index))
+        f = flatten(args, indexes)
+        if len(f) != 0:
+            for index in flatten(args, indexes):
+                # TODO: Implement type Index and check it with isinstance(). It was temporarily implemented here as strings.
+                self._indexes.append(str(index))
+        else:
+            self._indexes = None
 
     def __iter__(self):
         return self._indexes.__iter__()
 
     def represent(self, rformat: str = None, *args, **kwargs) -> str:
         return subscriptify(
-            notation.VARIABLE_INDEXES_SEPARATOR.join(
+            '' if self._indexes is None else notation.VARIABLE_INDEXES_SEPARATOR.join(
                 [represent(index, rformat) for index in self._indexes])
                 ,rformat)

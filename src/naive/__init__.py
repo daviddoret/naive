@@ -29,7 +29,7 @@ from _class_function import Function, F
 from _class_variable import Variable
 from _class_variable_base_name import VariableBaseName, CoercibleVariableBaseName
 from _class_variable_indexes import VariableIndexes
-from _class_variable_power import VariablePower
+from _class_variable_exponent import VariableExponent
 from _class_boolean_value import BooleanValue, BV, CoercibleBooleanValue
 from _class_boolean_value_set import BooleanValueSet, boolean_values, bv
 from _class_well_known_domain import WellKnownDomain

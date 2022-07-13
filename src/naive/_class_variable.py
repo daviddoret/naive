@@ -1,9 +1,10 @@
-from _class_variable_base_name import VariableBaseName
+from _class_variable_base_name import VariableBaseName, CoercibleVariableBaseName
 from _class_variable_indexes import VariableIndexes
-from _class_variable_power import VariablePower
+from _class_variable_exponent import VariableExponent
 from _abc_representable import ABCRepresentable
 from _function_represent import represent
 from _function_coerce import coerce
+from _function_coerce_from_kwargs import coerce_from_kwargs
 from _function_flatten import flatten
 import rformats
 
@@ -17,7 +18,13 @@ class Variable(ABCRepresentable):
     conditionally followed by variable indexes.
     """
 
-    def __init__(self, base_name: VariableBaseName, *args, power = None):
+    def __init__(
+            self,
+            base_name: CoercibleVariableBaseName,
+            *args,
+            indexes=None,
+            power: VariableExponent = None,
+            **kwargs):
         """Initializes a variable.
 
         Args:
@@ -25,17 +32,9 @@ class Variable(ABCRepresentable):
             *args: Variable length list of index elements (cf. class :class:´VariableIndexes´).
         """
         self._base_name = coerce(base_name, VariableBaseName)
-        self._power = coerce(power, VariablePower)
-        #power = None
-        #if 'power' in kwargs:
-        #    power = kwargs.get('power')
-        #self._power = coerce(power, VariablePower)
-        f = flatten(*args)
-        if f is not None and f != [None]:
-            self._indexes = coerce(f, VariableIndexes)
-        else:
-            self._indexes = None
-        super().__init__(base_name, *args, power)
+        self._indexes = coerce((*args, indexes), VariableIndexes)
+        self._exponent = coerce(power, VariableExponent)
+        super().__init__(base_name, *args, indexes, power, **kwargs)
 
     @property
     def base_name(self) -> VariableBaseName:
@@ -46,8 +45,15 @@ class Variable(ABCRepresentable):
         return self._indexes
 
     @property
-    def power(self) -> VariablePower:
-        return self._power
+    def exponent(self) -> VariableExponent:
+        """(Conditional) The variable exponent.
+
+        This property provides support for n-ary cartesian cross products.
+
+        Returns:
+            VariableExponent: The variable exponent.
+        """
+        return self._exponent
 
     def represent(self, rformat: str = None, *args, **kwargs) -> str:
         if rformat is None:
@@ -55,4 +61,4 @@ class Variable(ABCRepresentable):
         # TODO: Minor bug: only digits are currently supported by subscript().
         return represent(self._base_name, rformat) + \
                represent(self._indexes, rformat) + \
-               represent(self._power, rformat)
+               represent(self._exponent, rformat)
