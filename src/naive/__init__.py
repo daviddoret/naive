@@ -29,6 +29,7 @@ from _class_function import Function, F
 from _class_variable import Variable
 from _class_variable_base_name import VariableBaseName, CoercibleVariableBaseName
 from _class_variable_indexes import VariableIndexes
+from _class_variable_power import VariablePower
 from _class_boolean_value import BooleanValue, BV, CoercibleBooleanValue
 from _class_boolean_value_set import BooleanValueSet, boolean_values, bv
 from _class_well_known_domain import WellKnownDomain
@@ -40,7 +41,8 @@ from _function_flatten import flatten
 from _function_represent import represent
 from _function_subscriptify import subscriptify
 from _function_superscriptify import superscriptify
-from _function_not_b_b import not_b_b
+from _function_negation_b_b import negation_b_b, not_b_b
+from _function_conjunction_b2_b import conjunction_b2_b, and_b2_b
 
 
 # NAIVE MODULE IMPORTATION

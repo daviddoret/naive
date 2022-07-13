@@ -6,7 +6,7 @@ from _class_well_known_domain_set import d
 import glyphs
 
 
-def _not_b_b(x: BooleanValue) -> BooleanValue:
+def negation_b_b_algorithm(x: BooleanValue) -> BooleanValue:
     """The negation boolean function.
 
     Args:
@@ -22,4 +22,7 @@ def _not_b_b(x: BooleanValue) -> BooleanValue:
         return bv.truth
 
 
-not_b_b = Function(d.b, d.b, _not_b_b, glyphs.standard_not)
+negation_b_b = Function(d.b, d.b, negation_b_b_algorithm, glyphs.logical_negation)
+
+
+not_b_b = negation_b_b

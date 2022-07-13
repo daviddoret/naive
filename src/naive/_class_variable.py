@@ -1,5 +1,6 @@
 from _class_variable_base_name import VariableBaseName
 from _class_variable_indexes import VariableIndexes
+from _class_variable_power import VariablePower
 from _abc_representable import ABCRepresentable
 from _function_represent import represent
 from _function_coerce import coerce
@@ -16,22 +17,25 @@ class Variable(ABCRepresentable):
     conditionally followed by variable indexes.
     """
 
-    def __init__(self, base: VariableBaseName, *args):
+    def __init__(self, base_name: VariableBaseName, *args, power):
         """Initializes a variable.
 
         Args:
-            base (VariableBaseName): The variable base_name (cf. class :class:´VariableBase´).
+            base_name (VariableBaseName): The variable base_name (cf. class :class:´VariableBase´).
             *args: Variable length list of index elements (cf. class :class:´VariableIndexes´).
         """
-        # TODO: Implement type coercion
-        self._base_name = coerce(base, VariableBaseName)
+        self._base_name = coerce(base_name, VariableBaseName)
+        self._power = coerce(power, VariablePower)
+        #power = None
+        #if 'power' in kwargs:
+        #    power = kwargs.get('power')
+        #self._power = coerce(power, VariablePower)
         f = flatten(*args)
         if f is not None and f != [None]:
             self._indexes = coerce(f, VariableIndexes)
         else:
             self._indexes = None
-
-        super().__init__(base, *args)
+        super().__init__(base_name, *args, power)
 
     @property
     def base_name(self) -> VariableBaseName:
@@ -41,9 +45,14 @@ class Variable(ABCRepresentable):
     def indexes(self) -> VariableIndexes:
         return self._indexes
 
+    @property
+    def power(self) -> VariablePower:
+        return self._power
+
     def represent(self, rformat: str = None, *args, **kwargs) -> str:
         if rformat is None:
             rformat = rformats.DEFAULT
         # TODO: Minor bug: only digits are currently supported by subscript().
         return represent(self._base_name, rformat) + \
-               represent(self._indexes, rformat)
+               represent(self._indexes, rformat) + \
+               represent(self._power, rformat)

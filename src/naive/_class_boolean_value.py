@@ -26,7 +26,7 @@ class BooleanValue(PersistingRepresentable):
         """Initializes the boolean value and stores its representations in available formats.        """
         pythonic_value = coerce(pythonic_value, bool)
         self._inner_value = pythonic_value
-        glyph = glyphs.standard_truth if pythonic_value else glyphs.standard_falsum
+        glyph = glyphs.logical_truth if pythonic_value else glyphs.logical_falsum
         super().__init__(glyph)
 
     def __bool__(self):

@@ -21,6 +21,7 @@ class WellKnownDomainSet(Set):
 
     def __init__(self):
         self._b = WellKnownDomain(glyphs.mathbb_b_uppercase)
+        self._b_2 = WellKnownDomain(glyphs.mathbb_b_uppercase, power=2)
         self._n0 = WellKnownDomain(glyphs.mathbb_n_uppercase, 0)
         self._n1 = WellKnownDomain(glyphs.mathbb_n_uppercase, 1)
         self._z = WellKnownDomain(glyphs.mathbb_z_uppercase)
@@ -33,6 +34,15 @@ class WellKnownDomainSet(Set):
             WellKnownDomain: The boolean domain.
         """
         return self._b
+
+    @property
+    def b_2(self):
+        """"The boolean domain squared.
+
+        Returns:
+            WellKnownDomain: The boolean domain squared.
+        """
+        return self._b_2
 
     @property
     def n0(self):

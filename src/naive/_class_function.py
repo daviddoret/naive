@@ -58,7 +58,7 @@ class Function(ABCRepresentable):
         Returns:
              typing.Callable: A python function.
         """
-        # TODO: Implement algorithm as a dedicated class. Then implement friendly representation.
+        # TODO: Implement algorithm as a dedicated class. Then implement friendly representation. Use inspect.getsource(foo) for that.
         return self._algorithm
 
     @property

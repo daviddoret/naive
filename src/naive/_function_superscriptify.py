@@ -1,7 +1,7 @@
 import rformats
+from _function_coerce import coerce
 
-
-def superscriptify(representation: str, rformat: str) -> str:
+def superscriptify(representation: str, rformat: str = None) -> str:
     """Converts to superscript the representation of object **o**.
 
     Use cases:
@@ -28,6 +28,7 @@ def superscriptify(representation: str, rformat: str) -> str:
         * https://stackoverflow.com/questions/13875507/convert-numeric-strings-to-superscript
 
     """
+    representation = coerce(representation, str)
     if representation is None:
         return ''
     if rformat is None:

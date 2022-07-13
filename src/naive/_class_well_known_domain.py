@@ -1,6 +1,7 @@
 from _class_variable import Variable
 from _class_variable_base_name import VariableBaseName
 from _class_variable_indexes import VariableIndexes
+from _class_variable_power import VariablePower
 from _class_set import Set
 
 
@@ -18,8 +19,6 @@ class WellKnownDomain(Variable, Set):
         * Implement subset / superset relations between domains, e.g. B^5 subset of B^n.
         * Inherit from Set.
     """
-    def __init__(self, base: VariableBaseName, indexes: (None, VariableIndexes) = None, *args, **kwargs):
-        super().__init__(base, indexes, *args, **kwargs)
 
-
-
+    def __init__(self, base_name: VariableBaseName, *args, power=None):
+        super().__init__(base_name, *args, power=power)
