@@ -6,8 +6,8 @@ from _function_flatten import flatten
 import notation
 
 
-class VariableIndexes(ABCRepresentable):
-    """The set of indexes that uniquely identify a variable base_name name within its scope."""
+class FunctionIndexes(ABCRepresentable):
+    """The set of indexes that uniquely identify a function base_name name within its scope."""
 
     def __init__(self, *args):
         self._indexes = []
@@ -20,6 +20,6 @@ class VariableIndexes(ABCRepresentable):
 
     def represent(self, rformat: str = None, *args, **kwargs) -> str:
         return subscriptify(
-            notation.VARIABLE_INDEXES_SEPARATOR.join(
+            notation.FUNCTION_INDEXES_SEPARATOR.join(
                 [represent(index, rformat) for index in self._indexes])
                 ,rformat)

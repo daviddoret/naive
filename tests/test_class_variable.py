@@ -4,7 +4,7 @@ import src.naive as naive
 
 class TestVariable(TestCase):
     def test_get_representation_1(self):
-        base = naive.VariableBase(naive.glyphs.standard_x_lowercase)
+        base = naive.VariableBaseName(naive.glyphs.standard_x_lowercase)
         indexes = naive.VariableIndexes(1, 2, 3)
         variable = naive.Variable(base, indexes)
         self.assertEqual(variable.represent(naive.rformats.UTF8), 'x₁,₂,₃')

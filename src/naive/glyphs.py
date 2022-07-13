@@ -20,4 +20,8 @@ mathbb_z_uppercase = Glyph(utf8='ℤ', latex=r'\mathbb{Z}', html='&Zopf;', ascii
 # {\displaystyle \mathbb {R} }\mathbb {R} 	ℝ	Real number	\mathbb{R}, \R	&Ropf;	U+211D
 # {\displaystyle \mathbb {S} }\mathbb {S} 	𝕊	Sedenion	\mathbb{S}	&Sopf;	U+1D54A
 
+to = Glyph(utf8='⟶', latex=r'\longrightarrow', html=r'&rarr;', ascii='-->')
+maps_to = Glyph(utf8='⟼', latex=r'\longmapsto', html=r'&mapsto;', ascii='|->')
+colon = Glyph(utf8=':', latex=r'\colon', html=r':', ascii=':')
+
 # Greek Letters

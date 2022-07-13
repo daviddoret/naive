@@ -16,3 +16,7 @@ class Test(TestCase):
         self.assertEqual(naive.bv.t, naive.bv.t)
         self.assertNotEqual(naive.bv.t, naive.bv.f)
         self.assertNotEqual(naive.bv.f, naive.bv.t)
+        self.assertTrue(naive.bv.truth)
+        self.assertTrue(naive.bv.t)
+        self.assertFalse(naive.bv.falsum)
+        self.assertFalse(naive.bv.f)

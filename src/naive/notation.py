@@ -18,3 +18,4 @@ EQUALITY_NOTATION = '='
 DEFINITION_NOTATION = '≔'
 VARIABLE_SCOPE_SEPARATOR_NOTATION = '.'
 VARIABLE_INDEXES_SEPARATOR = ','  # Do not add a space to keep the indexes compact.
+FUNCTION_INDEXES_SEPARATOR = ','  # Do not add a space to keep the indexes compact.

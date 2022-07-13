@@ -111,18 +111,18 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">glyph</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="BooleanValue.__bool__"><a class="viewcode-back" href="../class_boolean_value_doc.html#naive.BooleanValue.__bool__">[docs]</a>    <span class="k">def</span> <span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Provides support for implicit and explicit (i.e. ``bool(x)``) conversions to :std:doc:type:`bool`.</span>
+        <span class="sd">&quot;&quot;&quot;Provides support for implicit and explicit (i.e. ``bool(x)``) conversions to **bool**.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bool: the canonic mapping of :class:`BooleanValue` with the pythonic bool type.</span>
+<span class="sd">            bool: the canonic mapping of :class:`BooleanValue` with the pythonic **bool** type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_value</span></div>
 
 <div class="viewcode-block" id="BooleanValue.__eq__"><a class="viewcode-back" href="../class_boolean_value_doc.html#naive.BooleanValue.__eq__">[docs]</a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">CoercibleBooleanValue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Provides explicit support for equality.</span>
+        <span class="sd">&quot;&quot;&quot;Provides support for mathematical equality.</span>
 
-<span class="sd">        Even though all python objects are implicitly convertible to bool (calling :std:doc:meth:`__bool__`),</span>
-<span class="sd">        we want the equality operator to rather approach mathematical equality.</span>
+<span class="sd">        All python objects are implicitly convertible to bool,</span>
+<span class="sd">        but we want the equality operator to rather approach mathematical equality.</span>
 <span class="sd">        Hence, we explicitly convert **other** to **BooleanValue** which issues warnings and raises exceptions as necessary.</span>
 
 <span class="sd">        Args:</span>
@@ -136,10 +136,9 @@
         <span class="k">return</span> <span class="n">result</span></div></div>
 
 
-<span class="sd">&quot;&quot;&quot;A shorthand alias for class :class:`BinaryValue`.&quot;&quot;&quot;</span>
 <span class="n">BV</span> <span class="o">=</span> <span class="n">BooleanValue</span>
+<span class="sd">&quot;&quot;&quot;A shorthand alias for class :class:`BinaryValue`.&quot;&quot;&quot;</span>
 
-<span class="sd">&quot;&quot;&quot;Supported types for coercion to class :class:`BinaryValue`.&quot;&quot;&quot;</span>
 <span class="n">CoercibleBooleanValue</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span>
     <span class="s1">&#39;CoercibleBooleanValue&#39;</span><span class="p">,</span>
     <span class="n">BooleanValue</span><span class="p">,</span>
@@ -147,37 +146,8 @@
     <span class="nb">int</span><span class="p">,</span>
     <span class="nb">str</span>  <span class="c1"># TODO Implement coercion of well known representations.</span>
 <span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Supported types for coercion to class :class:`BinaryValue`.&quot;&quot;&quot;</span>
 
-
-<span class="k">class</span> <span class="nc">BVSet</span><span class="p">:</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_falsum</span> <span class="o">=</span> <span class="n">BooleanValue</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_truth</span> <span class="o">=</span> <span class="n">BooleanValue</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">falsum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;BooleanValue: The falsum boolean value.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_falsum</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">truth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;BooleanValue: The truth boolean value.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_truth</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;BooleanValue: A shorthand for the falsum boolean value.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">falsum</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">t</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;BooleanValue: A shorthand for the truth boolean value.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">truth</span>
-
-
-<span class="n">bv</span> <span class="o">=</span> <span class="n">BVSet</span><span class="p">()</span>
-<span class="sd">&quot;&quot;&quot;The set of boolean values.&quot;&quot;&quot;</span>
 </pre></div>
 
            </div>

@@ -28,7 +28,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Glyph" href="class_glyph_doc.html" />
+    <link rel="next" title="BooleanValueSet" href="class_boolean_value_set_doc.html" />
     <link rel="prev" title="Library" href="section_library_doc.html" /> 
 </head>
 
@@ -56,6 +56,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="section_library_doc.html">Library</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="section_library_doc.html#classes">Classes</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">BooleanValue</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="class_boolean_value_set_doc.html"><code class="docutils literal notranslate"><span class="pre">BooleanValueSet</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="class_glyph_doc.html"><code class="docutils literal notranslate"><span class="pre">Glyph</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="class_persisting_representable_doc.html"><code class="docutils literal notranslate"><span class="pre">PersistingRepresentable</span></code></a></li>
 </ul>
@@ -131,10 +132,10 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="naive.BooleanValue.__bool__">
 <span class="sig-name descname"><span class="pre">__bool__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/_class_boolean_value.html#BooleanValue.__bool__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.BooleanValue.__bool__" title="Permalink to this definition"></a></dt>
-<dd><p>Provides support for implicit and explicit (i.e. <code class="docutils literal notranslate"><span class="pre">bool(x)</span></code>) conversions to <a href="#id1"><span class="problematic" id="id2">:std:doc:type:`bool`</span></a>.</p>
+<dd><p>Provides support for implicit and explicit (i.e. <code class="docutils literal notranslate"><span class="pre">bool(x)</span></code>) conversions to <strong>bool</strong>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>the canonic mapping of <a class="reference internal" href="#naive.BooleanValue" title="naive.BooleanValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">BooleanValue</span></code></a> with the pythonic bool type.</p>
+<dd class="field-odd"><p>the canonic mapping of <a class="reference internal" href="#naive.BooleanValue" title="naive.BooleanValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">BooleanValue</span></code></a> with the pythonic <strong>bool</strong> type.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
@@ -145,9 +146,9 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="naive.BooleanValue.__eq__">
 <span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CoercibleBooleanValue</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="_modules/_class_boolean_value.html#BooleanValue.__eq__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.BooleanValue.__eq__" title="Permalink to this definition"></a></dt>
-<dd><p>Provides explicit support for equality.</p>
-<p>Even though all python objects are implicitly convertible to bool (calling <a href="#id3"><span class="problematic" id="id4">:std:doc:meth:`__bool__`</span></a>),
-we want the equality operator to rather approach mathematical equality.
+<dd><p>Provides support for mathematical equality.</p>
+<p>All python objects are implicitly convertible to bool,
+but we want the equality operator to rather approach mathematical equality.
 Hence, we explicitly convert <strong>other</strong> to <strong>BooleanValue</strong> which issues warnings and raises exceptions as necessary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -192,7 +193,7 @@ Hence, we explicitly convert <strong>other</strong> to <strong>BooleanValue</str
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="section_library_doc.html" class="btn btn-neutral float-left" title="Library" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="class_glyph_doc.html" class="btn btn-neutral float-right" title="Glyph" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="class_boolean_value_set_doc.html" class="btn btn-neutral float-right" title="BooleanValueSet" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

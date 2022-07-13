@@ -30,18 +30,18 @@ class BooleanValue(PersistingRepresentable):
         super().__init__(glyph)
 
     def __bool__(self):
-        """Provides support for implicit and explicit (i.e. ``bool(x)``) conversions to :std:doc:type:`bool`.
+        """Provides support for implicit and explicit (i.e. ``bool(x)``) conversions to **bool**.
 
         Returns:
-            bool: the canonic mapping of :class:`BooleanValue` with the pythonic bool type.
+            bool: the canonic mapping of :class:`BooleanValue` with the pythonic **bool** type.
         """
         return self._inner_value
 
     def __eq__(self, other: CoercibleBooleanValue) -> bool:
-        """Provides explicit support for equality.
+        """Provides support for mathematical equality.
 
-        Even though all python objects are implicitly convertible to bool (calling :std:doc:meth:`__bool__`),
-        we want the equality operator to rather approach mathematical equality.
+        All python objects are implicitly convertible to bool,
+        but we want the equality operator to rather approach mathematical equality.
         Hence, we explicitly convert **other** to **BooleanValue** which issues warnings and raises exceptions as necessary.
 
         Args:
@@ -55,10 +55,9 @@ class BooleanValue(PersistingRepresentable):
         return result
 
 
-"""A shorthand alias for class :class:`BinaryValue`."""
 BV = BooleanValue
+"""A shorthand alias for class :class:`BinaryValue`."""
 
-"""Supported types for coercion to class :class:`BinaryValue`."""
 CoercibleBooleanValue = typing.TypeVar(
     'CoercibleBooleanValue',
     BooleanValue,
@@ -66,34 +65,5 @@ CoercibleBooleanValue = typing.TypeVar(
     int,
     str  # TODO Implement coercion of well known representations.
 )
+"""Supported types for coercion to class :class:`BinaryValue`."""
 
-
-class BVSet:
-
-    def __init__(self):
-        self._falsum = BooleanValue(False)
-        self._truth = BooleanValue(True)
-
-    @property
-    def falsum(self):
-        """BooleanValue: The falsum boolean value."""
-        return self._falsum
-
-    @property
-    def truth(self):
-        """BooleanValue: The truth boolean value."""
-        return self._truth
-
-    @property
-    def f(self):
-        """BooleanValue: A shorthand for the falsum boolean value."""
-        return self.falsum
-
-    @property
-    def t(self):
-        """BooleanValue: A shorthand for the truth boolean value."""
-        return self.truth
-
-
-bv = BVSet()
-"""The set of boolean values."""

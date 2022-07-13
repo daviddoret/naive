@@ -23,10 +23,16 @@ from _abc_representable import ABCRepresentable
 from _class_glyph import Glyph
 from _class_persisting_representable import PersistingRepresentable, CoerciblePersistingRepresentable
 from _class_symbol import Symbol
+from _class_function_base_name import FunctionBaseName, CoercibleFunctionBaseName
+from _class_function_indexes import FunctionIndexes
+from _class_function import Function, F
 from _class_variable import Variable
-from _class_variable_base import VariableBase, CoercibleVariableBase
+from _class_variable_base_name import VariableBaseName, CoercibleVariableBaseName
 from _class_variable_indexes import VariableIndexes
-from _class_boolean_value import BooleanValue, BV, CoercibleBooleanValue, bv
+from _class_boolean_value import BooleanValue, BV, CoercibleBooleanValue
+from _class_boolean_value_set import BooleanValueSet, boolean_values, bv
+from _class_well_known_domain import WellKnownDomain
+from _class_well_known_domain_set import WellKnownDomainSet, domains, d
 from _exception_naive_error import NaiveError
 from _exception_naive_warning import NaiveWarning
 from _function_coerce import coerce
@@ -34,12 +40,13 @@ from _function_flatten import flatten
 from _function_represent import represent
 from _function_subscriptify import subscriptify
 from _function_superscriptify import superscriptify
+from _function_not_b_b import not_b_b
+
 
 # NAIVE MODULE IMPORTATION
 import rformats
 import glyphs
 import notation
-import domains
 import log
 
 
