@@ -42,7 +42,10 @@ from _function_represent import represent
 from _function_subscriptify import subscriptify
 from _function_superscriptify import superscriptify
 from _function_negation_b_b import negation_b_b, not_b_b
+from _function_disjunction_b2_b import disjunction_b2_b, or_b2_b
 from _function_conjunction_b2_b import conjunction_b2_b, and_b2_b
+from _function_material_equivalence_b2_b import material_equivalence_b2_b, iif_b2_b
+from _function_material_implication_b2_b import material_implication_b2_b, implies_b2_b
 
 
 # NAIVE MODULE IMPORTATION

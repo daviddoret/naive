@@ -21,9 +21,15 @@ to = Glyph(utf8='⟶', latex=r'\longrightarrow', html=r'&rarr;', ascii='-->')
 maps_to = Glyph(utf8='⟼', latex=r'\longmapsto', html=r'&mapsto;', ascii='|->')
 colon = Glyph(utf8=':', latex=r'\colon', html=r':', ascii=':')
 
+# Bibliography:
+#   * https://en.wikipedia.org/wiki/List_of_logic_symbols
 logical_falsum = Glyph(utf8='⊥', latex=r'\bot', html='&perp;', ascii='F')
 logical_truth = Glyph(utf8='⊤', latex=r'\top', html='&top;', ascii='T')
 logical_negation = Glyph(utf8='¬', latex=r'\lnot', html='&not;', ascii='not')
 logical_conjunction = Glyph(utf8='∧', latex=r'\land', html='&and;', ascii='and')
+logical_disjunction = Glyph(utf8='∨', latex=r'\lor', html='&or;', ascii='or')
+logical_material_implication = Glyph(utf8='⇒', latex=r'\implies', html='&rArr;', ascii='implies')
+logical_material_equivalence = Glyph(utf8='⇔', latex=r'\iif', html='&hArr;', ascii='iif')
+
 
 # Greek Letters
