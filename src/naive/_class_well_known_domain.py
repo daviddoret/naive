@@ -3,6 +3,7 @@ from _class_variable_base_name import VariableBaseName
 from _class_variable_indexes import VariableIndexes
 from _class_variable_power import VariablePower
 from _class_set import Set
+from _function_coerce import coerce
 
 
 class WellKnownDomain(Variable, Set):
@@ -20,5 +21,7 @@ class WellKnownDomain(Variable, Set):
         * Inherit from Set.
     """
 
-    def __init__(self, base_name: VariableBaseName, *args, power=None):
+    def __init__(self, base_name: VariableBaseName, *args, power=None, arity=None):
         super().__init__(base_name, *args, power=power)
+
+

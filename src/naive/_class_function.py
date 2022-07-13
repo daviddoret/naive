@@ -9,6 +9,7 @@ from _class_set import Set
 
 from _class_function_base_name import FunctionBaseName
 from _class_function_indexes import FunctionIndexes
+from _class_variable import Variable
 from _abc_representable import ABCRepresentable
 from _function_represent import represent
 from _function_coerce import coerce
@@ -62,6 +63,18 @@ class Function(ABCRepresentable):
         return self._algorithm
 
     @property
+    def arity(self):
+        """The function's arity.
+
+        The arity of a function is the number of arguments received by that function.
+        The arity of the function must be consistent with the dimensions of its domain.
+
+        Returns:
+            object: The function's arity.
+        """
+        return self.domain.dimensions
+
+    @property
     def base_name(self) -> FunctionBaseName:
         return self._base_name
 
@@ -88,16 +101,16 @@ class Function(ABCRepresentable):
         if rformat is None:
             rformat = rformats.DEFAULT
 
-        # TODO: Implement support for n-ary functions.
+        variable_list = ','.join(map(lambda i: Variable('x', str(i)).represent(), range(1, self.arity)))
         match rformat:
             case rformats.LATEX:
-                return f'\\begin{{align*}} {represent(self, rformat)} {represent(glyphs.colon, rformat)} {represent(self.domain, rformat)} &{represent(glyphs.to, rformat)} {represent(self.codomain, rformat)} \\\\ x & {represent(glyphs.maps_to, rformat)} {represent(self.algorithm, rformat)} \\end{{align*}}'
+                return f'\\begin{{align*}} {represent(self, rformat)} {represent(glyphs.colon, rformat)} {represent(self.domain, rformat)} &{represent(glyphs.to, rformat)} {represent(self.codomain, rformat)} \\\\ {variable_list} & {represent(glyphs.maps_to, rformat)} {represent(self.algorithm, rformat)} \\end{{align*}}'
             case rformats.UTF8:
-                return f'{represent(self, rformat)} {represent(glyphs.colon, rformat)} {represent(self.domain, rformat)} {represent(glyphs.to, rformat)} {represent(self.codomain, rformat)} \n \t x {represent(glyphs.maps_to, rformat)} {represent(self.algorithm, rformat)}'
+                return f'{represent(self, rformat)} {represent(glyphs.colon, rformat)} {represent(self.domain, rformat)} {represent(glyphs.to, rformat)} {represent(self.codomain, rformat)} \n \t {variable_list} {represent(glyphs.maps_to, rformat)} {represent(self.algorithm, rformat)}'
             case rformats.HTML:
-                return f'{represent(self, rformat)} {represent(glyphs.colon, rformat)} {represent(self.domain, rformat)} {represent(glyphs.to, rformat)} {represent(self.codomain, rformat)} <br> &emsp; x {represent(glyphs.maps_to, rformat)} {represent(self.algorithm, rformat)}'
+                return f'{represent(self, rformat)} {represent(glyphs.colon, rformat)} {represent(self.domain, rformat)} {represent(glyphs.to, rformat)} {represent(self.codomain, rformat)} <br> &emsp; {variable_list} {represent(glyphs.maps_to, rformat)} {represent(self.algorithm, rformat)}'
             case rformats.ASCII:
-                return f'{represent(self, rformat)} {represent(glyphs.colon, rformat)} {represent(self.domain, rformat)} {represent(glyphs.to, rformat)} {represent(self.codomain, rformat)} \n \t x {represent(glyphs.maps_to, rformat)} {represent(self.algorithm, rformat)}'
+                return f'{represent(self, rformat)} {represent(glyphs.colon, rformat)} {represent(self.domain, rformat)} {represent(glyphs.to, rformat)} {represent(self.codomain, rformat)} \n \t {variable_list} {represent(glyphs.maps_to, rformat)} {represent(self.algorithm, rformat)}'
             case _:
                 log.NaiveError('Unsupported representation format.', rformat=rformat)
 

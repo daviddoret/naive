@@ -17,7 +17,7 @@ class Variable(ABCRepresentable):
     conditionally followed by variable indexes.
     """
 
-    def __init__(self, base_name: VariableBaseName, *args, power):
+    def __init__(self, base_name: VariableBaseName, *args, power = None):
         """Initializes a variable.
 
         Args:
