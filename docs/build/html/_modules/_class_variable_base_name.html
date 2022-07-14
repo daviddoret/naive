@@ -50,7 +50,8 @@
               <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../section_installation_doc.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../section_library_doc.html">Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_base_doc.html">Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_boolean_algebra_doc.html">The Boolean Algebra Module (<strong>boolean_algebra</strong>, aka <strong>ba</strong>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../section_samples_doc.html">Samples</a></li>
 </ul>
 
@@ -84,10 +85,10 @@
 <span class="kn">from</span> <span class="nn">_class_persisting_representable</span> <span class="kn">import</span> <span class="n">PersistingRepresentable</span>
 
 
-<div class="viewcode-block" id="VariableBaseName"><a class="viewcode-back" href="../class_variable_base_name_doc.html#naive.VariableBaseName">[docs]</a><span class="k">class</span> <span class="nc">VariableBaseName</span><span class="p">(</span><span class="n">PersistingRepresentable</span><span class="p">):</span>
+<div class="viewcode-block" id="VariableBaseName"><a class="viewcode-back" href="../base_class_variable_base_name_doc.html#naive.VariableBaseName">[docs]</a><span class="k">class</span> <span class="nc">VariableBaseName</span><span class="p">(</span><span class="n">PersistingRepresentable</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A variable base_name is the first component of a variable name.&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="VariableBaseName.__init__"><a class="viewcode-back" href="../class_variable_base_name_doc.html#naive.VariableBaseName.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">representable</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">CoercibleVariableBaseName</span><span class="p">)</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="VariableBaseName.__init__"><a class="viewcode-back" href="../base_class_variable_base_name_doc.html#naive.VariableBaseName.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">representable</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">CoercibleVariableBaseName</span><span class="p">)</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># TODO: Assure that the representable is a word or glyph. We don&#39;t want an indexed variable or other inadequate construction to be used a variable base_name.</span>
         <span class="c1"># TODO: If representable is None, implement an automatic naming scheme, e.g. x1, x2, x3, ...</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">representable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>

@@ -41,11 +41,11 @@ from _function_flatten import flatten
 from _function_represent import represent
 from _function_subscriptify import subscriptify
 from _function_superscriptify import superscriptify
-# from _ba_function_negation_b_b import negation_b_b, not_b_b
-# from _ba_function_disjunction_b2_b import disjunction_b2_b, or_b2_b
-# from _ba_function_conjunction_b2_b import conjunction_b2_b, and_b2_b
-# from _ba_function_material_equivalence_b2_b import material_equivalence_b2_b, iif_b2_b
-# from _ba_function_material_implication_b2_b import material_implication_b2_b, implies_b2_b
+# from _ba_function_negation_b_b import negation, lnot
+# from _ba_function_disjunction import disjunction, or
+# from _ba_function_conjunction import conjunction, and
+# from _ba_function_material_equivalence import material_equivalence, iif
+# from _ba_function_material_implication import material_implication, implies
 import boolean_algebra
 ba = boolean_algebra  # Use a reference for shorthand aliases to avoid duplicate copies of global variables.
 

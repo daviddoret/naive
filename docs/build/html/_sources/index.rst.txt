@@ -21,7 +21,8 @@ Contents
     :caption: Table of Contents
 
     section_installation_doc
-    section_library_doc
+    module_base_doc
+    module_boolean_algebra_doc
     section_samples_doc
 
 Indices and tables

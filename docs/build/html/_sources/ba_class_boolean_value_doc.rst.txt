@@ -1,7 +1,7 @@
 ``BooleanValue``
 ===================
 
-.. currentmodule:: naive
+.. currentmodule:: naive.boolean_algebra
 
 .. autoclass:: BooleanValue
     :members:

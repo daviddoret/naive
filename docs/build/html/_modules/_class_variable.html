@@ -50,7 +50,8 @@
               <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../section_installation_doc.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../section_library_doc.html">Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_base_doc.html">Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_boolean_algebra_doc.html">The Boolean Algebra Module (<strong>boolean_algebra</strong>, aka <strong>ba</strong>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../section_samples_doc.html">Samples</a></li>
 </ul>
 
@@ -90,7 +91,7 @@
 <span class="kn">import</span> <span class="nn">rformats</span>
 
 
-<div class="viewcode-block" id="Variable"><a class="viewcode-back" href="../class_variable_doc.html#naive.Variable">[docs]</a><span class="k">class</span> <span class="nc">Variable</span><span class="p">(</span><span class="n">ABCRepresentable</span><span class="p">):</span>
+<div class="viewcode-block" id="Variable"><a class="viewcode-back" href="../base_class_variable_doc.html#naive.Variable">[docs]</a><span class="k">class</span> <span class="nc">Variable</span><span class="p">(</span><span class="n">ABCRepresentable</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A mathematical variable object.</span>
 
 <span class="sd">     A variable is defined as an element that may be defined by a defining object.</span>
@@ -99,7 +100,7 @@
 <span class="sd">    conditionally followed by variable indexes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Variable.__init__"><a class="viewcode-back" href="../class_variable_doc.html#naive.Variable.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="viewcode-block" id="Variable.__init__"><a class="viewcode-back" href="../base_class_variable_doc.html#naive.Variable.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">base_name</span><span class="p">:</span> <span class="n">CoercibleVariableBaseName</span><span class="p">,</span>
             <span class="o">*</span><span class="n">args</span><span class="p">,</span>
@@ -136,7 +137,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exponent</span>
 
-<div class="viewcode-block" id="Variable.represent"><a class="viewcode-back" href="../class_variable_doc.html#naive.Variable.represent">[docs]</a>    <span class="k">def</span> <span class="nf">represent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="Variable.represent"><a class="viewcode-back" href="../base_class_variable_doc.html#naive.Variable.represent">[docs]</a>    <span class="k">def</span> <span class="nf">represent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">rformat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">rformat</span> <span class="o">=</span> <span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
         <span class="c1"># TODO: Minor bug: only digits are currently supported by subscript().</span>

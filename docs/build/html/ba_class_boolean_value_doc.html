@@ -27,7 +27,9 @@
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="BooleanValueSet" href="ba_class_boolean_value_set_doc.html" />
+    <link rel="prev" title="The Boolean Algebra Module (boolean_algebra, aka ba)" href="module_boolean_algebra_doc.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,9 +51,18 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="section_installation_doc.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="section_library_doc.html">Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_base_doc.html">Library</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="module_boolean_algebra_doc.html">The Boolean Algebra Module (<strong>boolean_algebra</strong>, aka <strong>ba</strong>)</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="module_boolean_algebra_doc.html#classes">Classes</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">BooleanValue</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ba_class_boolean_value_set_doc.html"><code class="docutils literal notranslate"><span class="pre">BooleanValueSet</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="module_boolean_algebra_doc.html#functions">Functions</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="section_samples_doc.html">Samples</a></li>
 </ul>
 
@@ -69,6 +80,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="module_boolean_algebra_doc.html">The Boolean Algebra Module (<strong>boolean_algebra</strong>, aka <strong>ba</strong>)</a> &raquo;</li>
       <li><code class="docutils literal notranslate"><span class="pre">BooleanValue</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/ba_class_boolean_value_doc.rst.txt" rel="nofollow"> View page source</a>
@@ -106,21 +118,21 @@
 <section id="booleanvalue">
 <h1><code class="docutils literal notranslate"><span class="pre">BooleanValue</span></code><a class="headerlink" href="#booleanvalue" title="Permalink to this heading"></a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="naive.BooleanValue">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">naive.</span></span><span class="sig-name descname"><span class="pre">BooleanValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pythonic_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/_ba_class_boolean_value.html#BooleanValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.BooleanValue" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="class_persisting_representable_doc.html#naive.PersistingRepresentable" title="_class_persisting_representable.PersistingRepresentable"><code class="xref py py-class docutils literal notranslate"><span class="pre">PersistingRepresentable</span></code></a></p>
+<dt class="sig sig-object py" id="naive.boolean_algebra.BooleanValue">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">naive.boolean_algebra.</span></span><span class="sig-name descname"><span class="pre">BooleanValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pythonic_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/_ba_class_boolean_value.html#BooleanValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.boolean_algebra.BooleanValue" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="base_class_persisting_representable_doc.html#naive.PersistingRepresentable" title="_class_persisting_representable.PersistingRepresentable"><code class="xref py py-class docutils literal notranslate"><span class="pre">PersistingRepresentable</span></code></a></p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="naive.BooleanValue.__abstractmethods__">
-<span class="sig-name descname"><span class="pre">__abstractmethods__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({})</span></em><a class="headerlink" href="#naive.BooleanValue.__abstractmethods__" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="naive.boolean_algebra.BooleanValue.__abstractmethods__">
+<span class="sig-name descname"><span class="pre">__abstractmethods__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({})</span></em><a class="headerlink" href="#naive.boolean_algebra.BooleanValue.__abstractmethods__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="naive.BooleanValue.__bool__">
-<span class="sig-name descname"><span class="pre">__bool__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/_ba_class_boolean_value.html#BooleanValue.__bool__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.BooleanValue.__bool__" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="naive.boolean_algebra.BooleanValue.__bool__">
+<span class="sig-name descname"><span class="pre">__bool__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/_ba_class_boolean_value.html#BooleanValue.__bool__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.boolean_algebra.BooleanValue.__bool__" title="Permalink to this definition"></a></dt>
 <dd><p>Provides support for implicit and explicit (i.e. <code class="docutils literal notranslate"><span class="pre">bool(x)</span></code>) conversions to <strong>bool</strong>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>the canonic mapping of <a class="reference internal" href="#naive.BooleanValue" title="naive.BooleanValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">BooleanValue</span></code></a> with the pythonic <strong>bool</strong> type.</p>
+<dd class="field-odd"><p>the canonic mapping of <a class="reference internal" href="#naive.boolean_algebra.BooleanValue" title="naive.boolean_algebra.BooleanValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">BooleanValue</span></code></a> with the pythonic <strong>bool</strong> type.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
@@ -129,8 +141,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="naive.BooleanValue.__eq__">
-<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CoercibleBooleanValue</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="_modules/_ba_class_boolean_value.html#BooleanValue.__eq__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.BooleanValue.__eq__" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="naive.boolean_algebra.BooleanValue.__eq__">
+<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CoercibleBooleanValue</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="_modules/_ba_class_boolean_value.html#BooleanValue.__eq__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.boolean_algebra.BooleanValue.__eq__" title="Permalink to this definition"></a></dt>
 <dd><p>Provides support for mathematical equality.</p>
 <p>All python objects are implicitly convertible to bool,
 but we want the equality operator to rather approach mathematical equality.
@@ -149,31 +161,31 @@ Hence, we explicitly convert <strong>other</strong> to <strong>BooleanValue</str
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="naive.BooleanValue.__hash__">
-<span class="sig-name descname"><span class="pre">__hash__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#naive.BooleanValue.__hash__" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="naive.boolean_algebra.BooleanValue.__hash__">
+<span class="sig-name descname"><span class="pre">__hash__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#naive.boolean_algebra.BooleanValue.__hash__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="naive.BooleanValue.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pythonic_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/_ba_class_boolean_value.html#BooleanValue.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.BooleanValue.__init__" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="naive.boolean_algebra.BooleanValue.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pythonic_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/_ba_class_boolean_value.html#BooleanValue.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.boolean_algebra.BooleanValue.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Initializes the boolean value and stores its representations in available formats.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="naive.BooleanValue.__module__">
-<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'_ba_class_boolean_value'</span></em><a class="headerlink" href="#naive.BooleanValue.__module__" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="naive.boolean_algebra.BooleanValue.__module__">
+<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'_ba_class_boolean_value'</span></em><a class="headerlink" href="#naive.boolean_algebra.BooleanValue.__module__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="naive.BooleanValue.__new__">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pythonic_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/_ba_class_boolean_value.html#BooleanValue.__new__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.BooleanValue.__new__" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="naive.boolean_algebra.BooleanValue.__new__">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pythonic_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/_ba_class_boolean_value.html#BooleanValue.__new__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.boolean_algebra.BooleanValue.__new__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="naive.BV">
-<span class="sig-prename descclassname"><span class="pre">naive.</span></span><span class="sig-name descname"><span class="pre">BV</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;class</span> <span class="pre">'_ba_class_boolean_value.BooleanValue'&gt;</span></em><a class="headerlink" href="#naive.BV" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="naive.boolean_algebra.BV">
+<span class="sig-prename descclassname"><span class="pre">naive.boolean_algebra.</span></span><span class="sig-name descname"><span class="pre">BV</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;class</span> <span class="pre">'_ba_class_boolean_value.BooleanValue'&gt;</span></em><a class="headerlink" href="#naive.boolean_algebra.BV" title="Permalink to this definition"></a></dt>
 <dd><p>A helper class for objects that support representation in multiple formats by storing representations in object properties.</p>
 </dd></dl>
 
@@ -182,7 +194,10 @@ Hence, we explicitly convert <strong>other</strong> to <strong>BooleanValue</str
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="module_boolean_algebra_doc.html" class="btn btn-neutral float-left" title="The Boolean Algebra Module (boolean_algebra, aka ba)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ba_class_boolean_value_set_doc.html" class="btn btn-neutral float-right" title="BooleanValueSet" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

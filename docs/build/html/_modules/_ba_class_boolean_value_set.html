@@ -50,7 +50,8 @@
               <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../section_installation_doc.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../section_library_doc.html">Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_base_doc.html">Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_boolean_algebra_doc.html">The Boolean Algebra Module (<strong>boolean_algebra</strong>, aka <strong>ba</strong>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../section_samples_doc.html">Samples</a></li>
 </ul>
 
@@ -90,7 +91,7 @@
 <span class="kn">import</span> <span class="nn">log</span>
 
 
-<div class="viewcode-block" id="BooleanValueSet"><a class="viewcode-back" href="../ba_class_boolean_value_set_doc.html#naive.BooleanValueSet">[docs]</a><span class="k">class</span> <span class="nc">BooleanValueSet</span><span class="p">:</span>
+<div class="viewcode-block" id="BooleanValueSet"><a class="viewcode-back" href="../ba_class_boolean_value_set_doc.html#naive.boolean_algebra.BooleanValueSet">[docs]</a><span class="k">class</span> <span class="nc">BooleanValueSet</span><span class="p">:</span>
     <span class="c1"># TODO: Implement this as well as a dictionary.</span>
     <span class="c1"># TODO: Then, reuse that structure for NN0, NN1, etc.</span>
     <span class="c1"># TODO: Implement this as a Domain</span>
@@ -100,7 +101,7 @@
 <span class="sd">        * https://en.wikipedia.org/wiki/Boolean_domain</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="BooleanValueSet.__init__"><a class="viewcode-back" href="../ba_class_boolean_value_set_doc.html#naive.BooleanValueSet.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BooleanValueSet.__init__"><a class="viewcode-back" href="../ba_class_boolean_value_set_doc.html#naive.boolean_algebra.BooleanValueSet.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_falsum</span> <span class="o">=</span> <span class="n">BooleanValue</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_truth</span> <span class="o">=</span> <span class="n">BooleanValue</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
 
