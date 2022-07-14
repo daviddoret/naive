@@ -1,14 +1,14 @@
-Library
+boolean_algebra
 ===================================
 
-This section contains the documentation of all objects contained in the **naive** python library, namely:
+This section contains the documentation of all objects contained in **Boolean Algebra** module of the **naive** python library, namely:
 
 * :ref:`Classes`
 * :ref:`Exceptions`
 * :ref:`Functions`
 * :ref:`Modules`
 
-.. currentmodule:: naive
+.. currentmodule:: naive.boolean_algebra
 
 Classes
 ---------
@@ -17,7 +17,7 @@ Classes
     :maxdepth: 2
     :glob:
 
-    class_*_doc
+    ba_class_*_doc
 
 Exceptions
 -----------
@@ -26,7 +26,7 @@ Exceptions
     :maxdepth: 2
     :glob:
 
-    exception_*_doc
+    ba_exception_*_doc
 
 
 Functions
@@ -36,12 +36,4 @@ Functions
     :maxdepth: 2
     :glob:
 
-    function_*_doc
-
-Modules
-----------------
-
-.. toctree::
-    :maxdepth: 2
-
-    module_*_doc
+    ba_function_*_doc

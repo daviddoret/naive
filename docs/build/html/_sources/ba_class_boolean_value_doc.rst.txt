@@ -7,3 +7,5 @@
     :members:
     :undoc-members:
     :show-inheritance:
+
+.. autodata:: BV

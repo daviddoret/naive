@@ -44,3 +44,4 @@ Modules
 .. toctree::
     :maxdepth: 2
 
+    module_*_doc

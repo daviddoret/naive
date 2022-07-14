@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Glyph &mdash; naive 1.1.3 documentation</title>
+  <title>VariableBaseName &mdash; naive 1.1.3 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
@@ -28,8 +28,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="PersistingRepresentable" href="class_persisting_representable_doc.html" />
-    <link rel="prev" title="Library" href="section_library_doc.html" /> 
+    <link rel="next" title="Variable" href="class_variable_doc.html" />
+    <link rel="prev" title="PersistingRepresentable" href="class_persisting_representable_doc.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -55,9 +55,9 @@
 <li class="toctree-l1"><a class="reference internal" href="section_installation_doc.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="section_library_doc.html">Library</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="section_library_doc.html#classes">Classes</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">Glyph</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="class_glyph_doc.html"><code class="docutils literal notranslate"><span class="pre">Glyph</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="class_persisting_representable_doc.html"><code class="docutils literal notranslate"><span class="pre">PersistingRepresentable</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="class_variable_base_name_doc.html"><code class="docutils literal notranslate"><span class="pre">VariableBaseName</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">VariableBaseName</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="class_variable_doc.html"><code class="docutils literal notranslate"><span class="pre">Variable</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="class_variable_indexes_doc.html"><code class="docutils literal notranslate"><span class="pre">VariableIndexes</span></code></a></li>
 </ul>
@@ -85,9 +85,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="section_library_doc.html">Library</a> &raquo;</li>
-      <li><code class="docutils literal notranslate"><span class="pre">Glyph</span></code></li>
+      <li><code class="docutils literal notranslate"><span class="pre">VariableBaseName</span></code></li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/class_glyph_doc.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/class_variable_base_name_doc.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -119,40 +119,40 @@
     text-align: unset;
 }
 </style>
-<section id="glyph">
-<h1><code class="docutils literal notranslate"><span class="pre">Glyph</span></code><a class="headerlink" href="#glyph" title="Permalink to this heading"></a></h1>
+<section id="variablebasename">
+<h1><code class="docutils literal notranslate"><span class="pre">VariableBaseName</span></code><a class="headerlink" href="#variablebasename" title="Permalink to this heading"></a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="naive.Glyph">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">naive.</span></span><span class="sig-name descname"><span class="pre">Glyph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/_class_glyph.html#Glyph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.Glyph" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="naive.VariableBaseName">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">naive.</span></span><span class="sig-name descname"><span class="pre">VariableBaseName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">representable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">CoercibleVariableBaseName</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/_class_variable_base_name.html#VariableBaseName"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.VariableBaseName" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="class_persisting_representable_doc.html#naive.PersistingRepresentable" title="_class_persisting_representable.PersistingRepresentable"><code class="xref py py-class docutils literal notranslate"><span class="pre">PersistingRepresentable</span></code></a></p>
-<p>A glyph is an elemental representation item.</p>
+<p>A variable base_name is the first component of a variable name.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="naive.Glyph.__abstractmethods__">
-<span class="sig-name descname"><span class="pre">__abstractmethods__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({})</span></em><a class="headerlink" href="#naive.Glyph.__abstractmethods__" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="naive.VariableBaseName.__abstractmethods__">
+<span class="sig-name descname"><span class="pre">__abstractmethods__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({})</span></em><a class="headerlink" href="#naive.VariableBaseName.__abstractmethods__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="naive.Glyph.__annotations__">
-<span class="sig-name descname"><span class="pre">__annotations__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#naive.Glyph.__annotations__" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="naive.VariableBaseName.__annotations__">
+<span class="sig-name descname"><span class="pre">__annotations__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#naive.VariableBaseName.__annotations__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="naive.Glyph.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/_class_glyph.html#Glyph.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.Glyph.__init__" title="Permalink to this definition"></a></dt>
-<dd><p>Initializes a Glyph object.</p>
+<dt class="sig sig-object py" id="naive.VariableBaseName.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">representable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">CoercibleVariableBaseName</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/_class_variable_base_name.html#VariableBaseName.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.VariableBaseName.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Initializes the object and stores its representations in available formats.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>*args</strong> – Variable length argument list.</p></li>
-<li><p><strong>**kwargs</strong> – Arbitrary keyword arguments.</p></li>
+<li><p><strong>args</strong> – N/A.</p></li>
+<li><p><strong>kwargs</strong> – Representation formats may be passed in kwargs (e.g. ascii=’phi’, latex=r’phi’).</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="naive.Glyph.__module__">
-<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'_class_glyph'</span></em><a class="headerlink" href="#naive.Glyph.__module__" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="naive.VariableBaseName.__module__">
+<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'_class_variable_base_name'</span></em><a class="headerlink" href="#naive.VariableBaseName.__module__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -163,8 +163,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="section_library_doc.html" class="btn btn-neutral float-left" title="Library" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="class_persisting_representable_doc.html" class="btn btn-neutral float-right" title="PersistingRepresentable" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="class_persisting_representable_doc.html" class="btn btn-neutral float-left" title="PersistingRepresentable" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="class_variable_doc.html" class="btn btn-neutral float-right" title="Variable" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

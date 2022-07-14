@@ -1,5 +1,5 @@
 from __future__ import annotations
-from _class_boolean_value import BooleanValue
+from _ba_class_boolean_value import BooleanValue
 from _function_coerce import coerce
 
 

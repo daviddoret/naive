@@ -30,8 +30,8 @@ from _class_variable import Variable
 from _class_variable_base_name import VariableBaseName, CoercibleVariableBaseName
 from _class_variable_indexes import VariableIndexes
 from _class_variable_exponent import VariableExponent
-from _class_boolean_value import BooleanValue, BV, CoercibleBooleanValue
-from _class_boolean_value_set import BooleanValueSet, boolean_values, bv
+# from _ba_class_boolean_value import BooleanValue, BV, CoercibleBooleanValue
+# from _ba_class_boolean_value_set import BooleanValueSet, boolean_values, bv
 from _class_well_known_domain import WellKnownDomain
 from _class_well_known_domain_set import WellKnownDomainSet, domains, d
 from _exception_naive_error import NaiveError
@@ -41,11 +41,13 @@ from _function_flatten import flatten
 from _function_represent import represent
 from _function_subscriptify import subscriptify
 from _function_superscriptify import superscriptify
-from _function_negation_b_b import negation_b_b, not_b_b
-from _function_disjunction_b2_b import disjunction_b2_b, or_b2_b
-from _function_conjunction_b2_b import conjunction_b2_b, and_b2_b
-from _function_material_equivalence_b2_b import material_equivalence_b2_b, iif_b2_b
-from _function_material_implication_b2_b import material_implication_b2_b, implies_b2_b
+# from _ba_function_negation_b_b import negation_b_b, not_b_b
+# from _ba_function_disjunction_b2_b import disjunction_b2_b, or_b2_b
+# from _ba_function_conjunction_b2_b import conjunction_b2_b, and_b2_b
+# from _ba_function_material_equivalence_b2_b import material_equivalence_b2_b, iif_b2_b
+# from _ba_function_material_implication_b2_b import material_implication_b2_b, implies_b2_b
+import boolean_algebra
+ba = boolean_algebra  # Use a reference for shorthand aliases to avoid duplicate copies of global variables.
 
 
 # NAIVE MODULE IMPORTATION

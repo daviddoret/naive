@@ -1,5 +1,5 @@
-from _class_boolean_value import BooleanValue
-from _class_boolean_value_set import bv
+from _ba_class_boolean_value import BooleanValue
+from _ba_class_boolean_value_set import bv
 from _function_coerce import coerce
 from _class_function import Function
 from _class_well_known_domain_set import d

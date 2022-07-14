@@ -2,7 +2,7 @@ from __future__ import annotations
 import typing
 
 from _class_persisting_representable import PersistingRepresentable, CoerciblePersistingRepresentable
-from _class_boolean_value import BooleanValue
+from _ba_class_boolean_value import BooleanValue
 from _abc_representable import ABCRepresentable
 from _function_coerce import coerce
 import glyphs
@@ -12,6 +12,12 @@ import log
 class BooleanValueSet:
     # TODO: Implement this as well as a dictionary.
     # TODO: Then, reuse that structure for NN0, NN1, etc.
+    # TODO: Implement this as a Domain
+    """
+
+    Bibliography:
+        * https://en.wikipedia.org/wiki/Boolean_domain
+    """
 
     def __init__(self):
         self._falsum = BooleanValue(False)
@@ -44,3 +50,8 @@ boolean_values = BooleanValueSet()
 
 bv = boolean_values
 """A shorthand alias for the set of boolean values."""
+
+truth = boolean_values.truth
+falsum = boolean_values.falsum
+t = boolean_values.t
+f = boolean_values.f

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>_class_boolean_value &mdash; naive 1.1.3 documentation</title>
+  <title>_ba_class_boolean_value &mdash; naive 1.1.3 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
@@ -69,7 +69,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="index.html">Module code</a> &raquo;</li>
-      <li>_class_boolean_value</li>
+      <li>_ba_class_boolean_value</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -78,7 +78,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for _class_boolean_value</h1><div class="highlight"><pre>
+  <h1>Source code for _ba_class_boolean_value</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 <span class="kn">import</span> <span class="nn">typing</span>
 
@@ -89,9 +89,9 @@
 <span class="kn">import</span> <span class="nn">log</span>
 
 
-<div class="viewcode-block" id="BooleanValue"><a class="viewcode-back" href="../class_boolean_value_doc.html#naive.BooleanValue">[docs]</a><span class="k">class</span> <span class="nc">BooleanValue</span><span class="p">(</span><span class="n">PersistingRepresentable</span><span class="p">):</span>
+<div class="viewcode-block" id="BooleanValue"><a class="viewcode-back" href="../ba_class_boolean_value_doc.html#naive.BooleanValue">[docs]</a><span class="k">class</span> <span class="nc">BooleanValue</span><span class="p">(</span><span class="n">PersistingRepresentable</span><span class="p">):</span>
 
-<div class="viewcode-block" id="BooleanValue.__new__"><a class="viewcode-back" href="../class_boolean_value_doc.html#naive.BooleanValue.__new__">[docs]</a>    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pythonic_value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<div class="viewcode-block" id="BooleanValue.__new__"><a class="viewcode-back" href="../ba_class_boolean_value_doc.html#naive.BooleanValue.__new__">[docs]</a>    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pythonic_value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
         <span class="n">pythonic_value</span> <span class="o">=</span> <span class="n">coerce</span><span class="p">(</span><span class="n">pythonic_value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Try to reuse the singleton if it was already initialized.</span>
@@ -103,14 +103,14 @@
             <span class="c1"># The singleton wasn&#39;t initialized, thus initialize it.</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">BooleanValue</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BooleanValue.__init__"><a class="viewcode-back" href="../class_boolean_value_doc.html#naive.BooleanValue.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pythonic_value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<div class="viewcode-block" id="BooleanValue.__init__"><a class="viewcode-back" href="../ba_class_boolean_value_doc.html#naive.BooleanValue.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pythonic_value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initializes the boolean value and stores its representations in available formats.        &quot;&quot;&quot;</span>
         <span class="n">pythonic_value</span> <span class="o">=</span> <span class="n">coerce</span><span class="p">(</span><span class="n">pythonic_value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inner_value</span> <span class="o">=</span> <span class="n">pythonic_value</span>
-        <span class="n">glyph</span> <span class="o">=</span> <span class="n">glyphs</span><span class="o">.</span><span class="n">standard_truth</span> <span class="k">if</span> <span class="n">pythonic_value</span> <span class="k">else</span> <span class="n">glyphs</span><span class="o">.</span><span class="n">standard_falsum</span>
+        <span class="n">glyph</span> <span class="o">=</span> <span class="n">glyphs</span><span class="o">.</span><span class="n">logical_truth</span> <span class="k">if</span> <span class="n">pythonic_value</span> <span class="k">else</span> <span class="n">glyphs</span><span class="o">.</span><span class="n">logical_falsum</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">glyph</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BooleanValue.__bool__"><a class="viewcode-back" href="../class_boolean_value_doc.html#naive.BooleanValue.__bool__">[docs]</a>    <span class="k">def</span> <span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BooleanValue.__bool__"><a class="viewcode-back" href="../ba_class_boolean_value_doc.html#naive.BooleanValue.__bool__">[docs]</a>    <span class="k">def</span> <span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Provides support for implicit and explicit (i.e. ``bool(x)``) conversions to **bool**.</span>
 
 <span class="sd">        Returns:</span>
@@ -118,7 +118,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_value</span></div>
 
-<div class="viewcode-block" id="BooleanValue.__eq__"><a class="viewcode-back" href="../class_boolean_value_doc.html#naive.BooleanValue.__eq__">[docs]</a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">CoercibleBooleanValue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="BooleanValue.__eq__"><a class="viewcode-back" href="../ba_class_boolean_value_doc.html#naive.BooleanValue.__eq__">[docs]</a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">CoercibleBooleanValue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Provides support for mathematical equality.</span>
 
 <span class="sd">        All python objects are implicitly convertible to bool,</span>
