@@ -1,7 +1,7 @@
 from _ba_class_boolean_value import BooleanValue
 from _ba_class_boolean_domain import b
 from _function_coerce import coerce
-from _class_function import Function
+from _ba_class_function import BooleanFunction
 import glyphs
 
 
@@ -21,10 +21,9 @@ def negation_algorithm(x: BooleanValue) -> BooleanValue:
         return b.truth
 
 
-negation = Function(
+negation = BooleanFunction(
     arity=1,
     domain=b,
-    codomain=b,
     algorithm=negation_algorithm,
     base_name=glyphs.logical_negation)
 """The negation boolean function.

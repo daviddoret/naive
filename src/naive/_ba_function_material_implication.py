@@ -2,7 +2,7 @@ from _ba_class_boolean_value import BooleanValue
 from _ba_class_boolean_domain import b
 from _ba_data_boolean_domain_2 import b_2
 from _function_coerce import coerce
-from _class_function import Function
+from _ba_class_function import BooleanFunction
 import glyphs
 
 
@@ -27,10 +27,9 @@ def material_implication_algorithm(x1: BooleanValue, x2: BooleanValue) -> Boolea
         return b.falsum
 
 
-material_implication = Function(
+material_implication = BooleanFunction(
     arity=2,
     domain=b_2,
-    codomain=b,
     algorithm=material_implication_algorithm,
     base_name=glyphs.logical_material_implication)
 
