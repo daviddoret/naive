@@ -8,6 +8,7 @@ from _abc_representable import ABCRepresentable
 from _function_coerce import coerce
 import glyphs
 import log
+import boolean_algebra
 
 
 class WellKnownDomainSet(Set):
@@ -20,8 +21,8 @@ class WellKnownDomainSet(Set):
     # TODO: Implement this as well as a dictionary.
 
     def __init__(self):
-        self._b = WellKnownDomain(glyphs.mathbb_b_uppercase)
-        self._b_2 = WellKnownDomain(glyphs.mathbb_b_uppercase, power=2, dimensions=2)
+        self._b = boolean_algebra.b  # WellKnownDomain(glyphs.mathbb_b_uppercase)
+        self._b_2 = boolean_algebra.b_2  # WellKnownDomain(glyphs.mathbb_b_uppercase, power=2, dimensions=2)
         self._n0 = WellKnownDomain(glyphs.mathbb_n_uppercase, 0)
         self._n1 = WellKnownDomain(glyphs.mathbb_n_uppercase, 1)
         self._z = WellKnownDomain(glyphs.mathbb_z_uppercase)

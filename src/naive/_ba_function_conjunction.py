@@ -1,8 +1,8 @@
 from _ba_class_boolean_value import BooleanValue
-from _ba_class_boolean_value_set import bv
+from _ba_class_boolean_domain import b
+from _ba_data_boolean_domain_2 import b_2
 from _function_coerce import coerce
 from _class_function import Function
-from _class_well_known_domain_set import d
 import glyphs
 
 
@@ -18,13 +18,13 @@ def conjunction_algorithm(x1: BooleanValue, x2: BooleanValue) -> BooleanValue:
     """
     x1 = coerce(x1, BooleanValue)
     x2 = coerce(x2, BooleanValue)
-    if x1 == bv.truth and x2 == bv.truth:
-        return bv.truth
+    if x1 == b.truth and x2 == b.truth:
+        return b.truth
     else:
-        return bv.falsum
+        return b.falsum
 
 
-conjunction = Function(d.b_2, d.b, conjunction_algorithm, glyphs.logical_conjunction)
+conjunction = Function(b_2, b, conjunction_algorithm, glyphs.logical_conjunction)
 
 
 land = conjunction

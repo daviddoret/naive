@@ -1,8 +1,7 @@
 from _ba_class_boolean_value import BooleanValue
-from _ba_class_boolean_value_set import bv
+from _ba_class_boolean_domain import b
 from _function_coerce import coerce
 from _class_function import Function
-from _class_well_known_domain_set import d
 import glyphs
 
 
@@ -16,13 +15,13 @@ def negation_algorithm(x: BooleanValue) -> BooleanValue:
         BooleanValue: The negation of **x**.
     """
     x = coerce(x, BooleanValue)
-    if x == bv.truth:
-        return bv.falsum
+    if x == b.truth:
+        return b.falsum
     else:
-        return bv.truth
+        return b.truth
 
 
-negation = Function(d.b, d.b, negation_algorithm, glyphs.logical_negation)
+negation = Function(b, b, negation_algorithm, glyphs.logical_negation)
 """The negation boolean function.
 
 Args:

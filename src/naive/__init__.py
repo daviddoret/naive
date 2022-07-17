@@ -31,7 +31,7 @@ from _class_variable_base_name import VariableBaseName, CoercibleVariableBaseNam
 from _class_variable_indexes import VariableIndexes
 from _class_variable_exponent import VariableExponent
 # from _ba_class_boolean_value import BooleanValue, BV, CoercibleBooleanValue
-# from _ba_class_boolean_value_set import BooleanValueSet, boolean_values, bv
+# from _ba_class_boolean_value_set import BooleanDomain, boolean_domain, b
 from _class_well_known_domain import WellKnownDomain
 from _class_well_known_domain_set import WellKnownDomainSet, domains, d
 from _exception_naive_error import NaiveError

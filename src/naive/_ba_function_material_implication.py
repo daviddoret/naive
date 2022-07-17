@@ -1,8 +1,8 @@
 from _ba_class_boolean_value import BooleanValue
-from _ba_class_boolean_value_set import bv
+from _ba_class_boolean_domain import b
+from _ba_data_boolean_domain_2 import b_2
 from _function_coerce import coerce
 from _class_function import Function
-from _class_well_known_domain_set import d
 import glyphs
 
 
@@ -21,13 +21,13 @@ def material_implication_algorithm(x1: BooleanValue, x2: BooleanValue) -> Boolea
     """
     x1 = coerce(x1, BooleanValue)
     x2 = coerce(x2, BooleanValue)
-    if x1 == bv.falsum or (x1 == bv.truth and x2 == bv.truth):
-        return bv.truth
+    if x1 == b.falsum or (x1 == b.truth and x2 == b.truth):
+        return b.truth
     else:
-        return bv.falsum
+        return b.falsum
 
 
-material_implication = Function(d.b_2, d.b, material_implication_algorithm, glyphs.logical_material_implication)
+material_implication = Function(b_2, b, material_implication_algorithm, glyphs.logical_material_implication)
 
 
 implies = material_implication
