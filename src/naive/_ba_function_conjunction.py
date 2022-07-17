@@ -24,8 +24,12 @@ def conjunction_algorithm(x1: BooleanValue, x2: BooleanValue) -> BooleanValue:
         return b.falsum
 
 
-conjunction = Function(b_2, b, conjunction_algorithm, glyphs.logical_conjunction)
-
+conjunction = Function(
+    arity=2,
+    domain=b_2,
+    codomain=b,
+    algorithm=conjunction_algorithm,
+    base_name=glyphs.logical_conjunction)
 
 land = conjunction
 """An alias for **conjunction**. 'and' being a reserved word in python, the name 'land' is used instead."""

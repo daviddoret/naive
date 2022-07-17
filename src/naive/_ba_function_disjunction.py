@@ -24,8 +24,12 @@ def disjunction_algorithm(x1: BooleanValue, x2: BooleanValue) -> BooleanValue:
         return b.falsum
 
 
-disjunction = Function(b_2, b, disjunction_algorithm, glyphs.logical_disjunction)
-
+disjunction = Function(
+    arity=2,
+    domain=b_2,
+    codomain=b,
+    algorithm=disjunction_algorithm,
+    base_name=glyphs.logical_disjunction)
 
 lor = disjunction
 """An alias for **disjunction**. 'or' being a reserved word in python, the name 'lor' is used instead."""

@@ -9,6 +9,7 @@ from _function_coerce import coerce
 import glyphs
 import log
 import boolean_algebra
+import keywords
 
 
 class WellKnownDomainSet(Set):
@@ -20,12 +21,14 @@ class WellKnownDomainSet(Set):
     """
     # TODO: Implement this as well as a dictionary.
 
-    def __init__(self):
+    def __init__(self, **kwargs):
+        kwargs[keywords.set_dimensions] = 1  # Forces the set dimensions property.
+        super().__init__(**kwargs)
         self._b = boolean_algebra.b  # WellKnownDomain(glyphs.mathbb_b_uppercase)
-        self._b_2 = boolean_algebra.b_2  # WellKnownDomain(glyphs.mathbb_b_uppercase, power=2, dimensions=2)
-        self._n0 = WellKnownDomain(glyphs.mathbb_n_uppercase, 0)
-        self._n1 = WellKnownDomain(glyphs.mathbb_n_uppercase, 1)
-        self._z = WellKnownDomain(glyphs.mathbb_z_uppercase)
+        self._b_2 = boolean_algebra.b_2  # WellKnownDomain(glyphs.mathbb_b_uppercase, exponent=2, dimensions=2)
+        self._n0 = WellKnownDomain(base_name=glyphs.mathbb_n_uppercase, indexes=0, dimensions=1)
+        self._n1 = WellKnownDomain(base_name=glyphs.mathbb_n_uppercase, indexes=1, dimensions=1)
+        self._z = WellKnownDomain(base_name=glyphs.mathbb_z_uppercase, dimensions=1)
 
     @property
     def b(self):

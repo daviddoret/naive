@@ -27,7 +27,11 @@ def material_equivalence_algorithm(x1: BooleanValue, x2: BooleanValue) -> Boolea
         return b.falsum
 
 
-material_equivalence = Function(b_2, b, material_equivalence_algorithm, glyphs.logical_material_equivalence)
-
+material_equivalence = Function(
+    arity=2,
+    domain=b_2,
+    codomain=b,
+    algorithm=material_equivalence_algorithm,
+    base_name=glyphs.logical_material_equivalence)
 
 iif = material_equivalence

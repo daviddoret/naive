@@ -2,31 +2,43 @@ from __future__ import annotations
 import typing
 from _abc_representable import ABCRepresentable
 import rformats
+import keywords
+from _function_coerce_from_kwargs import coerce_from_kwargs
+from _function_coerce import coerce
 
 
 class PersistingRepresentable(ABCRepresentable):
-    """A helper class for objects that support representation in multiple formats by storing representations in object properties."""
+    """A helper class for objects that support representation in multiple formats by storing representations in
+    object properties."""
 
-    def __init__(self, representable: (None, CoerciblePersistingRepresentable) = None, *args, **kwargs):
+    def __init__(self, source=None, source_representable=None, source_string=None, **kwargs):
         """Initializes the object and stores its representations in available formats.
 
-        Args:
-            args: N/A.
-            kwargs: Representation formats may be passed in kwargs (e.g. ascii='phi', latex=r'\phi').
+        Kwargs:
+            source_representable (ABCRepresentable): A source source_representable object whose representation should be imitated.
+            source_string (source_string): A source object that may be converted to **source_string** to get a UTF-8 representation.
+            ...: Representation formats may be passed in kwargs (e.g. ascii='phi', latex=r'\phi').
         """
+        if source is not None:
+            # Support for implicit conversion during type coercion.
+            if isinstance(source, ABCRepresentable):
+                source_representable = source
+            else:
+                source_string = str(source)
+
+        source_representable = coerce(source_representable, ABCRepresentable)
+        source_string = coerce(source_string, str)
+
         self._representations = {}
 
-        super().__init__(*args, **kwargs)
-
-        if isinstance(representable, ABCRepresentable):
+        if source_representable is not None:
             # If a PersistingRepresentable object was passed as argument,
             # imitate this object's representations.
-            self.imitate(representable)
-        elif representable is not None:
+            self.imitate(source_representable)
+        elif source_string is not None:
             # Otherwise, we must assume it was a string or other
             # string-like Unicode representation.
-            representable = str(representable)
-            self._representations[rformats.UTF8] = representable
+            self._representations[rformats.UTF8] = source_string
 
         # If representations are provided in specific formats,
         # store these representations.
@@ -38,6 +50,8 @@ class PersistingRepresentable(ABCRepresentable):
                     # TODO: In future development, if images or other media are supported, reconsider this.
                     arg_value = str(arg_value)
                 self._representations[arg_key] = arg_value
+
+        super().__init__(**kwargs)
 
     def represent(self, rformat: str = None, *args, **kwargs) -> str:
         """Get the object's representation in a supported format.
@@ -71,8 +85,7 @@ class PersistingRepresentable(ABCRepresentable):
 CoerciblePersistingRepresentable = typing.TypeVar(
     'CoerciblePersistingRepresentable',
     ABCRepresentable,
-    bytes, # Support for raw ASCII strings.
+    bytes,  # Support for raw ASCII strings.
     PersistingRepresentable,
     str
 )
-

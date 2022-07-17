@@ -1,3 +1,4 @@
+import keywords
 from _class_variable import Variable
 from _class_variable_base_name import VariableBaseName
 from _class_variable_indexes import VariableIndexes
@@ -6,7 +7,7 @@ from _class_set import Set
 from _function_coerce import coerce
 
 
-class WellKnownDomain(Variable, Set):
+class WellKnownDomain(Set, Variable):
     """A predefined variable that represents a well-defined set and (co)domain.
 
     Sample use cases:
@@ -21,9 +22,21 @@ class WellKnownDomain(Variable, Set):
         * Inherit from Set.
     """
 
-    def __init__(self, base_name: VariableBaseName, *args, power=None, dimensions=None):
+    def __init__(self, base_name: VariableBaseName, exponent: VariableExponent = None, indexes: VariableIndexes = None,
+                 dimensions=None, **kwargs):
+        # Type coercion.
+        base_name = coerce(base_name, VariableBaseName)
+        exponent = coerce(exponent, VariableExponent)
+        indexes = coerce(indexes, VariableIndexes)
+        dimensions = coerce(dimensions, int)
+
+        # Update kwargs to transmit arguments to parent constructors.
+        kwargs[keywords.variable_base_name] = base_name
+        kwargs[keywords.variable_exponent] = exponent
+        kwargs[keywords.variable_indexes] = indexes
+        kwargs[keywords.set_dimensions] = dimensions
+
         # Bibliography:
         #   * https://stackoverflow.com/questions/9575409/calling-parent-class-init-with-multiple-inheritance-whats-the-right-way
-        super().__init__(base_name, *args, power=power, dimensions=dimensions)
-        super(Variable, self).__init__(base_name, *args, power=power, dimensions=dimensions)
-
+        super().__init__(**kwargs)
+        super(Set, self).__init__(**kwargs)

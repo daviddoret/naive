@@ -9,6 +9,7 @@ from _class_well_known_domain import WellKnownDomain
 from _class_variable import Variable,VariableIndexes,VariableExponent,VariableBaseName
 import glyphs
 import log
+import keywords
 
 
 class BooleanDomain(WellKnownDomain):
@@ -19,9 +20,13 @@ class BooleanDomain(WellKnownDomain):
         * https://en.wikipedia.org/wiki/Boolean_domain
     """
 
-    def __init__(self):
-        variable_base_name = glyphs.mathbb_b_uppercase
-        super().__init__(base_name=variable_base_name)
+    def __init__(self, **kwargs):
+        """Initializes a Boolean domain."""
+        kwargs[keywords.variable_base_name] = glyphs.mathbb_b_uppercase
+        kwargs[keywords.variable_exponent] = None
+        kwargs[keywords.variable_indexes] = None
+        kwargs[keywords.set_dimensions] = 1
+        super().__init__(**kwargs)
         self._falsum = BooleanValue(False)
         self._truth = BooleanValue(True)
 
@@ -49,8 +54,11 @@ class BooleanDomain(WellKnownDomain):
 boolean_domain = BooleanDomain()
 """The Boolean domain is the set consisting of exactly two elements whose interpretations include false and true.
 
+The Boolean domain is a partially ordered set and its elements are also its bounds.
+
 Bibliography:
     * https://en.wikipedia.org/wiki/Boolean_domain
+    * https://en.wikipedia.org/wiki/Two-element_Boolean_algebra
 """
 
 

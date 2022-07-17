@@ -27,7 +27,11 @@ def material_implication_algorithm(x1: BooleanValue, x2: BooleanValue) -> Boolea
         return b.falsum
 
 
-material_implication = Function(b_2, b, material_implication_algorithm, glyphs.logical_material_implication)
-
+material_implication = Function(
+    arity=2,
+    domain=b_2,
+    codomain=b,
+    algorithm=material_implication_algorithm,
+    base_name=glyphs.logical_material_implication)
 
 implies = material_implication

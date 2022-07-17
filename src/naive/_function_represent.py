@@ -7,7 +7,7 @@ def represent(o: object, rformat: str = None, *args, **kwargs) -> str:
 
     If **representation** is None, return an empty string.
     Else if **representation** is ABCRepresentable, return **representation**.get_representation().
-    Else, return str(**representation**).
+    Else, return source_string(**representation**).
 
     Args:
         o (object): The object to be represented.

@@ -5,7 +5,9 @@ from _exception_naive_error import NaiveError
 from _exception_naive_warning import NaiveWarning
 
 
-def coerce(o: (None, object), cls: type) -> (None, object):
+def coerce(
+        o: (None, object),
+        cls: type) -> (None, object):
     """Coerces an object **representation** to type **cls**.
 
     This function is useful to implement single line argument type coercion for the validation of arguments in functions and methods.
@@ -49,10 +51,13 @@ def coerce(o: (None, object), cls: type) -> (None, object):
         return None
     elif isinstance(o, cls):
         # The object is already of the expected type.
+        # Return the object itself.
         return o
     else:
         # The object is not of the expected type,
-        # we must attempt to force its conversion.
+        # we must attempt to force its conversion,
+        # by calling the constructor of the desired type,
+        # passing it the source object.
         try:
             coerced_o = cls(o)
         except Exception as e:

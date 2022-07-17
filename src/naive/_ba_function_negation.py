@@ -21,7 +21,12 @@ def negation_algorithm(x: BooleanValue) -> BooleanValue:
         return b.truth
 
 
-negation = Function(b, b, negation_algorithm, glyphs.logical_negation)
+negation = Function(
+    arity=1,
+    domain=b,
+    codomain=b,
+    algorithm=negation_algorithm,
+    base_name=glyphs.logical_negation)
 """The negation boolean function.
 
 Args:

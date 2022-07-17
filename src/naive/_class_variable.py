@@ -6,7 +6,10 @@ from _function_represent import represent
 from _function_coerce import coerce
 from _function_coerce_from_kwargs import coerce_from_kwargs
 from _function_flatten import flatten
+from _function_superscriptify import superscriptify
+from _function_subscriptify import subscriptify
 import rformats
+import keywords
 
 
 class Variable(ABCRepresentable):
@@ -20,21 +23,37 @@ class Variable(ABCRepresentable):
 
     def __init__(
             self,
-            base_name: CoercibleVariableBaseName,
-            *args,
-            indexes=None,
-            power: VariableExponent = None,
+            #source = None,
+            base_name: CoercibleVariableBaseName = None,
+            indexes: VariableIndexes = None,
+            exponent: VariableExponent = None,
             **kwargs):
         """Initializes a variable.
 
-        Args:
+        Kwargs:
             base_name (VariableBaseName): The variable base_name (cf. class :class:´VariableBase´).
-            *args: Variable length list of index elements (cf. class :class:´VariableIndexes´).
+            indexes: The variable indexes if it has any (cf. class :class:´VariableIndexes´).
+            exponent: The variable exponent it it has one (cf. class :class:´VariableExponent´).
         """
-        self._base_name = coerce(base_name, VariableBaseName)
-        self._indexes = coerce((*args, indexes), VariableIndexes)
-        self._exponent = coerce(power, VariableExponent)
-        super().__init__(base_name, *args, indexes, power, **kwargs)
+
+        ## Implicit coercion from source argument.
+        #if source is not None:
+        #    if isinstance(source, str):
+        #        base_name = source  # This is subsequently coerced to VariableBaseName.
+        #        # TODO: Enrich this constructor to split indexes from XYZ123
+        #    # TODO: Add a constructor that copies a Variable object.
+
+        # Type coercion.
+        base_name = coerce(base_name, VariableBaseName)
+        indexes = coerce(indexes, VariableIndexes)
+        exponent = coerce(exponent, VariableExponent)
+
+        # Set properties.
+        self._base_name = base_name
+        self._indexes = indexes
+        self._exponent = exponent
+
+        super().__init__(**kwargs)
 
     @property
     def base_name(self) -> VariableBaseName:
@@ -46,12 +65,12 @@ class Variable(ABCRepresentable):
 
     @property
     def exponent(self) -> VariableExponent:
-        """(Conditional) The variable exponent.
+        """The variable exponent.
 
         This property provides support for n-ary cartesian cross products.
 
         Returns:
-            VariableExponent: The variable exponent.
+            (None, VariableExponent): The variable exponent.
         """
         return self._exponent
 
@@ -59,6 +78,6 @@ class Variable(ABCRepresentable):
         if rformat is None:
             rformat = rformats.DEFAULT
         # TODO: Minor bug: only digits are currently supported by subscript().
-        return represent(self._base_name, rformat) + \
-               represent(self._indexes, rformat) + \
-               represent(self._exponent, rformat)
+        return represent(self.base_name, rformat) + \
+               subscriptify(represent(self._indexes, rformat), rformat) + \
+               superscriptify(represent(self._exponent, rformat), rformat)

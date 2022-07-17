@@ -29,7 +29,7 @@ def superscriptify(representation: str, rformat: str = None) -> str:
 
     """
     representation = coerce(representation, str)
-    if representation is None:
+    if representation is None or representation == '':
         return ''
     if rformat is None:
         rformat = rformats.DEFAULT
