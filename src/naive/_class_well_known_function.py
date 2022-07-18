@@ -1,13 +1,5 @@
 from __future__ import annotations
-import typing
-
-from _class_well_known_domain_set import d
-from _class_function import Function
 from _class_set import Set
-from _function_coerce import coerce
-from _ba1_function_negation import negation
-import glyphs
-import log
 
 
 class WellKnownFunctionSet(Set):

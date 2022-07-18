@@ -1,14 +1,11 @@
-from _ba1_class_boolean_value import BooleanValue
-from _ba1_class_boolean_domain import b
-from _ba1_data_boolean_domain_2 import b_2
 from _function_coerce import coerce
-from _ba1_class_boolean_function import BooleanFunction
 import glyphs
+import boolean_algebra_1 as ba1
 
 # TODO: Create a BA2 enriched with all non-primary boolean functions.
 
 
-def material_equivalence_algorithm(x1: BooleanValue, x2: BooleanValue) -> BooleanValue:
+def material_equivalence_algorithm(x1: ba1.BooleanValue, x2: ba1.BooleanValue) -> ba1.BooleanValue:
     """The material equivalence boolean function.
 
     Bibliography:
@@ -21,17 +18,17 @@ def material_equivalence_algorithm(x1: BooleanValue, x2: BooleanValue) -> Boolea
     Returns:
         BooleanValue: The material_equivalence of **x1** and **x2**.
     """
-    x1 = coerce(x1, BooleanValue)
-    x2 = coerce(x2, BooleanValue)
+    x1 = coerce(x1, ba1.BooleanValue)
+    x2 = coerce(x2, ba1.BooleanValue)
     if x1 == x2:
-        return b.truth
+        return ba1.truth
     else:
-        return b.falsum
+        return ba1.falsum
 
 
-material_equivalence = BooleanFunction(
+material_equivalence = ba1.BooleanFunction(
     arity=2,
-    domain=b_2,
+    domain=ba1.b_2,
     algorithm=material_equivalence_algorithm,
     base_name=glyphs.logical_material_equivalence)
 

@@ -1,12 +1,10 @@
-from _ba1_class_boolean_value import BooleanValue
-from _ba1_class_boolean_domain import b
-from _ba1_data_boolean_domain_2 import b_2
 from _function_coerce import coerce
-from _ba1_class_boolean_function import BooleanFunction
 import glyphs
+import boolean_algebra_1 as ba1
 
+# TODO: Create a BA2 enriched with all non-primary boolean functions.
 
-def material_implication_algorithm(x1: BooleanValue, x2: BooleanValue) -> BooleanValue:
+def material_implication_algorithm(x1: ba1.BooleanValue, x2: ba1.BooleanValue) -> ba1.BooleanValue:
     """The material implication boolean function.
 
     Bibliography:
@@ -19,17 +17,17 @@ def material_implication_algorithm(x1: BooleanValue, x2: BooleanValue) -> Boolea
     Returns:
         BooleanValue: The material_implication of **x1** and **x2**.
     """
-    x1 = coerce(x1, BooleanValue)
-    x2 = coerce(x2, BooleanValue)
-    if x1 == b.falsum or (x1 == b.truth and x2 == b.truth):
-        return b.truth
+    x1 = coerce(x1, ba1.BooleanValue)
+    x2 = coerce(x2, ba1.BooleanValue)
+    if x1 == ba1.falsum or (x1 == ba1.truth and x2 == ba1.truth):
+        return ba1.truth
     else:
-        return b.falsum
+        return ba1.falsum
 
 
-material_implication = BooleanFunction(
+material_implication = ba1.BooleanFunction(
     arity=2,
-    domain=b_2,
+    domain=ba1.b_2,
     algorithm=material_implication_algorithm,
     base_name=glyphs.logical_material_implication)
 
