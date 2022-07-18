@@ -30,8 +30,6 @@ from _class_variable import Variable
 from _class_variable_base_name import VariableBaseName, CoercibleVariableBaseName
 from _class_variable_indexes import VariableIndexes
 from _class_variable_exponent import VariableExponent
-# from _ba_class_boolean_value import BooleanValue, BV, CoercibleBooleanValue
-# from _ba_class_boolean_value_set import BooleanDomain, boolean_domain, b
 from _class_well_known_domain import WellKnownDomain
 from _class_well_known_domain_set import WellKnownDomainSet, domains, d
 from _exception_naive_error import NaiveError
@@ -41,13 +39,8 @@ from _function_flatten import flatten
 from _function_represent import represent
 from _function_subscriptify import subscriptify
 from _function_superscriptify import superscriptify
-# from _ba_function_negation_b_b import negation, lnot
-# from _ba_function_disjunction import disjunction, or
-# from _ba_function_conjunction import conjunction, and
-# from _ba_function_material_equivalence import material_equivalence, iif
-# from _ba_function_material_implication import material_implication, implies
-import boolean_algebra
-ba = boolean_algebra  # Use a reference for shorthand aliases to avoid duplicate copies of global variables.
+import boolean_algebra_1
+ba1 = boolean_algebra_1  # Use a reference for shorthand aliases to avoid duplicate copies of global variables.
 
 
 # NAIVE MODULE IMPORTATION

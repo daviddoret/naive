@@ -1,0 +1,7 @@
+import _ba1_function_truth
+import _ba1_function_falsum
+import _ba1_function_negation
+import _ba1_function_conjunction
+import _ba1_function_disjunction
+
+

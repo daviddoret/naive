@@ -4,10 +4,10 @@ import src.naive as naive
 
 class Test(TestCase):
     def test_material_implication_b_b(self):
-        print(naive.ba.implies.represent_declaration())
-        self.assertTrue(naive.ba.implies(naive.ba.falsum, naive.ba.falsum))
-        self.assertFalse(naive.ba.implies(naive.ba.truth, naive.ba.falsum))
-        self.assertTrue(naive.ba.implies(naive.ba.falsum, naive.ba.truth))
-        self.assertTrue(naive.ba.implies(naive.ba.truth, naive.ba.truth))
-        self.assertTrue(isinstance(naive.ba.implies.represent(), str))
-        self.assertTrue(isinstance(naive.ba.implies.represent_declaration(), str))
+        print(naive.ba1.implies.represent_declaration())
+        self.assertTrue(naive.ba1.implies(naive.ba1.falsum, naive.ba1.falsum))
+        self.assertFalse(naive.ba1.implies(naive.ba1.truth, naive.ba1.falsum))
+        self.assertTrue(naive.ba1.implies(naive.ba1.falsum, naive.ba1.truth))
+        self.assertTrue(naive.ba1.implies(naive.ba1.truth, naive.ba1.truth))
+        self.assertTrue(isinstance(naive.ba1.implies.represent(), str))
+        self.assertTrue(isinstance(naive.ba1.implies.represent_declaration(), str))

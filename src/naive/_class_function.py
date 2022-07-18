@@ -47,14 +47,14 @@ class Function(ABCRepresentable):
         """
         arity = coerce(arity, int)
         if arity < 0:
-            log.error('The arity of a function cannot be negative.')
+            log.error('The arity of a function cannot be negative.', arity=arity)
         domain = coerce(domain, Set)
         if domain is None:
             if arity != 0:
                 log.error('If the function has no domain, it must be a constant function with arity 0.')
         else:
             if domain.dimensions != arity:
-                log.error('The arity of a function must be consistent with the dimensions of its domain.')
+                log.error('The arity of a function must be consistent with the dimensions of its domain.', arity=arity, domain=domain)
         self._arity = arity
         self._domain = domain
         self._codomain = coerce(codomain, Set)

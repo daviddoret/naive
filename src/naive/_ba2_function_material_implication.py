@@ -1,8 +1,8 @@
-from _ba_class_boolean_value import BooleanValue
-from _ba_class_boolean_domain import b
-from _ba_data_boolean_domain_2 import b_2
+from _ba1_class_boolean_value import BooleanValue
+from _ba1_class_boolean_domain import b
+from _ba1_data_boolean_domain_2 import b_2
 from _function_coerce import coerce
-from _ba_class_function import BooleanFunction
+from _ba1_class_boolean_function import BooleanFunction
 import glyphs
 
 

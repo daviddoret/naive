@@ -7,4 +7,6 @@ rformat = 'rformat'
 representable = 'source_representable'
 str = 'source_string'  # To distinguish objects whose sole representation is __str__.
 glyph = 'glyph'
+variable_domain = 'domain'
+variable_codomain = 'codomain'
 
