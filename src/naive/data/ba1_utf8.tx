@@ -1,0 +1,27 @@
+BooleanAlgebra1:
+    Formula
+;
+
+Formula:
+    FunctionFormula | OperatorFormula | AtomicVariable
+;
+
+FunctionFormula:
+    FunctionName '(' (FunctionArgument (',' FunctionArgument)* ) ')'
+;
+
+FunctionName:
+    Truth | Falsum | Negation | Conjunction | Disjunction
+;
+
+Truth:
+    '⊤' | '1' | 'true' | 'True' | 'Truth'
+;
+
+Negation:
+    name = /[^,]*/
+;
+
+Variable:
+
+;

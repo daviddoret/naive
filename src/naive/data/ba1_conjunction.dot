@@ -1,0 +1,32 @@
+
+    digraph textX {
+    fontname = "Bitstream Vera Sans"
+    fontsize = 8
+    node[
+        shape=record,
+        style=filled,
+        fillcolor=aliceblue
+    ]
+    nodesep = 0.3
+    edge[dir=black,arrowtail=empty]
+
+
+
+
+match_rules [ shape=plaintext, label=< <table>
+	<tr>
+		<td><b>AtomicVariable</b></td><td>Variable</td>
+	</tr>
+	<tr>
+		<td><b>Conjunction</b></td><td>Variable ConjunctionOperator Variable</td>
+	</tr>
+	<tr>
+		<td><b>ConjunctionOperator</b></td><td>∧|and|land</td>
+	</tr>
+	<tr>
+		<td><b>Variable</b></td><td>[\w,\⊥,\⊤]+</td>
+	</tr>
+</table> >]
+
+
+}

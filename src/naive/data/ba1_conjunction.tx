@@ -1,0 +1,18 @@
+ConjunctionFormula:
+    arguments+=AtomicVariable symbol=ConjunctionOperator arguments+=AtomicVariable
+;
+
+ConjunctionOperator:
+    '∧' | 'and' | 'land'
+;
+
+/*
+TODO: Split this into VariableBaseName, VariableExponent and VariableIndexes
+References:
+- https://stackoverflow.com/questions/5555613/does-w-match-all-alphanumeric-characters-defined-in-the-unicode-standard
+*/
+
+AtomicVariable:
+    /[\w,\⊥,\⊤]+/
+;
+
