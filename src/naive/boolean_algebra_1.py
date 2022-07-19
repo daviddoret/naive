@@ -418,24 +418,30 @@ class BooleanConstant(BooleanFunction):
     def __init__(
             self,
             source=None,
-            pythonic_value: bool = None,
+            inner_bool_value: bool = None,
             algorithm: typing.Callable = None,
             base_name: FunctionBaseName = None,
             **kwargs):
         """Initializes a Boolean value."""
         global _falsum_initialized
         global _truth_initialized
-        #log.debug('__init__', source=source, pythonic_value=pythonic_value, base_name=base_name, kwargs=kwargs)
-        #if source is not None:
-        #    log.debug('Bypassing __init__ logic on singletons')
+        if not hasattr(self, '_inner_bool_value'):
+            # TODO: I needed to add this to prevent the following warning from Sphinx auto-documentation:
+            #  WARNING: error while formatting signature for naive.boolean_algebra_1.falsum:
+            #  Handler <function record_typehints at 0x000002AADAEBC5E0>
+            #  for event 'autodoc-process-signature' threw an exception
+            #  (exception: 'BooleanConstant' object has no attribute '_inner_bool_value')
+            #  I guess Sphinx instanciates an object but I don't understand why and
+            #  how to manage singletons in this situation.
+            self._inner_bool_value = None
         if source is None:
-            #log.debug('Singleton initialization')
+            # Singleton constructor
             arity = 0
             domain = None  # TODO: Question: use a representation of the empty set instead?
-            if pythonic_value is None:
+            if inner_bool_value is None:
                 log.error(f'Argument pythonic_value is mandatory.')
-            self._pythonic_value = pythonic_value
-            if pythonic_value:
+            self._inner_bool_value = inner_bool_value
+            if inner_bool_value:
                 _truth_initialized = True
             else:
                 _falsum_initialized = True
@@ -452,11 +458,11 @@ class BooleanConstant(BooleanFunction):
         Returns:
             bool: the canonic mapping of :class:`BooleanConstant` with the pythonic **bool** type.
         """
-        return self._pythonic_value
+        return self._inner_bool_value
 
     def __int__(self):
         """Canonical conversion with **int**."""
-        if self._pythonic_value:
+        if self._inner_bool_value:
             return int(1)
         else:
             return int(0)
@@ -475,7 +481,7 @@ class BooleanConstant(BooleanFunction):
             bool: The truth value of the equality operator.
         """
         other = coerce(other, BooleanConstant)  # Assure an exception is raised if the type is not supported.
-        result = self._pythonic_value == bool(other)  # Explicit conversion is superfluous but clearer
+        result = self._inner_bool_value == bool(other)  # Explicit conversion is superfluous but clearer
         return result
 
 
@@ -553,7 +559,7 @@ lnot = negation
 """An alias for **negation**. 'not' being a reserved word in python, the name 'lnot' is used instead."""
 
 truth = BooleanConstant(
-    pythonic_value=True,
+    inner_bool_value=True,
     algorithm=truth_algorithm,
     base_name=glyphs.logical_truth)
 """The truth boolean function.
@@ -569,7 +575,7 @@ t = truth
 """An shorthand alias for **truth**."""
 
 falsum = BooleanConstant(
-    pythonic_value=False,
+    inner_bool_value=False,
     algorithm=falsum_algorithm,
     base_name=glyphs.logical_falsum)
 """The falsum boolean function.

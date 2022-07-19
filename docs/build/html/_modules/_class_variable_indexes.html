@@ -51,7 +51,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../section_installation_doc.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_base_doc.html">Library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module_boolean_algebra_doc.html">The Boolean Algebra Module (<strong>boolean_algebra</strong>, aka <strong>ba</strong>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_boolean_algebra_1_doc.html">The Boolean Algebra Module (<strong>boolean_algebra_1</strong>, aka <strong>ba1</strong>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../section_samples_doc.html">Samples</a></li>
 </ul>
 
@@ -85,17 +85,21 @@
 <span class="kn">from</span> <span class="nn">_function_represent</span> <span class="kn">import</span> <span class="n">represent</span>
 <span class="kn">from</span> <span class="nn">_function_subscriptify</span> <span class="kn">import</span> <span class="n">subscriptify</span>
 <span class="kn">from</span> <span class="nn">_function_flatten</span> <span class="kn">import</span> <span class="n">flatten</span>
+<span class="kn">from</span> <span class="nn">_function_coerce_from_kwargs</span> <span class="kn">import</span> <span class="n">coerce_from_kwargs</span>
+<span class="kn">from</span> <span class="nn">_function_coerce</span> <span class="kn">import</span> <span class="n">coerce</span>
 <span class="kn">import</span> <span class="nn">notation</span>
+<span class="kn">import</span> <span class="nn">keywords</span>
 
 
 <div class="viewcode-block" id="VariableIndexes"><a class="viewcode-back" href="../base_class_variable_indexes_doc.html#naive.VariableIndexes">[docs]</a><span class="k">class</span> <span class="nc">VariableIndexes</span><span class="p">(</span><span class="n">ABCRepresentable</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The set of indexes that uniquely identify a variable base_name name within its scope.&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="VariableIndexes.__init__"><a class="viewcode-back" href="../base_class_variable_indexes_doc.html#naive.VariableIndexes.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">indexes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="VariableIndexes.__init__"><a class="viewcode-back" href="../base_class_variable_indexes_doc.html#naive.VariableIndexes.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">indexes</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">keywords</span><span class="o">.</span><span class="n">variable_indexes</span><span class="p">)</span> <span class="k">if</span> <span class="n">keywords</span><span class="o">.</span><span class="n">variable_indexes</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_indexes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">indexes</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">flatten</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="n">indexes</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">indexes</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">indexes</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indexes</span><span class="p">:</span>
                 <span class="c1"># TODO: Implement type Index and check it with isinstance(). It was temporarily implemented here as strings.</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_indexes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
@@ -104,11 +108,14 @@
 <div class="viewcode-block" id="VariableIndexes.__iter__"><a class="viewcode-back" href="../base_class_variable_indexes_doc.html#naive.VariableIndexes.__iter__">[docs]</a>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indexes</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="VariableIndexes.represent"><a class="viewcode-back" href="../base_class_variable_indexes_doc.html#naive.VariableIndexes.represent">[docs]</a>    <span class="k">def</span> <span class="nf">represent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">subscriptify</span><span class="p">(</span>
-            <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indexes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">notation</span><span class="o">.</span><span class="n">VARIABLE_INDEXES_SEPARATOR</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">represent</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">rformat</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indexes</span><span class="p">])</span>
-                <span class="p">,</span><span class="n">rformat</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="VariableIndexes.represent"><a class="viewcode-back" href="../base_class_variable_indexes_doc.html#naive.VariableIndexes.represent">[docs]</a>    <span class="k">def</span> <span class="nf">represent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">rformat</span> <span class="o">=</span> <span class="n">coerce</span><span class="p">(</span><span class="n">rformat</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="c1">#return subscriptify(</span>
+        <span class="c1">#    &#39;&#39; if self._indexes is None else notation.VARIABLE_INDEXES_SEPARATOR.join(</span>
+        <span class="c1">#        [represent(index, rformat) for index in self._indexes])</span>
+        <span class="c1">#        ,rformat)</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indexes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">notation</span><span class="o">.</span><span class="n">VARIABLE_INDEXES_SEPARATOR</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">represent</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">rformat</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indexes</span><span class="p">])</span></div></div>
 </pre></div>
 
            </div>

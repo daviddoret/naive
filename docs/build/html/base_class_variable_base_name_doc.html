@@ -66,7 +66,7 @@
 <li class="toctree-l2"><a class="reference internal" href="module_base_doc.html#functions">Functions</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="module_boolean_algebra_doc.html">The Boolean Algebra Module (<strong>boolean_algebra</strong>, aka <strong>ba</strong>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_boolean_algebra_1_doc.html">The Boolean Algebra Module (<strong>boolean_algebra_1</strong>, aka <strong>ba1</strong>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="section_samples_doc.html">Samples</a></li>
 </ul>
 
@@ -123,9 +123,13 @@
 <h1><code class="docutils literal notranslate"><span class="pre">VariableBaseName</span></code><a class="headerlink" href="#variablebasename" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="naive.VariableBaseName">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">naive.</span></span><span class="sig-name descname"><span class="pre">VariableBaseName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">representable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">CoercibleVariableBaseName</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/_class_variable_base_name.html#VariableBaseName"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.VariableBaseName" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">naive.</span></span><span class="sig-name descname"><span class="pre">VariableBaseName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/_class_variable_base_name.html#VariableBaseName"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.VariableBaseName" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="base_class_persisting_representable_doc.html#naive.PersistingRepresentable" title="_class_persisting_representable.PersistingRepresentable"><code class="xref py py-class docutils literal notranslate"><span class="pre">PersistingRepresentable</span></code></a></p>
 <p>A variable base_name is the first component of a variable name.</p>
+<dl class="simple">
+<dt>Kwargs:</dt><dd><p>source_representable (None, CoercibleVariableBaseName): A source_representable object for the variable.</p>
+</dd>
+</dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="naive.VariableBaseName.__abstractmethods__">
 <span class="sig-name descname"><span class="pre">__abstractmethods__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({})</span></em><a class="headerlink" href="#naive.VariableBaseName.__abstractmethods__" title="Permalink to this definition"></a></dt>
@@ -138,14 +142,12 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="naive.VariableBaseName.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">representable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">CoercibleVariableBaseName</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/_class_variable_base_name.html#VariableBaseName.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.VariableBaseName.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/_class_variable_base_name.html#VariableBaseName.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.VariableBaseName.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Initializes the object and stores its representations in available formats.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> – N/A.</p></li>
-<li><p><strong>kwargs</strong> – Representation formats may be passed in kwargs (e.g. ascii=’phi’, latex=r’phi’).</p></li>
-</ul>
+<dl class="simple">
+<dt>Kwargs:</dt><dd><p>source_representable (ABCRepresentable): A source source_representable object whose representation should be imitated.
+source_string (source_string): A source object that may be converted to <strong>source_string</strong> to get a UTF-8 representation.
+…: Representation formats may be passed in kwargs (e.g. ascii=’phi’, latex=r’phi’).</p>
 </dd>
 </dl>
 </dd></dl>

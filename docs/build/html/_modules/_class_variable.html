@@ -51,7 +51,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../section_installation_doc.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_base_doc.html">Library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module_boolean_algebra_doc.html">The Boolean Algebra Module (<strong>boolean_algebra</strong>, aka <strong>ba</strong>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_boolean_algebra_1_doc.html">The Boolean Algebra Module (<strong>boolean_algebra_1</strong>, aka <strong>ba1</strong>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../section_samples_doc.html">Samples</a></li>
 </ul>
 
@@ -88,7 +88,10 @@
 <span class="kn">from</span> <span class="nn">_function_coerce</span> <span class="kn">import</span> <span class="n">coerce</span>
 <span class="kn">from</span> <span class="nn">_function_coerce_from_kwargs</span> <span class="kn">import</span> <span class="n">coerce_from_kwargs</span>
 <span class="kn">from</span> <span class="nn">_function_flatten</span> <span class="kn">import</span> <span class="n">flatten</span>
+<span class="kn">from</span> <span class="nn">_function_superscriptify</span> <span class="kn">import</span> <span class="n">superscriptify</span>
+<span class="kn">from</span> <span class="nn">_function_subscriptify</span> <span class="kn">import</span> <span class="n">subscriptify</span>
 <span class="kn">import</span> <span class="nn">rformats</span>
+<span class="kn">import</span> <span class="nn">keywords</span>
 
 
 <div class="viewcode-block" id="Variable"><a class="viewcode-back" href="../base_class_variable_doc.html#naive.Variable">[docs]</a><span class="k">class</span> <span class="nc">Variable</span><span class="p">(</span><span class="n">ABCRepresentable</span><span class="p">):</span>
@@ -102,21 +105,37 @@
 
 <div class="viewcode-block" id="Variable.__init__"><a class="viewcode-back" href="../base_class_variable_doc.html#naive.Variable.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">base_name</span><span class="p">:</span> <span class="n">CoercibleVariableBaseName</span><span class="p">,</span>
-            <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-            <span class="n">indexes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">power</span><span class="p">:</span> <span class="n">VariableExponent</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="c1">#source = None,</span>
+            <span class="n">base_name</span><span class="p">:</span> <span class="n">CoercibleVariableBaseName</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">indexes</span><span class="p">:</span> <span class="n">VariableIndexes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">exponent</span><span class="p">:</span> <span class="n">VariableExponent</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initializes a variable.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        Kwargs:</span>
 <span class="sd">            base_name (VariableBaseName): The variable base_name (cf. class :class:´VariableBase´).</span>
-<span class="sd">            *args: Variable length list of index elements (cf. class :class:´VariableIndexes´).</span>
+<span class="sd">            indexes: The variable indexes if it has any (cf. class :class:´VariableIndexes´).</span>
+<span class="sd">            exponent: The variable exponent it it has one (cf. class :class:´VariableExponent´).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_base_name</span> <span class="o">=</span> <span class="n">coerce</span><span class="p">(</span><span class="n">base_name</span><span class="p">,</span> <span class="n">VariableBaseName</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_indexes</span> <span class="o">=</span> <span class="n">coerce</span><span class="p">((</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">indexes</span><span class="p">),</span> <span class="n">VariableIndexes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_exponent</span> <span class="o">=</span> <span class="n">coerce</span><span class="p">(</span><span class="n">power</span><span class="p">,</span> <span class="n">VariableExponent</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">base_name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">power</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+        <span class="c1">## Implicit coercion from source argument.</span>
+        <span class="c1">#if source is not None:</span>
+        <span class="c1">#    if isinstance(source, str):</span>
+        <span class="c1">#        base_name = source  # This is subsequently coerced to VariableBaseName.</span>
+        <span class="c1">#        # TODO: Enrich this constructor to split indexes from XYZ123</span>
+        <span class="c1">#    # TODO: Add a constructor that copies a Variable object.</span>
+
+        <span class="c1"># Type coercion.</span>
+        <span class="n">base_name</span> <span class="o">=</span> <span class="n">coerce</span><span class="p">(</span><span class="n">base_name</span><span class="p">,</span> <span class="n">VariableBaseName</span><span class="p">)</span>
+        <span class="n">indexes</span> <span class="o">=</span> <span class="n">coerce</span><span class="p">(</span><span class="n">indexes</span><span class="p">,</span> <span class="n">VariableIndexes</span><span class="p">)</span>
+        <span class="n">exponent</span> <span class="o">=</span> <span class="n">coerce</span><span class="p">(</span><span class="n">exponent</span><span class="p">,</span> <span class="n">VariableExponent</span><span class="p">)</span>
+
+        <span class="c1"># Set properties.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_base_name</span> <span class="o">=</span> <span class="n">base_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indexes</span> <span class="o">=</span> <span class="n">indexes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exponent</span> <span class="o">=</span> <span class="n">exponent</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">base_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VariableBaseName</span><span class="p">:</span>
@@ -128,12 +147,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">exponent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VariableExponent</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;(Conditional) The variable exponent.</span>
+        <span class="sd">&quot;&quot;&quot;The variable exponent.</span>
 
 <span class="sd">        This property provides support for n-ary cartesian cross products.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            VariableExponent: The variable exponent.</span>
+<span class="sd">            (None, VariableExponent): The variable exponent.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exponent</span>
 
@@ -141,9 +160,9 @@
         <span class="k">if</span> <span class="n">rformat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">rformat</span> <span class="o">=</span> <span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
         <span class="c1"># TODO: Minor bug: only digits are currently supported by subscript().</span>
-        <span class="k">return</span> <span class="n">represent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_name</span><span class="p">,</span> <span class="n">rformat</span><span class="p">)</span> <span class="o">+</span> \
-               <span class="n">represent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indexes</span><span class="p">,</span> <span class="n">rformat</span><span class="p">)</span> <span class="o">+</span> \
-               <span class="n">represent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_exponent</span><span class="p">,</span> <span class="n">rformat</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">represent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="p">,</span> <span class="n">rformat</span><span class="p">)</span> <span class="o">+</span> \
+               <span class="n">subscriptify</span><span class="p">(</span><span class="n">represent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indexes</span><span class="p">,</span> <span class="n">rformat</span><span class="p">),</span> <span class="n">rformat</span><span class="p">)</span> <span class="o">+</span> \
+               <span class="n">superscriptify</span><span class="p">(</span><span class="n">represent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_exponent</span><span class="p">,</span> <span class="n">rformat</span><span class="p">),</span> <span class="n">rformat</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

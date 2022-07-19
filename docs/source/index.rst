@@ -22,7 +22,7 @@ Contents
 
     section_installation_doc
     module_base_doc
-    module_boolean_algebra_doc
+    module_boolean_algebra_1_doc
     section_samples_doc
 
 Indices and tables

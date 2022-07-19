@@ -31,7 +31,7 @@ from _class_variable_base_name import VariableBaseName, CoercibleVariableBaseNam
 from _class_variable_indexes import VariableIndexes
 from _class_variable_exponent import VariableExponent
 from _class_well_known_domain import WellKnownDomain
-from _class_well_known_domain_set import WellKnownDomainSet, domains, d
+from _class_well_known_domain_set import *
 from _exception_naive_error import NaiveError
 from _exception_naive_warning import NaiveWarning
 from _function_coerce import coerce

@@ -51,7 +51,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../section_installation_doc.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_base_doc.html">Library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module_boolean_algebra_doc.html">The Boolean Algebra Module (<strong>boolean_algebra</strong>, aka <strong>ba</strong>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_boolean_algebra_1_doc.html">The Boolean Algebra Module (<strong>boolean_algebra_1</strong>, aka <strong>ba1</strong>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../section_samples_doc.html">Samples</a></li>
 </ul>
 
@@ -87,7 +87,9 @@
 <span class="kn">from</span> <span class="nn">_exception_naive_warning</span> <span class="kn">import</span> <span class="n">NaiveWarning</span>
 
 
-<div class="viewcode-block" id="coerce"><a class="viewcode-back" href="../base_function_coerce_doc.html#naive.coerce">[docs]</a><span class="k">def</span> <span class="nf">coerce</span><span class="p">(</span><span class="n">o</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span> <span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="coerce"><a class="viewcode-back" href="../base_function_coerce_doc.html#naive.coerce">[docs]</a><span class="k">def</span> <span class="nf">coerce</span><span class="p">(</span>
+        <span class="n">o</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Coerces an object **representation** to type **cls**.</span>
 
 <span class="sd">    This function is useful to implement single line argument type coercion for the validation of arguments in functions and methods.</span>
@@ -131,16 +133,19 @@
         <span class="k">return</span> <span class="kc">None</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
         <span class="c1"># The object is already of the expected type.</span>
+        <span class="c1"># Return the object itself.</span>
         <span class="k">return</span> <span class="n">o</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># The object is not of the expected type,</span>
-        <span class="c1"># we must attempt to force its conversion.</span>
+        <span class="c1"># we must attempt to force its conversion,</span>
+        <span class="c1"># by calling the constructor of the desired type,</span>
+        <span class="c1"># passing it the source object.</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">coerced_o</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Type coercion failure.&#39;</span><span class="p">,</span> <span class="n">o</span> <span class="o">=</span> <span class="n">o</span><span class="p">,</span> <span class="bp">cls</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">code</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">COERCION_FAILURE</span><span class="p">,</span> <span class="n">o</span> <span class="o">=</span> <span class="n">o</span><span class="p">,</span> <span class="bp">cls</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Type coercion success.&#39;</span><span class="p">,</span> <span class="n">o</span> <span class="o">=</span> <span class="n">o</span><span class="p">,</span> <span class="bp">cls</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">code</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">COERCION_SUCCESS</span><span class="p">,</span> <span class="n">o</span> <span class="o">=</span> <span class="n">o</span><span class="p">,</span> <span class="bp">cls</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">o</span><span class="p">)</span></div>
 
 

@@ -1,12 +1,12 @@
-The Boolean Algebra Module (**boolean_algebra**, aka **ba**)
-=============================================================
+The Boolean Algebra Module (**boolean_algebra_1**, aka **ba1**)
+==================================================================
 
 This section contains the documentation of all objects contained in **Boolean Algebra** module of the **naive** python library, namely:
 
 * :ref:`Classes`
 * :ref:`Functions`
 
-.. currentmodule:: naive.boolean_algebra
+.. currentmodule:: naive.boolean_algebra_1
 
 Classes
 ---------
@@ -15,7 +15,7 @@ Classes
     :maxdepth: 2
     :glob:
 
-    ba_class_*_doc
+    ba1_class_*_doc
 
 
 Functions
@@ -25,4 +25,4 @@ Functions
     :maxdepth: 2
     :glob:
 
-    ba_function_*_doc
+    ba1_function_*_doc
