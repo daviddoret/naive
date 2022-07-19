@@ -3,6 +3,7 @@ import typing
 from _class_well_known_domain import WellKnownDomain
 from _class_function import Function, FunctionBaseName
 from _class_formula import Formula
+from _class_atomic_variable import AtomicVariable
 from _class_set import Set
 import glyphs
 import keywords
@@ -96,7 +97,7 @@ class BooleanSymbol:
     pass
 
 
-class BooleanAtomicVariable(Variable):
+class BooleanAtomicVariable(AtomicVariable):
     """The Boolean atomic variable class.
 
     Definition:
@@ -143,8 +144,6 @@ class BooleanFormula(Formula):
         * https://encyclopediaofmath.org/wiki/Formula
     """
 
-    # TODO: Complete implementation. Should be necessary to implement BooleanFormula.
-    # TODO: Prevent infinite loops in the Boolean Formula Execution Tree.
     def __init__(
             self,
             symbol,
@@ -154,33 +153,8 @@ class BooleanFormula(Formula):
         # TODO: Check that all arguments are also of type BooleanFormula
         # TODO: Check that the right number of arguments are provided for that symbol
         self._arguments = arguments
-        super().__init__(**kwargs)
+        super().__init__(symbol, arguments, **kwargs)
 
-    @property
-    def arity(self):
-        return self._symbol.arity
-
-    @property
-    def arguments(self):
-        return self._arguments
-
-    def list_atomic_variables(self):
-        l = set()
-        for a in self.arguments:
-            if isinstance(a, BooleanAtomicVariable):
-                l.add(a)
-            elif isinstance(a, BooleanFormula):
-                l_prime = a.list_atomic_variables()
-                for a_prime in l_prime:
-                    l.add(a_prime)
-        # To allow sorting and indexing, convert the set to a list.
-        l = list(l)
-        l.sort()
-        return l
-
-    @property
-    def symbol(self):
-        return self._symbol
 
 
 def get_boolean_combinations(n):
