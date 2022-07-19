@@ -8,7 +8,7 @@ class FunctionBaseName(PersistingRepresentable):
 
     def __init__(self, source_representable: (None, CoercibleFunctionBaseName) = None, *args, **kwargs):
         # TODO: Assure that the source_representable is a word or glyph. We don't want an indexed variable or other inadequate construction to be used a variable base_name.
-        # TODO: If source_representable is None, implement an automatic naming scheme, e.g. x1, x2, x3, ...
+        # TODO: If source_representable is None, implement an automatic naming scheme, e.g. v1, v2, x3, ...
         super().__init__(source_representable, *args, **kwargs)
 
 

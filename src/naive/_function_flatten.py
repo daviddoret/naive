@@ -7,11 +7,11 @@ def flatten(*args: object, skip_none: bool = True) -> typing.List[typing.Any]:
 
     This utility function converts embedded lists or multidimensional objects to vectors.
 
-    If x is already a flat list, returns a new list instance with the same elements.
+    If v is already a flat list, returns a new list instance with the same elements.
 
-    If x is not iterable, returns an iterable version of x, that is: [x].
+    If v is not iterable, returns an iterable version of v, that is: [v].
 
-    If x is None, returns an empty list, that is [].
+    If v is None, returns an empty list, that is [].
 
     Args:
         x (object): Any object but preferably an iterable object of type: abc.Iterable[typing.Any].

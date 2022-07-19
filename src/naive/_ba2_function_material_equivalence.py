@@ -5,21 +5,21 @@ import boolean_algebra_1 as ba1
 # TODO: Create a BA2 enriched with all non-primary boolean functions.
 
 
-def material_equivalence_algorithm(x1: ba1.BooleanValue, x2: ba1.BooleanValue) -> ba1.BooleanValue:
+def material_equivalence_algorithm(x1: ba1.BooleanConstant, x2: ba1.BooleanConstant) -> ba1.BooleanConstant:
     """The material equivalence boolean function.
 
     Bibliography:
         * https://en.wikipedia.org/wiki/If_and_only_if
 
     Args:
-        x1 (BooleanValue): A boolean value.
-        x2 (BooleanValue): A boolean value.
+        x1 (BooleanConstant): A boolean value.
+        x2 (BooleanConstant): A boolean value.
 
     Returns:
-        BooleanValue: The material_equivalence of **x1** and **x2**.
+        BooleanConstant: The material_equivalence of **v1** and **v2**.
     """
-    x1 = coerce(x1, ba1.BooleanValue)
-    x2 = coerce(x2, ba1.BooleanValue)
+    x1 = coerce(x1, ba1.BooleanConstant)
+    x2 = coerce(x2, ba1.BooleanConstant)
     if x1 == x2:
         return ba1.truth
     else:

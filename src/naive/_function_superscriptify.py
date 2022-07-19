@@ -5,7 +5,7 @@ def superscriptify(representation: str, rformat: str = None) -> str:
     """Converts to superscript the representation of object **o**.
 
     Use cases:
-        * Render beautiful indexed math variables (e.g. x₁, x₂, x₃).
+        * Render beautiful indexed math variables (e.g. v₁, v₂, v₃).
 
     Args:
         representation (str): The representation of the object in that format.
@@ -20,7 +20,7 @@ def superscriptify(representation: str, rformat: str = None) -> str:
 
             # TODO: Rewrite
             #import naive
-            #o = 'Indexed math variables look beautiful with superscript: x1, x2, x3'
+            #o = 'Indexed math variables look beautiful with superscript: v1, v2, x3'
             #s_prime = naive.superscript(o)
             #print(s_prime)
 

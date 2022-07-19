@@ -19,6 +19,13 @@ class ABCRepresentable(abc.ABC):
     def __repr__(self):
         return self.__str__()
 
+    def __lt__(self, other):
+        """Less Than.
+
+        Allows sorting of variables by their names.
+        Not to be confused with sorting variables by their values."""
+        return str(self) < str(other)
+
     @abc.abstractmethod
     def represent(self, rformat: str = None, *args, **kwargs) -> str:
         """Get the object's representation in the desired format.

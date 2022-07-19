@@ -4,21 +4,21 @@ import boolean_algebra_1 as ba1
 
 # TODO: Create a BA2 enriched with all non-primary boolean functions.
 
-def material_implication_algorithm(x1: ba1.BooleanValue, x2: ba1.BooleanValue) -> ba1.BooleanValue:
+def material_implication_algorithm(x1: ba1.BooleanConstant, x2: ba1.BooleanConstant) -> ba1.BooleanConstant:
     """The material implication boolean function.
 
     Bibliography:
         * https://en.wikipedia.org/wiki/Material_conditional
 
     Args:
-        x1 (BooleanValue): A boolean value.
-        x2 (BooleanValue): A boolean value.
+        x1 (BooleanConstant): A boolean value.
+        x2 (BooleanConstant): A boolean value.
 
     Returns:
-        BooleanValue: The material_implication of **x1** and **x2**.
+        BooleanConstant: The material_implication of **v1** and **v2**.
     """
-    x1 = coerce(x1, ba1.BooleanValue)
-    x2 = coerce(x2, ba1.BooleanValue)
+    x1 = coerce(x1, ba1.BooleanConstant)
+    x2 = coerce(x2, ba1.BooleanConstant)
     if x1 == ba1.falsum or (x1 == ba1.truth and x2 == ba1.truth):
         return ba1.truth
     else:

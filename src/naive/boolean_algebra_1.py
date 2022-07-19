@@ -2,93 +2,317 @@ from __future__ import annotations
 import typing
 from _class_well_known_domain import WellKnownDomain
 from _class_function import Function, FunctionBaseName
+from _class_formula import Formula
 from _class_set import Set
 import glyphs
 import keywords
 import log
+from _function_flatten import flatten
 from _function_coerce import coerce
+from src.naive import Variable, CoercibleVariableBaseName, VariableIndexes, VariableExponent
 
 _truth_initialized = False
 _falsum_initialized = False
 
 
-def falsum_algorithm() -> BooleanValue:
+def falsum_algorithm(vector_size:int = 1) -> BooleanConstant:
     """The falsum boolean function.
 
     Returns:
-        BooleanValue: The boolean falsum.
+        BooleanConstant: The boolean falsum.
     """
     global falsum
-    return falsum
+    return [falsum] * vector_size
 
 
-def truth_algorithm() -> BooleanValue:
+def truth_algorithm(vector_size:int = 1) -> BooleanConstant:
     """The truth boolean function.
 
     Returns:
-        BooleanValue: The boolean truth.
+        BooleanConstant: The boolean truth.
     """
     global truth
-    return truth
+    return [truth] * vector_size
 
 
-def negation_algorithm(x: BooleanValue) -> BooleanValue:
+def negation_algorithm(v: typing.List[BooleanConstant]) -> typing.List[BooleanConstant]:
     """The negation boolean function.
 
     Args:
-        x (BooleanValue): A boolean value.
+        v (typing.List[BooleanConstant]): A vector of boolean constants.
 
     Returns:
-        BooleanValue: The negation of **x**.
+        typing.List[BooleanConstant]: A vector of the negation of **x**.
     """
     global truth
     global falsum
-    x = coerce(x, BooleanValue)
-    if x == truth:
-        return falsum
-    else:
-        return truth
+    # v = coerce(v, BooleanConstant)  # TODO: Consider support for list coercion.
+    v = flatten(v)  # If scalar, convert to list.
+    return [falsum if e == truth else truth for e in v]
 
 
-def conjunction_algorithm(x1: BooleanValue, x2: BooleanValue) -> BooleanValue:
+def conjunction_algorithm(v1: typing.List[BooleanConstant], v2: typing.List[BooleanConstant]) -> typing.List[BooleanConstant]:
     """The conjunction boolean function.
 
     Args:
-        x1 (BooleanValue): A boolean value.
-        x2 (BooleanValue): A boolean value.
+        v1 (typing.List[BooleanConstant]): A vector of boolean constants.
+        v2 (typing.List[BooleanConstant]): A vector of boolean constants.
 
     Returns:
-        BooleanValue: The conjunction of **x1** and **x2**.
+        typing.List[BooleanConstant]: The vector of the conjunction of **v1** and **v2**.
     """
     global truth
     global falsum
-    x1 = coerce(x1, BooleanValue)
-    x2 = coerce(x2, BooleanValue)
-    if x1 == truth and x2 == truth:
-        return truth
-    else:
-        return falsum
+    # v1 = coerce(v1, BooleanConstant)  # TODO: Consider support for list coercion.
+    # v2 = coerce(v2, BooleanConstant)  # TODO: Consider support for list coercion.
+    v1 = flatten(v1)  # If scalar, convert to list.
+    v2 = flatten(v2)  # If scalar, convert to list.
+    return [truth if (b1 == truth and b2 == truth) else falsum for b1, b2 in zip(v1, v2)]
 
 
-def disjunction_algorithm(x1: BooleanValue, x2: BooleanValue) -> BooleanValue:
+def disjunction_algorithm(v1: BooleanConstant, v2: BooleanConstant) -> BooleanConstant:
     """The disjunction boolean function.
 
     Args:
-        x1 (BooleanValue): A boolean value.
-        x2 (BooleanValue): A boolean value.
+        v1 (typing.List[BooleanConstant]): A vector of boolean constants.
+        v2 (typing.List[BooleanConstant]): A vector of boolean constants.
 
     Returns:
-        BooleanValue: The disjunction of **x1** and **x2**.
+        typing.List[BooleanConstant]: The vector of the disjunction of **v1** and **v2**.
     """
     global truth
     global falsum
-    x1 = coerce(x1, BooleanValue)
-    x2 = coerce(x2, BooleanValue)
-    if x1 == truth or x2 == truth:
-        return truth
-    else:
-        return falsum
+    # v1 = coerce(v1, BooleanConstant)  # TODO: Consider support for list coercion.
+    # v2 = coerce(v2, BooleanConstant)  # TODO: Consider support for list coercion.
+    v1 = flatten(v1)  # If scalar, convert to list.
+    v2 = flatten(v2)  # If scalar, convert to list.
+    return [truth if (b1 == truth or b2 == truth) else falsum for b1, b2 in zip(v1, v2)]
 
+
+
+class BooleanSymbol:
+    """A symbol of the Boolean Algebra 1 formal language."""
+    # TODO: Complete implementation. Should be necessary to implement BooleanFormula.
+    pass
+
+
+class BooleanAtomicVariable(Variable):
+    """The Boolean atomic variable class.
+
+    Definition:
+    A Boolean atomic variable class is a boolean proposition,
+    that is by definition either true or false,
+    and that cannot be decomposed into subformula.
+    One way to understand it is to see it as an unknown boolean variable.
+    """
+    # TODO: Implement contexts. This should not be linked to BA1 but rather transversal.
+    def __init__(
+            self,
+            base_name: CoercibleVariableBaseName = None,
+            indexes: VariableIndexes = None,
+            exponent: VariableExponent = None,
+            **kwargs):
+        # TODO: Add a scope/context property and force it to B or B^n ?
+        super().__init__(
+            base_name=base_name,
+            indexes=indexes,
+            exponent=exponent,
+            **kwargs)
+
+
+V = BooleanAtomicVariable
+
+
+class BooleanFormula(Formula):
+    """A Boolean logic phi.
+
+    *Formulas are syntactically correct expressions in a formalized language defined over a signature,
+    a set of variables, and a logics. In this way, formulas are quite similar to terms.
+    Since predicates and logics symbols are included in their inductive definition,
+    they represent truth values instead of sort values, however.*
+    -- https://encyclopediaofmath.org/wiki/Formula
+
+    In Boolean Algebra 1, we must support:
+    - BooleanAtomicProposition, i.e. an unknown value "external" to BA1
+    - BooleanFormulaVariables asssigned to other BooleanFormula
+    - Truth and Falsum
+    - Negation
+    - Conjunction and Disjunction
+
+    Bibliography:
+        * https://encyclopediaofmath.org/wiki/Formula
+    """
+
+    # TODO: Complete implementation. Should be necessary to implement BooleanFormula.
+    # TODO: Prevent infinite loops in the Boolean Formula Execution Tree.
+    def __init__(
+            self,
+            symbol,
+            arguments,
+            **kwargs):
+        self._symbol = symbol
+        # TODO: Check that all arguments are also of type BooleanFormula
+        # TODO: Check that the right number of arguments are provided for that symbol
+        self._arguments = arguments
+        super().__init__(**kwargs)
+
+    @property
+    def arity(self):
+        return self._symbol.arity
+
+    @property
+    def arguments(self):
+        return self._arguments
+
+    def list_atomic_variables(self):
+        l = set()
+        for a in self.arguments:
+            if isinstance(a, BooleanAtomicVariable):
+                l.add(a)
+            elif isinstance(a, BooleanFormula):
+                l_prime = a.list_atomic_variables()
+                for a_prime in l_prime:
+                    l.add(a_prime)
+        # To allow sorting and indexing, convert the set to a list.
+        l = list(l)
+        l.sort()
+        return l
+
+    @property
+    def symbol(self):
+        return self._symbol
+
+
+def get_boolean_combinations(n):
+    """
+    Bibliography:
+        * https://stackoverflow.com/questions/9945720/python-extracting-bits-from-a-byte
+    """
+    return [[(truth if (integer_value & 1 << bit_position != 0) else falsum) for bit_position in range(0,n)] for integer_value in range(0,2 ** n)]
+
+
+
+def get_bool_combinations(n):
+    """
+    Bibliography:
+        * https://stackoverflow.com/questions/9945720/python-extracting-bits-from-a-byte
+    """
+    # TODO: Assure endianness consistency.
+    return [[(integer_value & 1 << bit_position != 0) for bit_position in range(0, n)] for integer_value in
+            range(0, 2 ** n)]
+
+
+def get_bool_combinations_column(n, c):
+    """
+    Bibliography:
+        * https://stackoverflow.com/questions/9945720/python-extracting-bits-from-a-byte
+    """
+    # TODO: Assure endianness consistency.
+    return [(integer_value & 1 << c != 0) for integer_value in range(0, 2 ** n)]
+
+
+def get_boolean_combinations(n):
+    """
+    Bibliography:
+        * https://stackoverflow.com/questions/9945720/python-extracting-bits-from-a-byte
+    """
+    # TODO: Assure endianness consistency.
+    return [[(truth if (integer_value & 1 << bit_position != 0) else falsum) for bit_position in range(0, n)] for
+            integer_value in range(0, 2 ** n)]
+
+
+def get_boolean_combinations_column(n, c):
+    """
+    Bibliography:
+        * https://stackoverflow.com/questions/9945720/python-extracting-bits-from-a-byte
+    """
+    # TODO: Assure endianness consistency.
+    return [(truth if (integer_value & 1 << c != 0) else falsum) for integer_value in range(0, 2 ** n)]
+
+
+def execute_formula_exhaustively(f: BooleanFormula):
+    # Retrieve the set of variables present in the phi.
+    variables_list = f.list_atomic_variables()
+    log.debug(variables_list=str(variables_list))
+    # Retrieve the number of variables in the set.
+    variables_number = len(variables_list)
+    log.debug(variables_number=variables_number)
+    # Populate an initial execution table with all combinations of variable values.
+    # Note: this table is not necessary because bit values may be computed on the fly.
+    # TODO: Assure endianness consistency, otherwise the table may be flipped on some systems.
+    execution_table = get_boolean_combinations(variables_number)
+    log.debug(execution_table=str(execution_table))
+    # TODO: CONTINUE HERE
+    # Start from the leafs of the tree, then move up.
+    # To do this, make a recursive execution, and pass the execution table.
+
+
+def satisfaction_set(
+        formula: BooleanFormula
+):
+    """Return the satisfaction set of a Boolean phi.
+
+    Taking the list of atomic variables from the phi,
+    the satisfaction set is the list of all combinations of variable values,
+    such that the phi is true."""
+    # TODO: Implement function from satisfaction_index
+    pass
+
+
+def satisfaction_index(phi: BooleanFormula, variables_list=None):
+    """Compute the **satisfaction index** (:math:`\text{sat}_I`) of a Boolean formula (:math:`\phi`).
+
+    Alias:
+    **sat_i**
+
+    Definition:
+    Let :math:`\phi` be a Boolean formula.
+    :math:`\text{sat}_I \colon= ` the truth value of :math:`\phi` in all possible worlds.
+
+    Args:
+        phi (BooleanFormula): The Boolean formula :math:`\phi` .
+    """
+    # Retrieve the computed results
+    if variables_list is None:
+        variables_list = phi.list_atomic_variables()
+    variables_number = len(variables_list)
+    arguments_number = phi.arity
+    argument_vectors = [None] * arguments_number
+    log.debug(arguments_number=arguments_number)
+    for argument_index in range(0, arguments_number):
+        argument = phi.arguments[argument_index]
+        log.debug(argument=argument, argument_index=argument_index)
+        if isinstance(argument, BooleanFormula):
+            # The argument is a phi.
+            # Recursively compute the satisfaction set of that phi.
+            vector = satisfaction_index(argument, variables_list=variables_list)
+            log.debug(t='phi', vector=vector)
+            argument_vectors[argument_index] = vector
+        elif isinstance(argument, BooleanAtomicVariable):
+            # The argument is an atomic proposition.
+            # We want to retrieve its values from the corresponding bit combinations column.
+            # But we need the vector to be relative to variables_list.
+            # Thus we must first find the position of this atomic variable,
+            # in the variables_list.
+            atomic_variable_index = variables_list.index(argument)
+            vector = get_boolean_combinations_column(variables_number, atomic_variable_index)
+            log.debug(t='atomic variable', vector=vector)
+            argument_vectors[argument_index] = vector
+        else:
+            log.error('Unexpected type', argument=argument, t=type(argument))
+    log.info(argument_vectors=argument_vectors)
+    output_vector = None
+    match phi.arity:
+        case 0: output_vector = phi.symbol.algorithm(vector_size =2 ** variables_number)
+        case 1: output_vector = phi.symbol.algorithm(argument_vectors[0])
+        case 2: output_vector = phi.symbol.algorithm(argument_vectors[0], argument_vectors[1])
+        case _: log.error('Arity > 2 are not yet supported, sorry')
+    log.info(output_vector=output_vector)
+    return output_vector
+
+
+sat_i = satisfaction_set
+"""A shorthand alias for **satisfaction_set**."""
 
 class BooleanAlgebra:
     """A fundamental Boolean algebra composed of (⊥,⊤,¬,∧,∨).
@@ -101,35 +325,9 @@ class BooleanAlgebra:
 
     # TODO: Create a generic formal language structure and inherit from it.
     # TODO: Considering making it a singleton but... we must support inheritance.
-
     def __init__(self):
         # TODO: Populate a functions dictionary.
         pass
-
-    @property
-    def conjunction(self):
-        global conjunction
-        return conjunction
-
-    @property
-    def disjunction(self):
-        global disjunction
-        return disjunction
-
-    @property
-    def falsum(self):
-        global falsum
-        return falsum
-
-    @property
-    def negation(self):
-        global negation
-        return negation
-
-    @property
-    def truth(self):
-        global truth
-        return truth
 
 
 class BooleanDomain(WellKnownDomain):
@@ -150,13 +348,13 @@ class BooleanDomain(WellKnownDomain):
 
     @property
     def falsum(self):
-        """BooleanValue: The falsum boolean value."""
+        """BooleanConstant: The falsum boolean value."""
         global falsum
         return falsum
 
     @property
     def truth(self):
-        """BooleanValue: The truth boolean value."""
+        """BooleanConstant: The truth boolean value."""
         global truth
         return truth
 
@@ -187,7 +385,7 @@ class BooleanFunction(Function):
         )
 
 
-class BooleanValue(BooleanFunction):
+class BooleanConstant(BooleanFunction):
     def __new__(cls,
                 source=None,
                 **kwargs):
@@ -195,11 +393,10 @@ class BooleanValue(BooleanFunction):
         global _truth_initialized
         global falsum
         global _falsum_initialized
-        log.debug('__new__', source=source)
         # We can't call coerce in __new__,
         # because it would then recall the constructor,
         # ending up in an infinite loop.
-        # But BooleanValue must support conversion during coercion.
+        # But BooleanConstant must support conversion during coercion.
         # A solution is to implement singletons.
         if source is not None:
             if isinstance(source, bool):
@@ -207,21 +404,20 @@ class BooleanValue(BooleanFunction):
                     # __init__ logic must be bypassed,
                     # because the instance has already been initialized.
                     # This is managed in __init__.
-                    log.debug('Reuse truth singleton')
                     return truth
                 elif not source and _falsum_initialized:
                     # __init__ logic must be bypassed,
                     # because the instance has already been initialized.
                     # This is managed in __init__.
-                    log.debug('Reuse falsum singleton')
                     return falsum
                 else:
-                    log.error('Instanciation of BooleanValue with object argument is only allowed once singletons are initialized.')
+                    log.error(
+                        'Instanciation of BooleanConstant with object argument is only allowed once singletons are initialized.')
         return super().__new__(cls)
 
     def __init__(
             self,
-            source = None,
+            source=None,
             pythonic_value: bool = None,
             algorithm: typing.Callable = None,
             base_name: FunctionBaseName = None,
@@ -229,11 +425,11 @@ class BooleanValue(BooleanFunction):
         """Initializes a Boolean value."""
         global _falsum_initialized
         global _truth_initialized
-        log.debug('__init__', source=source, pythonic_value=pythonic_value, base_name=base_name, kwargs=kwargs)
-        if source is not None:
-            log.debug('Bypassing __init__ logic on singletons')
-        else:
-            log.debug('Singleton initialization')
+        #log.debug('__init__', source=source, pythonic_value=pythonic_value, base_name=base_name, kwargs=kwargs)
+        #if source is not None:
+        #    log.debug('Bypassing __init__ logic on singletons')
+        if source is None:
+            #log.debug('Singleton initialization')
             arity = 0
             domain = None  # TODO: Question: use a representation of the empty set instead?
             if pythonic_value is None:
@@ -251,10 +447,10 @@ class BooleanValue(BooleanFunction):
                 **kwargs)
 
     def __bool__(self):
-        """Provides support for implicit and explicit (i.e. ``bool(x)``) conversions to **bool**.
+        """Provides support for implicit and explicit (i.e. ``bool(v)``) conversions to **bool**.
 
         Returns:
-            bool: the canonic mapping of :class:`BooleanValue` with the pythonic **bool** type.
+            bool: the canonic mapping of :class:`BooleanConstant` with the pythonic **bool** type.
         """
         return self._pythonic_value
 
@@ -265,27 +461,27 @@ class BooleanValue(BooleanFunction):
         else:
             return int(0)
 
-    def __eq__(self, other: CoercibleBooleanValue) -> bool:
+    def __eq__(self, other: CoercibleBooleanConstant) -> bool:
         """Provides support for mathematical equality.
 
         All python objects are implicitly convertible to bool,
         but we want the equality operator to rather approach mathematical equality.
-        Hence, we explicitly convert **other** to **BooleanValue** which issues warnings and raises exceptions as necessary.
+        Hence, we explicitly convert **other** to **BooleanConstant** which issues warnings and raises exceptions as necessary.
 
         Args:
-            other(CoercibleBooleanValue): A compatible boolean object.
+            other(CoercibleBooleanConstant): A compatible boolean object.
 
         Returns:
             bool: The truth value of the equality operator.
         """
-        other = coerce(other, BooleanValue)  # Assure an exception is raised if the type is not supported.
+        other = coerce(other, BooleanConstant)  # Assure an exception is raised if the type is not supported.
         result = self._pythonic_value == bool(other)  # Explicit conversion is superfluous but clearer
         return result
 
 
-CoercibleBooleanValue = typing.TypeVar(
-    'CoercibleBooleanValue',
-    BooleanValue,
+CoercibleBooleanConstant = typing.TypeVar(
+    'CoercibleBooleanConstant',
+    BooleanConstant,
     bool,
     int,
     str  # TODO Implement coercion of well known representations.
@@ -313,7 +509,6 @@ Bibliography:
     * https://en.wikipedia.org/wiki/Boolean_domain
 """
 
-
 b_2 = WellKnownDomain(
     base_name=glyphs.mathbb_b_uppercase,
     exponent=2,
@@ -340,8 +535,6 @@ disjunction = BooleanFunction(
 lor = disjunction
 """An alias for **disjunction**. 'or' being a reserved word in python, the name 'lor' is used instead."""
 
-
-
 negation = BooleanFunction(
     arity=1,
     domain=b,
@@ -350,16 +543,16 @@ negation = BooleanFunction(
 """The negation boolean function.
 
 Args:
-    x (BooleanValue): A boolean value.
+    v (BooleanConstant): A boolean value.
 
 Returns:
-    BooleanValue: The negation of **x**.
+    BooleanConstant: The negation of **v**.
 """
 
 lnot = negation
 """An alias for **negation**. 'not' being a reserved word in python, the name 'lnot' is used instead."""
 
-truth = BooleanValue(
+truth = BooleanConstant(
     pythonic_value=True,
     algorithm=truth_algorithm,
     base_name=glyphs.logical_truth)
@@ -369,13 +562,13 @@ Args:
     N/A
 
 Returns:
-    BooleanValue: The boolean truth.
+    BooleanConstant: The boolean truth.
 """
 
 t = truth
 """An shorthand alias for **truth**."""
 
-falsum = BooleanValue(
+falsum = BooleanConstant(
     pythonic_value=False,
     algorithm=falsum_algorithm,
     base_name=glyphs.logical_falsum)
@@ -385,7 +578,7 @@ Args:
     N/A
 
 Returns:
-    BooleanValue: The boolean falsum.
+    BooleanConstant: The boolean falsum.
 """
 
 f = falsum

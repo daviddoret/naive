@@ -3,7 +3,14 @@ import src.naive as naive
 
 
 class Test(TestCase):
-    def test_negation_b_b(self):
-        n = naive.ba1.negation(naive.ba1.falsum)
-        self.assertTrue(naive.ba1.negation(naive.ba1.falsum))
-        self.assertFalse(naive.ba1.negation(naive.ba1.truth))
+
+    def test_1_negation(self):
+        b1 = naive.ba1.BooleanAtomicVariable(base_name='b', indexes=1)
+        psi1 = naive.ba1.BooleanFormula(
+            symbol = naive.ba1.negation
+            ,arguments = [b1]
+        )
+        self.assertEqual('[b₁]', str(psi1.list_atomic_variables()))
+        # worlds = naive.ba1.get_boolean_combinations(psi1.arity)
+        sat_i = naive.ba1.satisfaction_index(psi1)
+        self.assertEqual('[⊤, ⊥]', str(sat_i))

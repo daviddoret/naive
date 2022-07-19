@@ -31,7 +31,7 @@ s = tl.FS(size=5)
 print(s)
 
 print('\n...with a custom prefix:')
-s = tl.FS(size=3, prefix='x')
+s = tl.FS(size=3, prefix='v')
 print(s)
 
 print('\n...0-based index:')

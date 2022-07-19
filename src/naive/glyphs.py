@@ -3,7 +3,7 @@ from _class_glyph import Glyph
 # Number sets
 standard_0 = Glyph(utf8='0', latex=r'0', html='0', ascii='0')
 standard_1 = Glyph(utf8='1', latex=r'1', html='1', ascii='1')
-standard_x_lowercase = Glyph(utf8='x', latex=r'x', html='x', ascii='x')
+standard_x_lowercase = Glyph(utf8='v', latex=r'v', html='v', ascii='v')
 standard_y_lowercase = Glyph(utf8='y', latex=r'y', html='y', ascii='y')
 standard_z_lowercase = Glyph(utf8='z', latex=r'z', html='z', ascii='z')
 mathbb_a_uppercase = Glyph(utf8='𝔸', latex=r'\mathbb{A}', html='&Aopf;', ascii='A')
@@ -33,3 +33,7 @@ logical_material_equivalence = Glyph(utf8='⇔', latex=r'\iif', html='&hArr;', a
 
 
 # Greek Letters
+phi_plain_small = Glyph(utf8='φ', latex=r'\phi', html='&phi;', ascii='phi')
+phi_plain_cap = Glyph(utf8='Φ', latex=r'\Phi', html='&Phi;', ascii='Phi')
+psi_plain_small = Glyph(utf8='ψ', latex=r'\psi', html='&psi;', ascii='psi')
+psi_plain_cap = Glyph(utf8='Ψ', latex=r'\Psi', html='&Psi;', ascii='Psi')

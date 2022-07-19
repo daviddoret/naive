@@ -61,9 +61,9 @@ def coerce(
         try:
             coerced_o = cls(o)
         except Exception as e:
-            log.error('Type coercion failure.', o = o, cls = cls)
+            log.error(code = log.COERCION_FAILURE, o = o, cls = cls)
         else:
-            log.debug('Type coercion success.', o = o, cls = cls)
+            log.debug(code = log.COERCION_SUCCESS, o = o, cls = cls)
         return cls(o)
 
 
