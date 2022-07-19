@@ -2,7 +2,7 @@ from __future__ import annotations
 import typing
 from _class_well_known_domain import WellKnownDomain
 from _class_function import Function, FunctionBaseName
-from _class_formula import Formula
+from _class_formula import Formula, OPERATOR, FUNCTION
 from _class_atomic_variable import AtomicVariable
 from _class_set import Set
 import glyphs
@@ -501,7 +501,8 @@ conjunction = BooleanFunction(
     arity=2,
     domain=b_2,
     algorithm=conjunction_algorithm,
-    base_name=glyphs.logical_conjunction)
+    base_name=glyphs.logical_conjunction,
+    preferred_call_representation=OPERATOR)
 
 land = conjunction
 """An alias for **conjunction**. 'and' being a reserved word in python, the name 'land' is used instead."""
@@ -510,7 +511,8 @@ disjunction = BooleanFunction(
     arity=2,
     domain=b_2,
     algorithm=disjunction_algorithm,
-    base_name=glyphs.logical_disjunction)
+    base_name=glyphs.logical_disjunction,
+    preferred_call_representation=OPERATOR)
 
 lor = disjunction
 """An alias for **disjunction**. 'or' being a reserved word in python, the name 'lor' is used instead."""
@@ -519,7 +521,8 @@ negation = BooleanFunction(
     arity=1,
     domain=b,
     algorithm=negation_algorithm,
-    base_name=glyphs.logical_negation)
+    base_name=glyphs.logical_negation,
+    preferred_call_representation=OPERATOR)
 """The negation boolean function.
 
 Args:

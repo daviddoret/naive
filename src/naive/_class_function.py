@@ -20,6 +20,9 @@ import keywords
 from _function_coerce_from_kwargs import coerce_from_kwargs
 
 
+OPERATOR = 1
+FUNCTION = 2
+
 class Function(ABCRepresentable):
     """A mathematical function.
 
@@ -38,6 +41,7 @@ class Function(ABCRepresentable):
             algorithm: typing.Callable,
             base_name: FunctionBaseName,
             indexes = None,
+            preferred_call_representation = None,
             **kwargs):
         """Initializes a function.
 
@@ -61,6 +65,11 @@ class Function(ABCRepresentable):
         self._algorithm = algorithm  # TODO: Implement algo type properly, then coerce(algorithm, typing.Callable)
         self._base_name = coerce(base_name, FunctionBaseName)
         self._indexes =  coerce(indexes, VariableIndexes)
+        if preferred_call_representation is None:
+            preferred_call_representation = FUNCTION
+        if preferred_call_representation == OPERATOR and arity > 2:
+            log.error('The representation of operators with arity > 2 is not supported')
+        self._preferred_call_representation = preferred_call_representation
         super().__init__(**kwargs)
 
     def __call__(self, *args):
@@ -119,7 +128,22 @@ class Function(ABCRepresentable):
     def indexes(self) -> FunctionIndexes:
         return self._indexes
 
+    @property
+    def preferred_call_representation(self):
+        """The preferred representation for function calls.
+
+        Two formats are available for the representation of function calls:
+        - Function: e.g.: f(x,y,z).
+        - Operator: e.g.: fx (for unary operators) and x f y (for binary operators).
+        """
+        return self._preferred_call_representation
+
     def represent(self, rformat: str = None, *args, **kwargs) -> str:
+        """
+
+        Format:
+        f
+        """
         if rformat is None:
             rformat = rformats.DEFAULT
         # TODO: Minor bug: only digits are currently supported by subscript().
@@ -127,6 +151,13 @@ class Function(ABCRepresentable):
                represent(self._indexes, rformat)
 
     def represent_declaration(self, rformat: str = None, *args, **kwargs) -> str:
+        """
+
+        Format:
+        f:  X --> Y
+            x --> f(x)
+
+        """
         if rformat is None:
             rformat = rformats.DEFAULT
 

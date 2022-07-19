@@ -37,3 +37,18 @@ phi_plain_small = Glyph(utf8='φ', latex=r'\phi', html='&phi;', ascii='phi')
 phi_plain_cap = Glyph(utf8='Φ', latex=r'\Phi', html='&Phi;', ascii='Phi')
 psi_plain_small = Glyph(utf8='ψ', latex=r'\psi', html='&psi;', ascii='psi')
 psi_plain_cap = Glyph(utf8='Ψ', latex=r'\Psi', html='&Psi;', ascii='Psi')
+
+# Brackets
+# Sources:
+#   * https://en.wikipedia.org/wiki/Bracket
+parenthesis_left = Glyph(utf8='(', latex=r'\left(', html='&lparen;', ascii='(')
+parenthesis_right = Glyph(utf8=')', latex=r'\right)', html='&rparen;', ascii=')')
+square_bracket_left = Glyph(utf8='[', latex=r'\left[', html='&91;', ascii='[')
+square_bracket_right = Glyph(utf8=']', latex=r'\right]', html='&93;', ascii=']')
+curly_bracket_left = Glyph(utf8='{', latex=r'\left\{', html='&123;', ascii='{')
+curly_bracket_right = Glyph(utf8='}', latex=r'\right\}', html='&125;', ascii='}')
+angle_bracket_left = Glyph(utf8='⟨', latex=r'\left\langle', html='&lang;', ascii='<')
+angle_bracket_right = Glyph(utf8='⟩', latex=r'\right\rangle', html='&rang;', ascii='>')
+
+# Spaces
+small_space = Glyph(utf8=' ', latex=r'\,', html='&nbsp;', ascii=' ')
