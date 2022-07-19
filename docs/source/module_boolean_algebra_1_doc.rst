@@ -1,7 +1,10 @@
-The Boolean Algebra Module (**boolean_algebra_1**, aka **ba1**)
+**boolean_algebra_1**
 ==================================================================
 
-This section contains the documentation of all objects contained in **Boolean Algebra** module of the **naive** python library, namely:
+Alias:
+    **ba1**
+
+This section contains the documentation of all objects contained in **Boolean Algebra 1** module of the **naive** python library, namely:
 
 * :ref:`Classes`
 * :ref:`Functions`

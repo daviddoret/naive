@@ -1,4 +1,4 @@
-``BooleanValue``
+``BooleanConstant``
 ===================
 
 .. currentmodule:: naive.boolean_algebra_1

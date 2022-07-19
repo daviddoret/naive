@@ -1,4 +1,4 @@
-``BooleanValueSet``
+``BooleanFunction``
 ===================
 
 .. currentmodule:: naive.boolean_algebra_1

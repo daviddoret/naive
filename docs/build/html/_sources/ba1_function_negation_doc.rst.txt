@@ -1,4 +1,4 @@
-``negation_b_b_algorithm``
+``negation_algorithm``
 ==============================
 
 .. currentmodule:: naive.boolean_algebra_1

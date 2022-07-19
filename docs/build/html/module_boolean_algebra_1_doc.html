@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Boolean Algebra Module (boolean_algebra_1, aka ba1) &mdash; naive 1.1.3 documentation</title>
+  <title>boolean_algebra_1 &mdash; naive 1.1.3 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
@@ -28,7 +28,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="BooleanValue" href="ba1_class_boolean_constant_doc.html" />
+    <link rel="next" title="BooleanConstant" href="ba1_class_boolean_constant_doc.html" />
     <link rel="prev" title="flatten" href="base_function_flatten_doc.html" /> 
 </head>
 
@@ -54,14 +54,14 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="section_installation_doc.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_base_doc.html">Library</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">The Boolean Algebra Module (<strong>boolean_algebra_1</strong>, aka <strong>ba1</strong>)</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><strong>boolean_algebra_1</strong></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#classes">Classes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="ba1_class_boolean_constant_doc.html"><code class="docutils literal notranslate"><span class="pre">BooleanValue</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="ba1_class_boolean_value_set_doc.html"><code class="docutils literal notranslate"><span class="pre">BooleanValueSet</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ba1_class_boolean_constant_doc.html"><code class="docutils literal notranslate"><span class="pre">BooleanConstant</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ba1_class_boolean_function_doc.html"><code class="docutils literal notranslate"><span class="pre">BooleanFunction</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="ba1_function_negation_doc.html"><code class="docutils literal notranslate"><span class="pre">negation_b_b_algorithm</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ba1_function_negation_doc.html"><code class="docutils literal notranslate"><span class="pre">negation_algorithm</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -83,7 +83,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>The Boolean Algebra Module (<strong>boolean_algebra_1</strong>, aka <strong>ba1</strong>)</li>
+      <li><strong>boolean_algebra_1</strong></li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/module_boolean_algebra_1_doc.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -117,9 +117,13 @@
     text-align: unset;
 }
 </style>
-<section id="the-boolean-algebra-module-boolean-algebra-1-aka-ba1">
-<h1>The Boolean Algebra Module (<strong>boolean_algebra_1</strong>, aka <strong>ba1</strong>)<a class="headerlink" href="#the-boolean-algebra-module-boolean-algebra-1-aka-ba1" title="Permalink to this heading"></a></h1>
-<p>This section contains the documentation of all objects contained in <strong>Boolean Algebra</strong> module of the <strong>naive</strong> python library, namely:</p>
+<section id="boolean-algebra-1">
+<h1><strong>boolean_algebra_1</strong><a class="headerlink" href="#boolean-algebra-1" title="Permalink to this heading"></a></h1>
+<dl class="simple">
+<dt>Alias:</dt><dd><p><strong>ba1</strong></p>
+</dd>
+</dl>
+<p>This section contains the documentation of all objects contained in <strong>Boolean Algebra 1</strong> module of the <strong>naive</strong> python library, namely:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#classes"><span class="std std-ref">Classes</span></a></p></li>
 <li><p><a class="reference internal" href="#functions"><span class="std std-ref">Functions</span></a></p></li>
@@ -128,8 +132,8 @@
 <h2>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="ba1_class_boolean_constant_doc.html"><code class="docutils literal notranslate"><span class="pre">BooleanValue</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="ba1_class_boolean_value_set_doc.html"><code class="docutils literal notranslate"><span class="pre">BooleanValueSet</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="ba1_class_boolean_constant_doc.html"><code class="docutils literal notranslate"><span class="pre">BooleanConstant</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="ba1_class_boolean_function_doc.html"><code class="docutils literal notranslate"><span class="pre">BooleanFunction</span></code></a></li>
 </ul>
 </div>
 </section>
@@ -137,7 +141,7 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="ba1_function_negation_doc.html"><code class="docutils literal notranslate"><span class="pre">negation_b_b_algorithm</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="ba1_function_negation_doc.html"><code class="docutils literal notranslate"><span class="pre">negation_algorithm</span></code></a></li>
 </ul>
 </div>
 </section>
@@ -148,7 +152,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="base_function_flatten_doc.html" class="btn btn-neutral float-left" title="flatten" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="ba1_class_boolean_constant_doc.html" class="btn btn-neutral float-right" title="BooleanValue" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ba1_class_boolean_constant_doc.html" class="btn btn-neutral float-right" title="BooleanConstant" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
