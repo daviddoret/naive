@@ -10,7 +10,7 @@ class TestVariable(TestCase):
         self.assertEqual('v₁,₂,₃', variable.represent(naive.rformats.UTF8))
         self.assertEqual('v_{1,2,3}', variable.represent(naive.rformats.LATEX))
         self.assertEqual('v<sub>1,2,3</sub>', variable.represent(naive.rformats.HTML))
-        self.assertEqual('v1,2,3', variable.represent(naive.rformats.ASCII))
+        self.assertEqual('v1,2,3', variable.represent(naive.rformats.USASCII))
 
     def test_get_representation_2(self):
         self.assertEqual('v', naive.Variable('v').represent(naive.rformats.UTF8))

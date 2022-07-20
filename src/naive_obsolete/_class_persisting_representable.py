@@ -17,7 +17,7 @@ class PersistingRepresentable(ABCRepresentable):
         Kwargs:
             source_representable (ABCRepresentable): A source source_representable object whose representation should be imitated.
             source_string (source_string): A source object that may be converted to **source_string** to get a UTF-8 representation.
-            ...: Representation formats may be passed in kwargs (e.g. ascii='phi', latex=r'\phi').
+            ...: Representation formats may be passed in kwargs (e.g. usascii='phi', latex=r'\phi').
         """
         if source is not None:
             # Support for implicit conversion during type coercion.
@@ -85,7 +85,7 @@ class PersistingRepresentable(ABCRepresentable):
 CoerciblePersistingRepresentable = typing.TypeVar(
     'CoerciblePersistingRepresentable',
     ABCRepresentable,
-    bytes,  # Support for raw ASCII strings.
+    bytes,  # Support for raw USASCII strings.
     PersistingRepresentable,
     str
 )

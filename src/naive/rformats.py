@@ -6,10 +6,10 @@ setattr(), and getattr() to store object representations in the corresponding fo
 
 # REPRESENTATION FORMAT ENTRIES
 
-"""The ASCII representation format. 
+"""The USASCII representation format. 
 
-Implemented as standard pythonic strings, but assured to be ASCII-compatible."""
-ASCII = 'ascii'
+Implemented as standard pythonic strings, but assured to be USASCII-compatible."""
+USASCII = 'usascii'
 
 """The UTF-8 representation format. 
 
@@ -38,4 +38,4 @@ DEFAULT = UTF8 # You may change this.
 # LIST OF REPRESENTATION FORMATS
 
 """The list of all available formats."""
-CATALOG = [ASCII, UTF8, LATEX, HTML]
+CATALOG = [USASCII, UTF8, LATEX, HTML]

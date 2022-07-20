@@ -169,7 +169,7 @@ class Function(ABCRepresentable):
                 return f'{represent(self, rformat)} {represent(glyphs.colon, rformat)} {represent(self.domain, rformat)} {represent(glyphs.to, rformat)} {represent(self.codomain, rformat)} \n \t {variable_list} {represent(glyphs.maps_to, rformat)} {represent(self.algorithm, rformat)}'
             case rformats.HTML:
                 return f'{represent(self, rformat)} {represent(glyphs.colon, rformat)} {represent(self.domain, rformat)} {represent(glyphs.to, rformat)} {represent(self.codomain, rformat)} <br> &emsp; {variable_list} {represent(glyphs.maps_to, rformat)} {represent(self.algorithm, rformat)}'
-            case rformats.ASCII:
+            case rformats.USASCII:
                 return f'{represent(self, rformat)} {represent(glyphs.colon, rformat)} {represent(self.domain, rformat)} {represent(glyphs.to, rformat)} {represent(self.codomain, rformat)} \n \t {variable_list} {represent(glyphs.maps_to, rformat)} {represent(self.algorithm, rformat)}'
             case _:
                 log.NaiveError('Unsupported representation format.', rformat=rformat)

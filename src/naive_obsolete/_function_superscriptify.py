@@ -53,6 +53,6 @@ def superscriptify(representation: str, rformat: str = None) -> str:
             return r'^{' + representation + r'}'
         case rformats.HTML:
             return r'<sup>' + representation + r'</sup>'
-        case rformats.ASCII:
-            # TODO: ASCII representation may be ambiguous. Considering issuing a Warning.
+        case rformats.USASCII:
+            # TODO: USASCII representation may be ambiguous. Considering issuing a Warning.
             return representation

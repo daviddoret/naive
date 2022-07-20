@@ -7,5 +7,5 @@ class Test(TestCase):
         self.assertEqual(naive.superscriptify('1234', naive.rformats.UTF8), '¹²³⁴')
         self.assertEqual(naive.superscriptify('1234', naive.rformats.LATEX), r'^{1234}')
         self.assertEqual(naive.superscriptify('1234', naive.rformats.HTML), r'<sup>1234</sup>')
-        self.assertEqual(naive.superscriptify('1234', naive.rformats.ASCII), '1234')
+        self.assertEqual(naive.superscriptify('1234', naive.rformats.USASCII), '1234')
 

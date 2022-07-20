@@ -10,7 +10,7 @@ import keywords
 
 
 class VariableIndexes(ABCRepresentable):
-    """The set of indexes that uniquely identify a variable base_name name within its scope."""
+    """The set of indexes that uniquely identify a variable base_name name within its scope_key."""
 
     def __init__(self, source=None, **kwargs):
         indexes = kwargs.get(keywords.variable_indexes) if keywords.variable_indexes in kwargs else None

@@ -45,7 +45,7 @@ class ABCRepresentable(abc.ABC):
 CoercibleABCRepresentable = typing.TypeVar(
     'CoercibleABCRepresentable',
     ABCRepresentable,
-    bytes, # Support for raw ASCII strings.
+    bytes, # Support for raw USASCII strings.
     str
 )
 

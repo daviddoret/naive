@@ -92,7 +92,7 @@ def disjunction_algorithm(v1: BooleanConstant, v2: BooleanConstant) -> BooleanCo
 
 
 class BooleanSymbol:
-    """A symbol of the Boolean Algebra 1 formal language."""
+    """A symbol of the Boolean Algebra 1 formal language_key."""
     # TODO: Complete implementation. Should be necessary to implement BooleanFormula.
     pass
 
@@ -113,7 +113,7 @@ class BooleanAtomicVariable(AtomicVariable):
             indexes: VariableIndexes = None,
             exponent: VariableExponent = None,
             **kwargs):
-        # TODO: Add a scope/context property and force it to B or B^n ?
+        # TODO: Add a scope_key/context property and force it to B or B^n ?
         super().__init__(
             base_name=base_name,
             indexes=indexes,
@@ -127,7 +127,7 @@ V = BooleanAtomicVariable
 class BooleanFormula(Formula):
     """A Boolean logic phi.
 
-    *Formulas are syntactically correct expressions in a formalized language defined over a signature,
+    *Formulas are syntactically correct expressions in a formalized language_key defined over a signature,
     a set of variables, and a logics. In this way, formulas are quite similar to terms.
     Since predicates and logics symbols are included in their inductive definition,
     they represent truth values instead of sort values, however.*
@@ -297,7 +297,7 @@ class BooleanAlgebra:
 
     """
 
-    # TODO: Create a generic formal language structure and inherit from it.
+    # TODO: Create a generic formal language_key structure and inherit from it.
     # TODO: Considering making it a singleton but... we must support inheritance.
     def __init__(self):
         # TODO: Populate a functions dictionary.

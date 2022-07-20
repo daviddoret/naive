@@ -8,9 +8,9 @@ class TestVariableIndexes(TestCase):
         #self.assertEqual('₁,₂,₃', indexes.represent(naive.rformats.UTF8))
         #self.assertEqual(r'_{1,2,3}', indexes.represent(naive.rformats.LATEX))
         #self.assertEqual(r'<sub>1,2,3</sub>', indexes.represent(naive.rformats.HTML))
-        #self.assertEqual('1,2,3', indexes.represent(naive.rformats.ASCII))
+        #self.assertEqual('1,2,3', indexes.represent(naive.rformats.USASCII))
         self.assertEqual('1,2,3', indexes.represent(naive.rformats.UTF8))
         self.assertEqual('1,2,3', indexes.represent(naive.rformats.LATEX))
         self.assertEqual('1,2,3', indexes.represent(naive.rformats.HTML))
-        self.assertEqual('1,2,3', indexes.represent(naive.rformats.ASCII))
+        self.assertEqual('1,2,3', indexes.represent(naive.rformats.USASCII))
 

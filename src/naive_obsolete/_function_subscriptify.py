@@ -52,6 +52,6 @@ def subscriptify(representation: str, rformat: str) -> str:
             return r'_{' + representation + r'}'
         case rformats.HTML:
             return r'<sub>' + representation + r'</sub>'
-        case rformats.ASCII:
-            # TODO: ASCII representation may be ambiguous. Considering issuing a Warning.
+        case rformats.USASCII:
+            # TODO: USASCII representation may be ambiguous. Considering issuing a Warning.
             return representation

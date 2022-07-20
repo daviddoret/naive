@@ -9,7 +9,7 @@ from _class_function import Function, FUNCTION, OPERATOR
 class Formula(ABCRepresentable):
     """A generic formula.
 
-    *Formulas are syntactically correct expressions in a formalized language defined over a signature, a set of variables, and a logics. In this way, formulas are quite similar to terms. Since predicates and logics symbols are included in their inductive definition, they represent truth values instead of sort values, however.*
+    *Formulas are syntactically correct expressions in a formalized language_key defined over a signature, a set of variables, and a logics. In this way, formulas are quite similar to terms. Since predicates and logics symbols are included in their inductive definition, they represent truth values instead of sort values, however.*
     -- https://encyclopediaofmath.org/wiki/Formula
 
     Bibliography:

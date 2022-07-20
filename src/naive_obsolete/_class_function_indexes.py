@@ -7,7 +7,7 @@ import notation
 
 
 class FunctionIndexes(ABCRepresentable):
-    """The set of indexes that uniquely identify a function base_name name within its scope."""
+    """The set of indexes that uniquely identify a function base_name name within its scope_key."""
 
     def __init__(self, *args, **kwargs):
         self._indexes = []
