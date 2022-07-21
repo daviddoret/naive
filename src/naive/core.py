@@ -143,21 +143,57 @@ class Language(Concept):
 class Domain(Concept):
     pass
 
+_FORMULA_CATEGORY_VARIABLE = 'variable'
+_FORMULA_CATEGORY_VARIABLE_ATOMIC = 'atomic'
+_FORMULA_CATEGORY_VARIABLE_FORMULA = 'formula'
+_FORMULA_CATEGORY_FUNCTION = 'function'
+_FORMULA_CATEGORY_FUNCTION_CONSTANT = 'constant'
+_FORMULA_CATEGORY_FUNCTION_UNARY_OPERATOR = '1operator'
+_FORMULA_CATEGORY_FUNCTION_BINARY_OPERATOR = '2operator'
+_FORMULA_CATEGORY_FUNCTION_N_NARY_FUNCTION = 'nfunction'
+
+class Formula(Concept):
+    """
+
+    Different types of formula:
+    - AtomicVariable (aka Unknown)
+    - n-ary Function Call with n in N0 (e.g. za1 abs)
+
+    Different sub-types of n-ary Functions:
+    - 0-ary Operator (aka Constant) (e.g. ba1 truth)
+    - Unary Operator (e.g. ba1 negation)
+    - Binary Operator (e.g. ba1 conjunction)
+    - n-ary Function
+
+    """
+    pass
+
 class Function(Concept):
 
     def __init__(
             self,
+            # Identification properties
             scope_key, structure_key, language_key, base_key,
-            codomain,
-            utf8=None, latex=None, html=None, usascii=None, tokens=None,
+            # Mandatory complementary properties
+            codomain, category, subcategory,
+            # Conditional complementary properties
             domain=None, arity=None, pythong_value=None,
+            # Representation properties
+            utf8=None, latex=None, html=None, usascii=None, tokens=None,
             **kwargs):
-        # Complementary Properties.
-        self._codomain = codomain
-        self._domain = domain
-        self._arity = arity
-        self._python_value = pythong_value
+        # Mandatory complementary properties.
+        self._codomain = codomain  # TODO: Implement validation against the static concept database.
+        self._category = category  # TODO: Implement validation against allowed values.
+        self._subcategory = subcategory  # TODO: Implement validation logic dependent of category.
+        # Conditional complementary properties.
+        self._codomain = codomain  # TODO: Implement validation logic dependent of subcategory.
+        self._domain = domain  # TODO: Implement validation against the static concept database.
+        self._arity = arity  # TODO: Implement validation logic dependent of subcategory.
+        self._python_value = pythong_value  # TODO: Question: Should it be mandatory for subcategory = constant?
         # Call the base class initializer.
+        #   Executing this at the end of the initialization process
+        #   assures that the new concept is not appended to the
+        #   static concept and token databases before it is fully initialized.
         super().__init__(
             scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
             utf8=None, latex=None, html=None, usascii=None, tokens=None,
