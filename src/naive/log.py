@@ -24,6 +24,18 @@ logging.basicConfig(format='%(message)s')
 # Reference: https://stackoverflow.com/questions/7016056/python-logging-not-outputting-anything
 logging.root.setLevel(logging.INFO)
 
+def set_debug_level():
+    logging.root.setLevel(logging.DEBUG)
+
+def set_info_level():
+    logging.root.setLevel(logging.INFO)
+
+def set_warning_level():
+    logging.root.setLevel(logging.WARNING)
+
+def set_error_level():
+    logging.root.setLevel(logging.ERROR)
+
 # The following line sets the root logger level as well.
 # It's equivalent to both previous statements combined:
 # Reference: https://stackoverflow.com/questions/7016056/python-logging-not-outputting-anything
@@ -69,7 +81,7 @@ def debug(message: str = '', code: int = 0, **kwargs):
     global logger
     if code not in code_exclusion_list:
         d = stringify_dictionary(**kwargs)
-        message = f'{code}. {message} {d}.'
+        message = f'DEBUGGING: {message} {d}.'
         logger.debug(message)
 
 

@@ -4,13 +4,13 @@ import src.naive as naive
 
 class Test(TestCase):
 
-    def test_1(self):
+    def test_basic_atomic_variable_declaration(self):
         b1 = naive.core.v(naive.ba1.b, base_name='b', indexes=1)
         self.assertEqual('b₁', b1.represent(naive.rformats.UTF8))
 
-    def test_ba1(self):
-        self.assertEqual(naive.ba1.falsum.represent(naive.rformats.UTF8), '⊥')
+    def test_representation_of_truth_and_falsum(self):
         self.assertEqual(naive.ba1.truth.represent(naive.rformats.UTF8), '⊤')
+        self.assertEqual(naive.ba1.falsum.represent(naive.rformats.UTF8), '⊥')
 
     def test_b_variable_declaration(self):
         x = naive.core.v(naive.ba1.b, 'x')
@@ -20,14 +20,18 @@ class Test(TestCase):
         z = naive.core.v(naive.ba1.b, 'z')
         self.assertEqual('z', z.represent(naive.rformats.UTF8))
 
-    def test_get_bn_domains(self):
+    def test_representation_of_domains_and_b_tuple_domains(self):
+
+        self.assertEqual('𝔹', naive.ba1.b.represent(naive.rformats.UTF8))
+        self.assertEqual('𝔹²', naive.ba1.b2.represent(naive.rformats.UTF8))
+
         self.assertEqual('𝔹', naive.ba1.get_bn_domain(1).represent(naive.rformats.UTF8))
         self.assertEqual('𝔹²', naive.ba1.get_bn_domain(2).represent(naive.rformats.UTF8))
         self.assertEqual('𝔹³', naive.ba1.get_bn_domain(3).represent(naive.rformats.UTF8))
         self.assertEqual('𝔹⁴', naive.ba1.get_bn_domain(4).represent(naive.rformats.UTF8))
         self.assertEqual('𝔹²³⁴', naive.ba1.get_bn_domain(234).represent(naive.rformats.UTF8))
 
-    def test_formula(self):
+    def test_formula_representation(self):
         phi1 = naive.core.f(naive.ba1.truth)
         self.assertEqual('⊤', phi1.represent(naive.rformats.UTF8))
 
@@ -73,6 +77,7 @@ class Test(TestCase):
         self.assertEqual('[x, y]', str(phi3.list_atomic_variables()))
 
     def test_4_complex(self):
+        # naive.log.set_debug_level()
         b3 = naive.core.v(codomain=naive.ba1.b, base_name='b', indexes=3)
         b1 = naive.core.v(codomain=naive.ba1.b, base_name='b', indexes=1)
         b2 = naive.core.v(codomain=naive.ba1.b, base_name='b', indexes=2)
@@ -82,7 +87,7 @@ class Test(TestCase):
         self.assertEqual('[b₁, b₂, b₃]', str(psi3.list_atomic_variables()))
         #worlds = naive.ba1.get_boolean_combinations(psi3.arity)
         #print(worlds)
-        #sat_i = naive.ba1.satisfaction_index(psi3)
-        #print(sat_i)
-        #self.assertEqual('[⊥, ⊥, ⊥, ⊤, ⊥, ⊥, ⊥, ⊤]', str(sat_i))
+        sat_i = naive.ba1.satisfaction_index(psi3)
+        print(sat_i)
+        self.assertEqual('[⊥, ⊥, ⊥, ⊤, ⊥, ⊥, ⊥, ⊤]', str(sat_i))
 

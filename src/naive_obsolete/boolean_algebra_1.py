@@ -16,79 +16,6 @@ _truth_initialized = False
 _falsum_initialized = False
 
 
-def falsum_algorithm(vector_size:int = 1) -> BooleanConstant:
-    """The falsum boolean function.
-
-    Returns:
-        BooleanConstant: The boolean falsum.
-    """
-    global falsum
-    return [falsum] * vector_size
-
-
-def truth_algorithm(vector_size:int = 1) -> BooleanConstant:
-    """The truth boolean function.
-
-    Returns:
-        BooleanConstant: The boolean truth.
-    """
-    global truth
-    return [truth] * vector_size
-
-
-def negation_algorithm(v: typing.List[BooleanConstant]) -> typing.List[BooleanConstant]:
-    """The negation boolean function.
-
-    Args:
-        v (typing.List[BooleanConstant]): A vector of boolean constants.
-
-    Returns:
-        typing.List[BooleanConstant]: A vector of the negation of **x**.
-    """
-    global truth
-    global falsum
-    # v = coerce(v, BooleanConstant)  # TODO: Consider support for list coercion.
-    v = flatten(v)  # If scalar, convert to list.
-    return [falsum if e == truth else truth for e in v]
-
-
-def conjunction_algorithm(v1: typing.List[BooleanConstant], v2: typing.List[BooleanConstant]) -> typing.List[BooleanConstant]:
-    """The conjunction boolean function.
-
-    Args:
-        v1 (typing.List[BooleanConstant]): A vector of boolean constants.
-        v2 (typing.List[BooleanConstant]): A vector of boolean constants.
-
-    Returns:
-        typing.List[BooleanConstant]: The vector of the conjunction of **v1** and **v2**.
-    """
-    global truth
-    global falsum
-    # v1 = coerce(v1, BooleanConstant)  # TODO: Consider support for list coercion.
-    # v2 = coerce(v2, BooleanConstant)  # TODO: Consider support for list coercion.
-    v1 = flatten(v1)  # If scalar, convert to list.
-    v2 = flatten(v2)  # If scalar, convert to list.
-    return [truth if (b1 == truth and b2 == truth) else falsum for b1, b2 in zip(v1, v2)]
-
-
-def disjunction_algorithm(v1: BooleanConstant, v2: BooleanConstant) -> BooleanConstant:
-    """The disjunction boolean function.
-
-    Args:
-        v1 (typing.List[BooleanConstant]): A vector of boolean constants.
-        v2 (typing.List[BooleanConstant]): A vector of boolean constants.
-
-    Returns:
-        typing.List[BooleanConstant]: The vector of the disjunction of **v1** and **v2**.
-    """
-    global truth
-    global falsum
-    # v1 = coerce(v1, BooleanConstant)  # TODO: Consider support for list coercion.
-    # v2 = coerce(v2, BooleanConstant)  # TODO: Consider support for list coercion.
-    v1 = flatten(v1)  # If scalar, convert to list.
-    v2 = flatten(v2)  # If scalar, convert to list.
-    return [truth if (b1 == truth or b2 == truth) else falsum for b1, b2 in zip(v1, v2)]
-
 
 
 class BooleanSymbol:
@@ -195,13 +122,6 @@ def get_boolean_combinations(n):
             integer_value in range(0, 2 ** n)]
 
 
-def get_boolean_combinations_column(n, c):
-    """
-    Bibliography:
-        * https://stackoverflow.com/questions/9945720/python-extracting-bits-from-a-byte
-    """
-    # TODO: Assure endianness consistency.
-    return [(truth if (integer_value & 1 << c != 0) else falsum) for integer_value in range(0, 2 ** n)]
 
 
 def execute_formula_exhaustively(f: BooleanFormula):
@@ -306,14 +226,14 @@ class BooleanAlgebra:
 
 class BooleanDomain(WellKnownDomain):
     # TODO: Enrich the Set class as a python dictionary and adapt this class.
-    """A Boolean codomain_key is a set consisting of exactly two elements whose interpretations include false and true.
+    """A Boolean codomain is a set consisting of exactly two elements whose interpretations include false and true.
 
     Bibliography:
         * https://en.wikipedia.org/wiki/Boolean_domain
     """
 
     def __init__(self, **kwargs):
-        """Initializes a Boolean codomain_key."""
+        """Initializes a Boolean codomain."""
         kwargs[keywords.variable_base_name] = glyphs.mathbb_b_uppercase
         kwargs[keywords.variable_exponent] = None
         kwargs[keywords.variable_indexes] = None
@@ -471,9 +391,9 @@ CoercibleBooleanConstant = typing.TypeVar(
 boolean_algebra = BooleanAlgebra()
 
 boolean_domain = BooleanDomain()
-"""The Boolean codomain_key is the set consisting of exactly two elements whose interpretations include false and true.
+"""The Boolean codomain is the set consisting of exactly two elements whose interpretations include false and true.
 
-The Boolean codomain_key is a partially ordered set and its elements are also its bounds.
+The Boolean codomain is a partially ordered set and its elements are also its bounds.
 
 Bibliography:
     * https://en.wikipedia.org/wiki/Boolean_domain
@@ -481,9 +401,9 @@ Bibliography:
 """
 
 b = boolean_domain
-"""A shorthand alias for the Boolean codomain_key.
+"""A shorthand alias for the Boolean codomain.
 
-The Boolean codomain_key is the set consisting of exactly two elements whose interpretations include false and true.
+The Boolean codomain is the set consisting of exactly two elements whose interpretations include false and true.
 
 Bibliography:
     * https://en.wikipedia.org/wiki/Boolean_domain
@@ -494,7 +414,7 @@ b_2 = WellKnownDomain(
     exponent=2,
     indexes=None,
     dimensions=2)
-"""The Boolean codomain_key squared is the codomain_key of all Boolean ordered pairs."""
+"""The Boolean codomain squared is the codomain of all Boolean ordered pairs."""
 # TODO: Implement this as a finite set with all its members.
 
 conjunction = BooleanFunction(

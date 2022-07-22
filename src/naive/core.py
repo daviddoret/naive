@@ -16,15 +16,15 @@ _SCOPE_KEY = 'scope_key'
 _LANGUAGE_KEY = 'language_key'
 
 # SystemFunction Complementary Properties
-_DOMAIN = 'codomain_key'
-_CODOMAIN = 'codomain_key'
+_DOMAIN = 'codomain'
+_CODOMAIN = 'codomain'
 _ARITY = 'arity'
 _PYTHON_VALUE = 'python_value'
 
 # NType Keys
 _STRUCTURE_SCOPE = 'scope_key'
 _STRUCTURE_LANGUAGE = 'language_key'
-_STRUCTURE_DOMAIN = 'codomain_key'
+_STRUCTURE_DOMAIN = 'codomain'
 _STRUCTURE_FUNCTION = 'function'
 _STRUCTURE_ATOMIC_PROPERTY = 'ap'
 _STRUCTURE_VARIABLE = 'variable'
@@ -319,13 +319,6 @@ def declare_variable(codomain, base_name=None, indexes=None):
     # TODO: Provide support for different math fonts (e.g.: https://www.overleaf.com/learn/latex/Mathematical_fonts)
     # TODO: Provide support for indexed variables. Variable declaration should be made with indexes bounds and not individual indexes values.
     codomain_key = None
-    # Provide support for codomain_key argument as Naive object, or codomain_key key.
-    if isinstance(codomain, Domain):
-        codomain_key = codomain.base_key
-    elif isinstance(codomain, str):
-        codomain_key = codomain
-    else:
-        log.error('Unsupported codomain_key', codomain=codomain)
     # Identification properties
     scope_key = _DEFAULT_SCOPE_KEY
     structure_key = _STRUCTURE_FORMULA
@@ -348,7 +341,7 @@ def declare_variable(codomain, base_name=None, indexes=None):
         variable = Formula(
             scope_key=scope_key, language_key=language_key, base_key=base_key,
             category=Formula.ATOMIC_VARIABLE,
-            codomain_key = codomain_key, base_name=base_name, indexes=indexes)
+            codomain= codomain, base_name=base_name, indexes=indexes)
         log.info(variable.represent_declaration())
         return variable
 
@@ -400,7 +393,7 @@ class Formula(Concept):
             # ...for system function calls:
             system_function = None, arguments = None,
             # ...for atomic variables
-            domain = None, codomain_key = None, base_name = None, indexes = None,
+            domain = None, codomain = None, base_name = None, indexes = None,
             **kwargs):
         # Identification properties
         structure_key = _STRUCTURE_FORMULA
@@ -409,10 +402,26 @@ class Formula(Concept):
             log.error('Invalid formula category',
                       category=category, qualified_key=self.qualified_key)
         self._category = category
+        self._arity = None
         self._system_function = system_function
+        # match category:
+        #     case Formula.ATOMIC_VARIABLE:
+        #         # The rationale for this arity = 0 is that atomic variables have no input.
+        #         # This would be wrong of formula variables.
+        #         self._arity = 0
+        #     case Formula.SYSTEM_CONSTANT_CALL:
+        #         self._arity = 0
+        #     case Formula.SYSTEM_UNARY_OPERATOR_CALL:
+        #         self._arity = 1
+        #     case Formula.SYSTEM_BINARY_OPERATOR_CALL:
+        #         self._arity = 2
+        #     # Replace the match ... case ... with system.function.arity.
+        #     # TODO: Implement arity for n-ary system function calls.
+        #     # TODO: Implement arity for formula variables.
+        #     # TODO: Consider making this property a dynamic property.
         self._arguments = arguments
         self._domain = 'NOT IMPLEMENTED'  # TODO: Implement formula domain. It may be None, a base domain or a tuple of domains.
-        self._codomain = codomain_key
+        self._codomain = codomain  # TODO: Check that codomain is only passed as argument when appicable. Otherwise, issue a warning.
         self._base_name = base_name
         self._indexes = indexes
         # Call the base class initializer.
@@ -429,7 +438,18 @@ class Formula(Concept):
 
     @property
     def arity(self):
-        raise NotImplementedError('ooops')
+        if self.category == Formula.ATOMIC_VARIABLE:
+            # For atomic variables, the arity is 0.
+            # The rationale is that an atomic variable doesn't get any input.
+            # This would be wrong of formula variables which deserver a distinct implementation.
+            return 0
+        elif self.is_system_function_call:
+            # For system function calls, the arity of the call
+            # is equal to the arity of the function being called.
+            return self.system_function.arity
+        else:
+            # TODO: Implement the arity property for all object categories.
+            log.warning('The arity property has not been implemented for this concept category.', category=self.category, self=self)
 
     @property
     def category(self):
@@ -437,7 +457,16 @@ class Formula(Concept):
 
     @property
     def codomain(self):
-        return self._codomain
+        if self.category == Formula.ATOMIC_VARIABLE:
+            # For atomic variables, the codomain is part of the object.
+            return self._codomain
+        elif self.is_system_function_call:
+            # For system function calls, the codomain of the function call
+            # is equal to the codomain of the function being called.
+            return self.system_function.codomain
+        else:
+            # TODO: Implement the codomain property for all object categories.
+            log.warning('The codomain property has not been implemented for this concept category.', category=self.category, self=self)
 
     @property
     def domain(self):
@@ -447,6 +476,18 @@ class Formula(Concept):
     @property
     def indexes(self):
         return self._indexes
+
+    @property
+    def is_system_function_call(self):
+        """Return *True* if this is a system function call, *False* otherwise.
+
+        If *True*, the instance has the *system_function* property.
+        """
+        return self.category in [
+            Formula.SYSTEM_CONSTANT_CALL,
+            Formula.SYSTEM_UNARY_OPERATOR_CALL,
+            Formula.SYSTEM_BINARY_OPERATOR_CALL,
+            Formula.SYSTEM_N_ARY_FUNCTION_CALL]
 
     def list_atomic_variables(self):
         """Return the sorted set of variables present in the formula, and its subformulae recursively."""
@@ -505,7 +546,7 @@ class Formula(Concept):
                 rformat = rformats.DEFAULT
             match rformat:
                 case rformats.UTF8:
-                    return f'With {self.represent(rformat)} ∈ {self._codomain}.'
+                    return f'With {self.represent(rformat)} ∈ {self.codomain.represent(rformat)}.'
                 case _:
                     raise NotImplementedError('TODO')
 
@@ -583,7 +624,7 @@ class SystemFunction(Concept):
             # Identification properties
             scope_key, structure_key, language_key, base_key,
             # Mandatory complementary properties
-            codomain, category,
+            category, codomain, algorithm,
             # Conditional complementary properties
             domain=None, arity=None, python_value=None,
             # Representation properties
@@ -591,6 +632,7 @@ class SystemFunction(Concept):
             **kwargs):
         # Mandatory complementary properties.
         self._codomain = codomain  # TODO: Implement validation against the static concept database.
+        self._algorithm = algorithm
         if category not in SystemFunction.CATEGORIES:
             log.error('Invalid formula category',
                       category=category, qualified_key=self.qualified_key)
@@ -610,6 +652,10 @@ class SystemFunction(Concept):
             scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
             utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
             **kwargs)
+
+    @property
+    def algorithm(self):
+        return self._algorithm
 
     @property
     def category(self):

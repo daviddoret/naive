@@ -55,10 +55,10 @@ class Function(ABCRepresentable):
         domain = coerce(domain, Set)
         if domain is None:
             if arity != 0:
-                log.error('If the function has no codomain_key, it must be a constant function with arity 0.')
+                log.error('If the function has no codomain, it must be a constant function with arity 0.')
         else:
             if domain.dimensions != arity:
-                log.error('The arity of a function must be consistent with the dimensions of its codomain_key.', arity=arity, domain=domain)
+                log.error('The arity of a function must be consistent with the dimensions of its codomain.', arity=arity, domain=domain)
         self._arity = arity
         self._domain = domain
         self._codomain = coerce(codomain, Set)
@@ -90,7 +90,7 @@ class Function(ABCRepresentable):
         """The function's arity.
 
         The arity of a function is the number of arguments received by that function.
-        The arity of the function must be consistent with the dimensions of its codomain_key.
+        The arity of the function must be consistent with the dimensions of its codomain.
 
         Bibliography:
             * https://encyclopediaofmath.org/wiki/Signature_(Computer_Science)
