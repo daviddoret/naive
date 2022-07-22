@@ -568,3 +568,55 @@ f = falsum
 """An shorthand alias for **falsum**."""
 
 
+def satisfaction_index(phi: Formula, variables_list=None):
+    """Compute the **satisfaction indexes** (:math:`\text{sat}_I`) of a Boolean formula (:math:`\phi`).
+
+    Alias:
+    **sat_i**
+
+    Definition:
+    Let :math:`\phi` be a Boolean formula.
+    :math:`\text{sat}_I \colon= ` the truth value of :math:`\phi` in all possible worlds.
+
+    Args:
+        phi (BooleanFormula): The Boolean formula :math:`\phi` .
+    """
+    # Retrieve the computed results
+    # TODO: Check that all formula are Boolean formula. Otherwise, the formula
+    #   may not return a Boolean value, forbidding the computation of a satisfaction set.
+    if variables_list is None:
+        variables_list = phi.list_atomic_variables()
+    variables_number = len(variables_list)
+    arguments_number = phi.arity
+    argument_vectors = [None] * arguments_number
+    log.debug(arguments_number=arguments_number)
+    for argument_index in range(0, arguments_number):
+        argument = phi.arguments[argument_index]
+        log.debug(argument=argument, argument_index=argument_index)
+        if isinstance(argument, BooleanFormula):
+            # The argument is a phi.
+            # Recursively compute the satisfaction set of that phi.
+            vector = satisfaction_index(argument, variables_list=variables_list)
+            log.debug(t='phi', vector=vector)
+            argument_vectors[argument_index] = vector
+        elif isinstance(argument, BooleanAtomicVariable):
+            # The argument is an atomic proposition.
+            # We want to retrieve its values from the corresponding bit combinations column.
+            # But we need the vector to be relative to variables_list.
+            # Thus we must first find the position of this atomic variable,
+            # in the variables_list.
+            atomic_variable_index = variables_list.index(argument)
+            vector = get_boolean_combinations_column(variables_number, atomic_variable_index)
+            log.debug(t='atomic variable', vector=vector)
+            argument_vectors[argument_index] = vector
+        else:
+            log.error('Unexpected type', argument=argument, t=type(argument))
+    log.info(argument_vectors=argument_vectors)
+    output_vector = None
+    match phi.arity:
+        case 0: output_vector = phi.symbol.algorithm(vector_size =2 ** variables_number)
+        case 1: output_vector = phi.symbol.algorithm(argument_vectors[0])
+        case 2: output_vector = phi.symbol.algorithm(argument_vectors[0], argument_vectors[1])
+        case _: log.error('Arity > 2 are not yet supported, sorry')
+    log.info(output_vector=output_vector)
+    return output_vector

@@ -106,6 +106,9 @@ class Concept:
     def __str__(self):
         return self.represent(rformats.UTF8)
 
+    def __repr__(self):
+        return self.represent(rformats.UTF8)
+
     @property
     def arity(self):
         return self._arity
@@ -408,6 +411,7 @@ class Formula(Concept):
     - n-ary SystemFunction
 
     """
+    # TODO: Issue a warning when a property is accessed when the category make it invalid.
 
     # Constants
     ATOMIC_VARIABLE = 'formula_atomic_variable'  # TODO: Question: is it justified to distinguish this from FORMULA_VARIABLE?
@@ -429,7 +433,7 @@ class Formula(Concept):
             # ...for system function calls:
             system_function = None, arguments = None,
             # ...for atomic variables
-            codomain_key = None, base_name = None, indexes = None,
+            domain = None, codomain_key = None, base_name = None, indexes = None,
             **kwargs):
         # Identification properties
         structure_key = _STRUCTURE_FORMULA
@@ -440,6 +444,7 @@ class Formula(Concept):
         self._category = category
         self._system_function = system_function
         self._arguments = arguments
+        self._domain = 'NOT IMPLEMENTED'  # TODO: Implement formula domain. It may be None, a base domain or a tuple of domains.
         self._codomain = codomain_key
         self._base_name = base_name
         self._indexes = indexes
@@ -456,6 +461,10 @@ class Formula(Concept):
         return self._arguments
 
     @property
+    def arity(self):
+        raise NotImplementedError('ooops')
+
+    @property
     def category(self):
         return self._category
 
@@ -464,15 +473,20 @@ class Formula(Concept):
         return self._codomain
 
     @property
+    def domain(self):
+        raise NotImplementedError('Please implement the domain property')
+        return self._domain
+
+    @property
     def indexes(self):
         return self._indexes
 
     def list_atomic_variables(self):
-        """Return the sorted set of variables present in the formula and its subformulae recursively."""
+        """Return the sorted set of variables present in the formula, and its subformulae recursively."""
         l = set()
         for a in self.arguments:
             if isinstance(a, Formula) and a.category == Formula.ATOMIC_VARIABLE:
-                l.add(a.variable)
+                l.add(a)
             elif isinstance(a, Formula):
                 l_prime = a.list_atomic_variables()
                 for a_prime in l_prime:
@@ -482,7 +496,7 @@ class Formula(Concept):
 
         # To allow sorting and indexing, convert the set to a list.
         l = list(l)
-        l.sort()
+        l.sort(key=lambda x: x.base_key)
         return l
 
     def represent(self, rformat: str = None, *args, **kwargs) -> str:

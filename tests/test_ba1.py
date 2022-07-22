@@ -55,9 +55,14 @@ class Test(TestCase):
 
         phi1 = naive.core.f(naive.ba1.negation, x)
         self.assertEqual('¬x', phi1.represent(naive.rformats.UTF8))
+        self.assertEqual('[x]', str(phi1.list_atomic_variables()))
 
         phi2 = naive.core.f(naive.ba1.conjunction, phi1, y)
         self.assertEqual('(¬x ∧ y)', phi2.represent(naive.rformats.UTF8))
+        print(phi2.list_atomic_variables())
+        self.assertEqual('[x, y]', str(phi2.list_atomic_variables()))
 
         phi3 = naive.core.f(naive.ba1.disjunction, phi2, phi1)
         self.assertEqual('((¬x ∧ y) ∨ ¬x)', phi3.represent(naive.rformats.UTF8))
+        print(phi3.list_atomic_variables())
+        self.assertEqual('[x, y]', str(phi3.list_atomic_variables()))
