@@ -8,9 +8,19 @@ class Test(TestCase):
         self.assertEqual(naive.ba1.truth.represent(naive.rformats.UTF8), '⊤')
 
     def test_b_variable_declaration(self):
-        x = naive.core.v('x', naive.ba1.b)
-        y = naive.core.v('y', naive.ba1.b)
-        z = naive.core.v('z', naive.ba1.b)
+        x = naive.core.v(naive.ba1.b, 'x')
+        self.assertEqual('x', x.represent(naive.rformats.UTF8))
+        y = naive.core.v(naive.ba1.b, 'y')
+        self.assertEqual('y', y.represent(naive.rformats.UTF8))
+        z = naive.core.v(naive.ba1.b, 'z')
+        self.assertEqual('z', z.represent(naive.rformats.UTF8))
+
+    def test_get_bn_domains(self):
+        self.assertEqual('𝔹', naive.ba1.get_bn_domain(1).represent(naive.rformats.UTF8))
+        self.assertEqual('𝔹²', naive.ba1.get_bn_domain(2).represent(naive.rformats.UTF8))
+        self.assertEqual('𝔹³', naive.ba1.get_bn_domain(3).represent(naive.rformats.UTF8))
+        self.assertEqual('𝔹⁴', naive.ba1.get_bn_domain(4).represent(naive.rformats.UTF8))
+        self.assertEqual('𝔹²³⁴', naive.ba1.get_bn_domain(234).represent(naive.rformats.UTF8))
 
     def test_formula(self):
         phi1 = naive.core.f(naive.ba1.truth)

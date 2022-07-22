@@ -114,6 +114,25 @@ class Concept:
         return self._base_key
 
     @staticmethod
+    def check_concept_from_decomposed_key(scope_key: str, structure_key: str, language_key: str, base_key: str, **kwargs):
+        if scope_key is not None and structure_key is not None and language_key is not None and base_key is not None:
+            qualified_key = get_qualified_key(scope_key, structure_key, language_key, base_key)
+            return Concept.check_concept_from_qualified_key(
+                qualified_key, scope=scope_key, ntype=structure_key, language=language_key, nkey=base_key,
+                **kwargs)
+        else:
+            log.error('Some identification properties are None', scope=scope_key, ntype=structure_key,
+                      language=language_key, nkey=base_key, **kwargs)
+
+    @staticmethod
+    def check_concept_from_qualified_key(qualified_key, **kwargs):
+        if qualified_key is not None:
+            return qualified_key in Concept._concept_database
+        else:
+            log.error('Checking concept with None qualified key is impossible.',
+                      qualified_key=qualified_key, **kwargs)
+
+    @staticmethod
     def get_concept_from_decomposed_key(scope_key: str, structure_key: str, language_key: str, base_key: str, **kwargs):
         if scope_key is not None and structure_key is not None and language_key is not None and base_key is not None:
             qualified_key = get_qualified_key(scope_key, structure_key, language_key, base_key)
@@ -358,7 +377,7 @@ def declare_variable(domain, base_name=None, index=None):
 
 def v(domain, base_name = None, index = None):
     """Shorthand function to declare a new variable."""
-    declare_variable(domain, base_name, index)
+    return declare_variable(domain, base_name, index)
 
 
 class Formula(Concept):

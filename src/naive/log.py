@@ -93,9 +93,9 @@ def error(message: str = '', *args, code: int = 0, **kwargs):
     global logger
     if code not in code_exclusion_list:
         d = stringify_dictionary(**kwargs)
-        message = f'{code}: {message}. {d}.'
+        message = f'ERROR: {message}. {d}.'
         logger.error(message, exc_info=True)
-        # raise NaiveError(message)
+        raise NaiveError(message)
 
 
 

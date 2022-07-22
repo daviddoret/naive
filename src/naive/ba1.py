@@ -26,6 +26,35 @@ b2 = core.Domain(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_DOMAIN, language_key=_LANGUAGE_BA1, base_key='b2',
     utf8='𝔹²', latex=r'\mathbb{B}^{2}', html=r'&Bopf;<sup>2</sup>', usascii='B2')
 
+from _function_superscriptify import superscriptify
+
+
+def get_bn_domain(n):
+    """Returns the n-tuple domain 𝔹ⁿ where n is a natural number > 0.
+
+    Assures the presence of the domain 𝔹ⁿ in the concept database.
+    """
+    if not isinstance(n, int):
+        log.error('n must be an int')
+    elif n < 1:
+        log.error('n must be > 1')
+    elif n == 1:
+        return b
+    elif n == 2:
+        return b2
+    else:
+        scope_key=_SCOPE_BA1
+        structure_key=core._STRUCTURE_DOMAIN
+        language_key=_LANGUAGE_BA1
+        base_key = 'b' + str(n)  # TODO: Check it is an int
+        # TODO: Consider implementing a lock to avoid bugs with multithreading when checking the static dictionary
+        if core.Concept.check_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key):
+            return core.Concept.get_concept_from_decomposed_key(scope_key=scope_key, structure_key=core.structure_key, language_key=language_key, base_key=base_key)
+        else:
+            return core.Domain(
+                scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
+                utf8='𝔹' + superscriptify(n), latex=r'\mathbb{B}^{' + str(n) + r'}', html=r'&Bopf;<sup>' + str(n) + '</sup>', usascii='B' + str(n))
+
 # Functions.
 truth = core.SystemFunction(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='truth',
