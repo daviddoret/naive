@@ -10,21 +10,25 @@ _STRUCTURE_KEY = 'structure_key'
 _SCOPE_KEY = 'scope_key'
 _LANGUAGE_KEY = 'language_key'
 
-# Function Complementary Properties
+# AtomicFunction Complementary Properties
 _DOMAIN = 'domain'
 _CODOMAIN = 'codomain'
 _ARITY = 'arity'
 _PYTHON_VALUE = 'python_value'
 
 # NType Keys
-_STRUCTURE_LANGUAGE = 'language_key'
+_STRUCTURE_SCOPE = 'scope'
+_STRUCTURE_LANGUAGE = 'language'
 _STRUCTURE_DOMAIN = 'domain'
 _STRUCTURE_FUNCTION = 'function'
 _STRUCTURE_ATOMIC_PROPERTY = 'ap'
 
 _QUALIFIED_KEY_SEPARATOR = '.'
-_MNEMONIC_KEY_ALLOWED_CHARACTERS = 'abcdefghijklmnopqrstuvwxyz012345679'
+_MNEMONIC_KEY_ALLOWED_CHARACTERS = 'abcdefghijklmnopqrstuvwxyz012345679_'
 
+_DEFAULT_SCOPE_KEY = ''
+_SYSTEM_DEFINED_KEY_PREFIX = 'sys_'
+_USER_DEFINED_KEY_PREFIX = 'ud_'
 
 def unkwargs(kwargs, key):
     return None if key not in kwargs else kwargs[key]
@@ -226,38 +230,7 @@ class Domain(Concept):
             utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
             **kwargs)
 
-# Formula categories
-VARIABLE = 'variable'
-FUNCTION = 'function call'
-FORMULA_CATEGORIES = [VARIABLE, FUNCTION]
-
-# Formula subcategories
-ATOMIC_VARIABLE = 'atomic'
-FORMULA_VARIABLE = 'formula'
-CONSTANT = 'constant call'
-UNARY_OPERATOR = 'unary operator call'
-BINARY_OPERATOR = 'binary operator call'
-N_ARY_FUNCTION = 'n-ary function call'
-FORMULA_SUBCATEGORIES = {
-    VARIABLE: [ATOMIC_VARIABLE, FORMULA_VARIABLE],
-    FUNCTION: [CONSTANT, UNARY_OPERATOR, BINARY_OPERATOR, N_ARY_FUNCTION]}
-
-
-class Formula(Concept):
-    """
-
-    Different types of formula:
-    - Atomic Variable (aka Unknown) (e.g. x + 5 = 17, x ∉ ℕ₀)
-    - Formula Variable (e.g. φ = ¬x ∨ y, z ∧ φ)
-    - n-ary Function Call with n in N0 (e.g. za1 abs)
-
-    Different sub-types of n-ary Functions:
-    - 0-ary Operator (aka Constant) (e.g. ba1 truth)
-    - Unary Operator (e.g. ba1 negation)
-    - Binary Operator (e.g. ba1 conjunction)
-    - n-ary Function
-
-    """
+class Scope(Concept):
     def __init__(
             self,
             # Identification properties
@@ -279,14 +252,149 @@ class Formula(Concept):
             **kwargs)
 
 
-class Function(Concept):
+def set_default_scope(scope_key):
+    """Set the default current context."""
+    global _DEFAULT_SCOPE_KEY
+    # TODO: Allow the usage of friendly name, notes or documentation, etc.
+    if scope_key is None:
+        log.error(f'None is not a valid context key. Please provide a non-empty string composed of the allowed characters: "{_MNEMONIC_KEY_ALLOWED_CHARACTERS}".')
+    if not isinstance(scope_key, str):
+        log.error(f'The object "{scope_key}" of type "{type(scope_key)}" is not a valid context key. Please provide a non-empty string composed of the allowed characters: "{_MNEMONIC_KEY_ALLOWED_CHARACTERS}".')
+    scope_key_cleaned = clean_mnemonic_key(scope_key)
+    if scope_key_cleaned != scope_key:
+        log.warning(f'Please note that the context key "{scope_key}" contained unsupported characters. The allowed characters for context keys are: "{_MNEMONIC_KEY_ALLOWED_CHARACTERS}". It was automatically cleaned from unsupported characters. The resulting context key is: {scope_key_cleaned}')
+    if scope_key == '':
+        log.error(f'An empty string is not a valid context key. Please provide a non-empty string composed of the allowed characters: "{_MNEMONIC_KEY_ALLOWED_CHARACTERS}".')
+
+    prefixed_key = _USER_DEFINED_KEY_PREFIX + scope_key_cleaned
+    _DEFAULT_SCOPE_KEY = prefixed_key
+    log.info(f'Default scope is: "{scope_key_cleaned}".')
+
+
+def get_default_scope():
+    return _DEFAULT_SCOPE_KEY[len(_USER_DEFINED_KEY_PREFIX):]
+
+
+class Variable(Concept):
+    """
+
+    Definition:
+    ...
+    """
+
+
+def declare_variable():
+    pass
+
+def v():
+    """Shorthand function to declare a new variable."""
+    declare_variable()
+
+class Formula(Concept):
+    """
+
+    Definition:
+    A formula, in the context of the naive package,
+    is a tree of "calls" to functions, constants, or variables.
+    ...
+
+    Different types of formula:
+    - Atomic Variable (aka Unknown) (e.g. x + 5 = 17, x ∉ ℕ₀)
+    - Formula Variable (e.g. φ = ¬x ∨ y, z ∧ φ)
+    - n-ary AtomicFunction Call with n in N0 (e.g. za1 abs)
+
+    Different sub-types of n-ary Functions:
+    - 0-ary Operator (aka Constant) (e.g. ba1_language truth)
+    - Unary Operator (e.g. ba1_language negation)
+    - Binary Operator (e.g. ba1_language conjunction)
+    - n-ary AtomicFunction
+
+    """
+
+    # Constants
+    ATOMIC_VARIABLE = 'formula_atomic_variable'  # TODO: Question: is it justified to distinguish this from FORMULA_VARIABLE?
+    FORMULA_VARIABLE = 'formula_formula_variable'  # TODO: Question: is it justified to distinguish this from ATOMIC_VARIABLE?
+    CONSTANT_CALL = 'formula_constant_call'  # Aka a 0-ary function.
+    UNARY_OPERATOR_CALL = 'formula_unary_operator_call'
+    BINARY_OPERATOR_CALL = 'formula_binary_operator_call'
+    N_ARY_FUNCTION_CALL = 'formula_n_ary_function_call'
+    CATEGORIES = [ATOMIC_VARIABLE, FORMULA_VARIABLE, CONSTANT_CALL, UNARY_OPERATOR_CALL, BINARY_OPERATOR_CALL, N_ARY_FUNCTION_CALL]
 
     def __init__(
             self,
             # Identification properties
             scope_key, structure_key, language_key, base_key,
             # Mandatory complementary properties
-            codomain, category, subcategory,
+            category,
+            # Conditional complementary properties
+            # Representation properties
+            utf8=None, latex=None, html=None, usascii=None, tokens=None,
+            **kwargs):
+
+        # Mandatory complementary properties.
+        if category not in Formula.CATEGORIES:
+            log.error('Invalid formula category',
+                      category=category, qualified_key=self.qualified_key)
+        self._category = category
+
+        # Call the base class initializer.
+        #   Executing this at the end of the initialization process
+        #   assures that the new concept is not appended to the
+        #   static concept and token databases before it is fully initialized.
+        super().__init__(
+            scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
+            utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
+            **kwargs)
+
+    def represent(self, rformat: str = None, *args, **kwargs) -> str:
+        pass
+        # if rformat is None:
+        #     rformat = rformats.DEFAULT
+        # if self.category == Formula.ATOMIC_VARIABLE:
+        #     return self.symbol.represent(rformat, *args, **kwargs)
+        # elif isinstance(self.symbol, AtomicFunction):
+        #     if self.symbol.preferred_call_representation == FUNCTION:
+        #         # f(x,y,z)
+        #         variable_list = ', '.join(map(lambda a: a.represent(), self.arguments))
+        #         return f'{self.symbol.represent(rformat)}{glyphs.parenthesis_left.represent(rformat)}{variable_list}{glyphs.parenthesis_right.represent(rformat)}'
+        #     elif self.symbol.preferred_call_representation == OPERATOR:
+        #         if self.arity == 1:
+        #             # fx
+        #             return f'{self.symbol.represent(rformat)}{self.arguments[0].represent(rformat)}'
+        #         elif self.arity == 2:
+        #             # x f y
+        #             return f'{self.arguments[0].represent(rformat)}{glyphs.small_space.represent(rformat)}{self.symbol.represent(rformat)}{glyphs.small_space.represent(rformat)}{self.arguments[1].represent(rformat)}'
+        #         else:
+        #             log.error('arity > 2 is not supported for OPERATOR call representation.', self=self)
+        #     else:
+        #         log.error('Unknown call representation', self=self)
+        # else:
+        #     log.error('Symbol of unsupported type in formula.', self=self)
+
+
+class AtomicFunction(Concept):
+    """An atomic function.
+
+    Definition:
+    An atomic function, in the context of the naive package,
+    is a function that is predefined in the sense that it is accompanied by a programmatic algorithm and not a formula,
+    and atomic in the sense that it cannot be further decomposed into constituent sub-formulae.
+
+    """
+
+    # Constants
+    CONSTANT = 'atomic_constant'  # Aka a 0-ary function.
+    UNARY_OPERATOR = 'atomic_unary_operator'  # Aka a unary function with operator notation.
+    BINARY_OPERATOR = 'atomic_binary_operator'  # Aka a binary function with operator notation.
+    N_ARY_FUNCTION = 'atomic_n_ary_function'
+    CATEGORIES = [CONSTANT, UNARY_OPERATOR, BINARY_OPERATOR, N_ARY_FUNCTION]
+
+    def __init__(
+            self,
+            # Identification properties
+            scope_key, structure_key, language_key, base_key,
+            # Mandatory complementary properties
+            codomain, category,
             # Conditional complementary properties
             domain=None, arity=None, python_value=None,
             # Representation properties
@@ -294,20 +402,16 @@ class Function(Concept):
             **kwargs):
         # Mandatory complementary properties.
         self._codomain = codomain  # TODO: Implement validation against the static concept database.
-        if category not in FORMULA_CATEGORIES:
+        if category not in AtomicFunction.CATEGORIES:
             log.error('Invalid formula category',
-                      category=category, self=self)
-        self._category = category  # TODO: Implement validation against allowed values.
-        if subcategory not in FORMULA_SUBCATEGORIES[category]:
-            log.error('Invalid formula subcategory',
-                      subcategory=subcategory, category=category, self=self)
-        self._subcategory = subcategory  # TODO: Implement validation logic dependent of category.
+                      category=category, qualified_key=self.qualified_key)
+        self._category = category
         # Conditional complementary properties.
         self._domain = domain  # TODO: Implement validation against the static concept database.
         self._arity = arity  # TODO: Implement validation logic dependent of subcategory.
-        if subcategory == CONSTANT and python_value is None:
+        if category == AtomicFunction.CONSTANT and python_value is None:
             log.error('python_value is mandatory for constants (0-ary functions) but it was None.',
-                      python_value=python_value, subcategory=subcategory, self=self)
+                      python_value=python_value, category=category, qualified_key=self.qualified_key)
         self._python_value = python_value  # TODO: Question: Should it be mandatory for subcategory = constant?
         # Call the base class initializer.
         #   Executing this at the end of the initialization process
@@ -327,16 +431,19 @@ class Function(Concept):
         return self._domain
 
     @property
-    def compute_value(self):
-        if self._subcategory == CONSTANT:
+    def compute_programmatic_value(self):
+        # TODO: The idea is to distinguish the computerized or programmatic value,
+        #   here as a canonical mapping to a python object,
+        #   with the symbolic value, the later being the naive concept.
+        if self.category == AtomicFunction.CONSTANT:
             return self._python_value
         else:
             raise NotImplementedError('ooops')
 
-    def is_equal_value(self, other):
+    def equal_programmatic_value(self, other):
         """Return true if two formula yield identical values, false otherwise."""
-        if isinstance(other, Formula) and other.subcategory == CONSTANT:
-            return self.compute_value() == other.compute_value()
+        if isinstance(other, Formula) and other.subcategory == AtomicFunction.CONSTANT:
+            return self.compute_programmatic_value() == other.compute_programmatic_value()
         else:
             raise NotImplementedError('oooops again')
 
@@ -344,24 +451,14 @@ class Function(Concept):
 def get_qualified_key(scope, ntype, language, nkey):
     return f'{scope}{_QUALIFIED_KEY_SEPARATOR}{ntype}{_QUALIFIED_KEY_SEPARATOR}{language}{_QUALIFIED_KEY_SEPARATOR}{nkey}'
 
+# Scope.
+system_scope = Scope(
+    scope_key='sys', structure_key=_STRUCTURE_SCOPE, language_key='naive', base_key='sys',
+    utf8='sys', latex=r'\text{sys}', html='sys', usascii='sys')
 
-def instantiate_concept(**kwargs):
-    # TODO: This is just an idea. It would be easy to develop
-    #  a transversal factory function that would call the correct
-    #  constructor based on the structure_key argument.
-    pass
+initial_user_defined_scope = Scope(
+    scope_key='sys', structure_key=_STRUCTURE_SCOPE, language_key='naive', base_key=_USER_DEFINED_KEY_PREFIX + 'scope1',
+    utf8='scope₁', latex=r'\text{scope}_1', html=r'scope<sub>1</sub>', usascii='scope1')
+# TODO: Question: what should be the scope_key of user defined scopes? sys? the scope itself?
 
-
-# Friendly programmatic writing functions
-
-def f():
-    """Instanciates a function formula element."""
-    pass
-
-def v():
-    """Instanciates an atomic variable formula element."""
-    pass
-
-def c():
-    """Instanciates a constant formula element."""
-    pass
+set_default_scope('scope1')

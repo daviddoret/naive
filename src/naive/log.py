@@ -27,14 +27,14 @@ def stringify_dictionary(**kwargs):
 def debug(message: str = '', code: int = 0, **kwargs):
     if code not in code_exclusion_list:
         d = stringify_dictionary(**kwargs)
-        message = f'{code}: {message}. {d}.'
+        message = f'{code}: {message} {d}.'
         logger.debug(message)
 
 
 def info(message: str = '', code: int = 0, **kwargs):
     if code not in code_exclusion_list:
         d = stringify_dictionary(**kwargs)
-        message = f'{code}: {message}. {d}.'
+        message = f'{message} {d}.'
         logger.info(message)
 
 
@@ -42,15 +42,15 @@ def warning(message: str = '', code: int = 0, **kwargs):
     if code not in code_exclusion_list:
         d = stringify_dictionary(**kwargs)
         message = f'{code}: {message}. {d}.'
-        logger.warning(message, category=NaiveWarning)
+        logger.warning(message)
 
 
 def error(message: str = '', *args, code: int = 0, **kwargs):
     if code not in code_exclusion_list:
         d = stringify_dictionary(**kwargs)
         message = f'{code}: {message}. {d}.'
-        raise NaiveError(message)
-
+        logging.error(message, exc_info=True)
+        # raise NaiveError(message)
 
 
 

@@ -27,7 +27,6 @@ class Formula(ABCRepresentable):
         self._arguments = arguments
         super().__init__()
 
-
     @property
     def arity(self):
         return self._symbol.arity
