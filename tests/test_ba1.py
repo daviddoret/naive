@@ -43,6 +43,21 @@ class Test(TestCase):
         y = naive.core.v(naive.ba1.b, 'y')
 
         phi1 = naive.core.f(naive.ba1.negation, x)
+        self.assertEqual('¬x', phi1.represent(naive.rformats.UTF8))
+
         phi2 = naive.core.f(naive.ba1.conjunction, x, y)
+        self.assertEqual('(x ∧ y)', phi2.represent(naive.rformats.UTF8))
 
+    def test_formula_composition(self):
+        x = naive.core.v(naive.ba1.b, 'x')
+        y = naive.core.v(naive.ba1.b, 'y')
+        z = naive.core.v(naive.ba1.b, 'z')
 
+        phi1 = naive.core.f(naive.ba1.negation, x)
+        self.assertEqual('¬x', phi1.represent(naive.rformats.UTF8))
+
+        phi2 = naive.core.f(naive.ba1.conjunction, phi1, y)
+        self.assertEqual('(¬x ∧ y)', phi2.represent(naive.rformats.UTF8))
+
+        phi3 = naive.core.f(naive.ba1.disjunction, phi2, phi1)
+        self.assertEqual('((¬x ∧ y) ∨ ¬x)', phi3.represent(naive.rformats.UTF8))
