@@ -1,4 +1,5 @@
 from __future__ import annotations
+from collections.abc import Iterable
 import log
 from _function_subscriptify import subscriptify
 from _function_superscriptify import superscriptify
@@ -314,72 +315,38 @@ def get_default_scope():
     return _DEFAULT_SCOPE_KEY[len(_USER_DEFINED_KEY_PREFIX):]
 
 
-# class Variable(Concept):
-#     """
-#
-#     Definition:
-#     ...
-#     """
-#
-#     def __init__(
-#             self,
-#             # Identification properties
-#             scope_key, structure_key, language_key, base_key,
-#             # Mandatory complementary properties
-#             domain_key,
-#             # Conditional complementary properties
-#             # Representation properties
-#             utf8=None, latex=None, html=None, usascii=None, tokens=None,
-#             **kwargs):
-#         # ...
-#         self._domain_key = domain_key
-#
-#         # Call the base class initializer.
-#         #   Executing this at the end of the initialization process
-#         #   assures that the new concept is not appended to the
-#         #   static concept and token databases before it is fully initialized.
-#         super().__init__(
-#             scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
-#             utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
-#             **kwargs)
-#
-#     def represent_declaration(self, rformat: str = None, *args, **kwargs) -> str:
-#         if rformat is None:
-#             rformat = rformats.DEFAULT
-#         match rformat:
-#             case rformats.UTF8:
-#                 return f'With {self.represent(rformat)} ∈ {self._domain_key}.'
-#             case _:
-#                 raise NotImplementedError('TODO')
-
-
 def declare_variable(codomain, base_name=None, indexes=None):
     # TODO: Provide support for different math fonts (e.g.: https://www.overleaf.com/learn/latex/Mathematical_fonts)
     # TODO: Provide support for indexed variables. Variable declaration should be made with indexes bounds and not individual indexes values.
-    scope_key = _DEFAULT_SCOPE_KEY
-    # TODO: Implemented base_name cleaning.
-    # base_name = clean_variable_base_name(base_name)
-    # TODO: Provide support for both codomain_key argument as codomain_key object or codomain_key key.
-    base_key = base_name
     codomain_key = None
+    # Provide support for codomain_key argument as Naive object, or codomain_key key.
     if isinstance(codomain, Domain):
-        codomain_key = codomain
+        codomain_key = codomain.base_key
     elif isinstance(codomain, str):
         codomain_key = codomain
     else:
-        log.error('Unsupported codomain_key', domain=codomain)
+        log.error('Unsupported codomain_key', codomain=codomain)
     # Identification properties
-    scope_key = scope_key
+    scope_key = _DEFAULT_SCOPE_KEY
     structure_key = _STRUCTURE_FORMULA
     language_key = _LANGUAGE_NAIVE
+    if base_name is None:
+        # TODO: Make this a scope preference setting, letting the user choose the default
+        #   variable base_name in that scope.
+        base_name = 'x'
     base_key = base_name
+    if indexes is not None:
+        if not isinstance(indexes, Iterable):
+            base_key = base_key + '__' + str(indexes)
+        else:
+            base_key = base_key + '__' + '_'.join(str(index) for index in indexes)
     if Concept.check_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key):
         variable = Concept.get_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key)
         log.warning('This variable is already declared. In consequence, the existing variable is returned, instead of declaring a new one.', variable=variable, scope_key=scope_key)
         return variable
     else:
         variable = Formula(
-            scope_key=scope_key, language_key=_LANGUAGE_NAIVE, base_key=base_name,
+            scope_key=scope_key, language_key=language_key, base_key=base_key,
             category=Formula.ATOMIC_VARIABLE,
             codomain_key = codomain_key, base_name=base_name, indexes=indexes)
         log.info(variable.represent_declaration())
@@ -512,8 +479,8 @@ class Formula(Concept):
                 #   As an initial approach, it provides support for ASCII like variables.
                 #   We may consider storing a Glyph as the base name,
                 #   and calling the static represent() function.
-                return self._base_name #+ \
-                       #subscriptify(represent(self._indexes, rformat), rformat)
+                return self._base_name + \
+                       subscriptify(represent(self._indexes, rformat), rformat)
             case Formula.SYSTEM_CONSTANT_CALL:
                 # x
                 return f'{self._system_function.represent(rformat)}'

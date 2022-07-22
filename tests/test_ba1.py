@@ -3,6 +3,11 @@ import src.naive as naive
 
 
 class Test(TestCase):
+
+    def test_1(self):
+        b1 = naive.core.v(naive.ba1.b, base_name='b', indexes=1)
+        self.assertEqual('b₁', b1.represent(naive.rformats.UTF8))
+
     def test_ba1(self):
         self.assertEqual(naive.ba1.falsum.represent(naive.rformats.UTF8), '⊥')
         self.assertEqual(naive.ba1.truth.represent(naive.rformats.UTF8), '⊤')
@@ -49,9 +54,9 @@ class Test(TestCase):
         self.assertEqual('(x ∧ y)', phi2.represent(naive.rformats.UTF8))
 
     def test_formula_composition(self):
+        z = naive.core.v(naive.ba1.b, 'z')
         x = naive.core.v(naive.ba1.b, 'x')
         y = naive.core.v(naive.ba1.b, 'y')
-        z = naive.core.v(naive.ba1.b, 'z')
 
         phi1 = naive.core.f(naive.ba1.negation, x)
         self.assertEqual('¬x', phi1.represent(naive.rformats.UTF8))
@@ -66,3 +71,18 @@ class Test(TestCase):
         self.assertEqual('((¬x ∧ y) ∨ ¬x)', phi3.represent(naive.rformats.UTF8))
         print(phi3.list_atomic_variables())
         self.assertEqual('[x, y]', str(phi3.list_atomic_variables()))
+
+    def test_4_complex(self):
+        b3 = naive.core.v(codomain=naive.ba1.b, base_name='b', indexes=3)
+        b1 = naive.core.v(codomain=naive.ba1.b, base_name='b', indexes=1)
+        b2 = naive.core.v(codomain=naive.ba1.b, base_name='b', indexes=2)
+        psi1 = naive.core.f(naive.ba1.conjunction, b1, b2)
+        psi2 = naive.core.f(naive.ba1.disjunction, b3, b1)
+        psi3 = naive.core.f(naive.ba1.conjunction, psi1, psi2)
+        self.assertEqual('[b₁, b₂, b₃]', str(psi3.list_atomic_variables()))
+        #worlds = naive.ba1.get_boolean_combinations(psi3.arity)
+        #print(worlds)
+        #sat_i = naive.ba1.satisfaction_index(psi3)
+        #print(sat_i)
+        #self.assertEqual('[⊥, ⊥, ⊥, ⊤, ⊥, ⊥, ⊥, ⊤]', str(sat_i))
+
