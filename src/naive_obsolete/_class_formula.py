@@ -36,6 +36,7 @@ class Formula(ABCRepresentable):
         return self._arguments
 
     def list_atomic_variables(self):
+        """Return the sorted set of variables present in the formula and its subformulae recursively."""
         l = set()
         for a in self.arguments:
             if isinstance(a, AtomicVariable):

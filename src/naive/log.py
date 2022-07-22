@@ -85,7 +85,7 @@ def warning(message: str = '', code: int = 0, **kwargs):
     global logger
     if code not in code_exclusion_list:
         d = stringify_dictionary(**kwargs)
-        message = f'{code}: {message}. {d}.'
+        message = f'WARNING: {message} {d}'
         logger.warning(message)
 
 

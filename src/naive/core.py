@@ -3,6 +3,7 @@ import log
 from _function_subscriptify import subscriptify
 from _function_superscriptify import superscriptify
 import threading
+from _function_represent import represent
 
 # Concept Core Properties
 import rformats
@@ -14,15 +15,15 @@ _SCOPE_KEY = 'scope_key'
 _LANGUAGE_KEY = 'language_key'
 
 # SystemFunction Complementary Properties
-_DOMAIN = 'domain'
-_CODOMAIN = 'codomain'
+_DOMAIN = 'codomain_key'
+_CODOMAIN = 'codomain_key'
 _ARITY = 'arity'
 _PYTHON_VALUE = 'python_value'
 
 # NType Keys
-_STRUCTURE_SCOPE = 'scope'
-_STRUCTURE_LANGUAGE = 'language'
-_STRUCTURE_DOMAIN = 'domain'
+_STRUCTURE_SCOPE = 'scope_key'
+_STRUCTURE_LANGUAGE = 'language_key'
+_STRUCTURE_DOMAIN = 'codomain_key'
 _STRUCTURE_FUNCTION = 'function'
 _STRUCTURE_ATOMIC_PROPERTY = 'ap'
 _STRUCTURE_VARIABLE = 'variable'
@@ -100,10 +101,10 @@ class Concept:
         else:
             log.error(
                 'The initialization of the concept could not be completed because the qualified key was already present in the static database.',
-                qualified_key=self.qualified_key, self=self)
+                qualified_key=self.qualified_key)
 
     def __str__(self):
-        return self._utf8
+        return self.represent(rformats.UTF8)
 
     @property
     def arity(self):
@@ -162,7 +163,7 @@ class Concept:
         A **token** is a list of text symbols that is mapped to a specific concept.
         """
         # TODO: Resume implementation here.
-        #   - In Concept __init__: subscribe tokens to a global index and check for unicity.
+        #   - In Concept __init__: subscribe tokens to a global indexes and check for unicity.
         pass
 
     def is_equal_concept(self, other: Concept):
@@ -205,8 +206,8 @@ class Concept:
 
     @property
     def qualified_key(self):
-        return get_qualified_key(scope=self.scope_key, ntype=self.structure_key, language=self.language,
-                                 nkey=self.base_key)
+        return get_qualified_key(scope_key=self.scope_key, structure_key=self.structure_key, language_key=self.language,
+                                 base_key=self.base_key)
 
     @property
     def scope_key(self):
@@ -303,81 +304,88 @@ def set_default_scope(scope_key):
 
     prefixed_key = _USER_DEFINED_KEY_PREFIX + scope_key_cleaned
     _DEFAULT_SCOPE_KEY = prefixed_key
-    log.info(f'Default scope: {scope_key_cleaned}')
+    log.info(f'Default scope_key: {scope_key_cleaned}')
 
 
 def get_default_scope():
     return _DEFAULT_SCOPE_KEY[len(_USER_DEFINED_KEY_PREFIX):]
 
 
-class Variable(Concept):
-    """
+# class Variable(Concept):
+#     """
+#
+#     Definition:
+#     ...
+#     """
+#
+#     def __init__(
+#             self,
+#             # Identification properties
+#             scope_key, structure_key, language_key, base_key,
+#             # Mandatory complementary properties
+#             domain_key,
+#             # Conditional complementary properties
+#             # Representation properties
+#             utf8=None, latex=None, html=None, usascii=None, tokens=None,
+#             **kwargs):
+#         # ...
+#         self._domain_key = domain_key
+#
+#         # Call the base class initializer.
+#         #   Executing this at the end of the initialization process
+#         #   assures that the new concept is not appended to the
+#         #   static concept and token databases before it is fully initialized.
+#         super().__init__(
+#             scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
+#             utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
+#             **kwargs)
+#
+#     def represent_declaration(self, rformat: str = None, *args, **kwargs) -> str:
+#         if rformat is None:
+#             rformat = rformats.DEFAULT
+#         match rformat:
+#             case rformats.UTF8:
+#                 return f'With {self.represent(rformat)} ∈ {self._domain_key}.'
+#             case _:
+#                 raise NotImplementedError('TODO')
 
-    Definition:
-    ...
-    """
 
-    def __init__(
-            self,
-            # Identification properties
-            scope_key, structure_key, language_key, base_key,
-            # Mandatory complementary properties
-            domain_key,
-            # Conditional complementary properties
-            # Representation properties
-            utf8=None, latex=None, html=None, usascii=None, tokens=None,
-            **kwargs):
-        # ...
-        self._domain_key = domain_key
-
-        # Call the base class initializer.
-        #   Executing this at the end of the initialization process
-        #   assures that the new concept is not appended to the
-        #   static concept and token databases before it is fully initialized.
-        super().__init__(
-            scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
-            utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
-            **kwargs)
-
-    def represent_declaration(self, rformat: str = None, *args, **kwargs) -> str:
-        if rformat is None:
-            rformat = rformats.DEFAULT
-        match rformat:
-            case rformats.UTF8:
-                return f'With {self.represent(rformat)} ∈ {self._domain_key}.'
-            case _:
-                raise NotImplementedError('TODO')
-
-
-def declare_variable(domain, base_name=None, index=None):
+def declare_variable(codomain, base_name=None, indexes=None):
     # TODO: Provide support for different math fonts (e.g.: https://www.overleaf.com/learn/latex/Mathematical_fonts)
-    # TODO: Provide support for indexed variables. Variable declaration should be made with indexes bounds and not individual index values.
+    # TODO: Provide support for indexed variables. Variable declaration should be made with indexes bounds and not individual indexes values.
     scope_key = _DEFAULT_SCOPE_KEY
     # TODO: Implemented base_name cleaning.
     # base_name = clean_variable_base_name(base_name)
-    # TODO: Provide support for both domain argument as domain object or domain key.
+    # TODO: Provide support for both codomain_key argument as codomain_key object or codomain_key key.
     base_key = base_name
-    domain_key = None
-    if isinstance(domain, Domain):
-        domain_key = domain
-    elif isinstance(domain, str):
-        domain_key = domain
+    codomain_key = None
+    if isinstance(codomain, Domain):
+        codomain_key = codomain
+    elif isinstance(codomain, str):
+        codomain_key = codomain
     else:
-        log.error('Unsupported domain', domain=domain)
-    utf8 = base_name
-    latex = base_name
-    html = base_name
-    usascii = base_name
-    v = Variable(
-        scope_key=scope_key, structure_key=_STRUCTURE_VARIABLE, language_key=_LANGUAGE_NAIVE, base_key=base_name,
-        domain_key = domain_key,
-        utf8=utf8, latex=latex, html=html, usascii=usascii)
-    log.info(v.represent_declaration())
-    return v
+        log.error('Unsupported codomain_key', domain=codomain)
+    # Identification properties
+    scope_key = scope_key
+    structure_key = _STRUCTURE_FORMULA
+    language_key = _LANGUAGE_NAIVE
+    base_key = base_name
+    if Concept.check_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key):
+        variable = Concept.get_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key)
+        log.warning('This variable is already declared. In consequence, the existing variable is returned, instead of declaring a new one.', variable=variable, scope_key=scope_key)
+        return variable
+    else:
+        variable = Formula(
+            scope_key=scope_key, language_key=_LANGUAGE_NAIVE, base_key=base_name,
+            category=Formula.ATOMIC_VARIABLE,
+            codomain_key = codomain_key, base_name=base_name, indexes=indexes)
+        log.info(variable.represent_declaration())
+        return variable
 
-def v(domain, base_name = None, index = None):
+
+def v(codomain, base_name = None, indexes = None):
     """Shorthand function to declare a new variable."""
-    return declare_variable(domain, base_name, index)
+    return declare_variable(codomain, base_name, indexes)
 
 
 class Formula(Concept):
@@ -414,13 +422,17 @@ class Formula(Concept):
     def __init__(
             self,
             # Identification properties
-            scope_key, structure_key, language_key, base_key,
+            scope_key, language_key, base_key,
             # Mandatory complementary properties
             category,
             # Conditional complementary properties
-            system_function,
-            arguments,
+            # ...for system function calls:
+            system_function = None, arguments = None,
+            # ...for atomic variables
+            codomain_key = None, base_name = None, indexes = None,
             **kwargs):
+        # Identification properties
+        structure_key = _STRUCTURE_FORMULA
         # Mandatory complementary properties.
         if category not in Formula.CATEGORIES:
             log.error('Invalid formula category',
@@ -428,7 +440,9 @@ class Formula(Concept):
         self._category = category
         self._system_function = system_function
         self._arguments = arguments
-
+        self._codomain = codomain_key
+        self._base_name = base_name
+        self._indexes = indexes
         # Call the base class initializer.
         #   Executing this at the end of the initialization process
         #   assures that the new concept is not appended to the
@@ -445,12 +459,47 @@ class Formula(Concept):
     def category(self):
         return self._category
 
+    @property
+    def codomain(self):
+        return self._codomain
+
+    @property
+    def indexes(self):
+        return self._indexes
+
+    def list_atomic_variables(self):
+        """Return the sorted set of variables present in the formula and its subformulae recursively."""
+        l = set()
+        for a in self.arguments:
+            if isinstance(a, Formula) and a.category == Formula.ATOMIC_VARIABLE:
+                l.add(a.variable)
+            elif isinstance(a, Formula):
+                l_prime = a.list_atomic_variables()
+                for a_prime in l_prime:
+                    l.add(a_prime)
+            else:
+                log.error('Not implemented yet', a=a, self=self)
+
+        # To allow sorting and indexing, convert the set to a list.
+        l = list(l)
+        l.sort()
+        return l
+
     def represent(self, rformat: str = None, *args, **kwargs) -> str:
         if rformat is None:
             rformat = rformats.DEFAULT
         # if self.category == Formula.ATOMIC_VARIABLE:
         #     return self.symbol.represent(rformat, *args, **kwargs)
         match self.category:
+            case Formula.ATOMIC_VARIABLE:
+                # x
+                # TODO: Modify approach. Storing and returning the _base_name like this
+                #   prevent support for other mathematical fonts, such as MathCal, etc.
+                #   As an initial approach, it provides support for ASCII like variables.
+                #   We may consider storing a Glyph as the base name,
+                #   and calling the static represent() function.
+                return self._base_name #+ \
+                       #subscriptify(represent(self._indexes, rformat), rformat)
             case Formula.SYSTEM_CONSTANT_CALL:
                 # x
                 return f'{self._system_function.represent(rformat)}'
@@ -458,7 +507,7 @@ class Formula(Concept):
                 # fx
                 return f'{self._system_function.represent(rformat)}{self.arguments[0].represent(rformat)}'
             case Formula.SYSTEM_BINARY_OPERATOR_CALL:
-                # x f y
+                # (x f y)
                 return f'{glyphs.parenthesis_left.represent(rformat)}{self.arguments[0].represent(rformat)}{glyphs.small_space.represent(rformat)}{self._system_function.represent(rformat)}{glyphs.small_space.represent(rformat)}{self.arguments[1].represent(rformat)}{glyphs.parenthesis_right.represent(rformat)}'
             case Formula.SYSTEM_N_ARY_FUNCTION_CALL:
                 # f(x,y,z)
@@ -466,6 +515,18 @@ class Formula(Concept):
                 return f'{self._system_function.represent(rformat)}{glyphs.parenthesis_left.represent(rformat)}{variable_list}{glyphs.parenthesis_right.represent(rformat)}'
             case _:
                 log.error('Unsupported formula category', category=self.category, qualified_key=self.qualified_key)
+
+    def represent_declaration(self, rformat: str = None, *args, **kwargs) -> str:
+        if self.category != Formula.ATOMIC_VARIABLE:
+            log.error('Formula category not supported for declaration.')
+        else:
+            if rformat is None:
+                rformat = rformats.DEFAULT
+            match rformat:
+                case rformats.UTF8:
+                    return f'With {self.represent(rformat)} ∈ {self._codomain}.'
+                case _:
+                    raise NotImplementedError('TODO')
 
     @property
     def system_function(self):
@@ -504,7 +565,7 @@ def write_formula(o, *args):
     arguments = args
     formula = Formula(
         # Identification properties
-        scope_key=scope_key, structure_key=_STRUCTURE_FORMULA, language_key=_LANGUAGE_NAIVE, base_key=base_key,
+        scope_key=scope_key, language_key=_LANGUAGE_NAIVE, base_key=base_key,
         # Mandatory complementary properties
         category=category,
         # Conditional complementary properties
@@ -599,8 +660,8 @@ class SystemFunction(Concept):
             raise NotImplementedError('oooops again')
 
 
-def get_qualified_key(scope, ntype, language, nkey):
-    return f'{scope}{_QUALIFIED_KEY_SEPARATOR}{ntype}{_QUALIFIED_KEY_SEPARATOR}{language}{_QUALIFIED_KEY_SEPARATOR}{nkey}'
+def get_qualified_key(scope_key, structure_key, language_key, base_key):
+    return f'{scope_key}{_QUALIFIED_KEY_SEPARATOR}{structure_key}{_QUALIFIED_KEY_SEPARATOR}{language_key}{_QUALIFIED_KEY_SEPARATOR}{base_key}'
 
 
 # Scope.
@@ -611,7 +672,7 @@ system_scope = Scope(
 initial_user_defined_scope = Scope(
     scope_key='sys', structure_key=_STRUCTURE_SCOPE, language_key=_LANGUAGE_NAIVE,
     base_key=_USER_DEFINED_KEY_PREFIX + 'scope_1',
-    utf8='scope₁', latex=r'\text{scope}_1', html=r'scope<sub>1</sub>', usascii='scope1')
-# TODO: Question: what should be the scope_key of user defined scopes? sys? the scope itself?
+    utf8='scope_key₁', latex=r'\text{scope_key}_1', html=r'scope_key<sub>1</sub>', usascii='scope1')
+# TODO: Question: what should be the scope_key of user defined scopes? sys? the scope_key itself?
 
 set_default_scope('scope_1')

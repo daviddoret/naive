@@ -30,9 +30,9 @@ from _function_superscriptify import superscriptify
 
 
 def get_bn_domain(n):
-    """Returns the n-tuple domain 𝔹ⁿ where n is a natural number > 0.
+    """Returns the n-tuple codomain_key 𝔹ⁿ where n is a natural number > 0.
 
-    Assures the presence of the domain 𝔹ⁿ in the concept database.
+    Assures the presence of the codomain_key 𝔹ⁿ in the concept database.
     """
     if not isinstance(n, int):
         log.error('n must be an int')

@@ -34,7 +34,7 @@ print('\n...with a custom prefix:')
 s = tl.FS(size=3, prefix='v')
 print(s)
 
-print('\n...0-based index:')
+print('\n...0-based indexes:')
 s = tl.FS(size=3, prefix='y', init=0)
 print(s)
 

@@ -234,7 +234,7 @@ def satisfaction_set(
 
 
 def satisfaction_index(phi: BooleanFormula, variables_list=None):
-    """Compute the **satisfaction index** (:math:`\text{sat}_I`) of a Boolean formula (:math:`\phi`).
+    """Compute the **satisfaction indexes** (:math:`\text{sat}_I`) of a Boolean formula (:math:`\phi`).
 
     Alias:
     **sat_i**
@@ -306,14 +306,14 @@ class BooleanAlgebra:
 
 class BooleanDomain(WellKnownDomain):
     # TODO: Enrich the Set class as a python dictionary and adapt this class.
-    """A Boolean domain is a set consisting of exactly two elements whose interpretations include false and true.
+    """A Boolean codomain_key is a set consisting of exactly two elements whose interpretations include false and true.
 
     Bibliography:
         * https://en.wikipedia.org/wiki/Boolean_domain
     """
 
     def __init__(self, **kwargs):
-        """Initializes a Boolean domain."""
+        """Initializes a Boolean codomain_key."""
         kwargs[keywords.variable_base_name] = glyphs.mathbb_b_uppercase
         kwargs[keywords.variable_exponent] = None
         kwargs[keywords.variable_indexes] = None
@@ -471,9 +471,9 @@ CoercibleBooleanConstant = typing.TypeVar(
 boolean_algebra = BooleanAlgebra()
 
 boolean_domain = BooleanDomain()
-"""The Boolean domain is the set consisting of exactly two elements whose interpretations include false and true.
+"""The Boolean codomain_key is the set consisting of exactly two elements whose interpretations include false and true.
 
-The Boolean domain is a partially ordered set and its elements are also its bounds.
+The Boolean codomain_key is a partially ordered set and its elements are also its bounds.
 
 Bibliography:
     * https://en.wikipedia.org/wiki/Boolean_domain
@@ -481,9 +481,9 @@ Bibliography:
 """
 
 b = boolean_domain
-"""A shorthand alias for the Boolean domain.
+"""A shorthand alias for the Boolean codomain_key.
 
-The Boolean domain is the set consisting of exactly two elements whose interpretations include false and true.
+The Boolean codomain_key is the set consisting of exactly two elements whose interpretations include false and true.
 
 Bibliography:
     * https://en.wikipedia.org/wiki/Boolean_domain
@@ -494,7 +494,7 @@ b_2 = WellKnownDomain(
     exponent=2,
     indexes=None,
     dimensions=2)
-"""The Boolean domain squared is the domain of all Boolean ordered pairs."""
+"""The Boolean codomain_key squared is the codomain_key of all Boolean ordered pairs."""
 # TODO: Implement this as a finite set with all its members.
 
 conjunction = BooleanFunction(

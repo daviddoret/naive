@@ -15,7 +15,7 @@ import keywords
 class WellKnownDomainSet(Set):
     """A set of function domains or codomains.
 
-    A function domain or codomain is a set.
+    A function codomain_key or codomain_key is a set.
     But mathematical functions are most frequently defined from a subset of well-known domains and codomains.
     It thus seems reasonable to expose a set of well-know domains and codomains to facilitate the manipulation of functions.
     """
@@ -32,46 +32,46 @@ class WellKnownDomainSet(Set):
 
     @property
     def b(self):
-        """"The boolean domain.
+        """"The boolean codomain_key.
 
         Returns:
-            WellKnownDomain: The boolean domain.
+            WellKnownDomain: The boolean codomain_key.
         """
         return self._b
 
     @property
     def b_2(self):
-        """"The boolean domain squared.
+        """"The boolean codomain_key squared.
 
         Returns:
-            WellKnownDomain: The boolean domain squared.
+            WellKnownDomain: The boolean codomain_key squared.
         """
         return self._b_2
 
     @property
     def n0(self):
-        """The natural numbers' domain, 0 inclusive.
+        """The natural numbers' codomain_key, 0 inclusive.
 
         Returns:
-            WellKnownDomain: The natural numbers' domain, 0 inclusive.
+            WellKnownDomain: The natural numbers' codomain_key, 0 inclusive.
         """
         return self._n0
 
     @property
     def n1(self):
-        """The natural numbers' domain, 0 exclusive.
+        """The natural numbers' codomain_key, 0 exclusive.
 
         Returns:
-            WellKnownDomain: The natural numbers' domain, 0 exclusive.
+            WellKnownDomain: The natural numbers' codomain_key, 0 exclusive.
         """
         return self._n1
 
     @property
     def z(self):
-        """The integer numbers domain.
+        """The integer numbers codomain_key.
 
         Returns:
-            WellKnownDomain: The integer numbers domain.
+            WellKnownDomain: The integer numbers codomain_key.
         """
         return self._z
 

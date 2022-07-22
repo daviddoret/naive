@@ -8,16 +8,16 @@ from _function_coerce import coerce
 
 
 class WellKnownDomain(Set, Variable):
-    """A predefined variable that represents a well-defined set and (co)domain.
+    """A predefined variable that represents a well-defined set and (co)codomain_key.
 
     Sample use cases:
-        * SystemFunction domain
-        * Operator domain
-        * Set domain
-        * Variable domain
+        * SystemFunction codomain_key
+        * Operator codomain_key
+        * Set codomain_key
+        * Variable codomain_key
 
     Todo:
-        * Implement domain generators, e.g. for B^1, B^2, B^3, etc.
+        * Implement codomain_key generators, e.g. for B^1, B^2, B^3, etc.
         * Implement subset / superset relations between domains, e.g. B^5 subset of B^n.
         * Inherit from Set.
     """

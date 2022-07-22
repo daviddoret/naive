@@ -30,7 +30,7 @@ class VariableIndexes(ABCRepresentable):
         rformat = coerce(rformat, str)
         #return subscriptify(
         #    '' if self._indexes is None else notation.VARIABLE_INDEXES_SEPARATOR.join(
-        #        [represent(index, rformat) for index in self._indexes])
+        #        [represent(indexes, rformat) for indexes in self._indexes])
         #        ,rformat)
         return '' if self._indexes is None else notation.VARIABLE_INDEXES_SEPARATOR.join(
                 [represent(index, rformat) for index in self._indexes])

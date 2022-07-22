@@ -12,10 +12,10 @@ class WellKnownFunctionSet(Set):
 
     @property
     def not_b_b(self):
-        """"The boolean domain.
+        """"The boolean codomain_key.
 
         Returns:
-            WellKnownDomain: The boolean domain.
+            WellKnownDomain: The boolean codomain_key.
         """
         return self._not_b_b
 

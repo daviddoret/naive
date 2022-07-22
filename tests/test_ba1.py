@@ -38,6 +38,11 @@ class Test(TestCase):
         phi5 = naive.core.f(naive.ba1.disjunction, phi1, phi2)
         self.assertEqual('(⊤ ∨ ⊥)', phi5.represent(naive.rformats.UTF8))
 
+    def test_atomic_variable_as_formula(self):
+        x = naive.core.v(naive.ba1.b, 'x')
+        y = naive.core.v(naive.ba1.b, 'y')
 
+        phi1 = naive.core.f(naive.ba1.negation, x)
+        phi2 = naive.core.f(naive.ba1.conjunction, x, y)
 
 

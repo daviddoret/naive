@@ -47,7 +47,7 @@ class Function(ABCRepresentable):
 
         Args:
             base_name (VariableBaseName): The variable base_name (cf. class :class:´VariableBase´).
-            *args: Variable length list of index elements (cf. class :class:´VariableIndexes´).
+            *args: Variable length list of indexes elements (cf. class :class:´VariableIndexes´).
         """
         arity = coerce(arity, int)
         if arity < 0:
@@ -55,10 +55,10 @@ class Function(ABCRepresentable):
         domain = coerce(domain, Set)
         if domain is None:
             if arity != 0:
-                log.error('If the function has no domain, it must be a constant function with arity 0.')
+                log.error('If the function has no codomain_key, it must be a constant function with arity 0.')
         else:
             if domain.dimensions != arity:
-                log.error('The arity of a function must be consistent with the dimensions of its domain.', arity=arity, domain=domain)
+                log.error('The arity of a function must be consistent with the dimensions of its codomain_key.', arity=arity, domain=domain)
         self._arity = arity
         self._domain = domain
         self._codomain = coerce(codomain, Set)
@@ -90,7 +90,7 @@ class Function(ABCRepresentable):
         """The function's arity.
 
         The arity of a function is the number of arguments received by that function.
-        The arity of the function must be consistent with the dimensions of its domain.
+        The arity of the function must be consistent with the dimensions of its codomain_key.
 
         Bibliography:
             * https://encyclopediaofmath.org/wiki/Signature_(Computer_Science)
