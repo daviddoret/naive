@@ -2,6 +2,30 @@ from __future__ import annotations
 import log
 
 
+# Concept Core Properties
+import rformats
+
+_BASE_KEY = 'base_key'
+_STRUCTURE_KEY = 'structure_key'
+_SCOPE_KEY = 'scope_key'
+_LANGUAGE_KEY = 'language_key'
+
+# Function Complementary Properties
+_DOMAIN = 'domain'
+_CODOMAIN = 'codomain'
+_ARITY = 'arity'
+_PYTHON_VALUE = 'python_value'
+
+# NType Keys
+_STRUCTURE_LANGUAGE = 'language_key'
+_STRUCTURE_DOMAIN = 'domain'
+_STRUCTURE_FUNCTION = 'function'
+_STRUCTURE_ATOMIC_PROPERTY = 'ap'
+
+_QUALIFIED_KEY_SEPARATOR = '.'
+_MNEMONIC_KEY_ALLOWED_CHARACTERS = 'abcdefghijklmnopqrstuvwxyz012345679'
+
+
 def unkwargs(kwargs, key):
     return None if key not in kwargs else kwargs[key]
 
@@ -116,6 +140,28 @@ class Concept:
     def language(self):
         return self._language_key
 
+    def represent(self, rformat: str = None, *args, **kwargs) -> str:
+        """Get the object's representation in a supported format.
+
+        Args:
+            rformat (str): A representation format.
+            args: For future use.
+            kwargs: For future use.
+
+        Returns:
+            The object's representation in the requested format.
+        """
+        if rformat is None:
+            rformat = rformats.DEFAULT
+        # TODO: Check that rformat is an allowed value.
+        if hasattr(self, rformat):
+            return getattr(self, rformat)
+        elif self._utf8 is not None:
+            # We fall back on UTF-8
+            return self._utf8
+        else:
+            log.error(f'This concept has no representation in {rformat} nor {rformats.UTF8}.', rformat=rformat, qualified_key=self.qualified_key)
+
     @property
     def structure_key(self) -> str:
         return self._structure_key
@@ -138,25 +184,71 @@ class Concept:
 
 
 class Language(Concept):
-    pass
+    def __init__(
+            self,
+            # Identification properties
+            scope_key, structure_key, language_key, base_key,
+            # Mandatory complementary properties
+            # Conditional complementary properties
+            # Representation properties
+            utf8=None, latex=None, html=None, usascii=None, tokens=None,
+            **kwargs):
+        # ...
+
+        # Call the base class initializer.
+        #   Executing this at the end of the initialization process
+        #   assures that the new concept is not appended to the
+        #   static concept and token databases before it is fully initialized.
+        super().__init__(
+            scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
+            utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
+            **kwargs)
+
 
 class Domain(Concept):
-    pass
+    def __init__(
+            self,
+            # Identification properties
+            scope_key, structure_key, language_key, base_key,
+            # Mandatory complementary properties
+            # Conditional complementary properties
+            # Representation properties
+            utf8=None, latex=None, html=None, usascii=None, tokens=None,
+            **kwargs):
+        # ...
 
-_FORMULA_CATEGORY_VARIABLE = 'variable'
-_FORMULA_CATEGORY_VARIABLE_ATOMIC = 'atomic'
-_FORMULA_CATEGORY_VARIABLE_FORMULA = 'formula'
-_FORMULA_CATEGORY_FUNCTION = 'function'
-_FORMULA_CATEGORY_FUNCTION_CONSTANT = 'constant'
-_FORMULA_CATEGORY_FUNCTION_UNARY_OPERATOR = '1operator'
-_FORMULA_CATEGORY_FUNCTION_BINARY_OPERATOR = '2operator'
-_FORMULA_CATEGORY_FUNCTION_N_NARY_FUNCTION = 'nfunction'
+        # Call the base class initializer.
+        #   Executing this at the end of the initialization process
+        #   assures that the new concept is not appended to the
+        #   static concept and token databases before it is fully initialized.
+        super().__init__(
+            scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
+            utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
+            **kwargs)
+
+# Formula categories
+VARIABLE = 'variable'
+FUNCTION = 'function call'
+FORMULA_CATEGORIES = [VARIABLE, FUNCTION]
+
+# Formula subcategories
+ATOMIC_VARIABLE = 'atomic'
+FORMULA_VARIABLE = 'formula'
+CONSTANT = 'constant call'
+UNARY_OPERATOR = 'unary operator call'
+BINARY_OPERATOR = 'binary operator call'
+N_ARY_FUNCTION = 'n-ary function call'
+FORMULA_SUBCATEGORIES = {
+    VARIABLE: [ATOMIC_VARIABLE, FORMULA_VARIABLE],
+    FUNCTION: [CONSTANT, UNARY_OPERATOR, BINARY_OPERATOR, N_ARY_FUNCTION]}
+
 
 class Formula(Concept):
     """
 
     Different types of formula:
-    - AtomicVariable (aka Unknown)
+    - Atomic Variable (aka Unknown) (e.g. x + 5 = 17, x ∉ ℕ₀)
+    - Formula Variable (e.g. φ = ¬x ∨ y, z ∧ φ)
     - n-ary Function Call with n in N0 (e.g. za1 abs)
 
     Different sub-types of n-ary Functions:
@@ -166,7 +258,26 @@ class Formula(Concept):
     - n-ary Function
 
     """
-    pass
+    def __init__(
+            self,
+            # Identification properties
+            scope_key, structure_key, language_key, base_key,
+            # Mandatory complementary properties
+            # Conditional complementary properties
+            # Representation properties
+            utf8=None, latex=None, html=None, usascii=None, tokens=None,
+            **kwargs):
+        # ...
+
+        # Call the base class initializer.
+        #   Executing this at the end of the initialization process
+        #   assures that the new concept is not appended to the
+        #   static concept and token databases before it is fully initialized.
+        super().__init__(
+            scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
+            utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
+            **kwargs)
+
 
 class Function(Concept):
 
@@ -177,26 +288,34 @@ class Function(Concept):
             # Mandatory complementary properties
             codomain, category, subcategory,
             # Conditional complementary properties
-            domain=None, arity=None, pythong_value=None,
+            domain=None, arity=None, python_value=None,
             # Representation properties
             utf8=None, latex=None, html=None, usascii=None, tokens=None,
             **kwargs):
         # Mandatory complementary properties.
         self._codomain = codomain  # TODO: Implement validation against the static concept database.
+        if category not in FORMULA_CATEGORIES:
+            log.error('Invalid formula category',
+                      category=category, self=self)
         self._category = category  # TODO: Implement validation against allowed values.
+        if subcategory not in FORMULA_SUBCATEGORIES[category]:
+            log.error('Invalid formula subcategory',
+                      subcategory=subcategory, category=category, self=self)
         self._subcategory = subcategory  # TODO: Implement validation logic dependent of category.
         # Conditional complementary properties.
-        self._codomain = codomain  # TODO: Implement validation logic dependent of subcategory.
         self._domain = domain  # TODO: Implement validation against the static concept database.
         self._arity = arity  # TODO: Implement validation logic dependent of subcategory.
-        self._python_value = pythong_value  # TODO: Question: Should it be mandatory for subcategory = constant?
+        if subcategory == CONSTANT and python_value is None:
+            log.error('python_value is mandatory for constants (0-ary functions) but it was None.',
+                      python_value=python_value, subcategory=subcategory, self=self)
+        self._python_value = python_value  # TODO: Question: Should it be mandatory for subcategory = constant?
         # Call the base class initializer.
         #   Executing this at the end of the initialization process
         #   assures that the new concept is not appended to the
         #   static concept and token databases before it is fully initialized.
         super().__init__(
             scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
-            utf8=None, latex=None, html=None, usascii=None, tokens=None,
+            utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
             **kwargs)
 
     @property
@@ -206,6 +325,20 @@ class Function(Concept):
     @property
     def domain(self):
         return self._domain
+
+    @property
+    def compute_value(self):
+        if self._subcategory == CONSTANT:
+            return self._python_value
+        else:
+            raise NotImplementedError('ooops')
+
+    def is_equal_value(self, other):
+        """Return true if two formula yield identical values, false otherwise."""
+        if isinstance(other, Formula) and other.subcategory == CONSTANT:
+            return self.compute_value() == other.compute_value()
+        else:
+            raise NotImplementedError('oooops again')
 
 
 def get_qualified_key(scope, ntype, language, nkey):
@@ -219,23 +352,16 @@ def instantiate_concept(**kwargs):
     pass
 
 
-# Concept Core Properties
-_BASE_KEY = 'base_key'
-_STRUCTURE_KEY = 'structure_key'
-_SCOPE_KEY = 'scope_key'
-_LANGUAGE_KEY = 'language_key'
+# Friendly programmatic writing functions
 
-# Function Complementary Properties
-_DOMAIN = 'domain'
-_CODOMAIN = 'codomain'
-_ARITY = 'arity'
-_PYTHON_VALUE = 'python_value'
+def f():
+    """Instanciates a function formula element."""
+    pass
 
-# NType Keys
-_STRUCTURE_LANGUAGE = 'language_key'
-_STRUCTURE_DOMAIN = 'domain'
-_STRUCTURE_FUNCTION = 'function'
-_STRUCTURE_ATOMIC_PROPERTY = 'ap'
+def v():
+    """Instanciates an atomic variable formula element."""
+    pass
 
-_QUALIFIED_KEY_SEPARATOR = '.'
-_MNEMONIC_KEY_ALLOWED_CHARACTERS = 'abcdefghijklmnopqrstuvwxyz012345679'
+def c():
+    """Instanciates a constant formula element."""
+    pass

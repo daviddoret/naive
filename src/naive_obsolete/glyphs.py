@@ -50,5 +50,8 @@ curly_bracket_right = Glyph(utf8='}', latex=r'\right\}', html='&125;', usascii='
 angle_bracket_left = Glyph(utf8='⟨', latex=r'\left\langle', html='&lang;', usascii='<')
 angle_bracket_right = Glyph(utf8='⟩', latex=r'\right\rangle', html='&rang;', usascii='>')
 
+# Set Theory
+element_of = Glyph(utf8='∉', latex=r'\in', html='XXX', usascii='XXX')
+
 # Spaces
 small_space = Glyph(utf8=' ', latex=r'\,', html='&nbsp;', usascii=' ')

@@ -33,7 +33,7 @@ HTML = 'html'
 """The default representation format.
 
 All representations are rendered in the default format, unless specified otherwise."""
-DEFAULT = UTF8 # You may change this.
+DEFAULT = UTF8  # You may change this.
 
 # LIST OF REPRESENTATION FORMATS
 

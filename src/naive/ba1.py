@@ -24,24 +24,29 @@ b2 = core.Domain(
 # Functions.
 truth = core.Function(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='truth',
+    codomain=b, category=core.FUNCTION, subcategory=core.CONSTANT,
     utf8='⊤', latex=r'\top', html='&top;', usascii='truth', tokens=['⊤', 'truth', 'true', 't', '1'],
-    codomain=b, arity=0, python_value=True)
+    arity=0, python_value=True)
 falsum = core.Function(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='falsum',
+    codomain=b, category=core.FUNCTION, subcategory=core.CONSTANT,
     utf8='⊥', latex=r'\bot', html='&perp;', usascii='falsum', tokens=['⊥', 'falsum', 'false', 'f', '0'],
-    codomain=b, arity=0, python_value=False)
+    arity=0, python_value=False)
 negation = core.Function(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='negation',
+    codomain=b, category=core.FUNCTION, subcategory=core.UNARY_OPERATOR,
     utf8='¬', latex=r'\lnot', html='&not;', usascii='not', tokens=['¬', 'not', 'lnot'],
-    codomain=b, domain=b, arity=1)
+    domain=b, arity=1)
 conjunction = core.Function(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='conjunction',
+    codomain=b, category=core.FUNCTION, subcategory=core.BINARY_OPERATOR,
     utf8='∧', latex=r'\land', html='&and;', usascii='and', tokens=['∧', 'and', 'land'],
-    codomain=b2, domain=b, arity=2)
+    domain=b, arity=2)
 disjunction = core.Function(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='disjunction',
+    codomain=b, category=core.FUNCTION, subcategory=core.BINARY_OPERATOR,
     utf8='∨', latex=r'\lor', html='&or;', usascii='or', tokens=['∨', 'or', 'lor'],
-    codomain=b2, domain=b, arity=2)
+    domain=b, arity=2)
 
 
 def b(token):

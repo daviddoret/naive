@@ -10,6 +10,7 @@ logging.info(f'__version__: {__version__}')
 
 import core
 import ba1
+import rformats
 
 # LOGGING
 logging.info('Naive Package Initialization: Completed')

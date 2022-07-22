@@ -28,7 +28,7 @@ class TestFunction(TestCase):
             utf8='test1', latex=r'\text{test}_{1}', html=r'test<sub>1</sub>', usascii='test1',
             domain='b', arity=17, python_value='test python value'
             )
-        self.assertEqual('scopetest.structuretest.languagetest.test1', c1.qualified_key)
-        self.assertEqual(c1, naive.core.Concept.get_concept_from_qualified_key(c1.qualified_key))
-        self.assertEqual(c1, naive.core.Concept.get_concept_from_decomposed_key(
-            scope_key=c1.scope_key, structure_key=c1.structure_key, language_key=c1.language, base_key=c1.base_key))
+        self.assertEqual('scopetest.structuretest.languagetest.test1', f1.qualified_key)
+        self.assertEqual(f1, naive.core.Concept.get_concept_from_qualified_key(f1.qualified_key))
+        self.assertEqual(f1, naive.core.Concept.get_concept_from_decomposed_key(
+            scope_key=f1.scope_key, structure_key=f1.structure_key, language_key=f1.language, base_key=f1.base_key))
