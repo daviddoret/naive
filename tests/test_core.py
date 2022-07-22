@@ -22,9 +22,9 @@ class TestConcept(TestCase):
 
 class TestFunction(TestCase):
     def test_init(self):
-        f1 = naive.core.AtomicFunction(
+        f1 = naive.core.SystemFunction(
             scope_key='scope_test', structure_key='structure_test', language_key='language_test', base_key='test_1',
-            codomain='domain_test', category=naive.core.AtomicFunction.CONSTANT,
+            codomain='domain_test', category=naive.core.SystemFunction.SYSTEM_CONSTANT,
             utf8='test₁', latex=r'\text{test}_{1}', html=r'test<sub>1</sub>', usascii='test1',
             domain='domain_test', arity=17, python_value='test python value'
         )
@@ -34,10 +34,13 @@ class TestFunction(TestCase):
             scope_key=f1.scope_key, structure_key=f1.structure_key, language_key=f1.language, base_key=f1.base_key))
 
 
-class Test(TestCase):
+class Test_User_Scope(TestCase):
     def test_set_default_scope(self):
-        self.assertEqual('scope1', naive.core.get_default_scope())
+        self.assertEqual('scope_1', naive.core.get_default_scope())
         naive.core.set_default_scope('new scope')
         self.assertEqual('newscope', naive.core.get_default_scope())
-        naive.core.set_default_scope('scope1')
-        self.assertEqual('scope1', naive.core.get_default_scope())
+        naive.core.set_default_scope('scope_1')
+        self.assertEqual('scope_1', naive.core.get_default_scope())
+
+
+

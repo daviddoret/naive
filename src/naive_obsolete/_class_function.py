@@ -133,7 +133,7 @@ class Function(ABCRepresentable):
         """The preferred representation for function calls.
 
         Two formats are available for the representation of function calls:
-        - AtomicFunction: e.g.: f(x,y,z).
+        - SystemFunction: e.g.: f(x,y,z).
         - Operator: e.g.: fx (for unary operators) and x f y (for binary operators).
         """
         return self._preferred_call_representation
@@ -176,4 +176,4 @@ class Function(ABCRepresentable):
 
 
 F = Function
-"""A shorthand notation for class :class:`AtomicFunction`."""
+"""A shorthand notation for class :class:`SystemFunction`."""

@@ -11,7 +11,7 @@ class WellKnownDomain(Set, Variable):
     """A predefined variable that represents a well-defined set and (co)domain.
 
     Sample use cases:
-        * AtomicFunction domain
+        * SystemFunction domain
         * Operator domain
         * Set domain
         * Variable domain

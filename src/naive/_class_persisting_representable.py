@@ -2,8 +2,6 @@ from __future__ import annotations
 import typing
 from _abc_representable import ABCRepresentable
 import rformats
-import keywords
-from _function_coerce_from_kwargs import coerce_from_kwargs
 from _function_coerce import coerce
 
 

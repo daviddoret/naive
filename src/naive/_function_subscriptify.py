@@ -32,6 +32,8 @@ def subscriptify(representation: str, rformat: str) -> str:
         return ''
     if rformat is None:
         rformat = rformats.DEFAULT
+    if not isinstance(representation, str):
+        representation = str(representation)
     match rformat:
         case rformats.UTF8:
             # TODO: Extend support to all available subscript characters in Unicode.

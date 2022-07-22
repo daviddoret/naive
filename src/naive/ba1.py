@@ -27,40 +27,29 @@ b2 = core.Domain(
     utf8='𝔹²', latex=r'\mathbb{B}^{2}', html=r'&Bopf;<sup>2</sup>', usascii='B2')
 
 # Functions.
-truth = core.AtomicFunction(
+truth = core.SystemFunction(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='truth',
-    codomain=b, category=core.AtomicFunction.CONSTANT,
+    codomain=b, category=core.SystemFunction.SYSTEM_CONSTANT,
     utf8='⊤', latex=r'\top', html='&top;', usascii='truth', tokens=['⊤', 'truth', 'true', 't', '1'],
     arity=0, python_value=True)
-falsum = core.AtomicFunction(
+falsum = core.SystemFunction(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='falsum',
-    codomain=b, category=core.AtomicFunction.CONSTANT,
+    codomain=b, category=core.SystemFunction.SYSTEM_CONSTANT,
     utf8='⊥', latex=r'\bot', html='&perp;', usascii='falsum', tokens=['⊥', 'falsum', 'false', 'f', '0'],
     arity=0, python_value=False)
-negation = core.AtomicFunction(
+negation = core.SystemFunction(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='negation',
-    codomain=b, category=core.AtomicFunction.UNARY_OPERATOR,
+    codomain=b, category=core.SystemFunction.SYSTEM_UNARY_OPERATOR,
     utf8='¬', latex=r'\lnot', html='&not;', usascii='not', tokens=['¬', 'not', 'lnot'],
     domain=b, arity=1)
-conjunction = core.AtomicFunction(
+conjunction = core.SystemFunction(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='conjunction',
-    codomain=b, category=core.AtomicFunction.BINARY_OPERATOR,
+    codomain=b, category=core.SystemFunction.SYSTEM_BINARY_OPERATOR,
     utf8='∧', latex=r'\land', html='&and;', usascii='and', tokens=['∧', 'and', 'land'],
     domain=b, arity=2)
-disjunction = core.AtomicFunction(
+disjunction = core.SystemFunction(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='disjunction',
-    codomain=b, category=core.AtomicFunction.BINARY_OPERATOR,
+    codomain=b, category=core.SystemFunction.SYSTEM_BINARY_OPERATOR,
     utf8='∨', latex=r'\lor', html='&or;', usascii='or', tokens=['∨', 'or', 'lor'],
     domain=b, arity=2)
 
-
-def b(token):
-    global falsum
-    global truth
-    token = str(token)
-    if token in falsum.tokens:
-        return falsum
-    elif token in truth.tokens:
-        return truth
-    else:
-        log.error('Unrecognized token')

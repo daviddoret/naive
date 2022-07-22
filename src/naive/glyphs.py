@@ -51,7 +51,8 @@ angle_bracket_left = Glyph(utf8='⟨', latex=r'\left\langle', html='&lang;', usa
 angle_bracket_right = Glyph(utf8='⟩', latex=r'\right\rangle', html='&rang;', usascii='>')
 
 # Set Theory
-element_of = Glyph(utf8='∉', latex=r'\in', html='XXX', usascii='XXX')
+element_of = Glyph(utf8='∈∉', latex=r'\in')
+not_element_of = Glyph(utf8='∉', latex=r'\notin')
 
 # Spaces
 small_space = Glyph(utf8=' ', latex=r'\,', html='&nbsp;', usascii=' ')
