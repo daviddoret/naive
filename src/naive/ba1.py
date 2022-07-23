@@ -3,6 +3,7 @@ import log
 import core
 import typing
 from _function_flatten import flatten
+from _function_superscriptify import superscriptify
 
 _SCOPE_BA1 = 'sys_ba1'
 
@@ -115,8 +116,6 @@ b = core.Domain(
 b2 = core.Domain(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_DOMAIN, language_key=_LANGUAGE_BA1, base_key='b2',
     utf8='𝔹²', latex=r'\mathbb{B}^{2}', html=r'&Bopf;<sup>2</sup>', usascii='B2')
-
-from _function_superscriptify import superscriptify
 
 
 def get_bn_domain(n):

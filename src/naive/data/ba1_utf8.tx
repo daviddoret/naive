@@ -3,25 +3,72 @@ BooleanAlgebra1:
 ;
 
 Formula:
-    FunctionFormula | OperatorFormula | AtomicVariable
+    AtomicVariableFormula | ConstantFormula | NegationFormula | UnaryOperatorFormula | BinaryOperatorFormula | SuperfluousParenthesisFormula
 ;
 
-FunctionFormula:
-    FunctionName '(' (FunctionArgument (',' FunctionArgument)* ) ')'
+ConstantFormula:
+    TruthFormula | FalsumFormula
 ;
 
-FunctionName:
-    Truth | Falsum | Negation | Conjunction | Disjunction
+TruthFormula:
+    '⊤' | '1' | 'true' | 'True' | 'TRUE' | 'truth' | 'Truth' | 'TRUTH'
 ;
 
-Truth:
-    '⊤' | '1' | 'true' | 'True' | 'Truth'
+FalsumFormula:
+    '⊥' | '0' | 'false' | 'False' | 'FALSE' | 'falsum' | 'Falsum' | 'FALSUM'
 ;
 
-Negation:
-    name = /[^,]*/
+UnaryOperatorFormula:
+    NegationFormula
 ;
 
-Variable:
+NegationFormula:
+   NegationOperator arguments*=Formula
+;
 
+NegationOperator:
+    '¬' | 'not' | 'Not' | 'NOT' | 'lnot' | 'Lnot' | 'LNot' | 'LNOT'
+;
+
+BinaryOperatorFormula:
+    ConjunctionFormula | DisjunctionFormula
+;
+
+ConjunctionFormula:
+    '(' arguments*=Formula ConjunctionOperator arguments*=Formula ')'
+;
+
+ConjunctionOperator:
+    '∧' | 'and' | 'And' | 'AND' | 'land' | 'Land' | 'LAnd' | 'LAND'
+;
+
+DisjunctionFormula:
+    '(' Formula DisjunctionOperator Formula ')'
+;
+
+DisjunctionOperator:
+    '∨' | 'or' | 'Or' | 'OR' | 'lor' | 'Lor' | 'LOr' | 'LOR'
+;
+
+AtomicVariableFormula:
+    /*
+    This is a first approximation.
+    This regular expression seems to be working fine in most circumstances but
+    may not yield the expected result for all characters.
+    Because this is the most ambiguous rule, I push it at the end
+    of the .tx file to give precedence to all other rules.
+    TODO: Correct bug: the variable name should not be allowed to start with digits.
+    TODO: Consider replacing this RegExp with an exhaustive set of allowed characters for variable names.
+    TODO: Decompose AtomicVariable in base_name and conditional indexes.
+    References:
+    - https://stackoverflow.com/questions/5555613/does-w-match-all-alphanumeric-characters-defined-in-the-unicode-standard
+    */
+    /[\w]+/
+;
+
+SuperfluousParenthesisFormula:
+    /*
+    Rationale: getting rid of superfluous parenthesis in the formula.
+    */
+   '(' Formula ')'
 ;
