@@ -3,7 +3,11 @@ BooleanAlgebra1:
 ;
 
 Formula:
-    AtomicVariableFormula | ConstantFormula | NegationFormula | UnaryOperatorFormula | BinaryOperatorFormula | SuperfluousParenthesisFormula
+    /*
+    */
+    AtomicVariableFormula | ConstantFormula | NegationFormula |
+    UnaryOperatorFormula | BinaryOperatorFormula |
+    SuperfluousParenthesisFormula
 ;
 
 Keywords:
@@ -81,6 +85,8 @@ AtomicVariableFormula:
 SuperfluousParenthesisFormula:
     /*
     Rationale: getting rid of superfluous parenthesis in the formula.
+
+    Superfluous parenthesis are removed with the textX Match Suppression operator "-".
     */
-   '(' Formula ')'
+   '('- Formula ')'-
 ;
