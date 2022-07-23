@@ -1,3 +1,15 @@
+/*
+This textX grammar enables the parsing of Boolean Grammar 1 texts formatted in UTF-8.
+
+Future improvements:
+    - TODO: Bug correction: conjunction and disjunction MUST be included in parenthesis.
+        Unfortunately, when I make the parenthesis optional, I end up with parsing errors.
+        This should be revisited to allow parsing without enclosing parenthis around
+        binary operators.
+    - TODO: Add new tests to validate the consistency of operator priority rules.
+    - TODO: Develop a textX grammar for LaTeX parsing.
+*/
+
 BooleanAlgebra1:
     Formula
 ;
@@ -38,11 +50,11 @@ FalsumOperator:
 ;
 
 BinaryOperatorFormula:
-    ConjunctionFormula | DisjunctionFormula
+    '(' ConjunctionFormula ')' | '(' DisjunctionFormula ')'
 ;
 
 ConjunctionFormula:
-    ('(') arguments*=Formula o=ConjunctionOperator arguments*=Formula (')')
+    arguments*=Formula o=ConjunctionOperator arguments*=Formula
 ;
 
 ConjunctionOperator:
@@ -50,7 +62,7 @@ ConjunctionOperator:
 ;
 
 DisjunctionFormula:
-    ('(') arguments*=Formula o=DisjunctionOperator arguments*=Formula (')')
+    arguments*=Formula o=DisjunctionOperator arguments*=Formula
 ;
 
 DisjunctionOperator:
