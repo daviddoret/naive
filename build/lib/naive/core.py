@@ -89,9 +89,9 @@ class Concept:
         #  and consider the tokens argument for complementary tokens only.
         if self.tokens is not None:
             for token in self.tokens:
-                if token not in Concept._token_database:
+                if token not in Concept._concept_database:
                     # TODO: Question: should we store a reference to the Concept or store the Concept qualified key?
-                    Concept._token_database[token] = self
+                    Concept._concept_database[token] = self
                 else:
                     log.error(
                         f'The "{token}" token was already in the token static database. We need to implement a priority algorithm to manage these situations.',
@@ -168,10 +168,7 @@ class Concept:
         """
         # TODO: Resume implementation here.
         #   - In Concept __init__: subscribe tokens to a global indexes and check for unicity.
-        if token in Concept._token_database:
-            return Concept._token_database[token]
-        else:
-            return None
+        pass
 
     def is_equal_concept(self, other: Concept):
         return self.qualified_key == other.qualified_key

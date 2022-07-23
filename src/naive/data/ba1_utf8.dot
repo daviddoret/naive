@@ -1,0 +1,79 @@
+
+    digraph textX {
+    fontname = "Bitstream Vera Sans"
+    fontsize = 8
+    node[
+        shape=record,
+        style=filled,
+        fillcolor=aliceblue
+    ]
+    nodesep = 0.3
+    edge[dir=black,arrowtail=empty]
+
+
+2098820059200[ label="{*BooleanAlgebra1|}"]
+
+2098820082240[ label="{*Formula|}"]
+
+2098820088000[ label="{ConstantFormula|o: OBJECT\l}"]
+
+2098820062080[ label="{*BinaryOperatorFormula|}"]
+
+2098820095680[ label="{ConjunctionFormula|o: ConjunctionOperator\l}"]
+
+2098820070720[ label="{DisjunctionFormula|o: DisjunctionOperator\l}"]
+
+2098820063040[ label="{*UnaryOperatorFormula|}"]
+
+2098820099520[ label="{NegationFormula|o: NegationOperator\l}"]
+
+2098820103360[ label="{AtomicVariableFormula|v: STRING\l}"]
+
+2098820114880[ label="{*SuperfluousParenthesisFormula|}"]
+
+
+
+2098820059200 -> 2098820082240 [dir=back]
+2098820082240 -> 2098820062080 [dir=back]
+2098820082240 -> 2098820099520 [dir=back]
+2098820082240 -> 2098820088000 [dir=back]
+2098820082240 -> 2098820103360 [dir=back]
+2098820082240 -> 2098820114880 [dir=back]
+2098820088960[ label="{*OBJECT|}"]
+
+2098820062080 -> 2098820095680 [dir=back]
+2098820062080 -> 2098820070720 [dir=back]
+2098820095680 -> 2098820082240[arrowtail=diamond, dir=both, headlabel="arguments 0..*"]
+2098820070720 -> 2098820082240[arrowtail=diamond, dir=both, headlabel="arguments 0..*"]
+2098820063040 -> 2098820099520 [dir=back]
+2098820099520 -> 2098820082240[arrowtail=diamond, dir=both, headlabel="arguments 0..*"]
+2098820114880 -> 2098820082240 [dir=back]
+match_rules [ shape=plaintext, label=< <table>
+	<tr>
+		<td><b>ConjunctionOperator</b></td><td>∧|and|And|AND|land|Land|LAnd|LAND</td>
+	</tr>
+	<tr>
+		<td><b>DisjunctionOperator</b></td><td>∨|or|Or|OR|lor|Lor|LOr|LOR</td>
+	</tr>
+	<tr>
+		<td><b>FalsumFormula</b></td><td>⊥|0|false|False|FALSE|falsum|Falsum|FALSUM</td>
+	</tr>
+	<tr>
+		<td><b>FalsumOperator</b></td><td>⊥|0|false|False|FALSE|falsum|Falsum|FALSUM</td>
+	</tr>
+	<tr>
+		<td><b>Keywords</b></td><td></td>
+	</tr>
+	<tr>
+		<td><b>NegationOperator</b></td><td>¬|not|Not|NOT|lnot|Lnot|LNot|LNOT</td>
+	</tr>
+	<tr>
+		<td><b>TruthFormula</b></td><td>⊤|1|true|True|TRUE|truth|Truth|TRUTH</td>
+	</tr>
+	<tr>
+		<td><b>TruthOperator</b></td><td>⊤|1|true|True|TRUE|truth|Truth|TRUTH</td>
+	</tr>
+</table> >]
+
+
+}

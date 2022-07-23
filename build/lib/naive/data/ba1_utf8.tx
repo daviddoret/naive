@@ -12,82 +12,78 @@ Future improvements:
         from the source code.
 */
 
-BA1:
-    BA1Formula
+BooleanAlgebra1:
+    Formula
 ;
 
-BA1Formula:
+Formula:
     /*
     */
-    BA1BinaryOperatorFormula |
-    BA1UnaryOperatorFormula |
-    BA1ConstantFormula |
-    BA1AtomicVariableFormula |
-    BA1SuperfluousParenthesisFormula
+    BinaryOperatorFormula |
+    UnaryOperatorFormula |
+    NegationFormula |
+    ConstantFormula |
+    AtomicVariableFormula |
+    SuperfluousParenthesisFormula
 ;
 
-BA1Keywords:
-    BA1TruthOperator |
-    BA1FalsumOperator |
-    BA1NegationOperator |
-    BA1ConjunctionOperator |
-    BA1DisjunctionOperator
+Keywords:
+    TruthOperator | FalsumOperator | NegationOperator | ConjunctionOperator | DisjunctionOperator
 ;
 
-BA1ConstantFormula:
-    BA1TruthFormula |
-    BA1FalsumFormula
+ConstantFormula:
+    o=TruthFormula | o=FalsumFormula
 ;
 
-BA1TruthFormula:
-    token=BA1TruthOperator
+TruthFormula:
+    TruthOperator
 ;
 
-BA1TruthOperator:
+TruthOperator:
     '⊤' | '1' | 'true' | 'True' | 'TRUE' | 'truth' | 'Truth' | 'TRUTH'
 ;
 
-BA1FalsumFormula:
-    token=BA1FalsumOperator
+FalsumFormula:
+    FalsumOperator
 ;
 
-BA1FalsumOperator:
+FalsumOperator:
     '⊥' | '0' | 'false' | 'False' | 'FALSE' | 'falsum' | 'Falsum' | 'FALSUM'
 ;
 
-BA1BinaryOperatorFormula:
-    '(' BA1ConjunctionFormula ')' | '(' BA1DisjunctionFormula ')'
+BinaryOperatorFormula:
+    '(' ConjunctionFormula ')' | '(' DisjunctionFormula ')'
 ;
 
-BA1ConjunctionFormula:
-    arguments*=BA1Formula token=BA1ConjunctionOperator arguments*=BA1Formula
+ConjunctionFormula:
+    arguments*=Formula o=ConjunctionOperator arguments*=Formula
 ;
 
-BA1ConjunctionOperator:
+ConjunctionOperator:
     '∧' | 'and' | 'And' | 'AND' | 'land' | 'Land' | 'LAnd' | 'LAND'
 ;
 
-BA1DisjunctionFormula:
-    arguments*=BA1Formula token=BA1DisjunctionOperator arguments*=BA1Formula
+DisjunctionFormula:
+    arguments*=Formula o=DisjunctionOperator arguments*=Formula
 ;
 
-BA1DisjunctionOperator:
+DisjunctionOperator:
     '∨' | 'or' | 'Or' | 'OR' | 'lor' | 'Lor' | 'LOr' | 'LOR'
 ;
 
-BA1UnaryOperatorFormula:
-    BA1NegationFormula
+UnaryOperatorFormula:
+    NegationFormula
 ;
 
-BA1NegationFormula:
-   token=BA1NegationOperator arguments*=BA1Formula
+NegationFormula:
+   o=NegationOperator arguments*=Formula
 ;
 
-BA1NegationOperator:
+NegationOperator:
     '¬' | 'not' | 'Not' | 'NOT' | 'lnot' | 'Lnot' | 'LNot' | 'LNOT'
 ;
 
-BA1AtomicVariableFormula:
+AtomicVariableFormula:
     /*
     This is a first approximation.
     It uses the textX Negative Lookahead operator "!" to prevent any ambiguity with formal keywords.
@@ -99,15 +95,15 @@ BA1AtomicVariableFormula:
     References:
     - https://stackoverflow.com/questions/5555613/does-w-match-all-alphanumeric-characters-defined-in-the-unicode-standard
     */
-    !BA1Keywords
-    token=/[\w]+/
+    !Keywords
+    v=/[\w]+/
 ;
 
-BA1SuperfluousParenthesisFormula:
+SuperfluousParenthesisFormula:
     /*
     Rationale: getting rid of superfluous parenthesis in the formula.
 
     Superfluous parenthesis are removed recursively with the textX Match Suppression operator "-".
     */
-   '(' '(' BA1Formula ')' ')'
+   '(' '(' Formula ')' ')'
 ;

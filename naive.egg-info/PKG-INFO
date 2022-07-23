@@ -1,0 +1,23 @@
+Metadata-Version: 2.1
+Name: naive
+Version: 0.0.1
+Summary: Under development
+Home-page: https://github.com/daviddoret/naive
+Author: David Doret
+Author-email: 
+License: MIT
+Keywords: naive,model checking
+Classifier: Development Status :: 3 - Alpha
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+naive: a starting project....
+=============================
+
+Project status
+--------------
+This is a far too early version, please wait for more information. 

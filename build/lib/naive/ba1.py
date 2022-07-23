@@ -1,6 +1,7 @@
 from __future__ import annotations
-
 import log
+from textx import metamodel_from_file, metamodel_from_str
+import pkg_resources
 # Naive imports
 import core
 import typing
@@ -257,5 +258,12 @@ def satisfaction_index(phi: core.Formula, variables_list=None):
     log.debug(output_vector=output_vector)
     return output_vector
 
+def parse_string_utf8(code):
+    metamodel_source = pkg_resources.resource_string('naive', 'ba1_utf8.tx').decode('utf-8')
+    metamodel = metamodel_from_str(metamodel_source)
+    model = metamodel.model_from_str(code)
 
+def parse_file_utf8():
+    # TODO: Implement this.
+    pass
 

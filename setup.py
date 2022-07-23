@@ -4,7 +4,7 @@
 
 # LOGGING
 import logging
-logging.info('Naive Package: __setup__.py: starting execution...')
+logging.info('Naive Package: setup started.')
 logging.info(f'__name__: {__name__}')
 
 # IMPORTS
@@ -16,7 +16,7 @@ import importlib.metadata
 try:
     __version__ = importlib.metadata.version('naive')
 except:
-    __version__ = '1.1.1'  # Initial version for the first build.
+    __version__ = '0.0.1'  # Initial version for the first build.
 logging.info(f'__version__: {__version__}')
 
 
@@ -28,13 +28,14 @@ setup(name='naive',
       author_email='',
       license='MIT',
       packages=['naive'],
+      package_dir={'naive': 'src/naive'},
+      package_data={'naive': ['data/*.*']},
       zip_safe=False,
       install_requires=[
-            'numpy',
-            'nptyping',
             'typing',
-            'dataclasses'
+            'dataclasses',
+            'textx'
           ],
       )
 
-logging.info('Naive Package: __setup__.py: execution completed.')
+logging.info('Naive Package: setup completed.')

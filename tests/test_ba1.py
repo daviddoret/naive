@@ -1,4 +1,6 @@
 from unittest import TestCase
+
+import rformats
 import src.naive as naive
 
 
@@ -76,7 +78,7 @@ class Test(TestCase):
         print(phi3.list_atomic_variables())
         self.assertEqual('[x, y]', str(phi3.list_atomic_variables()))
 
-    def test_4_complex(self):
+    def test_complex_programmatic_construction_and_satisfaction_set(self):
         # naive.log.set_debug_level()
         b3 = naive.core.v(codomain=naive.ba1.b, base_name='b', indexes=3)
         b1 = naive.core.v(codomain=naive.ba1.b, base_name='b', indexes=1)
@@ -91,3 +93,27 @@ class Test(TestCase):
         print(sat_i)
         self.assertEqual('[⊥, ⊥, ⊥, ⊤, ⊥, ⊥, ⊥, ⊤]', str(sat_i))
 
+    def test_parsing_code(self):
+        code_1 = r'(((⊤ ∨ b1) ∧ (⊥ ∧ ¬⊥)) ∧ ¬b2)'
+        parsed_formula_1 = naive.parsing.parse_string_utf8(code_1)
+        self.assertEqual(code_1, parsed_formula_1.represent(rformats.UTF8))
+
+        code_1_extra_parenthesis = r'(((((((⊤ ∨ ((((b1))))))) ∧ (⊥ ∧ ¬⊥)))) ∧ ¬b2)'
+        parsed_formula_1_extra_parenthesis = naive.parsing.parse_string_utf8(code_1_extra_parenthesis)
+        self.assertEqual(code_1, parsed_formula_1_extra_parenthesis.represent(rformats.UTF8))
+
+        code_2 = r'¬⊥'
+        parsed_formula_2 = naive.parsing.parse_string_utf8(code_2)
+        self.assertEqual(code_2, parsed_formula_2.represent(rformats.UTF8))
+
+        code_3 = r'⊥'
+        parsed_formula_3 = naive.parsing.parse_string_utf8(code_3)
+        self.assertEqual(code_3, parsed_formula_3.represent(rformats.UTF8))
+
+        code_4 = r'b₇₃'
+        parsed_formula_4 = naive.parsing.parse_string_utf8(code_4)
+        self.assertEqual(code_4, parsed_formula_4.represent(rformats.UTF8))
+
+        code_5 = r'(p ∨ q)'
+        parsed_formula_5 = naive.parsing.parse_string_utf8(code_5)
+        self.assertEqual(code_5, parsed_formula_5.represent(rformats.UTF8))

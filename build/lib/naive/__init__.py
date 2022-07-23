@@ -13,7 +13,6 @@ import core
 import ba1
 import rformats
 import glyphs
-import parsing
 
 # LOGGING
 log.info('Naive initialization completed.')
