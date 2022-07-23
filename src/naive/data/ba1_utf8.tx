@@ -6,15 +6,27 @@ Formula:
     AtomicVariableFormula | ConstantFormula | NegationFormula | UnaryOperatorFormula | BinaryOperatorFormula | SuperfluousParenthesisFormula
 ;
 
+Keywords:
+    TruthOperator | FalsumOperator | NegationOperator | ConjunctionOperator | DisjunctionOperator
+;
+
 ConstantFormula:
-    TruthFormula | FalsumFormula
+    o=TruthFormula | o=FalsumFormula
 ;
 
 TruthFormula:
+    TruthOperator
+;
+
+TruthOperator:
     '⊤' | '1' | 'true' | 'True' | 'TRUE' | 'truth' | 'Truth' | 'TRUTH'
 ;
 
 FalsumFormula:
+    FalsumOperator
+;
+
+FalsumOperator:
     '⊥' | '0' | 'false' | 'False' | 'FALSE' | 'falsum' | 'Falsum' | 'FALSUM'
 ;
 
@@ -23,7 +35,7 @@ UnaryOperatorFormula:
 ;
 
 NegationFormula:
-   NegationOperator arguments*=Formula
+   o=NegationOperator arguments*=Formula
 ;
 
 NegationOperator:
@@ -35,7 +47,7 @@ BinaryOperatorFormula:
 ;
 
 ConjunctionFormula:
-    '(' arguments*=Formula ConjunctionOperator arguments*=Formula ')'
+    '(' arguments*=Formula o=ConjunctionOperator arguments*=Formula ')'
 ;
 
 ConjunctionOperator:
@@ -43,7 +55,7 @@ ConjunctionOperator:
 ;
 
 DisjunctionFormula:
-    '(' Formula DisjunctionOperator Formula ')'
+    '(' Formula o=DisjunctionOperator Formula ')'
 ;
 
 DisjunctionOperator:
@@ -53,17 +65,17 @@ DisjunctionOperator:
 AtomicVariableFormula:
     /*
     This is a first approximation.
-    This regular expression seems to be working fine in most circumstances but
-    may not yield the expected result for all characters.
-    Because this is the most ambiguous rule, I push it at the end
-    of the .tx file to give precedence to all other rules.
+    It uses the textX Negative Lookahead operator "!" to prevent any ambiguity with formal keywords.
+    This regular expression seems to be working fine in most circumstances but may not yield the expected result for all characters.
+    Because this is the most ambiguous rule, I push it at the end of the .tx file to give precedence to all other rules.
     TODO: Correct bug: the variable name should not be allowed to start with digits.
     TODO: Consider replacing this RegExp with an exhaustive set of allowed characters for variable names.
     TODO: Decompose AtomicVariable in base_name and conditional indexes.
     References:
     - https://stackoverflow.com/questions/5555613/does-w-match-all-alphanumeric-characters-defined-in-the-unicode-standard
     */
-    /[\w]+/
+    !Keywords
+    v=/[\w]+/
 ;
 
 SuperfluousParenthesisFormula:
