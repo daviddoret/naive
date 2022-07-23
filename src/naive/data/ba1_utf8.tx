@@ -5,8 +5,11 @@ BooleanAlgebra1:
 Formula:
     /*
     */
-    AtomicVariableFormula | ConstantFormula | NegationFormula |
-    UnaryOperatorFormula | BinaryOperatorFormula |
+    BinaryOperatorFormula |
+    UnaryOperatorFormula |
+    NegationFormula |
+    ConstantFormula |
+    AtomicVariableFormula |
     SuperfluousParenthesisFormula
 ;
 
@@ -34,6 +37,26 @@ FalsumOperator:
     '⊥' | '0' | 'false' | 'False' | 'FALSE' | 'falsum' | 'Falsum' | 'FALSUM'
 ;
 
+BinaryOperatorFormula:
+    ConjunctionFormula | DisjunctionFormula
+;
+
+ConjunctionFormula:
+    ('(') arguments*=Formula o=ConjunctionOperator arguments*=Formula (')')
+;
+
+ConjunctionOperator:
+    '∧' | 'and' | 'And' | 'AND' | 'land' | 'Land' | 'LAnd' | 'LAND'
+;
+
+DisjunctionFormula:
+    ('(') arguments*=Formula o=DisjunctionOperator arguments*=Formula (')')
+;
+
+DisjunctionOperator:
+    '∨' | 'or' | 'Or' | 'OR' | 'lor' | 'Lor' | 'LOr' | 'LOR'
+;
+
 UnaryOperatorFormula:
     NegationFormula
 ;
@@ -44,26 +67,6 @@ NegationFormula:
 
 NegationOperator:
     '¬' | 'not' | 'Not' | 'NOT' | 'lnot' | 'Lnot' | 'LNot' | 'LNOT'
-;
-
-BinaryOperatorFormula:
-    ConjunctionFormula | DisjunctionFormula
-;
-
-ConjunctionFormula:
-    '(' arguments*=Formula o=ConjunctionOperator arguments*=Formula ')'
-;
-
-ConjunctionOperator:
-    '∧' | 'and' | 'And' | 'AND' | 'land' | 'Land' | 'LAnd' | 'LAND'
-;
-
-DisjunctionFormula:
-    '(' Formula o=DisjunctionOperator Formula ')'
-;
-
-DisjunctionOperator:
-    '∨' | 'or' | 'Or' | 'OR' | 'lor' | 'Lor' | 'LOr' | 'LOR'
 ;
 
 AtomicVariableFormula:
@@ -86,7 +89,7 @@ SuperfluousParenthesisFormula:
     /*
     Rationale: getting rid of superfluous parenthesis in the formula.
 
-    Superfluous parenthesis are removed with the textX Match Suppression operator "-".
+    Superfluous parenthesis are removed recursively with the textX Match Suppression operator "-".
     */
-   '('- Formula ')'-
+   '(' '(' Formula ')' ')'
 ;
