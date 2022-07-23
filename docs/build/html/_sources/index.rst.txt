@@ -21,8 +21,8 @@ Contents
     :caption: Table of Contents
 
     section_installation_doc
-    module_base_doc
-    module_boolean_algebra_1_doc
+    module_core_doc
+    module_ba1_doc
     section_samples_doc
 
 Indices and tables

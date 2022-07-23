@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>naive.core &mdash; naive 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/jupyter-sphinx.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/thebelab.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script src="../../_static/thebelab-helper.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> naive
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../section_installation_doc.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_core_doc.html"><strong>core</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_ba1_doc.html"><strong>ba1</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../section_samples_doc.html">Samples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">naive</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>naive.core</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for naive.core</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
+<span class="kn">import</span> <span class="nn">log</span>
+<span class="kn">from</span> <span class="nn">_function_subscriptify</span> <span class="kn">import</span> <span class="n">subscriptify</span>
+<span class="kn">from</span> <span class="nn">_function_superscriptify</span> <span class="kn">import</span> <span class="n">superscriptify</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">from</span> <span class="nn">_function_represent</span> <span class="kn">import</span> <span class="n">represent</span>
+
+<span class="c1"># Concept Core Properties</span>
+<span class="kn">import</span> <span class="nn">rformats</span>
+<span class="kn">import</span> <span class="nn">glyphs</span>
+
+<span class="n">_BASE_KEY</span> <span class="o">=</span> <span class="s1">&#39;base_key&#39;</span>
+<span class="n">_STRUCTURE_KEY</span> <span class="o">=</span> <span class="s1">&#39;structure_key&#39;</span>
+<span class="n">_SCOPE_KEY</span> <span class="o">=</span> <span class="s1">&#39;scope_key&#39;</span>
+<span class="n">_LANGUAGE_KEY</span> <span class="o">=</span> <span class="s1">&#39;language_key&#39;</span>
+
+<span class="c1"># SystemFunction Complementary Properties</span>
+<span class="n">_DOMAIN</span> <span class="o">=</span> <span class="s1">&#39;codomain&#39;</span>
+<span class="n">_CODOMAIN</span> <span class="o">=</span> <span class="s1">&#39;codomain&#39;</span>
+<span class="n">_ARITY</span> <span class="o">=</span> <span class="s1">&#39;arity&#39;</span>
+<span class="n">_PYTHON_VALUE</span> <span class="o">=</span> <span class="s1">&#39;python_value&#39;</span>
+
+<span class="c1"># NType Keys</span>
+<span class="n">_STRUCTURE_SCOPE</span> <span class="o">=</span> <span class="s1">&#39;scope_key&#39;</span>
+<span class="n">_STRUCTURE_LANGUAGE</span> <span class="o">=</span> <span class="s1">&#39;language_key&#39;</span>
+<span class="n">_STRUCTURE_DOMAIN</span> <span class="o">=</span> <span class="s1">&#39;codomain&#39;</span>
+<span class="n">_STRUCTURE_FUNCTION</span> <span class="o">=</span> <span class="s1">&#39;function&#39;</span>
+<span class="n">_STRUCTURE_ATOMIC_PROPERTY</span> <span class="o">=</span> <span class="s1">&#39;ap&#39;</span>
+<span class="n">_STRUCTURE_VARIABLE</span> <span class="o">=</span> <span class="s1">&#39;variable&#39;</span>
+<span class="n">_STRUCTURE_FORMULA</span> <span class="o">=</span> <span class="s1">&#39;formula&#39;</span>
+
+<span class="n">_QUALIFIED_KEY_SEPARATOR</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span>
+<span class="n">_MNEMONIC_KEY_ALLOWED_CHARACTERS</span> <span class="o">=</span> <span class="s1">&#39;abcdefghijklmnopqrstuvwxyz012345679_&#39;</span>
+
+<span class="n">_DEFAULT_SCOPE_KEY</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">_SYSTEM_DEFINED_KEY_PREFIX</span> <span class="o">=</span> <span class="s1">&#39;sys_&#39;</span>
+<span class="n">_USER_DEFINED_KEY_PREFIX</span> <span class="o">=</span> <span class="s1">&#39;ud_&#39;</span>
+<span class="n">_LANGUAGE_NAIVE</span> <span class="o">=</span> <span class="s1">&#39;naive&#39;</span>
+
+
+<span class="k">def</span> <span class="nf">unkwargs</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">extract_scope_key_from_qualified_key</span><span class="p">(</span><span class="n">qualified_key</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Extract the scope_key key from a qualified key.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">qualified_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">qualified_key</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">qualified_key</span><span class="p">)</span>
+        <span class="n">first_separator_position</span> <span class="o">=</span> <span class="n">qualified_key</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">_QUALIFIED_KEY_SEPARATOR</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">qualified_key</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">first_separator_position</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">clean_mnemonic_key</span><span class="p">(</span><span class="n">mnemonic_key</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">mnemonic_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;NKey is None&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mnemonic_key</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mnemonic_key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">mnemonic_key</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">_MNEMONIC_KEY_ALLOWED_CHARACTERS</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Concept"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept">[docs]</a><span class="k">class</span> <span class="nc">Concept</span><span class="p">:</span>
+    <span class="n">_concept_database</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="sd">&quot;&quot;&quot;The static database of concepts.&quot;&quot;&quot;</span>
+
+    <span class="n">_token_database</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="sd">&quot;&quot;&quot;The static database of tokens.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Concept.__init__"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="p">,</span>
+                 <span class="n">utf8</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">domain</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">codomain</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pythong_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Identification Properties that constitute the Qualified Key.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scope_key</span> <span class="o">=</span> <span class="n">clean_mnemonic_key</span><span class="p">(</span><span class="n">scope_key</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_structure_key</span> <span class="o">=</span> <span class="n">clean_mnemonic_key</span><span class="p">(</span><span class="n">structure_key</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_language_key</span> <span class="o">=</span> <span class="n">clean_mnemonic_key</span><span class="p">(</span><span class="n">language_key</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_base_key</span> <span class="o">=</span> <span class="n">clean_mnemonic_key</span><span class="p">(</span><span class="n">base_key</span><span class="p">)</span>
+        <span class="c1"># Representation Properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_utf8</span> <span class="o">=</span> <span class="n">utf8</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_latex</span> <span class="o">=</span> <span class="n">latex</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_html</span> <span class="o">=</span> <span class="n">html</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_usascii</span> <span class="o">=</span> <span class="n">usascii</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tokens</span> <span class="o">=</span> <span class="n">tokens</span>
+        <span class="c1"># Populate the token-concept mapping</span>
+        <span class="c1"># to facilitate the retrieval of concepts during parsing</span>
+        <span class="c1"># TODO: Consider the following approach: append utf8, latex, etc. as primary tokens,</span>
+        <span class="c1">#  and consider the tokens argument for complementary tokens only.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">token</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">Concept</span><span class="o">.</span><span class="n">_token_database</span><span class="p">:</span>
+                    <span class="c1"># TODO: Question: should we store a reference to the Concept or store the Concept qualified key?</span>
+                    <span class="n">Concept</span><span class="o">.</span><span class="n">_token_database</span><span class="p">[</span><span class="n">token</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;The &quot;</span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s1">&quot; token was already in the token static database. We need to implement a priority algorithm to manage these situations.&#39;</span><span class="p">,</span>
+                        <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="c1"># Append the concept in the database</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">Concept</span><span class="o">.</span><span class="n">_concept_database</span><span class="p">:</span>
+            <span class="n">Concept</span><span class="o">.</span><span class="n">_concept_database</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s1">&#39;The initialization of the concept could not be completed because the qualified key was already present in the static database.&#39;</span><span class="p">,</span>
+                <span class="n">qualified_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Concept.__str__"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Concept.__repr__"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">arity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arity</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">base_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_base_key</span>
+
+<div class="viewcode-block" id="Concept.check_concept_from_decomposed_key"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.check_concept_from_decomposed_key">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">check_concept_from_decomposed_key</span><span class="p">(</span><span class="n">scope_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">structure_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">language_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">base_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">scope_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">structure_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">language_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">base_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">qualified_key</span> <span class="o">=</span> <span class="n">get_qualified_key</span><span class="p">(</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Concept</span><span class="o">.</span><span class="n">check_concept_from_qualified_key</span><span class="p">(</span>
+                <span class="n">qualified_key</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">ntype</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">nkey</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Some identification properties are None&#39;</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">ntype</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span>
+                      <span class="n">language</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">nkey</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Concept.check_concept_from_qualified_key"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.check_concept_from_qualified_key">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">check_concept_from_qualified_key</span><span class="p">(</span><span class="n">qualified_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">qualified_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">qualified_key</span> <span class="ow">in</span> <span class="n">Concept</span><span class="o">.</span><span class="n">_concept_database</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Checking concept with None qualified key is impossible.&#39;</span><span class="p">,</span>
+                      <span class="n">qualified_key</span><span class="o">=</span><span class="n">qualified_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Concept.get_concept_from_decomposed_key"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.get_concept_from_decomposed_key">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_concept_from_decomposed_key</span><span class="p">(</span><span class="n">scope_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">structure_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">language_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">base_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">scope_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">structure_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">language_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">base_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">qualified_key</span> <span class="o">=</span> <span class="n">get_qualified_key</span><span class="p">(</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Concept</span><span class="o">.</span><span class="n">get_concept_from_qualified_key</span><span class="p">(</span>
+                <span class="n">qualified_key</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">ntype</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">nkey</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Some identification properties are None&#39;</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">ntype</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span>
+                      <span class="n">language</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">nkey</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Concept.get_concept_from_qualified_key"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.get_concept_from_qualified_key">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_concept_from_qualified_key</span><span class="p">(</span><span class="n">qualified_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">qualified_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">qualified_key</span> <span class="ow">in</span> <span class="n">Concept</span><span class="o">.</span><span class="n">_concept_database</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Concept</span><span class="o">.</span><span class="n">_concept_database</span><span class="p">[</span><span class="n">qualified_key</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Concept</span><span class="p">(</span><span class="n">qualified_key</span><span class="o">=</span><span class="n">qualified_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Getting concept with None qualified key is impossible.&#39;</span><span class="p">,</span>
+                      <span class="n">qualified_key</span><span class="o">=</span><span class="n">qualified_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Concept.get_concept_from_token"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.get_concept_from_token">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_concept_from_token</span><span class="p">(</span><span class="n">token</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Definition:</span>
+<span class="sd">        A **token** is a list of text symbols that is mapped to a specific concept.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: Resume implementation here.</span>
+        <span class="c1">#   - In Concept __init__: subscribe tokens to a global indexes and check for unicity.</span>
+        <span class="k">if</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">Concept</span><span class="o">.</span><span class="n">_token_database</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Concept</span><span class="o">.</span><span class="n">_token_database</span><span class="p">[</span><span class="n">token</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Concept.is_equal_concept"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.is_equal_concept">[docs]</a>    <span class="k">def</span> <span class="nf">is_equal_concept</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Concept</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">qualified_key</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">language</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_language_key</span>
+
+<div class="viewcode-block" id="Concept.represent"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.represent">[docs]</a>    <span class="k">def</span> <span class="nf">represent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the object&#39;s representation in a supported format.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            rformat (str): A representation format.</span>
+<span class="sd">            args: For future use.</span>
+<span class="sd">            kwargs: For future use.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The object&#39;s representation in the requested format.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">rformat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rformat</span> <span class="o">=</span> <span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
+        <span class="c1"># TODO: Check that rformat is an allowed value.</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utf8</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># We fall back on UTF-8</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utf8</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;This concept has no representation in </span><span class="si">{</span><span class="n">rformat</span><span class="si">}</span><span class="s1"> nor </span><span class="si">{</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">,</span> <span class="n">rformat</span><span class="o">=</span><span class="n">rformat</span><span class="p">,</span>
+                      <span class="n">qualified_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">structure_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_structure_key</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">python_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_python_value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">qualified_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">get_qualified_key</span><span class="p">(</span><span class="n">scope_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="p">,</span>
+                                 <span class="n">base_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">base_key</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">scope_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scope_key</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tokens</span></div>
+
+
+<span class="k">class</span> <span class="nc">Language</span><span class="p">(</span><span class="n">Concept</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="c1"># Identification properties</span>
+            <span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="p">,</span>
+            <span class="c1"># Mandatory complementary properties</span>
+            <span class="c1"># Conditional complementary properties</span>
+            <span class="c1"># Representation properties</span>
+            <span class="n">utf8</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># ...</span>
+
+        <span class="c1"># Call the base class initializer.</span>
+        <span class="c1">#   Executing this at the end of the initialization process</span>
+        <span class="c1">#   assures that the new concept is not appended to the</span>
+        <span class="c1">#   static concept and token databases before it is fully initialized.</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span>
+            <span class="n">utf8</span><span class="o">=</span><span class="n">utf8</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="n">latex</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="n">html</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="n">usascii</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="n">tokens</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Domain</span><span class="p">(</span><span class="n">Concept</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="c1"># Identification properties</span>
+            <span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="p">,</span>
+            <span class="c1"># Mandatory complementary properties</span>
+            <span class="c1"># Conditional complementary properties</span>
+            <span class="c1"># Representation properties</span>
+            <span class="n">utf8</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># ...</span>
+
+        <span class="c1"># Call the base class initializer.</span>
+        <span class="c1">#   Executing this at the end of the initialization process</span>
+        <span class="c1">#   assures that the new concept is not appended to the</span>
+        <span class="c1">#   static concept and token databases before it is fully initialized.</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span>
+            <span class="n">utf8</span><span class="o">=</span><span class="n">utf8</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="n">latex</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="n">html</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="n">usascii</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="n">tokens</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Scope</span><span class="p">(</span><span class="n">Concept</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="c1"># Identification properties</span>
+            <span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="p">,</span>
+            <span class="c1"># Mandatory complementary properties</span>
+            <span class="c1"># Conditional complementary properties</span>
+            <span class="c1"># Representation properties</span>
+            <span class="n">utf8</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># ...</span>
+
+        <span class="c1"># Call the base class initializer.</span>
+        <span class="c1">#   Executing this at the end of the initialization process</span>
+        <span class="c1">#   assures that the new concept is not appended to the</span>
+        <span class="c1">#   static concept and token databases before it is fully initialized.</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span>
+            <span class="n">utf8</span><span class="o">=</span><span class="n">utf8</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="n">latex</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="n">html</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="n">usascii</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="n">tokens</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="set_default_scope"><a class="viewcode-back" href="../../core_function_set_default_scope_doc.html#naive.core.set_default_scope">[docs]</a><span class="k">def</span> <span class="nf">set_default_scope</span><span class="p">(</span><span class="n">scope_key</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Set the default current context.&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">_DEFAULT_SCOPE_KEY</span>
+    <span class="c1"># TODO: Allow the usage of friendly name, notes or documentation, etc.</span>
+    <span class="k">if</span> <span class="n">scope_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;None is not a valid context key. Please provide a non-empty string composed of the allowed characters: &quot;</span><span class="si">{</span><span class="n">_MNEMONIC_KEY_ALLOWED_CHARACTERS</span><span class="si">}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scope_key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;The object &quot;</span><span class="si">{</span><span class="n">scope_key</span><span class="si">}</span><span class="s1">&quot; of type &quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">scope_key</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot; is not a valid context key. Please provide a non-empty string composed of the allowed characters: &quot;</span><span class="si">{</span><span class="n">_MNEMONIC_KEY_ALLOWED_CHARACTERS</span><span class="si">}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span>
+    <span class="n">scope_key_cleaned</span> <span class="o">=</span> <span class="n">clean_mnemonic_key</span><span class="p">(</span><span class="n">scope_key</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scope_key_cleaned</span> <span class="o">!=</span> <span class="n">scope_key</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Please note that the context key &quot;</span><span class="si">{</span><span class="n">scope_key</span><span class="si">}</span><span class="s1">&quot; contained unsupported characters. The allowed characters for context keys are: &quot;</span><span class="si">{</span><span class="n">_MNEMONIC_KEY_ALLOWED_CHARACTERS</span><span class="si">}</span><span class="s1">&quot;. It was automatically cleaned from unsupported characters. The resulting context key is: </span><span class="si">{</span><span class="n">scope_key_cleaned</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scope_key</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;An empty string is not a valid context key. Please provide a non-empty string composed of the allowed characters: &quot;</span><span class="si">{</span><span class="n">_MNEMONIC_KEY_ALLOWED_CHARACTERS</span><span class="si">}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span>
+
+    <span class="n">prefixed_key</span> <span class="o">=</span> <span class="n">_USER_DEFINED_KEY_PREFIX</span> <span class="o">+</span> <span class="n">scope_key_cleaned</span>
+    <span class="n">_DEFAULT_SCOPE_KEY</span> <span class="o">=</span> <span class="n">prefixed_key</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Default scope_key: </span><span class="si">{</span><span class="n">scope_key_cleaned</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">get_default_scope</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">_DEFAULT_SCOPE_KEY</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">_USER_DEFINED_KEY_PREFIX</span><span class="p">):]</span>
+
+
+<span class="k">def</span> <span class="nf">declare_variable</span><span class="p">(</span><span class="n">codomain</span><span class="p">,</span> <span class="n">base_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indexes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># TODO: Provide support for different math fonts (e.g.: https://www.overleaf.com/learn/latex/Mathematical_fonts)</span>
+    <span class="c1"># TODO: Provide support for indexed variables. Variable declaration should be made with indexes bounds and not individual indexes values.</span>
+    <span class="n">codomain_key</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># Identification properties</span>
+    <span class="n">scope_key</span> <span class="o">=</span> <span class="n">_DEFAULT_SCOPE_KEY</span>
+    <span class="n">structure_key</span> <span class="o">=</span> <span class="n">_STRUCTURE_FORMULA</span>
+    <span class="n">language_key</span> <span class="o">=</span> <span class="n">_LANGUAGE_NAIVE</span>
+    <span class="k">if</span> <span class="n">base_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># TODO: Make this a scope preference setting, letting the user choose the default</span>
+        <span class="c1">#   variable base_name in that scope.</span>
+        <span class="n">base_name</span> <span class="o">=</span> <span class="s1">&#39;x&#39;</span>
+    <span class="n">base_key</span> <span class="o">=</span> <span class="n">base_name</span>
+    <span class="k">if</span> <span class="n">indexes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indexes</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+            <span class="n">base_key</span> <span class="o">=</span> <span class="n">base_key</span> <span class="o">+</span> <span class="s1">&#39;__&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">indexes</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">base_key</span> <span class="o">=</span> <span class="n">base_key</span> <span class="o">+</span> <span class="s1">&#39;__&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indexes</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">Concept</span><span class="o">.</span><span class="n">check_concept_from_decomposed_key</span><span class="p">(</span><span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">):</span>
+        <span class="n">variable</span> <span class="o">=</span> <span class="n">Concept</span><span class="o">.</span><span class="n">get_concept_from_decomposed_key</span><span class="p">(</span><span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;This variable is already declared. In consequence, the existing variable is returned, instead of declaring a new one.&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">variable</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">variable</span> <span class="o">=</span> <span class="n">Formula</span><span class="p">(</span>
+            <span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="n">Formula</span><span class="o">.</span><span class="n">ATOMIC_VARIABLE</span><span class="p">,</span>
+            <span class="n">codomain</span><span class="o">=</span> <span class="n">codomain</span><span class="p">,</span> <span class="n">base_name</span><span class="o">=</span><span class="n">base_name</span><span class="p">,</span> <span class="n">indexes</span><span class="o">=</span><span class="n">indexes</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">represent_declaration</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">variable</span>
+
+
+<span class="k">def</span> <span class="nf">v</span><span class="p">(</span><span class="n">codomain</span><span class="p">,</span> <span class="n">base_name</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">indexes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Shorthand function to declare a new variable.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">declare_variable</span><span class="p">(</span><span class="n">codomain</span><span class="p">,</span> <span class="n">base_name</span><span class="p">,</span> <span class="n">indexes</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Formula</span><span class="p">(</span><span class="n">Concept</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Definition:</span>
+<span class="sd">    A formula, in the context of the naive package,</span>
+<span class="sd">    is a tree of &quot;calls&quot; to functions, constants, or variables.</span>
+<span class="sd">    ...</span>
+
+<span class="sd">    Different types of formula:</span>
+<span class="sd">    - Atomic Variable (aka Unknown) (e.g. x + 5 = 17, x ∉ ℕ₀)</span>
+<span class="sd">    - Formula Variable (e.g. φ = ¬x ∨ y, z ∧ φ)</span>
+<span class="sd">    - n-ary SystemFunction Call with n in N0 (e.g. za1 abs)</span>
+
+<span class="sd">    Different sub-types of n-ary Functions:</span>
+<span class="sd">    - 0-ary Operator (aka Constant) (e.g. ba1_language truth)</span>
+<span class="sd">    - Unary Operator (e.g. ba1_language negation)</span>
+<span class="sd">    - Binary Operator (e.g. ba1_language conjunction)</span>
+<span class="sd">    - n-ary SystemFunction</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: Issue a warning when a property is accessed when the category make it invalid.</span>
+
+    <span class="c1"># Constants</span>
+    <span class="n">ATOMIC_VARIABLE</span> <span class="o">=</span> <span class="s1">&#39;formula_atomic_variable&#39;</span>  <span class="c1"># TODO: Question: is it justified to distinguish this from FORMULA_VARIABLE?</span>
+    <span class="n">FORMULA_VARIABLE</span> <span class="o">=</span> <span class="s1">&#39;formula_formula_variable&#39;</span>  <span class="c1"># TODO: Question: is it justified to distinguish this from ATOMIC_VARIABLE?</span>
+    <span class="n">SYSTEM_CONSTANT_CALL</span> <span class="o">=</span> <span class="s1">&#39;formula_constant_call&#39;</span>  <span class="c1"># Aka a 0-ary function.</span>
+    <span class="n">SYSTEM_UNARY_OPERATOR_CALL</span> <span class="o">=</span> <span class="s1">&#39;formula_unary_operator_call&#39;</span>
+    <span class="n">SYSTEM_BINARY_OPERATOR_CALL</span> <span class="o">=</span> <span class="s1">&#39;formula_binary_operator_call&#39;</span>
+    <span class="n">SYSTEM_N_ARY_FUNCTION_CALL</span> <span class="o">=</span> <span class="s1">&#39;formula_n_ary_function_call&#39;</span>
+    <span class="n">CATEGORIES</span> <span class="o">=</span> <span class="p">[</span><span class="n">ATOMIC_VARIABLE</span><span class="p">,</span> <span class="n">FORMULA_VARIABLE</span><span class="p">,</span> <span class="n">SYSTEM_CONSTANT_CALL</span><span class="p">,</span> <span class="n">SYSTEM_UNARY_OPERATOR_CALL</span><span class="p">,</span> <span class="n">SYSTEM_BINARY_OPERATOR_CALL</span><span class="p">,</span>
+                  <span class="n">SYSTEM_N_ARY_FUNCTION_CALL</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="c1"># Identification properties</span>
+            <span class="n">scope_key</span><span class="p">,</span> <span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="p">,</span>
+            <span class="c1"># Mandatory complementary properties</span>
+            <span class="n">category</span><span class="p">,</span>
+            <span class="c1"># Conditional complementary properties</span>
+            <span class="c1"># ...for system function calls:</span>
+            <span class="n">system_function</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">arguments</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="c1"># ...for atomic variables</span>
+            <span class="n">domain</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">codomain</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">base_name</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">indexes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Identification properties</span>
+        <span class="n">structure_key</span> <span class="o">=</span> <span class="n">_STRUCTURE_FORMULA</span>
+        <span class="c1"># Mandatory complementary properties.</span>
+        <span class="k">if</span> <span class="n">category</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">Formula</span><span class="o">.</span><span class="n">CATEGORIES</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Invalid formula category&#39;</span><span class="p">,</span>
+                      <span class="n">category</span><span class="o">=</span><span class="n">category</span><span class="p">,</span> <span class="n">qualified_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_category</span> <span class="o">=</span> <span class="n">category</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_arity</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_system_function</span> <span class="o">=</span> <span class="n">system_function</span>
+        <span class="c1"># match category:</span>
+        <span class="c1">#     case Formula.ATOMIC_VARIABLE:</span>
+        <span class="c1">#         # The rationale for this arity = 0 is that atomic variables have no input.</span>
+        <span class="c1">#         # This would be wrong of formula variables.</span>
+        <span class="c1">#         self._arity = 0</span>
+        <span class="c1">#     case Formula.SYSTEM_CONSTANT_CALL:</span>
+        <span class="c1">#         self._arity = 0</span>
+        <span class="c1">#     case Formula.SYSTEM_UNARY_OPERATOR_CALL:</span>
+        <span class="c1">#         self._arity = 1</span>
+        <span class="c1">#     case Formula.SYSTEM_BINARY_OPERATOR_CALL:</span>
+        <span class="c1">#         self._arity = 2</span>
+        <span class="c1">#     # Replace the match ... case ... with system.function.arity.</span>
+        <span class="c1">#     # TODO: Implement arity for n-ary system function calls.</span>
+        <span class="c1">#     # TODO: Implement arity for formula variables.</span>
+        <span class="c1">#     # TODO: Consider making this property a dynamic property.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span> <span class="o">=</span> <span class="n">arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_domain</span> <span class="o">=</span> <span class="s1">&#39;NOT IMPLEMENTED&#39;</span>  <span class="c1"># TODO: Implement formula domain. It may be None, a base domain or a tuple of domains.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_codomain</span> <span class="o">=</span> <span class="n">codomain</span>  <span class="c1"># TODO: Check that codomain is only passed as argument when appicable. Otherwise, issue a warning.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_base_name</span> <span class="o">=</span> <span class="n">base_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indexes</span> <span class="o">=</span> <span class="n">indexes</span>
+        <span class="c1"># Call the base class initializer.</span>
+        <span class="c1">#   Executing this at the end of the initialization process</span>
+        <span class="c1">#   assures that the new concept is not appended to the</span>
+        <span class="c1">#   static concept and token databases before it is fully initialized.</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">arity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="n">Formula</span><span class="o">.</span><span class="n">ATOMIC_VARIABLE</span><span class="p">:</span>
+            <span class="c1"># For atomic variables, the arity is 0.</span>
+            <span class="c1"># The rationale is that an atomic variable doesn&#39;t get any input.</span>
+            <span class="c1"># This would be wrong of formula variables which deserver a distinct implementation.</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_system_function_call</span><span class="p">:</span>
+            <span class="c1"># For system function calls, the arity of the call</span>
+            <span class="c1"># is equal to the arity of the function being called.</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_function</span><span class="o">.</span><span class="n">arity</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># TODO: Implement the arity property for all object categories.</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The arity property has not been implemented for this concept category.&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">,</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">category</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_category</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">codomain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="n">Formula</span><span class="o">.</span><span class="n">ATOMIC_VARIABLE</span><span class="p">:</span>
+            <span class="c1"># For atomic variables, the codomain is part of the object.</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_codomain</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_system_function_call</span><span class="p">:</span>
+            <span class="c1"># For system function calls, the codomain of the function call</span>
+            <span class="c1"># is equal to the codomain of the function being called.</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_function</span><span class="o">.</span><span class="n">codomain</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># TODO: Implement the codomain property for all object categories.</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The codomain property has not been implemented for this concept category.&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">,</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">domain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Please implement the domain property&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_domain</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">indexes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indexes</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_system_function_call</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return *True* if this is a system function call, *False* otherwise.</span>
+
+<span class="sd">        If *True*, the instance has the *system_function* property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">category</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="n">Formula</span><span class="o">.</span><span class="n">SYSTEM_CONSTANT_CALL</span><span class="p">,</span>
+            <span class="n">Formula</span><span class="o">.</span><span class="n">SYSTEM_UNARY_OPERATOR_CALL</span><span class="p">,</span>
+            <span class="n">Formula</span><span class="o">.</span><span class="n">SYSTEM_BINARY_OPERATOR_CALL</span><span class="p">,</span>
+            <span class="n">Formula</span><span class="o">.</span><span class="n">SYSTEM_N_ARY_FUNCTION_CALL</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">list_atomic_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the sorted set of variables present in the formula, and its subformulae recursively.&quot;&quot;&quot;</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">Formula</span><span class="p">)</span> <span class="ow">and</span> <span class="n">a</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="n">Formula</span><span class="o">.</span><span class="n">ATOMIC_VARIABLE</span><span class="p">:</span>
+                <span class="n">l</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">Formula</span><span class="p">):</span>
+                <span class="n">l_prime</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">list_atomic_variables</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">a_prime</span> <span class="ow">in</span> <span class="n">l_prime</span><span class="p">:</span>
+                    <span class="n">l</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">a_prime</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Not implemented yet&#39;</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># To allow sorting and indexing, convert the set to a list.</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+        <span class="n">l</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">base_key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">l</span>
+
+    <span class="k">def</span> <span class="nf">represent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">rformat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rformat</span> <span class="o">=</span> <span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
+        <span class="c1"># if self.category == Formula.ATOMIC_VARIABLE:</span>
+        <span class="c1">#     return self.symbol.represent(rformat, *args, **kwargs)</span>
+        <span class="k">match</span> <span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">:</span>
+            <span class="k">case</span> <span class="n">Formula</span><span class="o">.</span><span class="n">ATOMIC_VARIABLE</span><span class="p">:</span>
+                <span class="c1"># x</span>
+                <span class="c1"># TODO: Modify approach. Storing and returning the _base_name like this</span>
+                <span class="c1">#   prevent support for other mathematical fonts, such as MathCal, etc.</span>
+                <span class="c1">#   As an initial approach, it provides support for ASCII like variables.</span>
+                <span class="c1">#   We may consider storing a Glyph as the base name,</span>
+                <span class="c1">#   and calling the static represent() function.</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_base_name</span> <span class="o">+</span> \
+                       <span class="n">subscriptify</span><span class="p">(</span><span class="n">represent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indexes</span><span class="p">,</span> <span class="n">rformat</span><span class="p">),</span> <span class="n">rformat</span><span class="p">)</span>
+            <span class="k">case</span> <span class="n">Formula</span><span class="o">.</span><span class="n">SYSTEM_CONSTANT_CALL</span><span class="p">:</span>
+                <span class="c1"># x</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_system_function</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">case</span> <span class="n">Formula</span><span class="o">.</span><span class="n">SYSTEM_UNARY_OPERATOR_CALL</span><span class="p">:</span>
+                <span class="c1"># fx</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_system_function</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">case</span> <span class="n">Formula</span><span class="o">.</span><span class="n">SYSTEM_BINARY_OPERATOR_CALL</span><span class="p">:</span>
+                <span class="c1"># (x f y)</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">glyphs</span><span class="o">.</span><span class="n">parenthesis_left</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">glyphs</span><span class="o">.</span><span class="n">small_space</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">_system_function</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">glyphs</span><span class="o">.</span><span class="n">small_space</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">glyphs</span><span class="o">.</span><span class="n">parenthesis_right</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">case</span> <span class="n">Formula</span><span class="o">.</span><span class="n">SYSTEM_N_ARY_FUNCTION_CALL</span><span class="p">:</span>
+                <span class="c1"># f(x,y,z)</span>
+                <span class="n">variable_list</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">represent</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">))</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_system_function</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">glyphs</span><span class="o">.</span><span class="n">parenthesis_left</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">variable_list</span><span class="si">}{</span><span class="n">glyphs</span><span class="o">.</span><span class="n">parenthesis_right</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">case</span> <span class="k">_</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unsupported formula category&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">,</span> <span class="n">qualified_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">represent_declaration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">category</span> <span class="o">!=</span> <span class="n">Formula</span><span class="o">.</span><span class="n">ATOMIC_VARIABLE</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Formula category not supported for declaration.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">rformat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">rformat</span> <span class="o">=</span> <span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
+            <span class="k">match</span> <span class="n">rformat</span><span class="p">:</span>
+                <span class="k">case</span> <span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;With </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}</span><span class="s1"> ∈ </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">codomain</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}</span><span class="s1">.&#39;</span>
+                <span class="k">case</span> <span class="k">_</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;TODO&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">system_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_system_function</span>
+
+
+<span class="k">class</span> <span class="nc">Counter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+
+<span class="n">_FORMULA_AUTO_COUNTER</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">write_formula</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">_FORMULA_AUTO_COUNTER</span>
+    <span class="n">scope_key</span> <span class="o">=</span> <span class="n">_DEFAULT_SCOPE_KEY</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">_FORMULA_AUTO_COUNTER</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
+    <span class="n">base_key</span> <span class="o">=</span> <span class="s1">&#39;f&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+    <span class="n">category</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">system_function</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">SystemFunction</span><span class="p">):</span>
+        <span class="n">system_function</span> <span class="o">=</span> <span class="n">o</span>
+        <span class="k">match</span> <span class="n">o</span><span class="o">.</span><span class="n">category</span><span class="p">:</span>
+            <span class="k">case</span> <span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_CONSTANT</span><span class="p">:</span>
+                <span class="n">category</span> <span class="o">=</span> <span class="n">Formula</span><span class="o">.</span><span class="n">SYSTEM_CONSTANT_CALL</span>
+            <span class="k">case</span> <span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_UNARY_OPERATOR</span><span class="p">:</span>
+                <span class="n">category</span> <span class="o">=</span> <span class="n">Formula</span><span class="o">.</span><span class="n">SYSTEM_UNARY_OPERATOR_CALL</span>
+            <span class="k">case</span> <span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_BINARY_OPERATOR</span><span class="p">:</span>
+                <span class="n">category</span> <span class="o">=</span> <span class="n">Formula</span><span class="o">.</span><span class="n">SYSTEM_BINARY_OPERATOR_CALL</span>
+            <span class="c1"># TODO: Implement all other possibilities</span>
+    <span class="n">arguments</span> <span class="o">=</span> <span class="n">args</span>
+    <span class="n">formula</span> <span class="o">=</span> <span class="n">Formula</span><span class="p">(</span>
+        <span class="c1"># Identification properties</span>
+        <span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_NAIVE</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span>
+        <span class="c1"># Mandatory complementary properties</span>
+        <span class="n">category</span><span class="o">=</span><span class="n">category</span><span class="p">,</span>
+        <span class="c1"># Conditional complementary properties</span>
+        <span class="n">system_function</span><span class="o">=</span><span class="n">system_function</span><span class="p">,</span> <span class="n">arguments</span><span class="o">=</span><span class="n">arguments</span>
+    <span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">formula</span><span class="o">.</span><span class="n">represent</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">formula</span>
+
+
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Shorthand function to write a formula.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">write_formula</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">SystemFunction</span><span class="p">(</span><span class="n">Concept</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The system function class.</span>
+
+<span class="sd">    Definition:</span>
+<span class="sd">    A system function, in the context of the naive package,</span>
+<span class="sd">    is a function that is predefined in the sense that it is accompanied by a programmatic algorithm and not a formula,</span>
+<span class="sd">    and atomic in the sense that it cannot be further decomposed into constituent sub-formulae.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Constants</span>
+    <span class="n">SYSTEM_CONSTANT</span> <span class="o">=</span> <span class="s1">&#39;atomic_constant&#39;</span>  <span class="c1"># Aka a 0-ary function.</span>
+    <span class="n">SYSTEM_UNARY_OPERATOR</span> <span class="o">=</span> <span class="s1">&#39;atomic_unary_operator&#39;</span>  <span class="c1"># Aka a unary function with operator notation.</span>
+    <span class="n">SYSTEM_BINARY_OPERATOR</span> <span class="o">=</span> <span class="s1">&#39;atomic_binary_operator&#39;</span>  <span class="c1"># Aka a binary function with operator notation.</span>
+    <span class="n">SYSTEM_N_ARY_FUNCTION</span> <span class="o">=</span> <span class="s1">&#39;atomic_n_ary_function&#39;</span>
+    <span class="n">CATEGORIES</span> <span class="o">=</span> <span class="p">[</span><span class="n">SYSTEM_CONSTANT</span><span class="p">,</span> <span class="n">SYSTEM_UNARY_OPERATOR</span><span class="p">,</span> <span class="n">SYSTEM_BINARY_OPERATOR</span><span class="p">,</span> <span class="n">SYSTEM_N_ARY_FUNCTION</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="c1"># Identification properties</span>
+            <span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="p">,</span>
+            <span class="c1"># Mandatory complementary properties</span>
+            <span class="n">category</span><span class="p">,</span> <span class="n">codomain</span><span class="p">,</span> <span class="n">algorithm</span><span class="p">,</span>
+            <span class="c1"># Conditional complementary properties</span>
+            <span class="n">domain</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">python_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="c1"># Representation properties</span>
+            <span class="n">utf8</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Mandatory complementary properties.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_codomain</span> <span class="o">=</span> <span class="n">codomain</span>  <span class="c1"># TODO: Implement validation against the static concept database.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_algorithm</span> <span class="o">=</span> <span class="n">algorithm</span>
+        <span class="k">if</span> <span class="n">category</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SystemFunction</span><span class="o">.</span><span class="n">CATEGORIES</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Invalid formula category&#39;</span><span class="p">,</span>
+                      <span class="n">category</span><span class="o">=</span><span class="n">category</span><span class="p">,</span> <span class="n">qualified_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_category</span> <span class="o">=</span> <span class="n">category</span>
+        <span class="c1"># Conditional complementary properties.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_domain</span> <span class="o">=</span> <span class="n">domain</span>  <span class="c1"># TODO: Implement validation against the static concept database.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_arity</span> <span class="o">=</span> <span class="n">arity</span>  <span class="c1"># TODO: Implement validation logic dependent of subcategory.</span>
+        <span class="k">if</span> <span class="n">category</span> <span class="o">==</span> <span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_CONSTANT</span> <span class="ow">and</span> <span class="n">python_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;python_value is mandatory for constants (0-ary functions) but it was None.&#39;</span><span class="p">,</span>
+                      <span class="n">python_value</span><span class="o">=</span><span class="n">python_value</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">category</span><span class="p">,</span> <span class="n">qualified_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_python_value</span> <span class="o">=</span> <span class="n">python_value</span>  <span class="c1"># TODO: Question: Should it be mandatory for subcategory = constant?</span>
+        <span class="c1"># Call the base class initializer.</span>
+        <span class="c1">#   Executing this at the end of the initialization process</span>
+        <span class="c1">#   assures that the new concept is not appended to the</span>
+        <span class="c1">#   static concept and token databases before it is fully initialized.</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span>
+            <span class="n">utf8</span><span class="o">=</span><span class="n">utf8</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="n">latex</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="n">html</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="n">usascii</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="n">tokens</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">algorithm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_algorithm</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">category</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_category</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">codomain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_codomain</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">domain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_domain</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">compute_programmatic_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># TODO: The idea is to distinguish the computerized or programmatic value,</span>
+        <span class="c1">#   here as a canonical mapping to a python object,</span>
+        <span class="c1">#   with the symbolic value, the later being the naive concept.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_CONSTANT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_python_value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;ooops&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">equal_programmatic_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return true if two formula yield identical values, false otherwise.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Formula</span><span class="p">)</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">subcategory</span> <span class="o">==</span> <span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_CONSTANT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_programmatic_value</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">compute_programmatic_value</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;oooops again&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">get_qualified_key</span><span class="p">(</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">scope_key</span><span class="si">}{</span><span class="n">_QUALIFIED_KEY_SEPARATOR</span><span class="si">}{</span><span class="n">structure_key</span><span class="si">}{</span><span class="n">_QUALIFIED_KEY_SEPARATOR</span><span class="si">}{</span><span class="n">language_key</span><span class="si">}{</span><span class="n">_QUALIFIED_KEY_SEPARATOR</span><span class="si">}{</span><span class="n">base_key</span><span class="si">}</span><span class="s1">&#39;</span>
+
+
+<span class="c1"># Scope.</span>
+<span class="n">system_scope</span> <span class="o">=</span> <span class="n">Scope</span><span class="p">(</span>
+    <span class="n">scope_key</span><span class="o">=</span><span class="s1">&#39;sys&#39;</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">_STRUCTURE_SCOPE</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_NAIVE</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="s1">&#39;sys&#39;</span><span class="p">,</span>
+    <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;sys&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\text</span><span class="si">{sys}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;sys&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;sys&#39;</span><span class="p">)</span>
+
+<span class="n">initial_user_defined_scope</span> <span class="o">=</span> <span class="n">Scope</span><span class="p">(</span>
+    <span class="n">scope_key</span><span class="o">=</span><span class="s1">&#39;sys&#39;</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">_STRUCTURE_SCOPE</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_NAIVE</span><span class="p">,</span>
+    <span class="n">base_key</span><span class="o">=</span><span class="n">_USER_DEFINED_KEY_PREFIX</span> <span class="o">+</span> <span class="s1">&#39;scope_1&#39;</span><span class="p">,</span>
+    <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;scope_key₁&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\text</span><span class="si">{scope_key}</span><span class="s1">_1&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;scope_key&lt;sub&gt;1&lt;/sub&gt;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;scope1&#39;</span><span class="p">)</span>
+<span class="c1"># TODO: Question: what should be the scope_key of user defined scopes? sys? the scope_key itself?</span>
+
+<span class="n">set_default_scope</span><span class="p">(</span><span class="s1">&#39;scope_1&#39;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, David Doret.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
