@@ -6,3 +6,9 @@
 
 get_ipython().system('pip install https://github.com/daviddoret/naive/raw/master/dist/naive-latest.tar.gz')
 
+
+# In[2]:
+
+
+import naive
+

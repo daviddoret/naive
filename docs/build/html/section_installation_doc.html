@@ -52,7 +52,12 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#console">Console</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jupyter-notebook">Jupyter Notebook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#import">Import</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="module_core_doc.html"><strong>core</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_ba1_doc.html"><strong>ba1</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="section_samples_doc.html">Samples</a></li>
@@ -108,7 +113,16 @@
 </style>
 <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
-<p>Install the latest version of the <strong>naive</strong> package in a Jupyter notebook.</p>
+<section id="console">
+<h2>Console<a class="headerlink" href="#console" title="Permalink to this heading"></a></h2>
+<p>To install the latest version of the <strong>naive</strong> package with <strong>PIP</strong> from your preferred console, run the following command in a cell:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install https://github.com/daviddoret/naive/raw/master/dist/naive-latest.tar.gz</span>
+</pre></div>
+</div>
+</section>
+<section id="jupyter-notebook">
+<h2>Jupyter Notebook<a class="headerlink" href="#jupyter-notebook" title="Permalink to this heading"></a></h2>
+<p>To install the latest version of the <strong>naive</strong> package with <strong>PIP</strong> in a <strong>Jupyter notebook</strong>, run the following command in a cell:</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>pip install https://github.com/daviddoret/naive/raw/master/dist/naive-latest.tar.gz
@@ -117,15 +131,42 @@
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>Collecting https://github.com/daviddoret/naive/raw/master/dist/naive-latest.tar.gz
+  Using cached https://github.com/daviddoret/naive/raw/master/dist/naive-latest.tar.gz (21 kB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status &#39;done&#39;
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status &#39;done&#39;
+  Installing backend dependencies: started
+  Installing backend dependencies: finished with status &#39;done&#39;
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status &#39;done&#39;
+Requirement already satisfied: textx in c:\users\david\pycharmprojects\naive\naive_virtual_environment\lib\site-packages (from naive==0.0.2) (3.0.0)
+Requirement already satisfied: dataclasses in c:\users\david\pycharmprojects\naive\naive_virtual_environment\lib\site-packages (from naive==0.0.2) (0.6)
+Requirement already satisfied: typing in c:\users\david\pycharmprojects\naive\naive_virtual_environment\lib\site-packages (from naive==0.0.2) (3.7.4.3)
+Requirement already satisfied: Arpeggio&gt;=2.0.0 in c:\users\david\pycharmprojects\naive\naive_virtual_environment\lib\site-packages (from textx-&gt;naive==0.0.2) (2.0.0)
+Requirement already satisfied: future in c:\users\david\pycharmprojects\naive\naive_virtual_environment\lib\site-packages (from textx-&gt;naive==0.0.2) (0.18.2)
 </pre></div>
 </div>
+</div>
+</div>
+</section>
+<section id="import">
+<h2>Import<a class="headerlink" href="#import" title="Permalink to this heading"></a></h2>
+<p>Once installed, to import the <strong>naive</strong> package, add the following import instruction in your code:</p>
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">naive</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
 <div class="stderr docutils container">
-<pre class="stderr literal-block">  ERROR: HTTP error 404 while getting https://github.com/daviddoret/naive/raw/master/dist/naive-latest.tar.gz
-ERROR: Could not install requirement https://github.com/daviddoret/naive/raw/master/dist/naive-latest.tar.gz because of HTTP error 404 Client Error: Not Found for url: https://github.com/daviddoret/naive/raw/master/dist/naive-latest.tar.gz for URL https://github.com/daviddoret/naive/raw/master/dist/naive-latest.tar.gz
+<pre class="stderr literal-block">Default scope_key: scope_1 
 </pre>
 </div>
 </div>
 </div>
+</section>
 </section>
 
 
