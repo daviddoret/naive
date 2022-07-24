@@ -1,6 +1,7 @@
 from __future__ import annotations
 from collections.abc import Iterable
 import threading
+import graphviz
 
 import naive.log
 from naive._function_subscriptify import subscriptify
@@ -10,6 +11,8 @@ from naive._function_represent import represent
 # Concept Core Properties
 import naive.rformats
 import naive.glyphs
+
+import rformats
 
 _BASE_KEY = 'base_key'
 _STRUCTURE_KEY = 'structure_key'
@@ -730,5 +733,36 @@ initial_user_defined_scope = Scope(
     base_key=_USER_DEFINED_KEY_PREFIX + 'scope_1',
     utf8='scope_key₁', latex=r'\text{scope_key}_1', html=r'scope_key<sub>1</sub>', usascii='scope1')
 # TODO: Question: what should be the scope_key of user defined scopes? sys? the scope_key itself?
+
+def convert_formula_to_graphviz_digraph(formula: Formula, digraph=None):
+
+    title = formula.represent(rformats.UTF8)
+    id = formula.qualified_key
+
+    if digraph is None:
+        digraph = graphviz.Digraph(id)
+
+    digraph.node(id, title)
+    for argument in formula.arguments:
+        convert_formula_to_graphviz_digraph(formula=formula, digraph=digraph)
+        digraph.edge(id, argument.qualified_key)
+
+    return digraph
+
+def convert_formula_to_dot(formula: Formula):
+    digraph = convert_formula_to_graphviz_digraph(formula=formula)
+    return digraph.source
+
+def render_formula_as_ipython_mimebundle(formula: Formula):
+    """
+    Render the formula as a digraph in SVG format,
+    in Jupyter Notebook, Jupyter QT Console, and/or insider Spyder IDE.
+
+    Bibliography:
+        * https://graphviz.readthedocs.io/en/stable/api.html#graphviz.Graph._repr_mimebundle_
+        * https://graphviz.readthedocs.io/en/stable/manual.html
+    """
+    digraph = convert_formula_to_graphviz_digraph(formula=formula)
+    digraph._repr_mimebundle_()
 
 set_default_scope('scope_1')

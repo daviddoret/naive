@@ -1,5 +1,6 @@
 from unittest import TestCase
 
+import core
 import rformats
 import src.naive as naive
 
@@ -117,3 +118,9 @@ class Test(TestCase):
         code_5 = r'(p ∨ q)'
         parsed_formula_5 = naive.parsing.parse_string_utf8(code_5)
         self.assertEqual(code_5, parsed_formula_5.represent(rformats.UTF8))
+
+    def test_dot(self):
+        code_5 = r'(p ∨ q)'
+        parsed_formula_5 = naive.parsing.parse_string_utf8(code_5)
+        self.assertEqual(code_5, parsed_formula_5.represent(rformats.UTF8))
+        print(core.convert_formula_to_dot(parsed_formula_5))

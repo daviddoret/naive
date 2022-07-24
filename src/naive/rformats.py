@@ -28,6 +28,18 @@ Implemented as UTF-8 standard strings with HTML character encoding.
 """
 HTML = 'html'
 
+
+DOT = 'DOT'
+"""DOT Digraph.
+
+Options should be:
+render DOT source
+render graph as svg, png, etc.
+
+References:
+    * https://graphviz.readthedocs.io/en/stable/manual.html
+"""
+
 # DEFAULT REPRESENTATION FORMAT
 
 """The default representation format.
