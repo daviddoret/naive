@@ -421,7 +421,7 @@
     <span class="k">return</span> <span class="n">_DEFAULT_SCOPE_KEY</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">_USER_DEFINED_KEY_PREFIX</span><span class="p">):]</span>
 
 
-<span class="k">def</span> <span class="nf">declare_variable</span><span class="p">(</span><span class="n">codomain</span><span class="p">,</span> <span class="n">base_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indexes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">declare_atomic_variable</span><span class="p">(</span><span class="n">codomain</span><span class="p">,</span> <span class="n">base_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indexes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="c1"># TODO: Provide support for different math fonts (e.g.: https://www.overleaf.com/learn/latex/Mathematical_fonts)</span>
     <span class="c1"># TODO: Provide support for indexed variables. Variable declaration should be made with indexes bounds and not individual indexes values.</span>
     <span class="n">codomain_key</span> <span class="o">=</span> <span class="kc">None</span>
@@ -452,9 +452,9 @@
         <span class="k">return</span> <span class="n">variable</span>
 
 
-<span class="k">def</span> <span class="nf">v</span><span class="p">(</span><span class="n">codomain</span><span class="p">,</span> <span class="n">base_name</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">indexes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Shorthand function to declare a new variable.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">declare_variable</span><span class="p">(</span><span class="n">codomain</span><span class="p">,</span> <span class="n">base_name</span><span class="p">,</span> <span class="n">indexes</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">av</span><span class="p">(</span><span class="n">codomain</span><span class="p">,</span> <span class="n">base_name</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">indexes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Shorthand alias for :ref:`declare_atomic_variable` **declare_atomic_variable**.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">declare_atomic_variable</span><span class="p">(</span><span class="n">codomain</span><span class="p">,</span> <span class="n">base_name</span><span class="p">,</span> <span class="n">indexes</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">Formula</span><span class="p">(</span><span class="n">Concept</span><span class="p">):</span>

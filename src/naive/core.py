@@ -339,7 +339,7 @@ def get_default_scope():
     return _DEFAULT_SCOPE_KEY[len(_USER_DEFINED_KEY_PREFIX):]
 
 
-def declare_variable(codomain, base_name=None, indexes=None):
+def declare_atomic_variable(codomain, base_name=None, indexes=None):
     # TODO: Provide support for different math fonts (e.g.: https://www.overleaf.com/learn/latex/Mathematical_fonts)
     # TODO: Provide support for indexed variables. Variable declaration should be made with indexes bounds and not individual indexes values.
     codomain_key = None
@@ -370,9 +370,9 @@ def declare_variable(codomain, base_name=None, indexes=None):
         return variable
 
 
-def v(codomain, base_name = None, indexes = None):
-    """Shorthand function to declare a new variable."""
-    return declare_variable(codomain, base_name, indexes)
+def av(codomain, base_name = None, indexes = None):
+    """Shorthand alias for :ref:`declare_atomic_variable` **declare_atomic_variable**."""
+    return declare_atomic_variable(codomain, base_name, indexes)
 
 
 class Formula(Concept):

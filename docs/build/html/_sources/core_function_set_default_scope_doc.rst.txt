@@ -1,3 +1,5 @@
+.. _set_default_scope:
+
 ``set_default_scope``
 ========================
 

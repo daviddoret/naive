@@ -7,7 +7,7 @@ import src.naive as naive
 class Test(TestCase):
 
     def test_basic_atomic_variable_declaration(self):
-        b1 = naive.core.v(naive.ba1.b, base_name='b', indexes=1)
+        b1 = naive.core.av(naive.ba1.b, base_name='b', indexes=1)
         self.assertEqual('b₁', b1.represent(naive.rformats.UTF8))
 
     def test_representation_of_truth_and_falsum(self):
@@ -15,11 +15,11 @@ class Test(TestCase):
         self.assertEqual(naive.ba1.falsum.represent(naive.rformats.UTF8), '⊥')
 
     def test_b_variable_declaration(self):
-        x = naive.core.v(naive.ba1.b, 'x')
+        x = naive.core.av(naive.ba1.b, 'x')
         self.assertEqual('x', x.represent(naive.rformats.UTF8))
-        y = naive.core.v(naive.ba1.b, 'y')
+        y = naive.core.av(naive.ba1.b, 'y')
         self.assertEqual('y', y.represent(naive.rformats.UTF8))
-        z = naive.core.v(naive.ba1.b, 'z')
+        z = naive.core.av(naive.ba1.b, 'z')
         self.assertEqual('z', z.represent(naive.rformats.UTF8))
 
     def test_representation_of_domains_and_b_tuple_domains(self):
@@ -50,8 +50,8 @@ class Test(TestCase):
         self.assertEqual('(⊤ ∨ ⊥)', phi5.represent(naive.rformats.UTF8))
 
     def test_atomic_variable_as_formula(self):
-        x = naive.core.v(naive.ba1.b, 'x')
-        y = naive.core.v(naive.ba1.b, 'y')
+        x = naive.core.av(naive.ba1.b, 'x')
+        y = naive.core.av(naive.ba1.b, 'y')
 
         phi1 = naive.core.f(naive.ba1.negation, x)
         self.assertEqual('¬x', phi1.represent(naive.rformats.UTF8))
@@ -60,9 +60,9 @@ class Test(TestCase):
         self.assertEqual('(x ∧ y)', phi2.represent(naive.rformats.UTF8))
 
     def test_formula_composition(self):
-        z = naive.core.v(naive.ba1.b, 'z')
-        x = naive.core.v(naive.ba1.b, 'x')
-        y = naive.core.v(naive.ba1.b, 'y')
+        z = naive.core.av(naive.ba1.b, 'z')
+        x = naive.core.av(naive.ba1.b, 'x')
+        y = naive.core.av(naive.ba1.b, 'y')
 
         phi1 = naive.core.f(naive.ba1.negation, x)
         self.assertEqual('¬x', phi1.represent(naive.rformats.UTF8))
@@ -80,9 +80,9 @@ class Test(TestCase):
 
     def test_complex_programmatic_construction_and_satisfaction_set(self):
         # naive.log.set_debug_level()
-        b3 = naive.core.v(codomain=naive.ba1.b, base_name='b', indexes=3)
-        b1 = naive.core.v(codomain=naive.ba1.b, base_name='b', indexes=1)
-        b2 = naive.core.v(codomain=naive.ba1.b, base_name='b', indexes=2)
+        b3 = naive.core.av(codomain=naive.ba1.b, base_name='b', indexes=3)
+        b1 = naive.core.av(codomain=naive.ba1.b, base_name='b', indexes=1)
+        b2 = naive.core.av(codomain=naive.ba1.b, base_name='b', indexes=2)
         psi1 = naive.core.f(naive.ba1.conjunction, b1, b2)
         psi2 = naive.core.f(naive.ba1.disjunction, b3, b1)
         psi3 = naive.core.f(naive.ba1.conjunction, psi1, psi2)
