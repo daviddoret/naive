@@ -743,9 +743,10 @@ def convert_formula_to_graphviz_digraph(formula: Formula, digraph=None):
         digraph = graphviz.Digraph(id)
 
     digraph.node(id, title)
-    for argument in formula.arguments:
-        convert_formula_to_graphviz_digraph(formula=formula, digraph=digraph)
-        digraph.edge(id, argument.qualified_key)
+    if isinstance(formula.arguments, Iterable):
+        for argument in formula.arguments:
+            convert_formula_to_graphviz_digraph(formula=argument, digraph=digraph)
+            digraph.edge(id, argument.qualified_key, dir='back')
 
     return digraph
 

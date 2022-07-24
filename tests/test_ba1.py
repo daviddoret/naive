@@ -1,8 +1,7 @@
 from unittest import TestCase
 
-import core
-import rformats
-import src.naive as naive
+import naive
+
 
 
 class Test(TestCase):
@@ -97,30 +96,35 @@ class Test(TestCase):
     def test_parsing_code(self):
         code_1 = r'(((⊤ ∨ b1) ∧ (⊥ ∧ ¬⊥)) ∧ ¬b2)'
         parsed_formula_1 = naive.parsing.parse_string_utf8(code_1)
-        self.assertEqual(code_1, parsed_formula_1.represent(rformats.UTF8))
+        self.assertEqual(code_1, parsed_formula_1.represent(naive.rformats.UTF8))
 
         code_1_extra_parenthesis = r'(((((((⊤ ∨ ((((b1))))))) ∧ (⊥ ∧ ¬⊥)))) ∧ ¬b2)'
         parsed_formula_1_extra_parenthesis = naive.parsing.parse_string_utf8(code_1_extra_parenthesis)
-        self.assertEqual(code_1, parsed_formula_1_extra_parenthesis.represent(rformats.UTF8))
+        self.assertEqual(code_1, parsed_formula_1_extra_parenthesis.represent(naive.rformats.UTF8))
 
+    def test_parsing_code_2(self):
         code_2 = r'¬⊥'
         parsed_formula_2 = naive.parsing.parse_string_utf8(code_2)
-        self.assertEqual(code_2, parsed_formula_2.represent(rformats.UTF8))
+        self.assertEqual(code_2, parsed_formula_2.represent(naive.rformats.UTF8))
 
+    def test_parsing_code_3(self):
         code_3 = r'⊥'
         parsed_formula_3 = naive.parsing.parse_string_utf8(code_3)
-        self.assertEqual(code_3, parsed_formula_3.represent(rformats.UTF8))
+        self.assertEqual(code_3, parsed_formula_3.represent(naive.rformats.UTF8))
 
+    def test_parsing_code_4(self):
         code_4 = r'b₇₃'
         parsed_formula_4 = naive.parsing.parse_string_utf8(code_4)
-        self.assertEqual(code_4, parsed_formula_4.represent(rformats.UTF8))
+        self.assertEqual(code_4, parsed_formula_4.represent(naive.rformats.UTF8))
 
+    def test_parsing_code_5(self):
         code_5 = r'(p ∨ q)'
         parsed_formula_5 = naive.parsing.parse_string_utf8(code_5)
-        self.assertEqual(code_5, parsed_formula_5.represent(rformats.UTF8))
+        self.assertEqual(code_5, parsed_formula_5.represent(naive.rformats.UTF8))
 
     def test_dot(self):
+        naive.core.set_default_scope('test_dot')
         code_5 = r'(p ∨ q)'
         parsed_formula_5 = naive.parsing.parse_string_utf8(code_5)
-        self.assertEqual(code_5, parsed_formula_5.represent(rformats.UTF8))
-        print(core.convert_formula_to_dot(parsed_formula_5))
+        self.assertEqual(code_5, parsed_formula_5.represent(naive.rformats.UTF8))
+        print(naive.core.convert_formula_to_dot(parsed_formula_5))

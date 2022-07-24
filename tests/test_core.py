@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-import src.naive as naive
+import naive
 
 
 class Test(TestCase):
@@ -24,7 +24,7 @@ class TestFunction(TestCase):
     def test_init(self):
         f1 = naive.core.SystemFunction(
             scope_key='scope_test', structure_key='structure_test', language_key='language_test', base_key='test_1',
-            codomain='domain_test', category=naive.core.SystemFunction.SYSTEM_CONSTANT,
+            codomain='domain_test', category=naive.core.SystemFunction.SYSTEM_CONSTANT, algorithm=naive.ba1.falsum_algorithm,
             utf8='test₁', latex=r'\text{test}_{1}', html=r'test<sub>1</sub>', usascii='test1',
             domain='domain_test', arity=17, python_value='test python value'
         )

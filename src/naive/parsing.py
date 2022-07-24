@@ -46,7 +46,7 @@ def inflate_object(model_object):
         case 'BA1FalsumFormula':
             return naive.ba1.falsum
         case 'BA1AtomicVariableFormula':
-            return naive.core.v(naive.ba1.b, token)
+            return naive.core.av(naive.ba1.b, token)
 
 def parse_file_utf8():
     # TODO: Implement this.
