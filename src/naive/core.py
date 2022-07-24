@@ -280,7 +280,6 @@ class Scope(Concept):
             # Representation properties
             utf8=None, latex=None, html=None, usascii=None, tokens=None,
             **kwargs):
-        # ...
 
         # Call the base class initializer.
         #   Executing this at the end of the initialization process
@@ -308,16 +307,16 @@ def set_default_scope(scope_key):
             :stderr:
 
             initial_scope = naive.core.get_default_scope()
-            print(f'The initial scope was: {initial_scope}')
+            print(f'The initial scope was: "{initial_scope}"')
 
             naive.core.set_default_scope('my_scope')
-            print('Do something...')
+            print('Do something...\n')
 
             naive.core.set_default_scope('another_scope')
-            print('Do something...')
-
+            print('Do something else...\n')
+            
             naive.core.set_default_scope(initial_scope)
-            print('Do something...')
+            print('Do yet something else...\n')
 
     """
     global _DEFAULT_SCOPE_KEY
