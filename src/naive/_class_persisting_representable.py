@@ -1,8 +1,8 @@
 from __future__ import annotations
 import typing
-from _abc_representable import ABCRepresentable
-import rformats
-from _function_coerce import coerce
+from naive._abc_representable import ABCRepresentable
+import naive.rformats
+from naive._function_coerce import coerce
 
 
 class PersistingRepresentable(ABCRepresentable):
@@ -36,13 +36,13 @@ class PersistingRepresentable(ABCRepresentable):
         elif source_string is not None:
             # Otherwise, we must assume it was a string or other
             # string-like Unicode representation.
-            self._representations[rformats.UTF8] = source_string
+            self._representations[naive.rformats.UTF8] = source_string
 
         # If representations are provided in specific formats,
         # store these representations.
         # Note that these get priority over above imitation.
         for arg_key, arg_value in kwargs.items():
-            if arg_key in rformats.CATALOG:
+            if arg_key in naive.rformats.CATALOG:
                 # This is a representation format.
                 if not isinstance(arg_value, str):
                     # TODO: In future development, if images or other media are supported, reconsider this.
@@ -63,18 +63,18 @@ class PersistingRepresentable(ABCRepresentable):
             The object's representation in the requested format.
         """
         if rformat is None:
-            rformat = rformats.DEFAULT
+            rformat = naive.rformats.DEFAULT
         if rformat in self._representations:
             return self._representations[rformat]
-        elif rformats.UTF8 in self._representations:
+        elif naive.rformats.UTF8 in self._representations:
             # We fall back on UTF-8
-            return self._representations[rformats.UTF8]
+            return self._representations[naive.rformats.UTF8]
         else:
-            raise ValueError(f'PersistingRepresentable object has no representations in {rformat} nor {rformats.UTF8}.')
+            raise ValueError(f'PersistingRepresentable object has no representations in {rformat} nor {naive.rformats.UTF8}.')
 
     def imitate(self, o: ABCRepresentable):
         """Imitate the representation of another object."""
-        for rformat in rformats.CATALOG:
+        for rformat in naive.rformats.CATALOG:
             # TODO: Minor design flaw: this process will also copy unsupported properties that default to UTF-8.
             self._representations[rformat] = o.represent(rformat)
 

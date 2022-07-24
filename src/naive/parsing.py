@@ -1,9 +1,9 @@
 from textx import metamodel_from_file, metamodel_from_str
 import pkg_resources
 
-import log
-import core
-import ba1
+import naive.log
+import naive.core
+import naive.ba1
 
 
 def parse_string_utf8(code):
@@ -19,10 +19,10 @@ def parse_string_utf8(code):
     model = metamodel.model_from_str(code)
     if model.token:
         formula = inflate_object(model)
-        log.debug(parsed_formula=formula)
+        naive.log.debug(parsed_formula=formula)
         return formula
     else:
-        log.warning('Parsing result is empty.')
+        naive.log.warning('Parsing result is empty.')
 
 def inflate_object(model_object):
     arguments = []
@@ -36,17 +36,17 @@ def inflate_object(model_object):
     #   every language is subscribed to the parsing function.
     match class_name:
         case 'BA1ConjunctionFormula':
-            return core.f(ba1.conjunction, *arguments)
+            return naive.core.f(naive.ba1.conjunction, *arguments)
         case 'BA1DisjunctionFormula':
-            return core.f(ba1.disjunction, *arguments)
+            return naive.core.f(naive.ba1.disjunction, *arguments)
         case 'BA1NegationFormula':
-            return core.f(ba1.negation, *arguments)
+            return naive.core.f(naive.ba1.negation, *arguments)
         case 'BA1TruthFormula':
-            return ba1.truth
+            return naive.ba1.truth
         case 'BA1FalsumFormula':
-            return ba1.falsum
+            return naive.ba1.falsum
         case 'BA1AtomicVariableFormula':
-            return core.v(ba1.b, token)
+            return naive.core.v(naive.ba1.b, token)
 
 def parse_file_utf8():
     # TODO: Implement this.

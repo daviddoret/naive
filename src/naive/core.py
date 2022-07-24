@@ -1,14 +1,15 @@
 from __future__ import annotations
 from collections.abc import Iterable
-import log
-from _function_subscriptify import subscriptify
-from _function_superscriptify import superscriptify
 import threading
-from _function_represent import represent
+
+import naive.log
+from naive._function_subscriptify import subscriptify
+from naive._function_superscriptify import superscriptify
+from naive._function_represent import represent
 
 # Concept Core Properties
-import rformats
-import glyphs
+import naive.rformats
+import naive.glyphs
 
 _BASE_KEY = 'base_key'
 _STRUCTURE_KEY = 'structure_key'
@@ -55,7 +56,7 @@ def extract_scope_key_from_qualified_key(qualified_key):
 
 def clean_mnemonic_key(mnemonic_key):
     if mnemonic_key is None:
-        log.error('NKey is None')
+        naive.log.error('NKey is None')
     else:
         mnemonic_key = str(mnemonic_key)
         return ''.join(c for c in mnemonic_key if c in _MNEMONIC_KEY_ALLOWED_CHARACTERS)
@@ -93,22 +94,22 @@ class Concept:
                     # TODO: Question: should we store a reference to the Concept or store the Concept qualified key?
                     Concept._token_database[token] = self
                 else:
-                    log.error(
+                    naive.log.error(
                         f'The "{token}" token was already in the token static database. We need to implement a priority algorithm to manage these situations.',
                         token=token, self=self)
         # Append the concept in the database
         if self.qualified_key not in Concept._concept_database:
             Concept._concept_database[self.qualified_key] = self
         else:
-            log.error(
+            naive.log.error(
                 'The initialization of the concept could not be completed because the qualified key was already present in the static database.',
                 qualified_key=self.qualified_key)
 
     def __str__(self):
-        return self.represent(rformats.UTF8)
+        return self.represent(naive.rformats.UTF8)
 
     def __repr__(self):
-        return self.represent(rformats.UTF8)
+        return self.represent(naive.rformats.UTF8)
 
     @property
     def arity(self):
@@ -126,7 +127,7 @@ class Concept:
                 qualified_key, scope=scope_key, ntype=structure_key, language=language_key, nkey=base_key,
                 **kwargs)
         else:
-            log.error('Some identification properties are None', scope=scope_key, ntype=structure_key,
+            naive.log.error('Some identification properties are None', scope=scope_key, ntype=structure_key,
                       language=language_key, nkey=base_key, **kwargs)
 
     @staticmethod
@@ -134,7 +135,7 @@ class Concept:
         if qualified_key is not None:
             return qualified_key in Concept._concept_database
         else:
-            log.error('Checking concept with None qualified key is impossible.',
+            naive.log.error('Checking concept with None qualified key is impossible.',
                       qualified_key=qualified_key, **kwargs)
 
     @staticmethod
@@ -145,7 +146,7 @@ class Concept:
                 qualified_key, scope=scope_key, ntype=structure_key, language=language_key, nkey=base_key,
                 **kwargs)
         else:
-            log.error('Some identification properties are None', scope=scope_key, ntype=structure_key,
+            naive.log.error('Some identification properties are None', scope=scope_key, ntype=structure_key,
                       language=language_key, nkey=base_key, **kwargs)
 
     @staticmethod
@@ -156,7 +157,7 @@ class Concept:
             else:
                 return Concept(qualified_key=qualified_key, **kwargs)
         else:
-            log.error('Getting concept with None qualified key is impossible.',
+            naive.log.error('Getting concept with None qualified key is impossible.',
                       qualified_key=qualified_key, **kwargs)
 
     @staticmethod
@@ -192,7 +193,7 @@ class Concept:
             The object's representation in the requested format.
         """
         if rformat is None:
-            rformat = rformats.DEFAULT
+            rformat = naive.rformats.DEFAULT
         # TODO: Check that rformat is an allowed value.
         if hasattr(self, rformat):
             return getattr(self, rformat)
@@ -200,7 +201,7 @@ class Concept:
             # We fall back on UTF-8
             return self._utf8
         else:
-            log.error(f'This concept has no representation in {rformat} nor {rformats.UTF8}.', rformat=rformat,
+            naive.log.error(f'This concept has no representation in {rformat} nor {naive.rformats.UTF8}.', rformat=rformat,
                       qualified_key=self.qualified_key)
 
     @property
@@ -316,22 +317,22 @@ def set_default_scope(scope_key):
     global _DEFAULT_SCOPE_KEY
     # TODO: Allow the usage of friendly name, notes or documentation, etc.
     if scope_key is None:
-        log.error(
+        naive.log.error(
             f'None is not a valid context key. Please provide a non-empty string composed of the allowed characters: "{_MNEMONIC_KEY_ALLOWED_CHARACTERS}".')
     if not isinstance(scope_key, str):
-        log.error(
+        naive.log.error(
             f'The object "{scope_key}" of type "{type(scope_key)}" is not a valid context key. Please provide a non-empty string composed of the allowed characters: "{_MNEMONIC_KEY_ALLOWED_CHARACTERS}".')
     scope_key_cleaned = clean_mnemonic_key(scope_key)
     if scope_key_cleaned != scope_key:
-        log.warning(
+        naive.log.warning(
             f'Please note that the context key "{scope_key}" contained unsupported characters. The allowed characters for context keys are: "{_MNEMONIC_KEY_ALLOWED_CHARACTERS}". It was automatically cleaned from unsupported characters. The resulting context key is: {scope_key_cleaned}')
     if scope_key == '':
-        log.error(
+        naive.log.error(
             f'An empty string is not a valid context key. Please provide a non-empty string composed of the allowed characters: "{_MNEMONIC_KEY_ALLOWED_CHARACTERS}".')
 
     prefixed_key = _USER_DEFINED_KEY_PREFIX + scope_key_cleaned
     _DEFAULT_SCOPE_KEY = prefixed_key
-    log.info(f'Default scope_key: {scope_key_cleaned}')
+    naive.log.info(f'Default scope_key: {scope_key_cleaned}')
 
 
 def get_default_scope():
@@ -358,14 +359,14 @@ def declare_variable(codomain, base_name=None, indexes=None):
             base_key = base_key + '__' + '_'.join(str(index) for index in indexes)
     if Concept.check_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key):
         variable = Concept.get_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key)
-        log.warning('This variable is already declared. In consequence, the existing variable is returned, instead of declaring a new one.', variable=variable, scope_key=scope_key)
+        naive.log.warning('This variable is already declared. In consequence, the existing variable is returned, instead of declaring a new one.', variable=variable, scope_key=scope_key)
         return variable
     else:
         variable = Formula(
             scope_key=scope_key, language_key=language_key, base_key=base_key,
             category=Formula.ATOMIC_VARIABLE,
             codomain= codomain, base_name=base_name, indexes=indexes)
-        log.info(variable.represent_declaration())
+        naive.log.info(variable.represent_declaration())
         return variable
 
 
@@ -422,7 +423,7 @@ class Formula(Concept):
         structure_key = _STRUCTURE_FORMULA
         # Mandatory complementary properties.
         if category not in Formula.CATEGORIES:
-            log.error('Invalid formula category',
+            naive.log.error('Invalid formula category',
                       category=category, qualified_key=self.qualified_key)
         self._category = category
         self._arity = None
@@ -472,7 +473,7 @@ class Formula(Concept):
             return self.system_function.arity
         else:
             # TODO: Implement the arity property for all object categories.
-            log.warning('The arity property has not been implemented for this concept category.', category=self.category, self=self)
+            naive.log.warning('The arity property has not been implemented for this concept category.', category=self.category, self=self)
 
     @property
     def category(self):
@@ -489,7 +490,7 @@ class Formula(Concept):
             return self.system_function.codomain
         else:
             # TODO: Implement the codomain property for all object categories.
-            log.warning('The codomain property has not been implemented for this concept category.', category=self.category, self=self)
+            naive.log.warning('The codomain property has not been implemented for this concept category.', category=self.category, self=self)
 
     @property
     def domain(self):
@@ -523,7 +524,7 @@ class Formula(Concept):
                 for a_prime in l_prime:
                     l.add(a_prime)
             else:
-                log.error('Not implemented yet', a=a, self=self)
+                naive.log.error('Not implemented yet', a=a, self=self)
 
         # To allow sorting and indexing, convert the set to a list.
         l = list(l)
@@ -532,7 +533,7 @@ class Formula(Concept):
 
     def represent(self, rformat: str = None, *args, **kwargs) -> str:
         if rformat is None:
-            rformat = rformats.DEFAULT
+            rformat = naive.rformats.DEFAULT
         # if self.category == Formula.ATOMIC_VARIABLE:
         #     return self.symbol.represent(rformat, *args, **kwargs)
         match self.category:
@@ -553,22 +554,22 @@ class Formula(Concept):
                 return f'{self._system_function.represent(rformat)}{self.arguments[0].represent(rformat)}'
             case Formula.SYSTEM_BINARY_OPERATOR_CALL:
                 # (x f y)
-                return f'{glyphs.parenthesis_left.represent(rformat)}{self.arguments[0].represent(rformat)}{glyphs.small_space.represent(rformat)}{self._system_function.represent(rformat)}{glyphs.small_space.represent(rformat)}{self.arguments[1].represent(rformat)}{glyphs.parenthesis_right.represent(rformat)}'
+                return f'{naive.glyphs.parenthesis_left.represent(rformat)}{self.arguments[0].represent(rformat)}{naive.glyphs.small_space.represent(rformat)}{self._system_function.represent(rformat)}{naive.glyphs.small_space.represent(rformat)}{self.arguments[1].represent(rformat)}{naive.glyphs.parenthesis_right.represent(rformat)}'
             case Formula.SYSTEM_N_ARY_FUNCTION_CALL:
                 # f(x,y,z)
                 variable_list = ', '.join(map(lambda a: a.represent(), self.arguments))
-                return f'{self._system_function.represent(rformat)}{glyphs.parenthesis_left.represent(rformat)}{variable_list}{glyphs.parenthesis_right.represent(rformat)}'
+                return f'{self._system_function.represent(rformat)}{naive.glyphs.parenthesis_left.represent(rformat)}{variable_list}{naive.glyphs.parenthesis_right.represent(rformat)}'
             case _:
-                log.error('Unsupported formula category', category=self.category, qualified_key=self.qualified_key)
+                naive.log.error('Unsupported formula category', category=self.category, qualified_key=self.qualified_key)
 
     def represent_declaration(self, rformat: str = None, *args, **kwargs) -> str:
         if self.category != Formula.ATOMIC_VARIABLE:
-            log.error('Formula category not supported for declaration.')
+            naive.log.error('Formula category not supported for declaration.')
         else:
             if rformat is None:
-                rformat = rformats.DEFAULT
+                rformat = naive.rformats.DEFAULT
             match rformat:
-                case rformats.UTF8:
+                case naive.rformats.UTF8:
                     return f'With {self.represent(rformat)} ∈ {self.codomain.represent(rformat)}.'
                 case _:
                     raise NotImplementedError('TODO')
@@ -616,7 +617,7 @@ def write_formula(o, *args):
         # Conditional complementary properties
         system_function=system_function, arguments=arguments
     )
-    log.info(formula.represent())
+    naive.log.info(formula.represent())
     return formula
 
 
@@ -657,14 +658,14 @@ class SystemFunction(Concept):
         self._codomain = codomain  # TODO: Implement validation against the static concept database.
         self._algorithm = algorithm
         if category not in SystemFunction.CATEGORIES:
-            log.error('Invalid formula category',
+            naive.log.error('Invalid formula category',
                       category=category, qualified_key=self.qualified_key)
         self._category = category
         # Conditional complementary properties.
         self._domain = domain  # TODO: Implement validation against the static concept database.
         self._arity = arity  # TODO: Implement validation logic dependent of subcategory.
         if category == SystemFunction.SYSTEM_CONSTANT and python_value is None:
-            log.error('python_value is mandatory for constants (0-ary functions) but it was None.',
+            naive.log.error('python_value is mandatory for constants (0-ary functions) but it was None.',
                       python_value=python_value, category=category, qualified_key=self.qualified_key)
         self._python_value = python_value  # TODO: Question: Should it be mandatory for subcategory = constant?
         # Call the base class initializer.

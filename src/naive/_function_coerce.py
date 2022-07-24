@@ -1,8 +1,5 @@
 from __future__ import annotations
-import log
-import warnings
-from _exception_naive_error import NaiveError
-from _exception_naive_warning import NaiveWarning
+import naive.log
 
 
 def coerce(
@@ -61,9 +58,9 @@ def coerce(
         try:
             coerced_o = cls(o)
         except Exception as e:
-            log.error(code = log.COERCION_FAILURE, o = o, cls = cls)
+            naive.log.error(code = naive.log.COERCION_FAILURE, o = o, cls = cls)
         else:
-            log.debug(code = log.COERCION_SUCCESS, o = o, cls = cls)
+            naive.log.debug(code = naive.log.COERCION_SUCCESS, o = o, cls = cls)
         return cls(o)
 
 

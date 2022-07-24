@@ -1,4 +1,4 @@
-import rformats
+import naive.rformats
 
 
 def subscriptify(representation: str, rformat: str) -> str:
@@ -31,11 +31,11 @@ def subscriptify(representation: str, rformat: str) -> str:
     if representation is None:
         return ''
     if rformat is None:
-        rformat = rformats.DEFAULT
+        rformat = naive.rformats.DEFAULT
     if not isinstance(representation, str):
         representation = str(representation)
     match rformat:
-        case rformats.UTF8:
+        case naive.rformats.UTF8:
             # TODO: Extend support to all available subscript characters in Unicode.
             # TODO: Issue a Warning for characters that are not supported and skip them.
             subscript_dictionary = {'0': u'₀',
@@ -49,11 +49,11 @@ def subscriptify(representation: str, rformat: str) -> str:
                                     '8': u'₈',
                                     '9': u'₉'}
             return u''.join(subscript_dictionary.get(char, char) for char in representation)
-        case rformats.LATEX:
+        case naive.rformats.LATEX:
             # ASSUMPTION: The subscriptified result must be concatenated with something.
             return r'_{' + representation + r'}'
-        case rformats.HTML:
+        case naive.rformats.HTML:
             return r'<sub>' + representation + r'</sub>'
-        case rformats.USASCII:
+        case naive.rformats.USASCII:
             # TODO: USASCII representation may be ambiguous. Considering issuing a Warning.
             return representation

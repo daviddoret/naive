@@ -1,13 +1,16 @@
 from __future__ import annotations
+
 import jsonpickle
 import logging
 import warnings
-from _function_coerce import *
-from _exception_naive_warning import *
-from _exception_naive_error import *
-
 import os
 import sys
+
+from naive._function_coerce import coerce
+from naive._exception_naive_warning import NaiveWarning
+from naive._exception_naive_error import NaiveError
+
+
 
 #logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 #logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s')

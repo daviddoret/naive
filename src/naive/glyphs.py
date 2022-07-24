@@ -1,4 +1,4 @@
-from _class_glyph import Glyph
+from naive._class_glyph import Glyph
 
 # Number sets
 standard_0 = Glyph(utf8='0', latex=r'0', html='0', usascii='0')

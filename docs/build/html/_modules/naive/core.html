@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>naive.core &mdash; naive 0.0.1 documentation</title>
+  <title>naive.core &mdash; naive 0.0.2 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> naive
           </a>
               <div class="version">
-                0.0.1
+                0.0.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -82,15 +82,16 @@
   <h1>Source code for naive.core</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
-<span class="kn">import</span> <span class="nn">log</span>
-<span class="kn">from</span> <span class="nn">_function_subscriptify</span> <span class="kn">import</span> <span class="n">subscriptify</span>
-<span class="kn">from</span> <span class="nn">_function_superscriptify</span> <span class="kn">import</span> <span class="n">superscriptify</span>
 <span class="kn">import</span> <span class="nn">threading</span>
-<span class="kn">from</span> <span class="nn">_function_represent</span> <span class="kn">import</span> <span class="n">represent</span>
+
+<span class="kn">import</span> <span class="nn">naive.log</span>
+<span class="kn">from</span> <span class="nn">naive._function_subscriptify</span> <span class="kn">import</span> <span class="n">subscriptify</span>
+<span class="kn">from</span> <span class="nn">naive._function_superscriptify</span> <span class="kn">import</span> <span class="n">superscriptify</span>
+<span class="kn">from</span> <span class="nn">naive._function_represent</span> <span class="kn">import</span> <span class="n">represent</span>
 
 <span class="c1"># Concept Core Properties</span>
-<span class="kn">import</span> <span class="nn">rformats</span>
-<span class="kn">import</span> <span class="nn">glyphs</span>
+<span class="kn">import</span> <span class="nn">naive.rformats</span>
+<span class="kn">import</span> <span class="nn">naive.glyphs</span>
 
 <span class="n">_BASE_KEY</span> <span class="o">=</span> <span class="s1">&#39;base_key&#39;</span>
 <span class="n">_STRUCTURE_KEY</span> <span class="o">=</span> <span class="s1">&#39;structure_key&#39;</span>
@@ -137,7 +138,7 @@
 
 <span class="k">def</span> <span class="nf">clean_mnemonic_key</span><span class="p">(</span><span class="n">mnemonic_key</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">mnemonic_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;NKey is None&#39;</span><span class="p">)</span>
+        <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;NKey is None&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">mnemonic_key</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mnemonic_key</span><span class="p">)</span>
         <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">mnemonic_key</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">_MNEMONIC_KEY_ALLOWED_CHARACTERS</span><span class="p">)</span>
@@ -175,22 +176,22 @@
                     <span class="c1"># TODO: Question: should we store a reference to the Concept or store the Concept qualified key?</span>
                     <span class="n">Concept</span><span class="o">.</span><span class="n">_token_database</span><span class="p">[</span><span class="n">token</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s1">&#39;The &quot;</span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s1">&quot; token was already in the token static database. We need to implement a priority algorithm to manage these situations.&#39;</span><span class="p">,</span>
                         <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
         <span class="c1"># Append the concept in the database</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">Concept</span><span class="o">.</span><span class="n">_concept_database</span><span class="p">:</span>
             <span class="n">Concept</span><span class="o">.</span><span class="n">_concept_database</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                 <span class="s1">&#39;The initialization of the concept could not be completed because the qualified key was already present in the static database.&#39;</span><span class="p">,</span>
                 <span class="n">qualified_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Concept.__str__"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">naive</span><span class="o">.</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Concept.__repr__"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">naive</span><span class="o">.</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">arity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -208,7 +209,7 @@
                 <span class="n">qualified_key</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">ntype</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">nkey</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Some identification properties are None&#39;</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">ntype</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span>
+            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Some identification properties are None&#39;</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">ntype</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span>
                       <span class="n">language</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">nkey</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Concept.check_concept_from_qualified_key"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.check_concept_from_qualified_key">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -216,7 +217,7 @@
         <span class="k">if</span> <span class="n">qualified_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">qualified_key</span> <span class="ow">in</span> <span class="n">Concept</span><span class="o">.</span><span class="n">_concept_database</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Checking concept with None qualified key is impossible.&#39;</span><span class="p">,</span>
+            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Checking concept with None qualified key is impossible.&#39;</span><span class="p">,</span>
                       <span class="n">qualified_key</span><span class="o">=</span><span class="n">qualified_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Concept.get_concept_from_decomposed_key"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.get_concept_from_decomposed_key">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -227,7 +228,7 @@
                 <span class="n">qualified_key</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">ntype</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">nkey</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Some identification properties are None&#39;</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">ntype</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span>
+            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Some identification properties are None&#39;</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">ntype</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span>
                       <span class="n">language</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">nkey</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Concept.get_concept_from_qualified_key"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.get_concept_from_qualified_key">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -238,7 +239,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">Concept</span><span class="p">(</span><span class="n">qualified_key</span><span class="o">=</span><span class="n">qualified_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Getting concept with None qualified key is impossible.&#39;</span><span class="p">,</span>
+            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Getting concept with None qualified key is impossible.&#39;</span><span class="p">,</span>
                       <span class="n">qualified_key</span><span class="o">=</span><span class="n">qualified_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Concept.get_concept_from_token"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.get_concept_from_token">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -274,7 +275,7 @@
 <span class="sd">            The object&#39;s representation in the requested format.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">rformat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">rformat</span> <span class="o">=</span> <span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
+            <span class="n">rformat</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
         <span class="c1"># TODO: Check that rformat is an allowed value.</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">)</span>
@@ -282,7 +283,7 @@
             <span class="c1"># We fall back on UTF-8</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utf8</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;This concept has no representation in </span><span class="si">{</span><span class="n">rformat</span><span class="si">}</span><span class="s1"> nor </span><span class="si">{</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">,</span> <span class="n">rformat</span><span class="o">=</span><span class="n">rformat</span><span class="p">,</span>
+            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;This concept has no representation in </span><span class="si">{</span><span class="n">rformat</span><span class="si">}</span><span class="s1"> nor </span><span class="si">{</span><span class="n">naive</span><span class="o">.</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">,</span> <span class="n">rformat</span><span class="o">=</span><span class="n">rformat</span><span class="p">,</span>
                       <span class="n">qualified_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
@@ -398,22 +399,22 @@
     <span class="k">global</span> <span class="n">_DEFAULT_SCOPE_KEY</span>
     <span class="c1"># TODO: Allow the usage of friendly name, notes or documentation, etc.</span>
     <span class="k">if</span> <span class="n">scope_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+        <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;None is not a valid context key. Please provide a non-empty string composed of the allowed characters: &quot;</span><span class="si">{</span><span class="n">_MNEMONIC_KEY_ALLOWED_CHARACTERS</span><span class="si">}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scope_key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+        <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;The object &quot;</span><span class="si">{</span><span class="n">scope_key</span><span class="si">}</span><span class="s1">&quot; of type &quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">scope_key</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot; is not a valid context key. Please provide a non-empty string composed of the allowed characters: &quot;</span><span class="si">{</span><span class="n">_MNEMONIC_KEY_ALLOWED_CHARACTERS</span><span class="si">}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span>
     <span class="n">scope_key_cleaned</span> <span class="o">=</span> <span class="n">clean_mnemonic_key</span><span class="p">(</span><span class="n">scope_key</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">scope_key_cleaned</span> <span class="o">!=</span> <span class="n">scope_key</span><span class="p">:</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+        <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;Please note that the context key &quot;</span><span class="si">{</span><span class="n">scope_key</span><span class="si">}</span><span class="s1">&quot; contained unsupported characters. The allowed characters for context keys are: &quot;</span><span class="si">{</span><span class="n">_MNEMONIC_KEY_ALLOWED_CHARACTERS</span><span class="si">}</span><span class="s1">&quot;. It was automatically cleaned from unsupported characters. The resulting context key is: </span><span class="si">{</span><span class="n">scope_key_cleaned</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">scope_key</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+        <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;An empty string is not a valid context key. Please provide a non-empty string composed of the allowed characters: &quot;</span><span class="si">{</span><span class="n">_MNEMONIC_KEY_ALLOWED_CHARACTERS</span><span class="si">}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span>
 
     <span class="n">prefixed_key</span> <span class="o">=</span> <span class="n">_USER_DEFINED_KEY_PREFIX</span> <span class="o">+</span> <span class="n">scope_key_cleaned</span>
     <span class="n">_DEFAULT_SCOPE_KEY</span> <span class="o">=</span> <span class="n">prefixed_key</span>
-    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Default scope_key: </span><span class="si">{</span><span class="n">scope_key_cleaned</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+    <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Default scope_key: </span><span class="si">{</span><span class="n">scope_key_cleaned</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">get_default_scope</span><span class="p">():</span>
@@ -440,14 +441,14 @@
             <span class="n">base_key</span> <span class="o">=</span> <span class="n">base_key</span> <span class="o">+</span> <span class="s1">&#39;__&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indexes</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">Concept</span><span class="o">.</span><span class="n">check_concept_from_decomposed_key</span><span class="p">(</span><span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">):</span>
         <span class="n">variable</span> <span class="o">=</span> <span class="n">Concept</span><span class="o">.</span><span class="n">get_concept_from_decomposed_key</span><span class="p">(</span><span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;This variable is already declared. In consequence, the existing variable is returned, instead of declaring a new one.&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">)</span>
+        <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;This variable is already declared. In consequence, the existing variable is returned, instead of declaring a new one.&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">variable</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">variable</span> <span class="o">=</span> <span class="n">Formula</span><span class="p">(</span>
             <span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span>
             <span class="n">category</span><span class="o">=</span><span class="n">Formula</span><span class="o">.</span><span class="n">ATOMIC_VARIABLE</span><span class="p">,</span>
             <span class="n">codomain</span><span class="o">=</span> <span class="n">codomain</span><span class="p">,</span> <span class="n">base_name</span><span class="o">=</span><span class="n">base_name</span><span class="p">,</span> <span class="n">indexes</span><span class="o">=</span><span class="n">indexes</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">represent_declaration</span><span class="p">())</span>
+        <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">represent_declaration</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">variable</span>
 
 
@@ -504,7 +505,7 @@
         <span class="n">structure_key</span> <span class="o">=</span> <span class="n">_STRUCTURE_FORMULA</span>
         <span class="c1"># Mandatory complementary properties.</span>
         <span class="k">if</span> <span class="n">category</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">Formula</span><span class="o">.</span><span class="n">CATEGORIES</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Invalid formula category&#39;</span><span class="p">,</span>
+            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Invalid formula category&#39;</span><span class="p">,</span>
                       <span class="n">category</span><span class="o">=</span><span class="n">category</span><span class="p">,</span> <span class="n">qualified_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_category</span> <span class="o">=</span> <span class="n">category</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_arity</span> <span class="o">=</span> <span class="kc">None</span>
@@ -554,7 +555,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_function</span><span class="o">.</span><span class="n">arity</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># TODO: Implement the arity property for all object categories.</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The arity property has not been implemented for this concept category.&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">,</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The arity property has not been implemented for this concept category.&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">,</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">category</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -571,7 +572,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_function</span><span class="o">.</span><span class="n">codomain</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># TODO: Implement the codomain property for all object categories.</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The codomain property has not been implemented for this concept category.&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">,</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The codomain property has not been implemented for this concept category.&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">,</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">domain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -605,7 +606,7 @@
                 <span class="k">for</span> <span class="n">a_prime</span> <span class="ow">in</span> <span class="n">l_prime</span><span class="p">:</span>
                     <span class="n">l</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">a_prime</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Not implemented yet&#39;</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+                <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Not implemented yet&#39;</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="c1"># To allow sorting and indexing, convert the set to a list.</span>
         <span class="n">l</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
@@ -614,7 +615,7 @@
 
     <span class="k">def</span> <span class="nf">represent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">rformat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">rformat</span> <span class="o">=</span> <span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
+            <span class="n">rformat</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
         <span class="c1"># if self.category == Formula.ATOMIC_VARIABLE:</span>
         <span class="c1">#     return self.symbol.represent(rformat, *args, **kwargs)</span>
         <span class="k">match</span> <span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">:</span>
@@ -635,22 +636,22 @@
                 <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_system_function</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="k">case</span> <span class="n">Formula</span><span class="o">.</span><span class="n">SYSTEM_BINARY_OPERATOR_CALL</span><span class="p">:</span>
                 <span class="c1"># (x f y)</span>
-                <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">glyphs</span><span class="o">.</span><span class="n">parenthesis_left</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">glyphs</span><span class="o">.</span><span class="n">small_space</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">_system_function</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">glyphs</span><span class="o">.</span><span class="n">small_space</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">glyphs</span><span class="o">.</span><span class="n">parenthesis_right</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">naive</span><span class="o">.</span><span class="n">glyphs</span><span class="o">.</span><span class="n">parenthesis_left</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">naive</span><span class="o">.</span><span class="n">glyphs</span><span class="o">.</span><span class="n">small_space</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">_system_function</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">naive</span><span class="o">.</span><span class="n">glyphs</span><span class="o">.</span><span class="n">small_space</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">naive</span><span class="o">.</span><span class="n">glyphs</span><span class="o">.</span><span class="n">parenthesis_right</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="k">case</span> <span class="n">Formula</span><span class="o">.</span><span class="n">SYSTEM_N_ARY_FUNCTION_CALL</span><span class="p">:</span>
                 <span class="c1"># f(x,y,z)</span>
                 <span class="n">variable_list</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">represent</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">))</span>
-                <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_system_function</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">glyphs</span><span class="o">.</span><span class="n">parenthesis_left</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">variable_list</span><span class="si">}{</span><span class="n">glyphs</span><span class="o">.</span><span class="n">parenthesis_right</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_system_function</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">naive</span><span class="o">.</span><span class="n">glyphs</span><span class="o">.</span><span class="n">parenthesis_left</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">variable_list</span><span class="si">}{</span><span class="n">naive</span><span class="o">.</span><span class="n">glyphs</span><span class="o">.</span><span class="n">parenthesis_right</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="k">case</span> <span class="k">_</span><span class="p">:</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unsupported formula category&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">,</span> <span class="n">qualified_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">)</span>
+                <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unsupported formula category&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">,</span> <span class="n">qualified_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">represent_declaration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">category</span> <span class="o">!=</span> <span class="n">Formula</span><span class="o">.</span><span class="n">ATOMIC_VARIABLE</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Formula category not supported for declaration.&#39;</span><span class="p">)</span>
+            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Formula category not supported for declaration.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">rformat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">rformat</span> <span class="o">=</span> <span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
+                <span class="n">rformat</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
             <span class="k">match</span> <span class="n">rformat</span><span class="p">:</span>
-                <span class="k">case</span> <span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">:</span>
+                <span class="k">case</span> <span class="n">naive</span><span class="o">.</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">:</span>
                     <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;With </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}</span><span class="s1"> ∈ </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">codomain</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}</span><span class="s1">.&#39;</span>
                 <span class="k">case</span> <span class="k">_</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;TODO&#39;</span><span class="p">)</span>
@@ -698,7 +699,7 @@
         <span class="c1"># Conditional complementary properties</span>
         <span class="n">system_function</span><span class="o">=</span><span class="n">system_function</span><span class="p">,</span> <span class="n">arguments</span><span class="o">=</span><span class="n">arguments</span>
     <span class="p">)</span>
-    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">formula</span><span class="o">.</span><span class="n">represent</span><span class="p">())</span>
+    <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">formula</span><span class="o">.</span><span class="n">represent</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">formula</span>
 
 
@@ -739,14 +740,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_codomain</span> <span class="o">=</span> <span class="n">codomain</span>  <span class="c1"># TODO: Implement validation against the static concept database.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_algorithm</span> <span class="o">=</span> <span class="n">algorithm</span>
         <span class="k">if</span> <span class="n">category</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SystemFunction</span><span class="o">.</span><span class="n">CATEGORIES</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Invalid formula category&#39;</span><span class="p">,</span>
+            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Invalid formula category&#39;</span><span class="p">,</span>
                       <span class="n">category</span><span class="o">=</span><span class="n">category</span><span class="p">,</span> <span class="n">qualified_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_category</span> <span class="o">=</span> <span class="n">category</span>
         <span class="c1"># Conditional complementary properties.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_domain</span> <span class="o">=</span> <span class="n">domain</span>  <span class="c1"># TODO: Implement validation against the static concept database.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_arity</span> <span class="o">=</span> <span class="n">arity</span>  <span class="c1"># TODO: Implement validation logic dependent of subcategory.</span>
         <span class="k">if</span> <span class="n">category</span> <span class="o">==</span> <span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_CONSTANT</span> <span class="ow">and</span> <span class="n">python_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;python_value is mandatory for constants (0-ary functions) but it was None.&#39;</span><span class="p">,</span>
+            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;python_value is mandatory for constants (0-ary functions) but it was None.&#39;</span><span class="p">,</span>
                       <span class="n">python_value</span><span class="o">=</span><span class="n">python_value</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">category</span><span class="p">,</span> <span class="n">qualified_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_python_value</span> <span class="o">=</span> <span class="n">python_value</span>  <span class="c1"># TODO: Question: Should it be mandatory for subcategory = constant?</span>
         <span class="c1"># Call the base class initializer.</span>

@@ -1,5 +1,5 @@
-from _abc_representable import ABCRepresentable
-import rformats
+from naive._abc_representable import ABCRepresentable
+import naive.rformats
 
 
 def represent(o: object, rformat: str = None, *args, **kwargs) -> str:
@@ -21,7 +21,7 @@ def represent(o: object, rformat: str = None, *args, **kwargs) -> str:
         # we return an empty string to facilitate concatenations.
         return ''
     if rformat is None:
-        rformat = rformats.DEFAULT
+        rformat = naive.rformats.DEFAULT
     if isinstance(o, ABCRepresentable):
         return o.represent(rformat, *args, **kwargs)
     else:

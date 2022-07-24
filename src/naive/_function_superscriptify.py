@@ -1,5 +1,5 @@
-import rformats
-from _function_coerce import coerce
+import naive.rformats
+from naive._function_coerce import coerce
 
 def superscriptify(representation: str, rformat: str = None) -> str:
     """Converts to superscript the representation of object **o**.
@@ -32,9 +32,9 @@ def superscriptify(representation: str, rformat: str = None) -> str:
     if representation is None or representation == '':
         return ''
     if rformat is None:
-        rformat = rformats.DEFAULT
+        rformat = naive.rformats.DEFAULT
     match rformat:
-        case rformats.UTF8:
+        case naive.rformats.UTF8:
             # TODO: Extend support to all available superscript characters in Unicode.
             # TODO: Issue a Warning for characters that are not supported and skip them.
             superscript_dictionary = {'0': u'⁰',
@@ -48,11 +48,11 @@ def superscriptify(representation: str, rformat: str = None) -> str:
                                     '8': u'⁸',
                                     '9': u'⁹'}
             return u''.join(superscript_dictionary.get(char, char) for char in representation)
-        case rformats.LATEX:
+        case naive.rformats.LATEX:
             # ASSUMPTION: The superscriptified result must be concatenated with something.
             return r'^{' + representation + r'}'
-        case rformats.HTML:
+        case naive.rformats.HTML:
             return r'<sup>' + representation + r'</sup>'
-        case rformats.USASCII:
+        case naive.rformats.USASCII:
             # TODO: USASCII representation may be ambiguous. Considering issuing a Warning.
             return representation

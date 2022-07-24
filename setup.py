@@ -4,7 +4,7 @@
 
 # LOGGING
 import logging
-logging.info('Naive package setup: started.')
+logging.info('Naive package setup: STARTED.')
 #logging.info(f'__name__: {__name__}')
 
 # IMPORTS
@@ -38,4 +38,4 @@ setup(name='naive',
           ],
       )
 
-logging.info('Naive package setup: completed.')
+logging.info('Naive package setup: COMPLETED.')

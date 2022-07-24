@@ -1,4 +1,4 @@
-from _class_persisting_representable import PersistingRepresentable
+from naive._class_persisting_representable import PersistingRepresentable
 
 
 class Glyph(PersistingRepresentable):
