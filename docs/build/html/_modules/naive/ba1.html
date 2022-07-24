@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>naive.ba1 &mdash; naive 0.0.2 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/jupyter-sphinx.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/thebelab.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script src="../../_static/thebelab-helper.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> naive
+          </a>
+              <div class="version">
+                0.0.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../section_installation_doc.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_core_doc.html"><strong>core</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_ba1_doc.html"><strong>ba1</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../section_samples_doc.html">Samples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">naive</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>naive.ba1</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for naive.ba1</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+
+<span class="c1"># Naive imports</span>
+<span class="kn">import</span> <span class="nn">naive.log</span>
+<span class="kn">import</span> <span class="nn">naive.core</span>
+<span class="kn">from</span> <span class="nn">naive._function_flatten</span> <span class="kn">import</span> <span class="n">flatten</span>
+<span class="kn">from</span> <span class="nn">naive._function_superscriptify</span> <span class="kn">import</span> <span class="n">superscriptify</span>
+
+<span class="n">_SCOPE_BA1</span> <span class="o">=</span> <span class="s1">&#39;sys_ba1&#39;</span>
+
+<span class="n">_LANGUAGE_BA1</span> <span class="o">=</span> <span class="s1">&#39;ba1_language&#39;</span>
+
+<span class="c1"># Dirty little trick to overcome circular references</span>
+<span class="c1"># between algorithm function definitions,</span>
+<span class="c1"># and system function definitions.</span>
+<span class="c1"># These global variables are overwritten at the end</span>
+<span class="c1"># of this module.</span>
+<span class="n">truth</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">falsum</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="c1"># Algorithms.</span>
+<span class="k">def</span> <span class="nf">falsum_algorithm</span><span class="p">(</span><span class="n">vector_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SystemFunction</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;The vectorized falsum boolean function.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        BooleanConstant: The boolean falsum.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">falsum</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">falsum</span><span class="p">]</span> <span class="o">*</span> <span class="n">vector_size</span>
+
+
+<span class="k">def</span> <span class="nf">truth_algorithm</span><span class="p">(</span><span class="n">vector_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SystemFunction</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;The vectorized truth boolean function.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        BooleanConstant: The boolean truth.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">truth</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">truth</span><span class="p">]</span> <span class="o">*</span> <span class="n">vector_size</span>
+
+
+<span class="k">def</span> <span class="nf">negation_algorithm</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SystemFunction</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SystemFunction</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;The vectorized negation boolean function.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        v (typing.List[BooleanConstant]): A vector of boolean constants.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        typing.List[BooleanConstant]: A vector of the negation of **x**.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">truth</span>
+    <span class="k">global</span> <span class="n">falsum</span>
+    <span class="c1"># v = coerce(v, BooleanConstant)  # TODO: Consider support for list coercion.</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>  <span class="c1"># If scalar, convert to list.</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">falsum</span> <span class="k">if</span> <span class="n">e</span> <span class="o">==</span> <span class="n">truth</span> <span class="k">else</span> <span class="n">truth</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">conjunction_algorithm</span><span class="p">(</span>
+        <span class="n">v1</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SystemFunction</span><span class="p">],</span>
+        <span class="n">v2</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SystemFunction</span><span class="p">])</span> <span class="o">-&gt;</span> \
+        <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SystemFunction</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;The vectorized conjunction boolean function.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        v1 (typing.List[BooleanConstant]): A vector of boolean constants.</span>
+<span class="sd">        v2 (typing.List[BooleanConstant]): A vector of boolean constants.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        typing.List[BooleanConstant]: The vector of the conjunction of **v1** and **v2**.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">truth</span>
+    <span class="k">global</span> <span class="n">falsum</span>
+    <span class="c1"># v1 = coerce(v1, BooleanConstant)  # TODO: Consider support for list coercion.</span>
+    <span class="c1"># v2 = coerce(v2, BooleanConstant)  # TODO: Consider support for list coercion.</span>
+    <span class="n">v1</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>  <span class="c1"># If scalar, convert to list.</span>
+    <span class="n">v2</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span>  <span class="c1"># If scalar, convert to list.</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">truth</span> <span class="k">if</span> <span class="p">(</span><span class="n">b1</span> <span class="o">==</span> <span class="n">truth</span> <span class="ow">and</span> <span class="n">b2</span> <span class="o">==</span> <span class="n">truth</span><span class="p">)</span> <span class="k">else</span> <span class="n">falsum</span> <span class="k">for</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)]</span>
+
+
+<span class="k">def</span> <span class="nf">disjunction_algorithm</span><span class="p">(</span>
+        <span class="n">v1</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SystemFunction</span><span class="p">],</span>
+        <span class="n">v2</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SystemFunction</span><span class="p">])</span> <span class="o">-&gt;</span> \
+        <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SystemFunction</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;The vectorized disjunction boolean function.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        v1 (typing.List[BooleanConstant]): A vector of boolean constants.</span>
+<span class="sd">        v2 (typing.List[BooleanConstant]): A vector of boolean constants.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        typing.List[BooleanConstant]: The vector of the disjunction of **v1** and **v2**.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">truth</span>
+    <span class="k">global</span> <span class="n">falsum</span>
+    <span class="c1"># v1 = coerce(v1, BooleanConstant)  # TODO: Consider support for list coercion.</span>
+    <span class="c1"># v2 = coerce(v2, BooleanConstant)  # TODO: Consider support for list coercion.</span>
+    <span class="n">v1</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>  <span class="c1"># If scalar, convert to list.</span>
+    <span class="n">v2</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span>  <span class="c1"># If scalar, convert to list.</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">truth</span> <span class="k">if</span> <span class="p">(</span><span class="n">b1</span> <span class="o">==</span> <span class="n">truth</span> <span class="ow">or</span> <span class="n">b2</span> <span class="o">==</span> <span class="n">truth</span><span class="p">)</span> <span class="k">else</span> <span class="n">falsum</span> <span class="k">for</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)]</span>
+
+
+<span class="c1"># Scope.</span>
+<span class="n">ba1_scope</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Scope</span><span class="p">(</span>
+    <span class="n">scope_key</span><span class="o">=</span><span class="n">_SCOPE_BA1</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_STRUCTURE_SCOPE</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_BA1</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="s1">&#39;ba1_language&#39;</span><span class="p">,</span>
+    <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;ba1_language&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\text</span><span class="si">{ba1_language}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;ba1_language&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;ba1_language&#39;</span><span class="p">)</span>
+
+<span class="c1"># Language.</span>
+<span class="n">ba1_language</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Language</span><span class="p">(</span>
+    <span class="n">scope_key</span><span class="o">=</span><span class="n">_SCOPE_BA1</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_STRUCTURE_LANGUAGE</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_BA1</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="s1">&#39;ba1_language&#39;</span><span class="p">,</span>
+    <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;ba1_language&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\text</span><span class="si">{ba1_language}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;ba1_language&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;ba1_language&#39;</span><span class="p">)</span>
+
+<span class="c1"># Domains.</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Domain</span><span class="p">(</span>
+    <span class="n">scope_key</span><span class="o">=</span><span class="n">_SCOPE_BA1</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_STRUCTURE_DOMAIN</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_BA1</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span>
+    <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;𝔹&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\mathbb</span><span class="si">{B}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;Bopf;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
+<span class="n">b2</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Domain</span><span class="p">(</span>
+    <span class="n">scope_key</span><span class="o">=</span><span class="n">_SCOPE_BA1</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_STRUCTURE_DOMAIN</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_BA1</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="s1">&#39;b2&#39;</span><span class="p">,</span>
+    <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;𝔹²&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\mathbb</span><span class="si">{B}</span><span class="s1">^</span><span class="si">{2}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;&amp;Bopf;&lt;sup&gt;2&lt;/sup&gt;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;B2&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_bn_domain"><a class="viewcode-back" href="../../ba1_function_get_bn_domain_doc.html#naive.ba1.get_bn_domain">[docs]</a><span class="k">def</span> <span class="nf">get_bn_domain</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the n-tuple codomain 𝔹ⁿ where n is a natural number &gt; 0.</span>
+
+<span class="sd">    Assures the presence of the codomain 𝔹ⁿ in the concept database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;n must be an int&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;n must be &gt; 1&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">b</span>
+    <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">b2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">scope_key</span> <span class="o">=</span> <span class="n">_SCOPE_BA1</span>
+        <span class="n">structure_key</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_STRUCTURE_DOMAIN</span>
+        <span class="n">language_key</span> <span class="o">=</span> <span class="n">_LANGUAGE_BA1</span>
+        <span class="n">base_key</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>  <span class="c1"># TODO: Check it is an int</span>
+        <span class="c1"># TODO: Consider implementing a lock to avoid bugs with multithreading when checking the static dictionary</span>
+        <span class="k">if</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Concept</span><span class="o">.</span><span class="n">check_concept_from_decomposed_key</span><span class="p">(</span><span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span>
+                                                          <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Concept</span><span class="o">.</span><span class="n">get_concept_from_decomposed_key</span><span class="p">(</span><span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">structure_key</span><span class="p">,</span>
+                                                                <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Domain</span><span class="p">(</span>
+                <span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span>
+                <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;𝔹&#39;</span> <span class="o">+</span> <span class="n">superscriptify</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\mathbb</span><span class="si">{B}</span><span class="s1">^{&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;}&#39;</span><span class="p">,</span>
+                <span class="n">html</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;&amp;Bopf;&lt;sup&gt;&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&lt;/sup&gt;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;B&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">))</span></div>
+
+
+<span class="c1"># Functions.</span>
+<span class="n">truth</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SystemFunction</span><span class="p">(</span>
+    <span class="n">scope_key</span><span class="o">=</span><span class="n">_SCOPE_BA1</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_STRUCTURE_FUNCTION</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_BA1</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="s1">&#39;truth&#39;</span><span class="p">,</span>
+    <span class="n">codomain</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_CONSTANT</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="n">truth_algorithm</span><span class="p">,</span>
+    <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;⊤&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\top&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;top;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;truth&#39;</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;⊤&#39;</span><span class="p">,</span> <span class="s1">&#39;truth&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
+    <span class="n">arity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">python_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">falsum</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SystemFunction</span><span class="p">(</span>
+    <span class="n">scope_key</span><span class="o">=</span><span class="n">_SCOPE_BA1</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_STRUCTURE_FUNCTION</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_BA1</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="s1">&#39;falsum&#39;</span><span class="p">,</span>
+    <span class="n">codomain</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_CONSTANT</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="n">falsum_algorithm</span><span class="p">(),</span>
+    <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;⊥&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\bot&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;perp;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;falsum&#39;</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;⊥&#39;</span><span class="p">,</span> <span class="s1">&#39;falsum&#39;</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">],</span>
+    <span class="n">arity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">python_value</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">negation</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SystemFunction</span><span class="p">(</span>
+    <span class="n">scope_key</span><span class="o">=</span><span class="n">_SCOPE_BA1</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_STRUCTURE_FUNCTION</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_BA1</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="s1">&#39;negation&#39;</span><span class="p">,</span>
+    <span class="n">codomain</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_UNARY_OPERATOR</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="n">negation_algorithm</span><span class="p">,</span>
+    <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;¬&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\lnot&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;not;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;not&#39;</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;¬&#39;</span><span class="p">,</span> <span class="s1">&#39;not&#39;</span><span class="p">,</span> <span class="s1">&#39;lnot&#39;</span><span class="p">],</span>
+    <span class="n">domain</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">arity</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">conjunction</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SystemFunction</span><span class="p">(</span>
+    <span class="n">scope_key</span><span class="o">=</span><span class="n">_SCOPE_BA1</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_STRUCTURE_FUNCTION</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_BA1</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="s1">&#39;conjunction&#39;</span><span class="p">,</span>
+    <span class="n">codomain</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_BINARY_OPERATOR</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="n">conjunction_algorithm</span><span class="p">,</span>
+    <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;∧&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\land&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;and;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;and&#39;</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;∧&#39;</span><span class="p">,</span> <span class="s1">&#39;and&#39;</span><span class="p">,</span> <span class="s1">&#39;land&#39;</span><span class="p">],</span>
+    <span class="n">domain</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">arity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">disjunction</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SystemFunction</span><span class="p">(</span>
+    <span class="n">scope_key</span><span class="o">=</span><span class="n">_SCOPE_BA1</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_STRUCTURE_FUNCTION</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_BA1</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="s1">&#39;disjunction&#39;</span><span class="p">,</span>
+    <span class="n">codomain</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_BINARY_OPERATOR</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="n">disjunction_algorithm</span><span class="p">,</span>
+    <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;∨&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\lor&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;or;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;or&#39;</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;∨&#39;</span><span class="p">,</span> <span class="s1">&#39;or&#39;</span><span class="p">,</span> <span class="s1">&#39;lor&#39;</span><span class="p">],</span>
+    <span class="n">domain</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">arity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">get_boolean_combinations_column</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Bibliography:</span>
+<span class="sd">        * https://stackoverflow.com/questions/9945720/python-extracting-bits-from-a-byte</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: Assure endianness consistency.</span>
+    <span class="k">return</span> <span class="p">[(</span><span class="n">truth</span> <span class="k">if</span> <span class="p">(</span><span class="n">integer_value</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">c</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> <span class="n">falsum</span><span class="p">)</span> <span class="k">for</span> <span class="n">integer_value</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">**</span> <span class="n">n</span><span class="p">)]</span>
+
+
+<span class="k">def</span> <span class="nf">satisfaction_index</span><span class="p">(</span><span class="n">phi</span><span class="p">:</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Formula</span><span class="p">,</span> <span class="n">variables_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the **satisfaction indexes** (:math:`\text{sat}_I`) of a Boolean formula (:math:`\phi`).</span>
+
+<span class="sd">    Alias:</span>
+<span class="sd">    **sat_i**</span>
+
+<span class="sd">    Definition:</span>
+<span class="sd">    Let :math:`\phi` be a Boolean formula.</span>
+<span class="sd">    :math:`\text{sat}_I \colon= ` the truth value of :math:`\phi` in all possible worlds.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        phi (BooleanFormula): The Boolean formula :math:`\phi` .</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Retrieve the computed results</span>
+    <span class="c1"># TODO: Check that all formula are Boolean formula. Otherwise, the formula</span>
+    <span class="c1">#   may not return a Boolean value, forbidding the computation of a satisfaction set.</span>
+    <span class="k">if</span> <span class="n">variables_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">variables_list</span> <span class="o">=</span> <span class="n">phi</span><span class="o">.</span><span class="n">list_atomic_variables</span><span class="p">()</span>
+    <span class="n">variables_number</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables_list</span><span class="p">)</span>
+    <span class="n">arguments_number</span> <span class="o">=</span> <span class="n">phi</span><span class="o">.</span><span class="n">arity</span>
+    <span class="n">argument_vectors</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">arguments_number</span>
+    <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">arguments_number</span><span class="o">=</span><span class="n">arguments_number</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">argument_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">arguments_number</span><span class="p">):</span>
+        <span class="n">argument</span> <span class="o">=</span> <span class="n">phi</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="n">argument_index</span><span class="p">]</span>
+        <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="n">argument</span><span class="o">=</span><span class="n">argument</span><span class="p">,</span>
+            <span class="n">argument_index</span><span class="o">=</span><span class="n">argument_index</span><span class="p">,</span>
+            <span class="n">argument_type</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">argument</span><span class="p">),</span>
+            <span class="n">argument_codomain</span><span class="o">=</span><span class="n">argument</span><span class="o">.</span><span class="n">codomain</span><span class="p">,</span>
+            <span class="n">argument_is_system_function_call</span><span class="o">=</span><span class="n">argument</span><span class="o">.</span><span class="n">is_system_function_call</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">argument</span><span class="p">,</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Formula</span><span class="p">)</span> <span class="ow">and</span> \
+                <span class="n">argument</span><span class="o">.</span><span class="n">is_system_function_call</span> <span class="ow">and</span> \
+                <span class="n">argument</span><span class="o">.</span><span class="n">codomain</span> <span class="o">==</span> <span class="n">b</span><span class="p">:</span>
+            <span class="c1"># This argument is a Boolean Formula.</span>
+            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;This argument is a Boolean Formula&#39;</span><span class="p">)</span>
+            <span class="c1"># Recursively compute the satisfaction set of that formula,</span>
+            <span class="c1"># restricting the variables list to the subset of necessary variables.</span>
+            <span class="n">vector</span> <span class="o">=</span> <span class="n">satisfaction_index</span><span class="p">(</span><span class="n">argument</span><span class="p">,</span> <span class="n">variables_list</span><span class="o">=</span><span class="n">variables_list</span><span class="p">)</span>
+            <span class="n">argument_vectors</span><span class="p">[</span><span class="n">argument_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">vector</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">argument</span><span class="p">,</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Formula</span><span class="p">)</span> <span class="ow">and</span> \
+                <span class="n">argument</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Formula</span><span class="o">.</span><span class="n">ATOMIC_VARIABLE</span> <span class="ow">and</span> \
+                <span class="n">argument</span><span class="o">.</span><span class="n">codomain</span> <span class="o">==</span> <span class="n">b</span><span class="p">:</span>
+            <span class="c1"># This argument is a Boolean atomic proposition.</span>
+            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;This argument is a Boolean atomic proposition&#39;</span><span class="p">)</span>
+            <span class="c1"># We want to retrieve its values from the corresponding bit combinations column.</span>
+            <span class="c1"># But we need the vector to be relative to variables_list.</span>
+            <span class="c1"># Thus we must first find the position of this atomic variable,</span>
+            <span class="c1"># in the variables_list.</span>
+            <span class="n">atomic_variable_index</span> <span class="o">=</span> <span class="n">variables_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">argument</span><span class="p">)</span>
+            <span class="n">vector</span> <span class="o">=</span> <span class="n">get_boolean_combinations_column</span><span class="p">(</span><span class="n">variables_number</span><span class="p">,</span> <span class="n">atomic_variable_index</span><span class="p">)</span>
+            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">vector</span><span class="o">=</span><span class="n">vector</span><span class="p">)</span>
+            <span class="n">argument_vectors</span><span class="p">[</span><span class="n">argument_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">vector</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unexpected type&#39;</span><span class="p">,</span> <span class="n">argument</span><span class="o">=</span><span class="n">argument</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">argument</span><span class="p">),</span> <span class="n">category</span><span class="o">=</span><span class="n">argument</span><span class="o">.</span><span class="n">category</span><span class="p">,</span>
+                      <span class="n">codomain</span><span class="o">=</span><span class="n">argument</span><span class="o">.</span><span class="n">codomain</span><span class="p">)</span>
+    <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">argument_vectors</span><span class="o">=</span><span class="n">argument_vectors</span><span class="p">)</span>
+    <span class="n">output_vector</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">phi</span><span class="o">=</span><span class="n">phi</span><span class="p">,</span> <span class="n">arity</span><span class="o">=</span><span class="n">phi</span><span class="o">.</span><span class="n">arity</span><span class="p">,</span> <span class="n">system_function</span><span class="o">=</span><span class="n">phi</span><span class="o">.</span><span class="n">system_function</span><span class="p">)</span>
+    <span class="k">match</span> <span class="n">phi</span><span class="o">.</span><span class="n">arity</span><span class="p">:</span>
+        <span class="k">case</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">output_vector</span> <span class="o">=</span> <span class="n">phi</span><span class="o">.</span><span class="n">system_function</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">vector_size</span><span class="o">=</span><span class="mi">2</span> <span class="o">**</span> <span class="n">variables_number</span><span class="p">)</span>
+        <span class="k">case</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">output_vector</span> <span class="o">=</span> <span class="n">phi</span><span class="o">.</span><span class="n">system_function</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">argument_vectors</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">case</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">output_vector</span> <span class="o">=</span> <span class="n">phi</span><span class="o">.</span><span class="n">system_function</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">argument_vectors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">argument_vectors</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">case</span> <span class="k">_</span><span class="p">:</span>
+            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Arity &gt; 2 are not yet supported, sorry&#39;</span><span class="p">)</span>
+    <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">output_vector</span><span class="o">=</span><span class="n">output_vector</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output_vector</span>
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, David Doret.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
