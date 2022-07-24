@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; naive 0.0.2 documentation</title>
+  <title>Installation &mdash; naive 0.0.4 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
@@ -40,7 +40,7 @@
             <a href="index.html" class="icon icon-home"> naive
           </a>
               <div class="version">
-                0.0.2
+                0.0.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -131,7 +131,7 @@
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>Collecting https://github.com/daviddoret/naive/raw/master/dist/naive-latest.tar.gz
-  Using cached https://github.com/daviddoret/naive/raw/master/dist/naive-latest.tar.gz (21 kB)
+  Downloading https://github.com/daviddoret/naive/raw/master/dist/naive-latest.tar.gz (21 kB)
   Installing build dependencies: started
   Installing build dependencies: finished with status &#39;done&#39;
   Getting requirements to build wheel: started
@@ -140,11 +140,19 @@
   Installing backend dependencies: finished with status &#39;done&#39;
   Preparing metadata (pyproject.toml): started
   Preparing metadata (pyproject.toml): finished with status &#39;done&#39;
-Requirement already satisfied: textx in c:\users\david\pycharmprojects\naive\naive_virtual_environment\lib\site-packages (from naive==0.0.2) (3.0.0)
-Requirement already satisfied: dataclasses in c:\users\david\pycharmprojects\naive\naive_virtual_environment\lib\site-packages (from naive==0.0.2) (0.6)
-Requirement already satisfied: typing in c:\users\david\pycharmprojects\naive\naive_virtual_environment\lib\site-packages (from naive==0.0.2) (3.7.4.3)
-Requirement already satisfied: Arpeggio&gt;=2.0.0 in c:\users\david\pycharmprojects\naive\naive_virtual_environment\lib\site-packages (from textx-&gt;naive==0.0.2) (2.0.0)
-Requirement already satisfied: future in c:\users\david\pycharmprojects\naive\naive_virtual_environment\lib\site-packages (from textx-&gt;naive==0.0.2) (0.18.2)
+Requirement already satisfied: textx in c:\users\david\pycharmprojects\naive\naive_virtual_environment\lib\site-packages (from naive==0.0.3) (3.0.0)
+Requirement already satisfied: typing in c:\users\david\pycharmprojects\naive\naive_virtual_environment\lib\site-packages (from naive==0.0.3) (3.7.4.3)
+Requirement already satisfied: dataclasses in c:\users\david\pycharmprojects\naive\naive_virtual_environment\lib\site-packages (from naive==0.0.3) (0.6)
+Requirement already satisfied: future in c:\users\david\pycharmprojects\naive\naive_virtual_environment\lib\site-packages (from textx-&gt;naive==0.0.3) (0.18.2)
+Requirement already satisfied: Arpeggio&gt;=2.0.0 in c:\users\david\pycharmprojects\naive\naive_virtual_environment\lib\site-packages (from textx-&gt;naive==0.0.3) (2.0.0)
+Building wheels for collected packages: naive
+  Building wheel for naive (pyproject.toml): started
+  Building wheel for naive (pyproject.toml): finished with status &#39;done&#39;
+  Created wheel for naive: filename=naive-0.0.3-py3-none-any.whl size=26881 sha256=6623fd7f854cfa7ea3cc6c84aaba4f3963c2d4d22dc2068ac3f9b93b6328beb7
+  Stored in directory: c:\users\david\appdata\local\pip\cache\wheels\5c\ce\ef\cf31aa572bf3fea13e37baa95720e16088c5abf775de112543
+Successfully built naive
+Installing collected packages: naive
+Successfully installed naive-0.0.3
 </pre></div>
 </div>
 </div>
@@ -161,9 +169,29 @@ Requirement already satisfied: future in c:\users\david\pycharmprojects\naive\na
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>Naive initialization started. 
-Naive version: 0.0.2 
-Default scope_key: scope_1 
-Naive initialization completed. 
+Naive version: 0.0.3 
+</pre></div>
+</div>
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
+<span class="nn">Input In [2],</span> in <span class="ni">&lt;cell line: 1&gt;</span><span class="nt">()</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">naive</span>
+
+<span class="n">File</span> <span class="o">~</span>\<span class="n">PycharmProjects</span>\<span class="n">naive</span>\<span class="n">naive_virtual_environment</span>\<span class="n">lib</span>\<span class="n">site</span><span class="o">-</span><span class="n">packages</span>\<span class="n">naive</span>\<span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">12</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="g g-Whitespace">      </span><span class="mi">9</span>     <span class="n">__version__</span> <span class="o">=</span> <span class="s1">&#39;0.0.3&#39;</span>  <span class="c1"># Initial version for the first build.</span>
+<span class="g g-Whitespace">     </span><span class="mi">10</span> <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Naive version: </span><span class="si">{</span><span class="n">__version__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="ne">---&gt; </span><span class="mi">12</span> <span class="kn">import</span> <span class="nn">naive.core</span>
+<span class="g g-Whitespace">     </span><span class="mi">13</span> <span class="kn">import</span> <span class="nn">naive.ba1</span>
+<span class="g g-Whitespace">     </span><span class="mi">14</span> <span class="kn">import</span> <span class="nn">naive.rformats</span>
+
+<span class="n">File</span> <span class="o">~</span>\<span class="n">PycharmProjects</span>\<span class="n">naive</span>\<span class="n">naive_virtual_environment</span>\<span class="n">lib</span>\<span class="n">site</span><span class="o">-</span><span class="n">packages</span>\<span class="n">naive</span>\<span class="n">core</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">15</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="g g-Whitespace">     </span><span class="mi">12</span> <span class="kn">import</span> <span class="nn">naive.rformats</span>
+<span class="g g-Whitespace">     </span><span class="mi">13</span> <span class="kn">import</span> <span class="nn">naive.glyphs</span>
+<span class="ne">---&gt; </span><span class="mi">15</span> <span class="kn">import</span> <span class="nn">rformats</span>
+<span class="g g-Whitespace">     </span><span class="mi">17</span> <span class="n">_BASE_KEY</span> <span class="o">=</span> <span class="s1">&#39;base_key&#39;</span>
+<span class="g g-Whitespace">     </span><span class="mi">18</span> <span class="n">_STRUCTURE_KEY</span> <span class="o">=</span> <span class="s1">&#39;structure_key&#39;</span>
+
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;rformats&#39;
 </pre></div>
 </div>
 </div>

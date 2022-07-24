@@ -57,8 +57,8 @@ copyright = '2022, David Doret'
 author = 'David Doret'
 
 # TODO: Reuse the package version
-release = '0.0.3'
-version = '0.0.3'
+release = '0.0.4'
+version = '0.0.4'
 
 # The autodoc_member_order allows you to override the default alphabetical ordering for members, to one that groups by their type, i.e. if they are methods, or attributes/properties, etc.
 # References:

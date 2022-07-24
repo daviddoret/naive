@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>set_default_scope &mdash; naive 0.0.2 documentation</title>
+  <title>set_default_scope &mdash; naive 0.0.4 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
@@ -40,7 +40,7 @@
             <a href="index.html" class="icon icon-home"> naive
           </a>
               <div class="version">
-                0.0.2
+                0.0.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -121,44 +121,47 @@
 <dt class="sig sig-object py" id="naive.core.set_default_scope">
 <span class="sig-prename descclassname"><span class="pre">naive.core.</span></span><span class="sig-name descname"><span class="pre">set_default_scope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/naive/core.html#set_default_scope"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#naive.core.set_default_scope" title="Permalink to this definition"></a></dt>
 <dd><p>Sets the default user-defined scope. Creates it if necessary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>scope_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – A unique key to identify the user-defined scope.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Args:</dt><dd><p>scope_key (str): A unique key to identify the user-defined scope.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>N/A</p>
+<dt>Returns:</dt><dd><p>N/A</p>
 </dd>
 </dl>
-<p class="rubric">Example</p>
-<div class="jupyter_cell jupyter_container docutils container">
+<p>Example:</p>
+<blockquote>
+<div><div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">initial_scope</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">get_default_scope</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The initial scope was: </span><span class="si">{</span><span class="n">initial_scope</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">initial_scope</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">get_default_scope</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The initial scope was: &quot;</span><span class="si">{</span><span class="n">initial_scope</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
 
-<span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">set_default_scope</span><span class="p">(</span><span class="s1">&#39;my_scope&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Do something...&#39;</span><span class="p">)</span>
-
-<span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">set_default_scope</span><span class="p">(</span><span class="s1">&#39;another_scope&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Do something...&#39;</span><span class="p">)</span>
-
-<span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">set_default_scope</span><span class="p">(</span><span class="n">initial_scope</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Do something...&#39;</span><span class="p">)</span>
+<span class="n">naive</span><span class="o">.</span><span class="n">set_default_scope</span><span class="p">(</span><span class="s1">&#39;my_scope&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Do something...</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="nn">Input In [1],</span> in <span class="ni">&lt;cell line: 1&gt;</span><span class="nt">()</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">initial_scope</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">get_default_scope</span><span class="p">()</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The initial scope was: </span><span class="si">{</span><span class="n">initial_scope</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">set_default_scope</span><span class="p">(</span><span class="s1">&#39;my_scope&#39;</span><span class="p">)</span>
-
-<span class="ne">NameError</span>: name &#39;naive&#39; is not defined
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>  <span class="n">Input</span> <span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Do something...</span>
+          <span class="o">^</span>
+<span class="ne">SyntaxError</span>: unterminated string literal (detected at line 5)
 </pre></div>
 </div>
 </div>
 </div>
+</div></blockquote>
+</div></blockquote>
+<p>‘)</p>
+<blockquote>
+<div><p>naive.set_default_scope(‘another_scope’)
+print(‘Do something else…</p>
+</div></blockquote>
+<p>‘)</p>
+<blockquote>
+<div><p>naive.set_default_scope(initial_scope)
+print(‘Do yet something else…</p>
+</div></blockquote>
+<p>‘)</p>
 </dd></dl>
 
 </section>

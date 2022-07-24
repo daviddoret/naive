@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>naive.core &mdash; naive 0.0.2 documentation</title>
+  <title>naive.core &mdash; naive 0.0.4 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> naive
           </a>
               <div class="version">
-                0.0.2
+                0.0.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -81,17 +81,44 @@
              
   <h1>Source code for naive.core</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
+<span class="kn">import</span> <span class="nn">collections.abc</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">graphviz</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">textx</span> <span class="kn">import</span> <span class="n">metamodel_from_file</span><span class="p">,</span> <span class="n">metamodel_from_str</span>
+<span class="kn">import</span> <span class="nn">pkg_resources</span>
 
-<span class="kn">import</span> <span class="nn">naive.log</span>
-<span class="kn">from</span> <span class="nn">naive._function_subscriptify</span> <span class="kn">import</span> <span class="n">subscriptify</span>
-<span class="kn">from</span> <span class="nn">naive._function_superscriptify</span> <span class="kn">import</span> <span class="n">superscriptify</span>
-<span class="kn">from</span> <span class="nn">naive._function_represent</span> <span class="kn">import</span> <span class="n">represent</span>
+<span class="c1"># Naive imports</span>
+<span class="kn">import</span> <span class="nn">rformats</span>
+<span class="c1"># import glyphs</span>
 
-<span class="c1"># Concept Core Properties</span>
-<span class="kn">import</span> <span class="nn">naive.rformats</span>
-<span class="kn">import</span> <span class="nn">naive.glyphs</span>
+
+<span class="c1"># This sets the root logger to write to stdout (your console).</span>
+<span class="c1"># Your script/app needs to call this somewhere at least once.</span>
+<span class="c1"># Reference: https://stackoverflow.com/questions/7016056/python-logging-not-outputting-anything</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># By default the root logger is set to WARNING and all loggers you define</span>
+<span class="c1"># inherit that value. Here we set the root logger to NOTSET. This logging</span>
+<span class="c1"># level is automatically inherited by all existing and new sub-loggers</span>
+<span class="c1"># that do not set a less verbose level.</span>
+<span class="c1"># Reference: https://stackoverflow.com/questions/7016056/python-logging-not-outputting-anything</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">set_debug_level</span><span class="p">():</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">set_info_level</span><span class="p">():</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">set_warning_level</span><span class="p">():</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">set_error_level</span><span class="p">():</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
+
 
 <span class="n">_BASE_KEY</span> <span class="o">=</span> <span class="s1">&#39;base_key&#39;</span>
 <span class="n">_STRUCTURE_KEY</span> <span class="o">=</span> <span class="s1">&#39;structure_key&#39;</span>
@@ -122,6 +149,517 @@
 <span class="n">_LANGUAGE_NAIVE</span> <span class="o">=</span> <span class="s1">&#39;naive&#39;</span>
 
 
+
+<span class="n">COERCION_SUCCESS</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">COERCION_FAILURE</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="n">code_exclusion_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">stringify_dictionary</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="se">\n</span><span class="s1">  </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="k">return</span> <span class="n">s</span>
+    <span class="c1"># return jsonpickle.encode(kwargs)</span>
+
+
+<span class="k">def</span> <span class="nf">log_debug</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">code_exclusion_list</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">stringify_dictionary</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;DEBUGGING: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s1">.&#39;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+
+<span class="n">USE_PRINT_FOR_INFO</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="sd">&quot;&quot;&quot;Better output in Jupyter notebooks.&quot;&quot;&quot;</span>
+
+<span class="k">def</span> <span class="nf">log_info</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">code_exclusion_list</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">stringify_dictionary</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="n">USE_PRINT_FOR_INFO</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">NaiveWarning</span><span class="p">(</span><span class="ne">UserWarning</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The generic category of warning issued by the **naive** library.&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+
+<span class="k">def</span> <span class="nf">log_warning</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">code_exclusion_list</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">stringify_dictionary</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;WARNING: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">NaiveError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The generic exception type raised by the **naive** library.&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+
+<span class="k">def</span> <span class="nf">log_error</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">code_exclusion_list</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">stringify_dictionary</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;ERROR: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s1">. </span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s1">.&#39;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">NaiveError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+
+
+
+
+<span class="k">def</span> <span class="nf">coerce</span><span class="p">(</span>
+        <span class="n">o</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Coerces an object **representation** to type **cls**.</span>
+
+<span class="sd">    This function is useful to implement single line argument type coercion for the validation of arguments in functions and methods.</span>
+
+<span class="sd">    The assumption behind **coerce** is that all classes implement a coercive constructor.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        o (object): An object of undetermined type, but compatible with **cls**.</span>
+<span class="sd">        cls (type): A class that implements a coercive constructor.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        object: **None**, or an object of type **cls**.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        NaiveWarning: If ambiguous type coercion was necessary.</span>
+<span class="sd">        NaiveError: If type coercion failed.</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">        .. jupyter-execute::</span>
+
+<span class="sd">            # import naive</span>
+<span class="sd">            n = &quot;5&quot;</span>
+<span class="sd">            print(n)</span>
+<span class="sd">            #n_prime = coerce(n, NN0)</span>
+<span class="sd">            #print(type(n_prime))</span>
+<span class="sd">            #print(n_prime)</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        High-level algorithm:</span>
+
+<span class="sd">        1. If **representation** is **None**, returns **None**.</span>
+
+<span class="sd">        2. Else if **representation** is of type **cls**, returns **representation**.</span>
+
+<span class="sd">        3. Else if **representation** is not of type **cls**, creates an instance of **cls** by calling its default constructor, i.e. ``cls(representation)`` and issue a **NaiveWarning**.</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">o</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+        <span class="c1"># The object is already of the expected type.</span>
+        <span class="c1"># Return the object itself.</span>
+        <span class="k">return</span> <span class="n">o</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># The object is not of the expected type,</span>
+        <span class="c1"># we must attempt to force its conversion,</span>
+        <span class="c1"># by calling the constructor of the desired type,</span>
+        <span class="c1"># passing it the source object.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">coerced_o</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">log_error</span><span class="p">(</span><span class="n">code</span> <span class="o">=</span> <span class="n">COERCION_FAILURE</span><span class="p">,</span> <span class="n">o</span> <span class="o">=</span> <span class="n">o</span><span class="p">,</span> <span class="bp">cls</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log_debug</span><span class="p">(</span><span class="n">code</span> <span class="o">=</span> <span class="n">COERCION_SUCCESS</span><span class="p">,</span> <span class="n">o</span> <span class="o">=</span> <span class="n">o</span><span class="p">,</span> <span class="bp">cls</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+
+
+
+<span class="k">class</span> <span class="nc">ABCRepresentable</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An abstract class for objects that support representation in multiple formats.</span>
+
+<span class="sd">    See also:</span>
+<span class="sd">        * :class:`PersistingRepresentable` class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="c1"># TODO: For future development, if images or other media are supported, the output of get_presentation() will need to be converted to text.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">represent</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Less Than.</span>
+
+<span class="sd">        Allows sorting of variables by their names.</span>
+<span class="sd">        Not to be confused with sorting variables by their values.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">str</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">represent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the object&#39;s representation in the desired format.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            rformat (str): The representation format.</span>
+<span class="sd">            args:</span>
+<span class="sd">            kwargs:</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The object&#39;s representation in the desired format.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Abstract method must be implemented in subclass.&#39;</span><span class="p">)</span>
+
+
+<span class="sd">&quot;&quot;&quot;Safe types for type coercion.&quot;&quot;&quot;</span>
+<span class="n">CoercibleABCRepresentable</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span>
+    <span class="s1">&#39;CoercibleABCRepresentable&#39;</span><span class="p">,</span>
+    <span class="n">ABCRepresentable</span><span class="p">,</span>
+    <span class="nb">bytes</span><span class="p">,</span> <span class="c1"># Support for raw USASCII strings.</span>
+    <span class="nb">str</span>
+<span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">PersistingRepresentable</span><span class="p">(</span><span class="n">ABCRepresentable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A helper class for objects that support representation in multiple formats by storing representations in</span>
+<span class="sd">    object properties.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_representable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_string</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the object and stores its representations in available formats.</span>
+
+<span class="sd">        Kwargs:</span>
+<span class="sd">            source_representable (ABCRepresentable): A source source_representable object whose representation should be imitated.</span>
+<span class="sd">            source_string (source_string): A source object that may be converted to **source_string** to get a UTF-8 representation.</span>
+<span class="sd">            ...: Representation formats may be passed in kwargs (e.g. usascii=&#39;phi&#39;, latex=r&#39;\phi&#39;).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">source</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Support for implicit conversion during type coercion.</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">ABCRepresentable</span><span class="p">):</span>
+                <span class="n">source_representable</span> <span class="o">=</span> <span class="n">source</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">source_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+
+        <span class="n">source_representable</span> <span class="o">=</span> <span class="n">coerce</span><span class="p">(</span><span class="n">source_representable</span><span class="p">,</span> <span class="n">ABCRepresentable</span><span class="p">)</span>
+        <span class="n">source_string</span> <span class="o">=</span> <span class="n">coerce</span><span class="p">(</span><span class="n">source_string</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_representations</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">source_representable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># If a PersistingRepresentable object was passed as argument,</span>
+            <span class="c1"># imitate this object&#39;s representations.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imitate</span><span class="p">(</span><span class="n">source_representable</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">source_string</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Otherwise, we must assume it was a string or other</span>
+            <span class="c1"># string-like Unicode representation.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_representations</span><span class="p">[</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">]</span> <span class="o">=</span> <span class="n">source_string</span>
+
+        <span class="c1"># If representations are provided in specific formats,</span>
+        <span class="c1"># store these representations.</span>
+        <span class="c1"># Note that these get priority over above imitation.</span>
+        <span class="k">for</span> <span class="n">arg_key</span><span class="p">,</span> <span class="n">arg_value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">arg_key</span> <span class="ow">in</span> <span class="n">rformats</span><span class="o">.</span><span class="n">CATALOG</span><span class="p">:</span>
+                <span class="c1"># This is a representation format.</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg_value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="c1"># TODO: In future development, if images or other media are supported, reconsider this.</span>
+                    <span class="n">arg_value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">arg_value</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_representations</span><span class="p">[</span><span class="n">arg_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">arg_value</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">represent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the object&#39;s representation in a supported format.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            rformat (str): A representation format.</span>
+<span class="sd">            args: For future use.</span>
+<span class="sd">            kwargs: For future use.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The object&#39;s representation in the requested format.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">rformat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rformat</span> <span class="o">=</span> <span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
+        <span class="k">if</span> <span class="n">rformat</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_representations</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_representations</span><span class="p">[</span><span class="n">rformat</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_representations</span><span class="p">:</span>
+            <span class="c1"># We fall back on UTF-8</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_representations</span><span class="p">[</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PersistingRepresentable object has no representations in </span><span class="si">{</span><span class="n">rformat</span><span class="si">}</span><span class="s1"> nor </span><span class="si">{</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">imitate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">:</span> <span class="n">ABCRepresentable</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Imitate the representation of another object.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">rformat</span> <span class="ow">in</span> <span class="n">rformats</span><span class="o">.</span><span class="n">CATALOG</span><span class="p">:</span>
+            <span class="c1"># TODO: Minor design flaw: this process will also copy unsupported properties that default to UTF-8.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_representations</span><span class="p">[</span><span class="n">rformat</span><span class="p">]</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span>
+
+
+
+
+<span class="k">class</span> <span class="nc">Glyph</span><span class="p">(</span><span class="n">PersistingRepresentable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A glyph is an elemental representation item.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes a Glyph object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            *args: Variable length argument list.</span>
+<span class="sd">            **kwargs: Arbitrary keyword arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Glyphs</span><span class="p">:</span>
+
+    <span class="c1"># Number sets</span>
+    <span class="n">standard_0</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
+    <span class="n">standard_1</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+    <span class="n">standard_x_lowercase</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;v&#39;</span><span class="p">)</span>
+    <span class="n">standard_y_lowercase</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+    <span class="n">standard_z_lowercase</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">)</span>
+    <span class="n">mathbb_a_uppercase</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;𝔸&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\mathbb</span><span class="si">{A}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;Aopf;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">)</span>
+    <span class="n">mathbb_b_uppercase</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;𝔹&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\mathbb</span><span class="si">{B}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;Bopf;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
+    <span class="n">mathbb_n_uppercase</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;ℕ&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\mathbb</span><span class="si">{N}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;Nopf;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
+    <span class="n">mathbb_z_uppercase</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;ℤ&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\mathbb</span><span class="si">{Z}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;Zopf;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;Z&#39;</span><span class="p">)</span>
+    <span class="c1"># {\displaystyle \mathbb {C} }\mathbb{C} 	ℂ	Complex number	\mathbb{C}, \Complex	&amp;Copf;	U+2102</span>
+    <span class="c1"># {\displaystyle \mathbb {H} }\mathbb {H} 	ℍ	Quaternion	\mathbb{H}, \H	&amp;quaternions;	U+210D</span>
+    <span class="c1"># {\displaystyle \mathbb {O} }\mathbb {O} 	𝕆	Octonion	\mathbb{O}	&amp;Oopf;	U+1D546</span>
+    <span class="c1"># {\displaystyle \mathbb {Q} }\mathbb {Q} 	ℚ	Rational number	\mathbb{Q}, \Q	&amp;Qopf;	U+211A</span>
+    <span class="c1"># {\displaystyle \mathbb {R} }\mathbb {R} 	ℝ	Real number	\mathbb{R}, \R	&amp;Ropf;	U+211D</span>
+    <span class="c1"># {\displaystyle \mathbb {S} }\mathbb {S} 	𝕊	Sedenion	\mathbb{S}	&amp;Sopf;	U+1D54A</span>
+
+    <span class="n">to</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;⟶&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\longrightarrow&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;&amp;rarr;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;--&gt;&#39;</span><span class="p">)</span>
+    <span class="n">maps_to</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;⟼&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\longmapsto&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;&amp;mapsto;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;|-&gt;&#39;</span><span class="p">)</span>
+    <span class="n">colon</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\colon&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Bibliography:</span>
+    <span class="c1">#   * https://en.wikipedia.org/wiki/List_of_logic_symbols</span>
+    <span class="n">logical_falsum</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;⊥&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\bot&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;perp;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
+    <span class="n">logical_truth</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;⊤&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\top&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;top;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;T&#39;</span><span class="p">)</span>
+    <span class="n">logical_negation</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;¬&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\lnot&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;not;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;not&#39;</span><span class="p">)</span>
+    <span class="n">logical_conjunction</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;∧&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\land&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;and;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;and&#39;</span><span class="p">)</span>
+    <span class="n">logical_disjunction</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;∨&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\lor&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;or;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;or&#39;</span><span class="p">)</span>
+    <span class="n">logical_material_implication</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;⇒&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\implies&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;rArr;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;implies&#39;</span><span class="p">)</span>
+    <span class="n">logical_material_equivalence</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;⇔&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\iif&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;hArr;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;iif&#39;</span><span class="p">)</span>
+
+
+    <span class="c1"># Greek Letters</span>
+    <span class="n">phi_plain_small</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;φ&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\phi&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;phi;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;phi&#39;</span><span class="p">)</span>
+    <span class="n">phi_plain_cap</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;Φ&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\Phi&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;Phi;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;Phi&#39;</span><span class="p">)</span>
+    <span class="n">psi_plain_small</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;ψ&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\psi&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;psi;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;psi&#39;</span><span class="p">)</span>
+    <span class="n">psi_plain_cap</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;Ψ&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\Psi&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;Psi;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;Psi&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Brackets</span>
+    <span class="c1"># Sources:</span>
+    <span class="c1">#   * https://en.wikipedia.org/wiki/Bracket</span>
+    <span class="n">parenthesis_left</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\left(&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;lparen;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;(&#39;</span><span class="p">)</span>
+    <span class="n">parenthesis_right</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\right)&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;rparen;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;)&#39;</span><span class="p">)</span>
+    <span class="n">square_bracket_left</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\left[&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;91;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;[&#39;</span><span class="p">)</span>
+    <span class="n">square_bracket_right</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\right]&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;93;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;]&#39;</span><span class="p">)</span>
+    <span class="n">curly_bracket_left</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;{&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\left\{&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;123;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;{&#39;</span><span class="p">)</span>
+    <span class="n">curly_bracket_right</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;}&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\right\}&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;125;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;}&#39;</span><span class="p">)</span>
+    <span class="n">angle_bracket_left</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;⟨&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\left\langle&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;lang;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;&lt;&#39;</span><span class="p">)</span>
+    <span class="n">angle_bracket_right</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;⟩&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\right\rangle&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;rang;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;&gt;&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Set Theory</span>
+    <span class="n">element_of</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;∈∉&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\in&#39;</span><span class="p">)</span>
+    <span class="n">not_element_of</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;∉&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\notin&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Spaces</span>
+    <span class="n">small_space</span> <span class="o">=</span> <span class="n">Glyph</span><span class="p">(</span><span class="n">utf8</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\,&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;nbsp;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+
+<span class="sd">&quot;&quot;&quot;Safe types for type coercion.&quot;&quot;&quot;</span>
+<span class="n">CoerciblePersistingRepresentable</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span>
+    <span class="s1">&#39;CoerciblePersistingRepresentable&#39;</span><span class="p">,</span>
+    <span class="n">ABCRepresentable</span><span class="p">,</span>
+    <span class="nb">bytes</span><span class="p">,</span>  <span class="c1"># Support for raw USASCII strings.</span>
+    <span class="n">PersistingRepresentable</span><span class="p">,</span>
+    <span class="nb">str</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">represent</span><span class="p">(</span><span class="n">o</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">rformat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Get the object&#39;representation representation in the desired format.</span>
+
+<span class="sd">    If **representation** is None, return an empty string.</span>
+<span class="sd">    Else if **representation** is ABCRepresentable, return **representation**.get_representation().</span>
+<span class="sd">    Else, return source_string(**representation**).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        o (object): The object to be represented.</span>
+<span class="sd">        rformat (str): The representation format.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The object&#39;representation representation, if support in the desired format.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">o</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># If nothing is passed for representation,</span>
+        <span class="c1"># we return an empty string to facilitate concatenations.</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">rformat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">rformat</span> <span class="o">=</span> <span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">ABCRepresentable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">o</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+
+
+
+
+
+<span class="k">def</span> <span class="nf">flatten</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">skip_none</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Flatten iterable objects of arbitrary depth.</span>
+
+<span class="sd">    This utility function converts embedded lists or multidimensional objects to vectors.</span>
+
+<span class="sd">    If v is already a flat list, returns a new list instance with the same elements.</span>
+
+<span class="sd">    If v is not iterable, returns an iterable version of v, that is: [v].</span>
+
+<span class="sd">    If v is None, returns an empty list, that is [].</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x (object): Any object but preferably an iterable object of type: abc.Iterable[typing.Any].</span>
+<span class="sd">        skip_none (bool): Do not include None as an element in the resulting list.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">         A flat list.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">flattened</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="c1"># Recursive call for sub-structures</span>
+        <span class="c1"># except strings that are understood as atomic in this context</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1"># We cannot call directly extend to support n-depth structures</span>
+            <span class="n">sub_flattened</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="o">*</span><span class="n">y</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sub_flattened</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">skip_none</span><span class="p">:</span>
+                <span class="n">flattened</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">sub_flattened</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">skip_none</span><span class="p">:</span>
+            <span class="n">flattened</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">flattened</span>
+
+
+
+<span class="k">def</span> <span class="nf">subscriptify</span><span class="p">(</span><span class="n">representation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rformat</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Converts to subscript the representation of object **o**.</span>
+
+<span class="sd">    Use cases:</span>
+<span class="sd">        * Render beautiful indexed math variables (e.g. v₁, v₂, v₃).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        representation (str): The representation of the object in that format.</span>
+<span class="sd">        rformat (str): A supported format from the formats.CATALOG.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The representation in subscript.</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">        .. jupyter-execute::</span>
+
+<span class="sd">            # TODO: Rewrite</span>
+<span class="sd">            #import naive</span>
+<span class="sd">            #o = &#39;Indexed math variables look beautiful with subscript: v1, v2, x3&#39;</span>
+<span class="sd">            #s_prime = subscript(o)</span>
+<span class="sd">            #print(s_prime)</span>
+
+<span class="sd">    References:</span>
+<span class="sd">        * https://stackoverflow.com/questions/13875507/convert-numeric-strings-to-superscript</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">representation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">rformat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">rformat</span> <span class="o">=</span> <span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">representation</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">representation</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">representation</span><span class="p">)</span>
+    <span class="k">match</span> <span class="n">rformat</span><span class="p">:</span>
+        <span class="k">case</span> <span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">:</span>
+            <span class="c1"># TODO: Extend support to all available subscript characters in Unicode.</span>
+            <span class="c1"># TODO: Issue a Warning for characters that are not supported and skip them.</span>
+            <span class="n">subscript_dictionary</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;0&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;₀&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;₁&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;2&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;₂&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;3&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;₃&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;4&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;₄&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;5&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;₅&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;6&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;₆&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;7&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;₇&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;8&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;₈&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;9&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;₉&#39;</span><span class="p">}</span>
+            <span class="k">return</span> <span class="sa">u</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subscript_dictionary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="n">char</span><span class="p">)</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">representation</span><span class="p">)</span>
+        <span class="k">case</span> <span class="n">rformats</span><span class="o">.</span><span class="n">LATEX</span><span class="p">:</span>
+            <span class="c1"># ASSUMPTION: The subscriptified result must be concatenated with something.</span>
+            <span class="k">return</span> <span class="sa">r</span><span class="s1">&#39;_{&#39;</span> <span class="o">+</span> <span class="n">representation</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;}&#39;</span>
+        <span class="k">case</span> <span class="n">rformats</span><span class="o">.</span><span class="n">HTML</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">r</span><span class="s1">&#39;&lt;sub&gt;&#39;</span> <span class="o">+</span> <span class="n">representation</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;&lt;/sub&gt;&#39;</span>
+        <span class="k">case</span> <span class="n">rformats</span><span class="o">.</span><span class="n">USASCII</span><span class="p">:</span>
+            <span class="c1"># TODO: USASCII representation may be ambiguous. Considering issuing a Warning.</span>
+            <span class="k">return</span> <span class="n">representation</span>
+
+
+
+<span class="k">def</span> <span class="nf">superscriptify</span><span class="p">(</span><span class="n">representation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rformat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Converts to superscript the representation of object **o**.</span>
+
+<span class="sd">    Use cases:</span>
+<span class="sd">        * Render beautiful indexed math variables (e.g. v₁, v₂, v₃).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        representation (str): The representation of the object in that format.</span>
+<span class="sd">        rformat (str): A supported format from the formats.CATALOG.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The representation in superscript.</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">        .. jupyter-execute::</span>
+
+<span class="sd">            # TODO: Rewrite</span>
+<span class="sd">            #import naive</span>
+<span class="sd">            #o = &#39;Indexed math variables look beautiful with superscript: v1, v2, x3&#39;</span>
+<span class="sd">            #s_prime = superscript(o)</span>
+<span class="sd">            #print(s_prime)</span>
+
+<span class="sd">    References:</span>
+<span class="sd">        * https://stackoverflow.com/questions/13875507/convert-numeric-strings-to-superscript</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">representation</span> <span class="o">=</span> <span class="n">coerce</span><span class="p">(</span><span class="n">representation</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">representation</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">representation</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">rformat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">rformat</span> <span class="o">=</span> <span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
+    <span class="k">match</span> <span class="n">rformat</span><span class="p">:</span>
+        <span class="k">case</span> <span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">:</span>
+            <span class="c1"># TODO: Extend support to all available superscript characters in Unicode.</span>
+            <span class="c1"># TODO: Issue a Warning for characters that are not supported and skip them.</span>
+            <span class="n">superscript_dictionary</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;0&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;⁰&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;¹&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;2&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;²&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;3&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;³&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;4&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;⁴&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;5&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;⁵&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;6&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;⁶&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;7&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;⁷&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;8&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;⁸&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;9&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;⁹&#39;</span><span class="p">}</span>
+            <span class="k">return</span> <span class="sa">u</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">superscript_dictionary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="n">char</span><span class="p">)</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">representation</span><span class="p">)</span>
+        <span class="k">case</span> <span class="n">rformats</span><span class="o">.</span><span class="n">LATEX</span><span class="p">:</span>
+            <span class="c1"># ASSUMPTION: The superscriptified result must be concatenated with something.</span>
+            <span class="k">return</span> <span class="sa">r</span><span class="s1">&#39;^{&#39;</span> <span class="o">+</span> <span class="n">representation</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;}&#39;</span>
+        <span class="k">case</span> <span class="n">rformats</span><span class="o">.</span><span class="n">HTML</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">r</span><span class="s1">&#39;&lt;sup&gt;&#39;</span> <span class="o">+</span> <span class="n">representation</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;&lt;/sup&gt;&#39;</span>
+        <span class="k">case</span> <span class="n">rformats</span><span class="o">.</span><span class="n">USASCII</span><span class="p">:</span>
+            <span class="c1"># TODO: USASCII representation may be ambiguous. Considering issuing a Warning.</span>
+            <span class="k">return</span> <span class="n">representation</span>
+
+
+
 <span class="k">def</span> <span class="nf">unkwargs</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
     <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
@@ -138,7 +676,7 @@
 
 <span class="k">def</span> <span class="nf">clean_mnemonic_key</span><span class="p">(</span><span class="n">mnemonic_key</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">mnemonic_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;NKey is None&#39;</span><span class="p">)</span>
+        <span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;NKey is None&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">mnemonic_key</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">mnemonic_key</span><span class="p">)</span>
         <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">mnemonic_key</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">_MNEMONIC_KEY_ALLOWED_CHARACTERS</span><span class="p">)</span>
@@ -156,6 +694,8 @@
                  <span class="n">domain</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">codomain</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pythong_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Identification Properties that constitute the Qualified Key.</span>
+        <span class="k">if</span> <span class="n">scope_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">scope_key</span> <span class="o">=</span> <span class="n">get_default_scope</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_scope_key</span> <span class="o">=</span> <span class="n">clean_mnemonic_key</span><span class="p">(</span><span class="n">scope_key</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_structure_key</span> <span class="o">=</span> <span class="n">clean_mnemonic_key</span><span class="p">(</span><span class="n">structure_key</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_language_key</span> <span class="o">=</span> <span class="n">clean_mnemonic_key</span><span class="p">(</span><span class="n">language_key</span><span class="p">)</span>
@@ -176,22 +716,22 @@
                     <span class="c1"># TODO: Question: should we store a reference to the Concept or store the Concept qualified key?</span>
                     <span class="n">Concept</span><span class="o">.</span><span class="n">_token_database</span><span class="p">[</span><span class="n">token</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="n">log_error</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s1">&#39;The &quot;</span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s1">&quot; token was already in the token static database. We need to implement a priority algorithm to manage these situations.&#39;</span><span class="p">,</span>
                         <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
         <span class="c1"># Append the concept in the database</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">Concept</span><span class="o">.</span><span class="n">_concept_database</span><span class="p">:</span>
             <span class="n">Concept</span><span class="o">.</span><span class="n">_concept_database</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="n">log_error</span><span class="p">(</span>
                 <span class="s1">&#39;The initialization of the concept could not be completed because the qualified key was already present in the static database.&#39;</span><span class="p">,</span>
                 <span class="n">qualified_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Concept.__str__"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">naive</span><span class="o">.</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Concept.__repr__"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">naive</span><span class="o">.</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">arity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -209,7 +749,7 @@
                 <span class="n">qualified_key</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">ntype</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">nkey</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Some identification properties are None&#39;</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">ntype</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span>
+            <span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;Some identification properties are None&#39;</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">ntype</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span>
                       <span class="n">language</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">nkey</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Concept.check_concept_from_qualified_key"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.check_concept_from_qualified_key">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -217,7 +757,7 @@
         <span class="k">if</span> <span class="n">qualified_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">qualified_key</span> <span class="ow">in</span> <span class="n">Concept</span><span class="o">.</span><span class="n">_concept_database</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Checking concept with None qualified key is impossible.&#39;</span><span class="p">,</span>
+            <span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;Checking concept with None qualified key is impossible.&#39;</span><span class="p">,</span>
                       <span class="n">qualified_key</span><span class="o">=</span><span class="n">qualified_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Concept.get_concept_from_decomposed_key"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.get_concept_from_decomposed_key">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -228,7 +768,7 @@
                 <span class="n">qualified_key</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">ntype</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">nkey</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Some identification properties are None&#39;</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">ntype</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span>
+            <span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;Some identification properties are None&#39;</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">ntype</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span>
                       <span class="n">language</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">nkey</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Concept.get_concept_from_qualified_key"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.get_concept_from_qualified_key">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -239,7 +779,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">Concept</span><span class="p">(</span><span class="n">qualified_key</span><span class="o">=</span><span class="n">qualified_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Getting concept with None qualified key is impossible.&#39;</span><span class="p">,</span>
+            <span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;Getting concept with None qualified key is impossible.&#39;</span><span class="p">,</span>
                       <span class="n">qualified_key</span><span class="o">=</span><span class="n">qualified_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Concept.get_concept_from_token"><a class="viewcode-back" href="../../core_class_concept_doc.html#naive.core.Concept.get_concept_from_token">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -275,7 +815,7 @@
 <span class="sd">            The object&#39;s representation in the requested format.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">rformat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">rformat</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
+            <span class="n">rformat</span> <span class="o">=</span> <span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
         <span class="c1"># TODO: Check that rformat is an allowed value.</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">)</span>
@@ -283,7 +823,7 @@
             <span class="c1"># We fall back on UTF-8</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_utf8</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;This concept has no representation in </span><span class="si">{</span><span class="n">rformat</span><span class="si">}</span><span class="s1"> nor </span><span class="si">{</span><span class="n">naive</span><span class="o">.</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">,</span> <span class="n">rformat</span><span class="o">=</span><span class="n">rformat</span><span class="p">,</span>
+            <span class="n">log_error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;This concept has no representation in </span><span class="si">{</span><span class="n">rformat</span><span class="si">}</span><span class="s1"> nor </span><span class="si">{</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">,</span> <span class="n">rformat</span><span class="o">=</span><span class="n">rformat</span><span class="p">,</span>
                       <span class="n">qualified_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
@@ -362,7 +902,6 @@
             <span class="c1"># Representation properties</span>
             <span class="n">utf8</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="c1"># ...</span>
 
         <span class="c1"># Call the base class initializer.</span>
         <span class="c1">#   Executing this at the end of the initialization process</span>
@@ -389,38 +928,38 @@
 <span class="sd">            :raises:</span>
 <span class="sd">            :stderr:</span>
 
-<span class="sd">            initial_scope = naive.core.get_default_scope()</span>
-<span class="sd">            print(f&#39;The initial scope was: {initial_scope}&#39;)</span>
+<span class="sd">            initial_scope = naive.get_default_scope()</span>
+<span class="sd">            print(f&#39;The initial scope was: &quot;{initial_scope}&quot;&#39;)</span>
 
-<span class="sd">            naive.core.set_default_scope(&#39;my_scope&#39;)</span>
-<span class="sd">            print(&#39;Do something...&#39;)</span>
+<span class="sd">            naive.set_default_scope(&#39;my_scope&#39;)</span>
+<span class="sd">            print(&#39;Do something...\n&#39;)</span>
 
-<span class="sd">            naive.core.set_default_scope(&#39;another_scope&#39;)</span>
-<span class="sd">            print(&#39;Do something...&#39;)</span>
-
-<span class="sd">            naive.core.set_default_scope(initial_scope)</span>
-<span class="sd">            print(&#39;Do something...&#39;)</span>
+<span class="sd">            naive.set_default_scope(&#39;another_scope&#39;)</span>
+<span class="sd">            print(&#39;Do something else...\n&#39;)</span>
+<span class="sd">            </span>
+<span class="sd">            naive.set_default_scope(initial_scope)</span>
+<span class="sd">            print(&#39;Do yet something else...\n&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">_DEFAULT_SCOPE_KEY</span>
     <span class="c1"># TODO: Allow the usage of friendly name, notes or documentation, etc.</span>
     <span class="k">if</span> <span class="n">scope_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+        <span class="n">log_error</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;None is not a valid context key. Please provide a non-empty string composed of the allowed characters: &quot;</span><span class="si">{</span><span class="n">_MNEMONIC_KEY_ALLOWED_CHARACTERS</span><span class="si">}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scope_key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+        <span class="n">log_error</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;The object &quot;</span><span class="si">{</span><span class="n">scope_key</span><span class="si">}</span><span class="s1">&quot; of type &quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">scope_key</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot; is not a valid context key. Please provide a non-empty string composed of the allowed characters: &quot;</span><span class="si">{</span><span class="n">_MNEMONIC_KEY_ALLOWED_CHARACTERS</span><span class="si">}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span>
     <span class="n">scope_key_cleaned</span> <span class="o">=</span> <span class="n">clean_mnemonic_key</span><span class="p">(</span><span class="n">scope_key</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">scope_key_cleaned</span> <span class="o">!=</span> <span class="n">scope_key</span><span class="p">:</span>
-        <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+        <span class="n">log_warning</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;Please note that the context key &quot;</span><span class="si">{</span><span class="n">scope_key</span><span class="si">}</span><span class="s1">&quot; contained unsupported characters. The allowed characters for context keys are: &quot;</span><span class="si">{</span><span class="n">_MNEMONIC_KEY_ALLOWED_CHARACTERS</span><span class="si">}</span><span class="s1">&quot;. It was automatically cleaned from unsupported characters. The resulting context key is: </span><span class="si">{</span><span class="n">scope_key_cleaned</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">scope_key</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-        <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+        <span class="n">log_error</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;An empty string is not a valid context key. Please provide a non-empty string composed of the allowed characters: &quot;</span><span class="si">{</span><span class="n">_MNEMONIC_KEY_ALLOWED_CHARACTERS</span><span class="si">}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span>
 
     <span class="n">prefixed_key</span> <span class="o">=</span> <span class="n">_USER_DEFINED_KEY_PREFIX</span> <span class="o">+</span> <span class="n">scope_key_cleaned</span>
     <span class="n">_DEFAULT_SCOPE_KEY</span> <span class="o">=</span> <span class="n">prefixed_key</span>
-    <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Default scope_key: </span><span class="si">{</span><span class="n">scope_key_cleaned</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+    <span class="n">log_info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Default scope_key: </span><span class="si">{</span><span class="n">scope_key_cleaned</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">get_default_scope</span><span class="p">():</span>
@@ -441,20 +980,20 @@
         <span class="n">base_name</span> <span class="o">=</span> <span class="s1">&#39;x&#39;</span>
     <span class="n">base_key</span> <span class="o">=</span> <span class="n">base_name</span>
     <span class="k">if</span> <span class="n">indexes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indexes</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indexes</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
             <span class="n">base_key</span> <span class="o">=</span> <span class="n">base_key</span> <span class="o">+</span> <span class="s1">&#39;__&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">indexes</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">base_key</span> <span class="o">=</span> <span class="n">base_key</span> <span class="o">+</span> <span class="s1">&#39;__&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indexes</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">Concept</span><span class="o">.</span><span class="n">check_concept_from_decomposed_key</span><span class="p">(</span><span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">):</span>
         <span class="n">variable</span> <span class="o">=</span> <span class="n">Concept</span><span class="o">.</span><span class="n">get_concept_from_decomposed_key</span><span class="p">(</span><span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">)</span>
-        <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;This variable is already declared. In consequence, the existing variable is returned, instead of declaring a new one.&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">)</span>
+        <span class="n">log_warning</span><span class="p">(</span><span class="s1">&#39;This variable is already declared. In consequence, the existing variable is returned, instead of declaring a new one.&#39;</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">variable</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">variable</span> <span class="o">=</span> <span class="n">Formula</span><span class="p">(</span>
             <span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span>
             <span class="n">category</span><span class="o">=</span><span class="n">Formula</span><span class="o">.</span><span class="n">ATOMIC_VARIABLE</span><span class="p">,</span>
             <span class="n">codomain</span><span class="o">=</span> <span class="n">codomain</span><span class="p">,</span> <span class="n">base_name</span><span class="o">=</span><span class="n">base_name</span><span class="p">,</span> <span class="n">indexes</span><span class="o">=</span><span class="n">indexes</span><span class="p">)</span>
-        <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">represent_declaration</span><span class="p">())</span>
+        <span class="n">log_info</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">represent_declaration</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">variable</span>
 
 
@@ -511,8 +1050,11 @@
         <span class="n">structure_key</span> <span class="o">=</span> <span class="n">_STRUCTURE_FORMULA</span>
         <span class="c1"># Mandatory complementary properties.</span>
         <span class="k">if</span> <span class="n">category</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">Formula</span><span class="o">.</span><span class="n">CATEGORIES</span><span class="p">:</span>
-            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Invalid formula category&#39;</span><span class="p">,</span>
-                      <span class="n">category</span><span class="o">=</span><span class="n">category</span><span class="p">,</span> <span class="n">qualified_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">)</span>
+            <span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;Invalid formula category&#39;</span><span class="p">,</span>
+                      <span class="n">category</span><span class="o">=</span><span class="n">category</span><span class="p">,</span>
+                      <span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span>
+                      <span class="n">system_function</span><span class="o">=</span><span class="n">system_function</span><span class="p">,</span> <span class="n">arguments</span><span class="o">=</span><span class="n">arguments</span><span class="p">,</span>
+                      <span class="n">domain</span><span class="o">=</span><span class="n">domain</span><span class="p">,</span> <span class="n">codomain</span><span class="o">=</span><span class="n">codomain</span><span class="p">,</span> <span class="n">base_name</span><span class="o">=</span><span class="n">base_name</span><span class="p">,</span> <span class="n">indexes</span><span class="o">=</span><span class="n">indexes</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_category</span> <span class="o">=</span> <span class="n">category</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_arity</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_system_function</span> <span class="o">=</span> <span class="n">system_function</span>
@@ -561,7 +1103,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_function</span><span class="o">.</span><span class="n">arity</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># TODO: Implement the arity property for all object categories.</span>
-            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The arity property has not been implemented for this concept category.&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">,</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">log_warning</span><span class="p">(</span><span class="s1">&#39;The arity property has not been implemented for this concept category.&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">,</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">category</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -578,7 +1120,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_function</span><span class="o">.</span><span class="n">codomain</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># TODO: Implement the codomain property for all object categories.</span>
-            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;The codomain property has not been implemented for this concept category.&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">,</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">log_warning</span><span class="p">(</span><span class="s1">&#39;The codomain property has not been implemented for this concept category.&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">,</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">domain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -605,14 +1147,14 @@
         <span class="sd">&quot;&quot;&quot;Return the sorted set of variables present in the formula, and its subformulae recursively.&quot;&quot;&quot;</span>
         <span class="n">l</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">Formula</span><span class="p">)</span> <span class="ow">and</span> <span class="n">a</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="n">Formula</span><span class="o">.</span><span class="n">ATOMIC_VARIABLE</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">Formula</span><span class="p">)</span> <span class="ow">and</span> <span class="n">a</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="n">Formula</span><span class="o">.</span><span class="n">ATOMIC_VARIABLE</span><span class="p">:</span>  <span class="c1"># Using a union type to avoid import issues.</span>
                 <span class="n">l</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">Formula</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">Formula</span><span class="p">):</span>  <span class="c1"># Using a union type to avoid import issues.</span>
                 <span class="n">l_prime</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">list_atomic_variables</span><span class="p">()</span>
                 <span class="k">for</span> <span class="n">a_prime</span> <span class="ow">in</span> <span class="n">l_prime</span><span class="p">:</span>
                     <span class="n">l</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">a_prime</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Not implemented yet&#39;</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+                <span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;Not implemented yet&#39;</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="bp">self</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="c1"># To allow sorting and indexing, convert the set to a list.</span>
         <span class="n">l</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
@@ -621,7 +1163,7 @@
 
     <span class="k">def</span> <span class="nf">represent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">rformat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">rformat</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
+            <span class="n">rformat</span> <span class="o">=</span> <span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
         <span class="c1"># if self.category == Formula.ATOMIC_VARIABLE:</span>
         <span class="c1">#     return self.symbol.represent(rformat, *args, **kwargs)</span>
         <span class="k">match</span> <span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">:</span>
@@ -642,22 +1184,22 @@
                 <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_system_function</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="k">case</span> <span class="n">Formula</span><span class="o">.</span><span class="n">SYSTEM_BINARY_OPERATOR_CALL</span><span class="p">:</span>
                 <span class="c1"># (x f y)</span>
-                <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">naive</span><span class="o">.</span><span class="n">glyphs</span><span class="o">.</span><span class="n">parenthesis_left</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">naive</span><span class="o">.</span><span class="n">glyphs</span><span class="o">.</span><span class="n">small_space</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">_system_function</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">naive</span><span class="o">.</span><span class="n">glyphs</span><span class="o">.</span><span class="n">small_space</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">naive</span><span class="o">.</span><span class="n">glyphs</span><span class="o">.</span><span class="n">parenthesis_right</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">Glyphs</span><span class="o">.</span><span class="n">parenthesis_left</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">Glyphs</span><span class="o">.</span><span class="n">small_space</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">_system_function</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">Glyphs</span><span class="o">.</span><span class="n">small_space</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">Glyphs</span><span class="o">.</span><span class="n">parenthesis_right</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="k">case</span> <span class="n">Formula</span><span class="o">.</span><span class="n">SYSTEM_N_ARY_FUNCTION_CALL</span><span class="p">:</span>
                 <span class="c1"># f(x,y,z)</span>
                 <span class="n">variable_list</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">represent</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">))</span>
-                <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_system_function</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">naive</span><span class="o">.</span><span class="n">glyphs</span><span class="o">.</span><span class="n">parenthesis_left</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">variable_list</span><span class="si">}{</span><span class="n">naive</span><span class="o">.</span><span class="n">glyphs</span><span class="o">.</span><span class="n">parenthesis_right</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_system_function</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">Glyphs</span><span class="o">.</span><span class="n">parenthesis_left</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}{</span><span class="n">variable_list</span><span class="si">}{</span><span class="n">Glyphs</span><span class="o">.</span><span class="n">parenthesis_right</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="k">case</span> <span class="k">_</span><span class="p">:</span>
-                <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unsupported formula category&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">,</span> <span class="n">qualified_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">)</span>
+                <span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;Unsupported formula category&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">,</span> <span class="n">qualified_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">represent_declaration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rformat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">category</span> <span class="o">!=</span> <span class="n">Formula</span><span class="o">.</span><span class="n">ATOMIC_VARIABLE</span><span class="p">:</span>
-            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Formula category not supported for declaration.&#39;</span><span class="p">)</span>
+            <span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;Formula category not supported for declaration.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">rformat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">rformat</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
+                <span class="n">rformat</span> <span class="o">=</span> <span class="n">rformats</span><span class="o">.</span><span class="n">DEFAULT</span>
             <span class="k">match</span> <span class="n">rformat</span><span class="p">:</span>
-                <span class="k">case</span> <span class="n">naive</span><span class="o">.</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">:</span>
+                <span class="k">case</span> <span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">:</span>
                     <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;With </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}</span><span class="s1"> ∈ </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">codomain</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformat</span><span class="p">)</span><span class="si">}</span><span class="s1">.&#39;</span>
                 <span class="k">case</span> <span class="k">_</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;TODO&#39;</span><span class="p">)</span>
@@ -686,7 +1228,7 @@
     <span class="n">base_key</span> <span class="o">=</span> <span class="s1">&#39;f&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
     <span class="n">category</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">system_function</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">SystemFunction</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">SystemFunction</span><span class="p">):</span>  <span class="c1"># Using a union type to avoid import issues.</span>
         <span class="n">system_function</span> <span class="o">=</span> <span class="n">o</span>
         <span class="k">match</span> <span class="n">o</span><span class="o">.</span><span class="n">category</span><span class="p">:</span>
             <span class="k">case</span> <span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_CONSTANT</span><span class="p">:</span>
@@ -705,7 +1247,7 @@
         <span class="c1"># Conditional complementary properties</span>
         <span class="n">system_function</span><span class="o">=</span><span class="n">system_function</span><span class="p">,</span> <span class="n">arguments</span><span class="o">=</span><span class="n">arguments</span>
     <span class="p">)</span>
-    <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">formula</span><span class="o">.</span><span class="n">represent</span><span class="p">())</span>
+    <span class="n">log_info</span><span class="p">(</span><span class="n">formula</span><span class="o">.</span><span class="n">represent</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">formula</span>
 
 
@@ -746,14 +1288,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_codomain</span> <span class="o">=</span> <span class="n">codomain</span>  <span class="c1"># TODO: Implement validation against the static concept database.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_algorithm</span> <span class="o">=</span> <span class="n">algorithm</span>
         <span class="k">if</span> <span class="n">category</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SystemFunction</span><span class="o">.</span><span class="n">CATEGORIES</span><span class="p">:</span>
-            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Invalid formula category&#39;</span><span class="p">,</span>
+            <span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;Invalid formula category&#39;</span><span class="p">,</span>
                       <span class="n">category</span><span class="o">=</span><span class="n">category</span><span class="p">,</span> <span class="n">qualified_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_category</span> <span class="o">=</span> <span class="n">category</span>
         <span class="c1"># Conditional complementary properties.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_domain</span> <span class="o">=</span> <span class="n">domain</span>  <span class="c1"># TODO: Implement validation against the static concept database.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_arity</span> <span class="o">=</span> <span class="n">arity</span>  <span class="c1"># TODO: Implement validation logic dependent of subcategory.</span>
         <span class="k">if</span> <span class="n">category</span> <span class="o">==</span> <span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_CONSTANT</span> <span class="ow">and</span> <span class="n">python_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">naive</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;python_value is mandatory for constants (0-ary functions) but it was None.&#39;</span><span class="p">,</span>
+            <span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;python_value is mandatory for constants (0-ary functions) but it was None.&#39;</span><span class="p">,</span>
                       <span class="n">python_value</span><span class="o">=</span><span class="n">python_value</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">category</span><span class="p">,</span> <span class="n">qualified_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_python_value</span> <span class="o">=</span> <span class="n">python_value</span>  <span class="c1"># TODO: Question: Should it be mandatory for subcategory = constant?</span>
         <span class="c1"># Call the base class initializer.</span>
@@ -793,7 +1335,7 @@
 
     <span class="k">def</span> <span class="nf">equal_programmatic_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return true if two formula yield identical values, false otherwise.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Formula</span><span class="p">)</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">subcategory</span> <span class="o">==</span> <span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_CONSTANT</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Formula</span><span class="p">)</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">subcategory</span> <span class="o">==</span> <span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_CONSTANT</span><span class="p">:</span>  <span class="c1"># Using a union type to avoid import issues.</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_programmatic_value</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">compute_programmatic_value</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;oooops again&#39;</span><span class="p">)</span>
@@ -814,7 +1356,338 @@
     <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;scope_key₁&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\text</span><span class="si">{scope_key}</span><span class="s1">_1&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;scope_key&lt;sub&gt;1&lt;/sub&gt;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;scope1&#39;</span><span class="p">)</span>
 <span class="c1"># TODO: Question: what should be the scope_key of user defined scopes? sys? the scope_key itself?</span>
 
+<span class="k">def</span> <span class="nf">convert_formula_to_graphviz_digraph</span><span class="p">(</span><span class="n">formula</span><span class="p">:</span> <span class="n">Formula</span><span class="p">,</span> <span class="n">digraph</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="n">title</span> <span class="o">=</span> <span class="n">formula</span><span class="o">.</span><span class="n">represent</span><span class="p">(</span><span class="n">rformats</span><span class="o">.</span><span class="n">UTF8</span><span class="p">)</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">formula</span><span class="o">.</span><span class="n">qualified_key</span>
+
+    <span class="k">if</span> <span class="n">digraph</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">digraph</span> <span class="o">=</span> <span class="n">graphviz</span><span class="o">.</span><span class="n">Digraph</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+
+    <span class="n">digraph</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">formula</span><span class="o">.</span><span class="n">arguments</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">argument</span> <span class="ow">in</span> <span class="n">formula</span><span class="o">.</span><span class="n">arguments</span><span class="p">:</span>
+            <span class="n">convert_formula_to_graphviz_digraph</span><span class="p">(</span><span class="n">formula</span><span class="o">=</span><span class="n">argument</span><span class="p">,</span> <span class="n">digraph</span><span class="o">=</span><span class="n">digraph</span><span class="p">)</span>
+            <span class="n">digraph</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">argument</span><span class="o">.</span><span class="n">qualified_key</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;back&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">digraph</span>
+
+<span class="k">def</span> <span class="nf">convert_formula_to_dot</span><span class="p">(</span><span class="n">formula</span><span class="p">:</span> <span class="n">Formula</span><span class="p">):</span>
+    <span class="n">digraph</span> <span class="o">=</span> <span class="n">convert_formula_to_graphviz_digraph</span><span class="p">(</span><span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">digraph</span><span class="o">.</span><span class="n">source</span>
+
+<span class="k">def</span> <span class="nf">render_formula_as_ipython_mimebundle</span><span class="p">(</span><span class="n">formula</span><span class="p">:</span> <span class="n">Formula</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Render the formula as a digraph in SVG format,</span>
+<span class="sd">    in Jupyter Notebook, Jupyter QT Console, and/or insider Spyder IDE.</span>
+
+<span class="sd">    Bibliography:</span>
+<span class="sd">        * https://graphviz.readthedocs.io/en/stable/api.html#graphviz.Graph._repr_mimebundle_</span>
+<span class="sd">        * https://graphviz.readthedocs.io/en/stable/manual.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">digraph</span> <span class="o">=</span> <span class="n">convert_formula_to_graphviz_digraph</span><span class="p">(</span><span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="p">)</span>
+    <span class="n">digraph</span><span class="o">.</span><span class="n">_repr_mimebundle_</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">get_boolean_combinations_column</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Bibliography:</span>
+<span class="sd">        * https://stackoverflow.com/questions/9945720/python-extracting-bits-from-a-byte</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: Assure endianness consistency.</span>
+    <span class="k">return</span> <span class="p">[(</span><span class="n">truth</span> <span class="k">if</span> <span class="p">(</span><span class="n">integer_value</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">c</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> <span class="n">falsum</span><span class="p">)</span> <span class="k">for</span> <span class="n">integer_value</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">**</span> <span class="n">n</span><span class="p">)]</span>
+
+
+<span class="k">def</span> <span class="nf">satisfaction_index</span><span class="p">(</span><span class="n">phi</span><span class="p">:</span> <span class="n">Formula</span><span class="p">,</span> <span class="n">variables_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the **satisfaction indexes** (:math:`\text{sat}_I`) of a Boolean formula (:math:`\phi`).</span>
+
+<span class="sd">    Alias:</span>
+<span class="sd">    **sat_i**</span>
+
+<span class="sd">    Definition:</span>
+<span class="sd">    Let :math:`\phi` be a Boolean formula.</span>
+<span class="sd">    :math:`\text{sat}_I \colon= ` the truth value of :math:`\phi` in all possible worlds.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        phi (BooleanFormula): The Boolean formula :math:`\phi` .</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Retrieve the computed results</span>
+    <span class="c1"># TODO: Check that all formula are Boolean formula. Otherwise, the formula</span>
+    <span class="c1">#   may not return a Boolean value, forbidding the computation of a satisfaction set.</span>
+    <span class="k">global</span> <span class="n">b</span>
+    <span class="k">if</span> <span class="n">variables_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">variables_list</span> <span class="o">=</span> <span class="n">phi</span><span class="o">.</span><span class="n">list_atomic_variables</span><span class="p">()</span>
+    <span class="n">variables_number</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables_list</span><span class="p">)</span>
+    <span class="n">arguments_number</span> <span class="o">=</span> <span class="n">phi</span><span class="o">.</span><span class="n">arity</span>
+    <span class="n">argument_vectors</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">arguments_number</span>
+    <span class="n">log_debug</span><span class="p">(</span><span class="n">arguments_number</span><span class="o">=</span><span class="n">arguments_number</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">argument_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">arguments_number</span><span class="p">):</span>
+        <span class="n">argument</span> <span class="o">=</span> <span class="n">phi</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="n">argument_index</span><span class="p">]</span>
+        <span class="n">log_debug</span><span class="p">(</span>
+            <span class="n">argument</span><span class="o">=</span><span class="n">argument</span><span class="p">,</span>
+            <span class="n">argument_index</span><span class="o">=</span><span class="n">argument_index</span><span class="p">,</span>
+            <span class="n">argument_type</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">argument</span><span class="p">),</span>
+            <span class="n">argument_codomain</span><span class="o">=</span><span class="n">argument</span><span class="o">.</span><span class="n">codomain</span><span class="p">,</span>
+            <span class="n">argument_is_system_function_call</span><span class="o">=</span><span class="n">argument</span><span class="o">.</span><span class="n">is_system_function_call</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">argument</span><span class="p">,</span> <span class="n">Formula</span><span class="p">)</span> <span class="ow">and</span> \
+                <span class="n">argument</span><span class="o">.</span><span class="n">is_system_function_call</span> <span class="ow">and</span> \
+                <span class="n">argument</span><span class="o">.</span><span class="n">codomain</span> <span class="o">==</span> <span class="n">b</span><span class="p">:</span>
+            <span class="c1"># This argument is a Boolean Formula.</span>
+            <span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;This argument is a Boolean Formula&#39;</span><span class="p">)</span>
+            <span class="c1"># Recursively compute the satisfaction set of that formula,</span>
+            <span class="c1"># restricting the variables list to the subset of necessary variables.</span>
+            <span class="n">vector</span> <span class="o">=</span> <span class="n">satisfaction_index</span><span class="p">(</span><span class="n">argument</span><span class="p">,</span> <span class="n">variables_list</span><span class="o">=</span><span class="n">variables_list</span><span class="p">)</span>
+            <span class="n">argument_vectors</span><span class="p">[</span><span class="n">argument_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">vector</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">argument</span><span class="p">,</span> <span class="n">Formula</span><span class="p">)</span> <span class="ow">and</span> \
+                <span class="n">argument</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="n">Formula</span><span class="o">.</span><span class="n">ATOMIC_VARIABLE</span> <span class="ow">and</span> \
+                <span class="n">argument</span><span class="o">.</span><span class="n">codomain</span> <span class="o">==</span> <span class="n">b</span><span class="p">:</span>
+            <span class="c1"># This argument is a Boolean atomic proposition.</span>
+            <span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;This argument is a Boolean atomic proposition&#39;</span><span class="p">)</span>
+            <span class="c1"># We want to retrieve its values from the corresponding bit combinations column.</span>
+            <span class="c1"># But we need the vector to be relative to variables_list.</span>
+            <span class="c1"># Thus we must first find the position of this atomic variable,</span>
+            <span class="c1"># in the variables_list.</span>
+            <span class="n">atomic_variable_index</span> <span class="o">=</span> <span class="n">variables_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">argument</span><span class="p">)</span>
+            <span class="n">vector</span> <span class="o">=</span> <span class="n">get_boolean_combinations_column</span><span class="p">(</span><span class="n">variables_number</span><span class="p">,</span> <span class="n">atomic_variable_index</span><span class="p">)</span>
+            <span class="n">log_debug</span><span class="p">(</span><span class="n">vector</span><span class="o">=</span><span class="n">vector</span><span class="p">)</span>
+            <span class="n">argument_vectors</span><span class="p">[</span><span class="n">argument_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">vector</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;Unexpected type&#39;</span><span class="p">,</span> <span class="n">argument</span><span class="o">=</span><span class="n">argument</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">argument</span><span class="p">),</span> <span class="n">category</span><span class="o">=</span><span class="n">argument</span><span class="o">.</span><span class="n">category</span><span class="p">,</span>
+                      <span class="n">codomain</span><span class="o">=</span><span class="n">argument</span><span class="o">.</span><span class="n">codomain</span><span class="p">)</span>
+    <span class="n">log_debug</span><span class="p">(</span><span class="n">argument_vectors</span><span class="o">=</span><span class="n">argument_vectors</span><span class="p">)</span>
+    <span class="n">output_vector</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">log_debug</span><span class="p">(</span><span class="n">phi</span><span class="o">=</span><span class="n">phi</span><span class="p">,</span> <span class="n">arity</span><span class="o">=</span><span class="n">phi</span><span class="o">.</span><span class="n">arity</span><span class="p">,</span> <span class="n">system_function</span><span class="o">=</span><span class="n">phi</span><span class="o">.</span><span class="n">system_function</span><span class="p">)</span>
+    <span class="k">match</span> <span class="n">phi</span><span class="o">.</span><span class="n">arity</span><span class="p">:</span>
+        <span class="k">case</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">output_vector</span> <span class="o">=</span> <span class="n">phi</span><span class="o">.</span><span class="n">system_function</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">vector_size</span><span class="o">=</span><span class="mi">2</span> <span class="o">**</span> <span class="n">variables_number</span><span class="p">)</span>
+        <span class="k">case</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">output_vector</span> <span class="o">=</span> <span class="n">phi</span><span class="o">.</span><span class="n">system_function</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">argument_vectors</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">case</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">output_vector</span> <span class="o">=</span> <span class="n">phi</span><span class="o">.</span><span class="n">system_function</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">argument_vectors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">argument_vectors</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">case</span> <span class="k">_</span><span class="p">:</span>
+            <span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;Arity &gt; 2 are not yet supported, sorry&#39;</span><span class="p">)</span>
+    <span class="n">log_debug</span><span class="p">(</span><span class="n">output_vector</span><span class="o">=</span><span class="n">output_vector</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output_vector</span>
+
+
+<span class="n">_SCOPE_BA1</span> <span class="o">=</span> <span class="s1">&#39;sys_ba1&#39;</span>
+<span class="n">_LANGUAGE_BA1</span> <span class="o">=</span> <span class="s1">&#39;ba1_language&#39;</span>
+
+<span class="c1"># Dirty little trick to overcome circular references</span>
+<span class="c1"># between algorithm function definitions,</span>
+<span class="c1"># and system function definitions.</span>
+<span class="c1"># These global variables are overwritten at the end</span>
+<span class="c1"># of this module.</span>
+<span class="n">truth</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">falsum</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="c1"># Algorithms.</span>
+<span class="k">def</span> <span class="nf">falsum_algorithm</span><span class="p">(</span><span class="n">vector_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">SystemFunction</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;The vectorized falsum boolean function.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        BooleanConstant: The boolean falsum.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">falsum</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">falsum</span><span class="p">]</span> <span class="o">*</span> <span class="n">vector_size</span>
+
+<span class="k">def</span> <span class="nf">truth_algorithm</span><span class="p">(</span><span class="n">vector_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">SystemFunction</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;The vectorized truth boolean function.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        BooleanConstant: The boolean truth.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">truth</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">truth</span><span class="p">]</span> <span class="o">*</span> <span class="n">vector_size</span>
+
+<span class="k">def</span> <span class="nf">negation_algorithm</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">SystemFunction</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">SystemFunction</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;The vectorized negation boolean function.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        v (typing.List[BooleanConstant]): A vector of boolean constants.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        typing.List[BooleanConstant]: A vector of the negation of **x**.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">truth</span>
+    <span class="k">global</span> <span class="n">falsum</span>
+    <span class="c1"># v = coerce(v, BooleanConstant)  # TODO: Consider support for list coercion.</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>  <span class="c1"># If scalar, convert to list.</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">falsum</span> <span class="k">if</span> <span class="n">e</span> <span class="o">==</span> <span class="n">truth</span> <span class="k">else</span> <span class="n">truth</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">conjunction_algorithm</span><span class="p">(</span>
+        <span class="n">v1</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">SystemFunction</span><span class="p">],</span>
+        <span class="n">v2</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">SystemFunction</span><span class="p">])</span> <span class="o">-&gt;</span> \
+        <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">SystemFunction</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;The vectorized conjunction boolean function.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        v1 (typing.List[BooleanConstant]): A vector of boolean constants.</span>
+<span class="sd">        v2 (typing.List[BooleanConstant]): A vector of boolean constants.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        typing.List[BooleanConstant]: The vector of the conjunction of **v1** and **v2**.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">truth</span>
+    <span class="k">global</span> <span class="n">falsum</span>
+    <span class="c1"># v1 = coerce(v1, BooleanConstant)  # TODO: Consider support for list coercion.</span>
+    <span class="c1"># v2 = coerce(v2, BooleanConstant)  # TODO: Consider support for list coercion.</span>
+    <span class="n">v1</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>  <span class="c1"># If scalar, convert to list.</span>
+    <span class="n">v2</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span>  <span class="c1"># If scalar, convert to list.</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">truth</span> <span class="k">if</span> <span class="p">(</span><span class="n">b1</span> <span class="o">==</span> <span class="n">truth</span> <span class="ow">and</span> <span class="n">b2</span> <span class="o">==</span> <span class="n">truth</span><span class="p">)</span> <span class="k">else</span> <span class="n">falsum</span> <span class="k">for</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)]</span>
+
+<span class="k">def</span> <span class="nf">disjunction_algorithm</span><span class="p">(</span>
+        <span class="n">v1</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">SystemFunction</span><span class="p">],</span>
+        <span class="n">v2</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">SystemFunction</span><span class="p">])</span> <span class="o">-&gt;</span> \
+        <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">SystemFunction</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;The vectorized disjunction boolean function.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        v1 (typing.List[BooleanConstant]): A vector of boolean constants.</span>
+<span class="sd">        v2 (typing.List[BooleanConstant]): A vector of boolean constants.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        typing.List[BooleanConstant]: The vector of the disjunction of **v1** and **v2**.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">truth</span>
+    <span class="k">global</span> <span class="n">falsum</span>
+    <span class="c1"># v1 = coerce(v1, BooleanConstant)  # TODO: Consider support for list coercion.</span>
+    <span class="c1"># v2 = coerce(v2, BooleanConstant)  # TODO: Consider support for list coercion.</span>
+    <span class="n">v1</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>  <span class="c1"># If scalar, convert to list.</span>
+    <span class="n">v2</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span>  <span class="c1"># If scalar, convert to list.</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">truth</span> <span class="k">if</span> <span class="p">(</span><span class="n">b1</span> <span class="o">==</span> <span class="n">truth</span> <span class="ow">or</span> <span class="n">b2</span> <span class="o">==</span> <span class="n">truth</span><span class="p">)</span> <span class="k">else</span> <span class="n">falsum</span> <span class="k">for</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)]</span>
+
+<span class="c1"># Scope.</span>
+<span class="n">ba1_scope</span> <span class="o">=</span> <span class="n">Scope</span><span class="p">(</span>
+    <span class="n">scope_key</span><span class="o">=</span><span class="n">_SCOPE_BA1</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">_STRUCTURE_SCOPE</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_BA1</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="s1">&#39;ba1_language&#39;</span><span class="p">,</span>
+    <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;ba1_language&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\text</span><span class="si">{ba1_language}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;ba1_language&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;ba1_language&#39;</span><span class="p">)</span>
+
+<span class="c1"># Language.</span>
+<span class="n">ba1_language</span> <span class="o">=</span> <span class="n">Language</span><span class="p">(</span>
+    <span class="n">scope_key</span><span class="o">=</span><span class="n">_SCOPE_BA1</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">_STRUCTURE_LANGUAGE</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_BA1</span><span class="p">,</span>
+    <span class="n">base_key</span><span class="o">=</span><span class="s1">&#39;ba1_language&#39;</span><span class="p">,</span>
+    <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;ba1_language&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\text</span><span class="si">{ba1_language}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;ba1_language&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;ba1_language&#39;</span><span class="p">)</span>
+
+<span class="c1"># Domains.</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">Domain</span><span class="p">(</span>
+    <span class="n">scope_key</span><span class="o">=</span><span class="n">_SCOPE_BA1</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">_STRUCTURE_DOMAIN</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_BA1</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span>
+    <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;𝔹&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\mathbb</span><span class="si">{B}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;Bopf;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
+<span class="n">b2</span> <span class="o">=</span> <span class="n">Domain</span><span class="p">(</span>
+    <span class="n">scope_key</span><span class="o">=</span><span class="n">_SCOPE_BA1</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">_STRUCTURE_DOMAIN</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_BA1</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="s1">&#39;b2&#39;</span><span class="p">,</span>
+    <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;𝔹²&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\mathbb</span><span class="si">{B}</span><span class="s1">^</span><span class="si">{2}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;&amp;Bopf;&lt;sup&gt;2&lt;/sup&gt;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;B2&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">get_bn_domain</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the n-tuple codomain 𝔹ⁿ where n is a natural number &gt; 0.</span>
+
+<span class="sd">    Assures the presence of the codomain 𝔹ⁿ in the concept database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;n must be an int&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">log_error</span><span class="p">(</span><span class="s1">&#39;n must be &gt; 1&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">b</span>
+    <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">b2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">scope_key</span> <span class="o">=</span> <span class="n">_SCOPE_BA1</span>
+        <span class="n">structure_key</span> <span class="o">=</span> <span class="n">_STRUCTURE_DOMAIN</span>
+        <span class="n">language_key</span> <span class="o">=</span> <span class="n">_LANGUAGE_BA1</span>
+        <span class="n">base_key</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>  <span class="c1"># TODO: Check it is an int</span>
+        <span class="c1"># TODO: Consider implementing a lock to avoid bugs with multithreading when checking the static dictionary</span>
+        <span class="k">if</span> <span class="n">Concept</span><span class="o">.</span><span class="n">check_concept_from_decomposed_key</span><span class="p">(</span><span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span>
+                                                          <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Concept</span><span class="o">.</span><span class="n">get_concept_from_decomposed_key</span><span class="p">(</span><span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span>
+                                                                <span class="n">structure_key</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span>
+                                                                <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Domain</span><span class="p">(</span>
+                <span class="n">scope_key</span><span class="o">=</span><span class="n">scope_key</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">structure_key</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">language_key</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="n">base_key</span><span class="p">,</span>
+                <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;𝔹&#39;</span> <span class="o">+</span> <span class="n">superscriptify</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\mathbb</span><span class="si">{B}</span><span class="s1">^{&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;}&#39;</span><span class="p">,</span>
+                <span class="n">html</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;&amp;Bopf;&lt;sup&gt;&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&lt;/sup&gt;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;B&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+
+<span class="c1"># Functions.</span>
+<span class="n">truth</span> <span class="o">=</span> <span class="n">SystemFunction</span><span class="p">(</span>
+    <span class="n">scope_key</span><span class="o">=</span><span class="n">_SCOPE_BA1</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">_STRUCTURE_FUNCTION</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_BA1</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="s1">&#39;truth&#39;</span><span class="p">,</span>
+    <span class="n">codomain</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_CONSTANT</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="n">truth_algorithm</span><span class="p">,</span>
+    <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;⊤&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\top&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;top;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;truth&#39;</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;⊤&#39;</span><span class="p">,</span> <span class="s1">&#39;truth&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
+    <span class="n">arity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">python_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">falsum</span> <span class="o">=</span> <span class="n">SystemFunction</span><span class="p">(</span>
+    <span class="n">scope_key</span><span class="o">=</span><span class="n">_SCOPE_BA1</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">_STRUCTURE_FUNCTION</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_BA1</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="s1">&#39;falsum&#39;</span><span class="p">,</span>
+    <span class="n">codomain</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_CONSTANT</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="n">falsum_algorithm</span><span class="p">(),</span>
+    <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;⊥&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\bot&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;perp;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;falsum&#39;</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;⊥&#39;</span><span class="p">,</span> <span class="s1">&#39;falsum&#39;</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">],</span>
+    <span class="n">arity</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">python_value</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">negation</span> <span class="o">=</span> <span class="n">SystemFunction</span><span class="p">(</span>
+    <span class="n">scope_key</span><span class="o">=</span><span class="n">_SCOPE_BA1</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">_STRUCTURE_FUNCTION</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_BA1</span><span class="p">,</span> <span class="n">base_key</span><span class="o">=</span><span class="s1">&#39;negation&#39;</span><span class="p">,</span>
+    <span class="n">codomain</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_UNARY_OPERATOR</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="n">negation_algorithm</span><span class="p">,</span>
+    <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;¬&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\lnot&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;not;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;not&#39;</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;¬&#39;</span><span class="p">,</span> <span class="s1">&#39;not&#39;</span><span class="p">,</span> <span class="s1">&#39;lnot&#39;</span><span class="p">],</span>
+    <span class="n">domain</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">arity</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">conjunction</span> <span class="o">=</span> <span class="n">SystemFunction</span><span class="p">(</span>
+    <span class="n">scope_key</span><span class="o">=</span><span class="n">_SCOPE_BA1</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">_STRUCTURE_FUNCTION</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_BA1</span><span class="p">,</span>
+    <span class="n">base_key</span><span class="o">=</span><span class="s1">&#39;conjunction&#39;</span><span class="p">,</span>
+    <span class="n">codomain</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_BINARY_OPERATOR</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="n">conjunction_algorithm</span><span class="p">,</span>
+    <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;∧&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\land&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;and;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;and&#39;</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;∧&#39;</span><span class="p">,</span> <span class="s1">&#39;and&#39;</span><span class="p">,</span> <span class="s1">&#39;land&#39;</span><span class="p">],</span>
+    <span class="n">domain</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">arity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">disjunction</span> <span class="o">=</span> <span class="n">SystemFunction</span><span class="p">(</span>
+    <span class="n">scope_key</span><span class="o">=</span><span class="n">_SCOPE_BA1</span><span class="p">,</span> <span class="n">structure_key</span><span class="o">=</span><span class="n">_STRUCTURE_FUNCTION</span><span class="p">,</span> <span class="n">language_key</span><span class="o">=</span><span class="n">_LANGUAGE_BA1</span><span class="p">,</span>
+    <span class="n">base_key</span><span class="o">=</span><span class="s1">&#39;disjunction&#39;</span><span class="p">,</span>
+    <span class="n">codomain</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">SystemFunction</span><span class="o">.</span><span class="n">SYSTEM_BINARY_OPERATOR</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="n">disjunction_algorithm</span><span class="p">,</span>
+    <span class="n">utf8</span><span class="o">=</span><span class="s1">&#39;∨&#39;</span><span class="p">,</span> <span class="n">latex</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\lor&#39;</span><span class="p">,</span> <span class="n">html</span><span class="o">=</span><span class="s1">&#39;&amp;or;&#39;</span><span class="p">,</span> <span class="n">usascii</span><span class="o">=</span><span class="s1">&#39;or&#39;</span><span class="p">,</span> <span class="n">tokens</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;∨&#39;</span><span class="p">,</span> <span class="s1">&#39;or&#39;</span><span class="p">,</span> <span class="s1">&#39;lor&#39;</span><span class="p">],</span>
+    <span class="n">domain</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">arity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+
+
+
+
+<span class="k">def</span> <span class="nf">parse_string_utf8</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+
+    <span class="n">metamodel_source</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">metamodel_source</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_string</span><span class="p">(</span><span class="s1">&#39;naive&#39;</span><span class="p">,</span> <span class="s1">&#39;data/ba1_utf8.tx&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;c:\users\David\pycharmprojects\naive\src\naive\data\ba1_utf8.tx&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">source_file</span><span class="p">:</span>
+            <span class="n">metamodel_source</span> <span class="o">=</span> <span class="n">source_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="c1">#log_debug(metamodel_source=metamodel_source)</span>
+    <span class="n">metamodel</span> <span class="o">=</span> <span class="n">metamodel_from_str</span><span class="p">(</span><span class="n">metamodel_source</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">metamodel</span><span class="o">.</span><span class="n">model_from_str</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">token</span><span class="p">:</span>
+        <span class="n">formula</span> <span class="o">=</span> <span class="n">inflate_object</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="n">log_debug</span><span class="p">(</span><span class="n">parsed_formula</span><span class="o">=</span><span class="n">formula</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">formula</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">log_warning</span><span class="p">(</span><span class="s1">&#39;Parsing result is empty.&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">inflate_object</span><span class="p">(</span><span class="n">model_object</span><span class="p">):</span>
+    <span class="n">arguments</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model_object</span><span class="p">,</span> <span class="s1">&#39;arguments&#39;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">model_argument</span> <span class="ow">in</span> <span class="n">model_object</span><span class="o">.</span><span class="n">arguments</span><span class="p">:</span>
+            <span class="n">argument</span> <span class="o">=</span> <span class="n">inflate_object</span><span class="p">(</span><span class="n">model_argument</span><span class="p">)</span>
+            <span class="n">arguments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">argument</span><span class="p">)</span>
+    <span class="n">class_name</span> <span class="o">=</span> <span class="n">model_object</span><span class="o">.</span><span class="n">_tx_fqn</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">model_object</span><span class="o">.</span><span class="n">token</span>
+    <span class="c1"># TODO: To scale this to multiple languages, implement a solution where</span>
+    <span class="c1">#   every language is subscribed to the parsing function.</span>
+    <span class="k">match</span> <span class="n">class_name</span><span class="p">:</span>
+        <span class="k">case</span> <span class="s1">&#39;BA1ConjunctionFormula&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">conjunction</span><span class="p">,</span> <span class="o">*</span><span class="n">arguments</span><span class="p">)</span>
+        <span class="k">case</span> <span class="s1">&#39;BA1DisjunctionFormula&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">disjunction</span><span class="p">,</span> <span class="o">*</span><span class="n">arguments</span><span class="p">)</span>
+        <span class="k">case</span> <span class="s1">&#39;BA1NegationFormula&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">negation</span><span class="p">,</span> <span class="o">*</span><span class="n">arguments</span><span class="p">)</span>
+        <span class="k">case</span> <span class="s1">&#39;BA1TruthFormula&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">truth</span>
+        <span class="k">case</span> <span class="s1">&#39;BA1FalsumFormula&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">falsum</span>
+        <span class="k">case</span> <span class="s1">&#39;BA1AtomicVariableFormula&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">av</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">parse_file_utf8</span><span class="p">():</span>
+    <span class="c1"># TODO: Implement this.</span>
+    <span class="k">pass</span>
+
+
 <span class="n">set_default_scope</span><span class="p">(</span><span class="s1">&#39;scope_1&#39;</span><span class="p">)</span>
+
 </pre></div>
 
            </div>

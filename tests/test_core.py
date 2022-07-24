@@ -45,29 +45,29 @@ class Test_User_Scope(TestCase):
 
     def test_basic_atomic_variable_declaration(self):
         b1 = naive.av(naive.b, base_name='b', indexes=1)
-        self.assertEqual('b₁', b1.represent(naive.rformats.UTF8))
+        self.assertEqual('b₁', b1.represent(naive.RFormats.UTF8))
 
     def test_representation_of_truth_and_falsum(self):
-        self.assertEqual(naive.truth.represent(naive.rformats.UTF8), '⊤')
-        self.assertEqual(naive.falsum.represent(naive.rformats.UTF8), '⊥')
+        self.assertEqual(naive.truth.represent(naive.RFormats.UTF8), '⊤')
+        self.assertEqual(naive.falsum.represent(naive.RFormats.UTF8), '⊥')
 
     def test_b_variable_declaration(self):
         x = naive.av(naive.b, 'x')
-        self.assertEqual('x', x.represent(naive.rformats.UTF8))
+        self.assertEqual('x', x.represent(naive.RFormats.UTF8))
         y = naive.av(naive.b, 'y')
-        self.assertEqual('y', y.represent(naive.rformats.UTF8))
+        self.assertEqual('y', y.represent(naive.RFormats.UTF8))
         z = naive.av(naive.b, 'z')
-        self.assertEqual('z', z.represent(naive.rformats.UTF8))
+        self.assertEqual('z', z.represent(naive.RFormats.UTF8))
 
     def test_representation_of_domains_and_b_tuple_domains(self):
-        self.assertEqual('𝔹', naive.b.represent(naive.rformats.UTF8))
-        self.assertEqual('𝔹²', naive.b2.represent(naive.rformats.UTF8))
+        self.assertEqual('𝔹', naive.b.represent(naive.RFormats.UTF8))
+        self.assertEqual('𝔹²', naive.b2.represent(naive.RFormats.UTF8))
 
-        self.assertEqual('𝔹', naive.get_bn_domain(1).represent(naive.rformats.UTF8))
-        self.assertEqual('𝔹²', naive.get_bn_domain(2).represent(naive.rformats.UTF8))
-        self.assertEqual('𝔹³', naive.get_bn_domain(3).represent(naive.rformats.UTF8))
-        self.assertEqual('𝔹⁴', naive.get_bn_domain(4).represent(naive.rformats.UTF8))
-        self.assertEqual('𝔹²³⁴', naive.get_bn_domain(234).represent(naive.rformats.UTF8))
+        self.assertEqual('𝔹', naive.get_bn_domain(1).represent(naive.RFormats.UTF8))
+        self.assertEqual('𝔹²', naive.get_bn_domain(2).represent(naive.RFormats.UTF8))
+        self.assertEqual('𝔹³', naive.get_bn_domain(3).represent(naive.RFormats.UTF8))
+        self.assertEqual('𝔹⁴', naive.get_bn_domain(4).represent(naive.RFormats.UTF8))
+        self.assertEqual('𝔹²³⁴', naive.get_bn_domain(234).represent(naive.RFormats.UTF8))
 
     def test_formula_representation(self):
         naive.set_debug_level()
@@ -75,29 +75,29 @@ class Test_User_Scope(TestCase):
         naive.set_default_scope('test_formula_representation')
 
         phi1 = naive.f(naive.truth)
-        self.assertEqual('⊤', phi1.represent(naive.rformats.UTF8))
+        self.assertEqual('⊤', phi1.represent(naive.RFormats.UTF8))
 
         phi2 = naive.f(naive.falsum)
-        self.assertEqual('⊥', phi2.represent(naive.rformats.UTF8))
+        self.assertEqual('⊥', phi2.represent(naive.RFormats.UTF8))
 
         phi3 = naive.f(naive.negation, phi1)
-        self.assertEqual('¬⊤', phi3.represent(naive.rformats.UTF8))
+        self.assertEqual('¬⊤', phi3.represent(naive.RFormats.UTF8))
 
         phi4 = naive.f(naive.conjunction, phi1, phi2)
-        self.assertEqual('(⊤ ∧ ⊥)', phi4.represent(naive.rformats.UTF8))
+        self.assertEqual('(⊤ ∧ ⊥)', phi4.represent(naive.RFormats.UTF8))
 
         phi5 = naive.f(naive.disjunction, phi1, phi2)
-        self.assertEqual('(⊤ ∨ ⊥)', phi5.represent(naive.rformats.UTF8))
+        self.assertEqual('(⊤ ∨ ⊥)', phi5.represent(naive.RFormats.UTF8))
 
     def test_atomic_variable_as_formula(self):
         x = naive.av(naive.b, 'x')
         y = naive.av(naive.b, 'y')
 
         phi1 = naive.f(naive.negation, x)
-        self.assertEqual('¬x', phi1.represent(naive.rformats.UTF8))
+        self.assertEqual('¬x', phi1.represent(naive.RFormats.UTF8))
 
         phi2 = naive.f(naive.conjunction, x, y)
-        self.assertEqual('(x ∧ y)', phi2.represent(naive.rformats.UTF8))
+        self.assertEqual('(x ∧ y)', phi2.represent(naive.RFormats.UTF8))
 
     def test_formula_composition(self):
         z = naive.av(naive.b, 'z')
@@ -105,16 +105,16 @@ class Test_User_Scope(TestCase):
         y = naive.av(naive.b, 'y')
 
         phi1 = naive.f(naive.negation, x)
-        self.assertEqual('¬x', phi1.represent(naive.rformats.UTF8))
+        self.assertEqual('¬x', phi1.represent(naive.RFormats.UTF8))
         self.assertEqual('[x]', str(phi1.list_atomic_variables()))
 
         phi2 = naive.f(naive.conjunction, phi1, y)
-        self.assertEqual('(¬x ∧ y)', phi2.represent(naive.rformats.UTF8))
+        self.assertEqual('(¬x ∧ y)', phi2.represent(naive.RFormats.UTF8))
         print(phi2.list_atomic_variables())
         self.assertEqual('[x, y]', str(phi2.list_atomic_variables()))
 
         phi3 = naive.f(naive.disjunction, phi2, phi1)
-        self.assertEqual('((¬x ∧ y) ∨ ¬x)', phi3.represent(naive.rformats.UTF8))
+        self.assertEqual('((¬x ∧ y) ∨ ¬x)', phi3.represent(naive.RFormats.UTF8))
         print(phi3.list_atomic_variables())
         self.assertEqual('[x, y]', str(phi3.list_atomic_variables()))
 
@@ -137,36 +137,48 @@ class Test_User_Scope(TestCase):
     def test_parsing_code(self):
         code_1 = r'(((⊤ ∨ b1) ∧ (⊥ ∧ ¬⊥)) ∧ ¬b2)'
         parsed_formula_1 = naive.parse_string_utf8(code_1)
-        self.assertEqual(code_1, parsed_formula_1.represent(naive.rformats.UTF8))
+        self.assertEqual(code_1, parsed_formula_1.represent(naive.RFormats.UTF8))
+        g = naive.convert_formula_to_graphviz_digraph(parsed_formula_1)
+        g.render('test', format='svg', view=True)
 
         code_1_extra_parenthesis = r'(((((((⊤ ∨ ((((b1))))))) ∧ (⊥ ∧ ¬⊥)))) ∧ ¬b2)'
         parsed_formula_1_extra_parenthesis = naive.parse_string_utf8(code_1_extra_parenthesis)
-        self.assertEqual(code_1, parsed_formula_1_extra_parenthesis.represent(naive.rformats.UTF8))
+        self.assertEqual(code_1, parsed_formula_1_extra_parenthesis.represent(naive.RFormats.UTF8))
 
     def test_parsing_code_2(self):
         code_2 = r'¬⊥'
         parsed_formula_2 = naive.parse_string_utf8(code_2)
-        self.assertEqual(code_2, parsed_formula_2.represent(naive.rformats.UTF8))
+        self.assertEqual(code_2, parsed_formula_2.represent(naive.RFormats.UTF8))
+        g = naive.convert_formula_to_graphviz_digraph(parsed_formula_2)
+        g.render('test', format='svg', view=True)
 
     def test_parsing_code_3(self):
         code_3 = r'⊥'
         parsed_formula_3 = naive.parse_string_utf8(code_3)
-        self.assertEqual(code_3, parsed_formula_3.represent(naive.rformats.UTF8))
+        self.assertEqual(code_3, parsed_formula_3.represent(naive.RFormats.UTF8))
+        g = naive.convert_formula_to_graphviz_digraph(parsed_formula_3)
+        g.render('test', format='svg', view=True)
 
     def test_parsing_code_4(self):
         code_4 = r'b₇₃'
         parsed_formula_4 = naive.parse_string_utf8(code_4)
-        self.assertEqual(code_4, parsed_formula_4.represent(naive.rformats.UTF8))
+        self.assertEqual(code_4, parsed_formula_4.represent(naive.RFormats.UTF8))
+        g = naive.convert_formula_to_graphviz_digraph(parsed_formula_4)
+        g.render('test', format='svg', view=True)
 
     def test_parsing_code_5(self):
+        from PIL import Image
+        import graphviz
         code_5 = r'(p ∨ q)'
         parsed_formula_5 = naive.parse_string_utf8(code_5)
-        self.assertEqual(code_5, parsed_formula_5.represent(naive.rformats.UTF8))
+        self.assertEqual(code_5, parsed_formula_5.represent(naive.RFormats.UTF8))
+        g = naive.convert_formula_to_graphviz_digraph(parsed_formula_5)
+        g.render('test', format='svg', view=True)
 
     def test_dot(self):
         naive.set_default_scope('test_dot')
         code_5 = r'(p ∨ q)'
         parsed_formula_5 = naive.parse_string_utf8(code_5)
-        self.assertEqual(code_5, parsed_formula_5.represent(naive.rformats.UTF8))
+        self.assertEqual(code_5, parsed_formula_5.represent(naive.RFormats.UTF8))
         print(naive.convert_formula_to_dot(parsed_formula_5))
 

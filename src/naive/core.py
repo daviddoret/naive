@@ -8,9 +8,60 @@ import abc
 from textx import metamodel_from_file, metamodel_from_str
 import pkg_resources
 
-# Naive imports
-import rformats
-# import glyphs
+
+class RFormats:
+    """Representation Formats.
+
+    Every format is an alphanumeric key that is used as an object attribute with hasattr(),
+    setattr(), and getattr() to store object representations in the corresponding formats.
+    """
+
+    # REPRESENTATION FORMAT ENTRIES
+
+    """The USASCII representation format. 
+
+    Implemented as standard pythonic strings, but assured to be USASCII-compatible."""
+    USASCII = 'usascii'
+
+    """The UTF-8 representation format. 
+
+    Implemented as standard pythonic strings (as of Python 3.0 and above), encoded in the default UTF-8. """
+    UTF8 = 'utf8'
+
+    """The LaTeX representation format.
+
+    Implemented as UTF-8 standard strings with LaTeX encoding.
+    """
+    LATEX = 'latex'
+
+    """The HTML representation format.
+
+    Implemented as UTF-8 standard strings with HTML character encoding.
+    """
+    HTML = 'html'
+
+    DOT = 'DOT'
+    """DOT Digraph.
+
+    Options should be:
+    render DOT source
+    render graph as svg, png, etc.
+
+    References:
+        * https://graphviz.readthedocs.io/en/stable/manual.html
+    """
+
+    # DEFAULT REPRESENTATION FORMAT
+
+    """The default representation format.
+
+    All representations are rendered in the default format, unless specified otherwise."""
+    DEFAULT = UTF8  # You may change this.
+
+    # LIST OF REPRESENTATION FORMATS
+
+    """The list of all available formats."""
+    CATALOG = [USASCII, UTF8, LATEX, HTML]
 
 
 # This sets the root logger to write to stdout (your console).
@@ -25,14 +76,18 @@ logging.basicConfig(format='%(message)s')
 # Reference: https://stackoverflow.com/questions/7016056/python-logging-not-outputting-anything
 logging.root.setLevel(logging.INFO)
 
+
 def set_debug_level():
     logging.root.setLevel(logging.DEBUG)
+
 
 def set_info_level():
     logging.root.setLevel(logging.INFO)
 
+
 def set_warning_level():
     logging.root.setLevel(logging.WARNING)
+
 
 def set_error_level():
     logging.root.setLevel(logging.ERROR)
@@ -66,12 +121,11 @@ _SYSTEM_DEFINED_KEY_PREFIX = 'sys_'
 _USER_DEFINED_KEY_PREFIX = 'ud_'
 _LANGUAGE_NAIVE = 'naive'
 
-
-
 COERCION_SUCCESS = 1
 COERCION_FAILURE = 2
 
 code_exclusion_list = [1]
+
 
 def stringify_dictionary(**kwargs):
     s = ''
@@ -90,6 +144,7 @@ def log_debug(message: str = '', code: int = 0, **kwargs):
 
 USE_PRINT_FOR_INFO = True
 """Better output in Jupyter notebooks."""
+
 
 def log_info(message: str = '', code: int = 0, **kwargs):
     if code not in code_exclusion_list:
@@ -124,9 +179,6 @@ def log_error(message: str = '', *args, code: int = 0, **kwargs):
         message = f'ERROR: {message}. {d}.'
         logging.error(message, exc_info=True)
         raise NaiveError(message)
-
-
-
 
 
 def coerce(
@@ -185,11 +237,10 @@ def coerce(
         try:
             coerced_o = cls(o)
         except Exception as e:
-            log_error(code = COERCION_FAILURE, o = o, cls = cls)
+            log_error(code=COERCION_FAILURE, o=o, cls=cls)
         else:
-            log_debug(code = COERCION_SUCCESS, o = o, cls = cls)
+            log_debug(code=COERCION_SUCCESS, o=o, cls=cls)
         return cls(o)
-
 
 
 class ABCRepresentable(abc.ABC):
@@ -235,7 +286,7 @@ class ABCRepresentable(abc.ABC):
 CoercibleABCRepresentable = typing.TypeVar(
     'CoercibleABCRepresentable',
     ABCRepresentable,
-    bytes, # Support for raw USASCII strings.
+    bytes,  # Support for raw USASCII strings.
     str
 )
 
@@ -271,13 +322,13 @@ class PersistingRepresentable(ABCRepresentable):
         elif source_string is not None:
             # Otherwise, we must assume it was a string or other
             # string-like Unicode representation.
-            self._representations[rformats.UTF8] = source_string
+            self._representations[RFormats.UTF8] = source_string
 
         # If representations are provided in specific formats,
         # store these representations.
         # Note that these get priority over above imitation.
         for arg_key, arg_value in kwargs.items():
-            if arg_key in rformats.CATALOG:
+            if arg_key in RFormats.CATALOG:
                 # This is a representation format.
                 if not isinstance(arg_value, str):
                     # TODO: In future development, if images or other media are supported, reconsider this.
@@ -298,22 +349,20 @@ class PersistingRepresentable(ABCRepresentable):
             The object's representation in the requested format.
         """
         if rformat is None:
-            rformat = rformats.DEFAULT
+            rformat = RFormats.DEFAULT
         if rformat in self._representations:
             return self._representations[rformat]
-        elif rformats.UTF8 in self._representations:
+        elif RFormats.UTF8 in self._representations:
             # We fall back on UTF-8
-            return self._representations[rformats.UTF8]
+            return self._representations[RFormats.UTF8]
         else:
-            raise ValueError(f'PersistingRepresentable object has no representations in {rformat} nor {rformats.UTF8}.')
+            raise ValueError(f'PersistingRepresentable object has no representations in {rformat} nor {RFormats.UTF8}.')
 
     def imitate(self, o: ABCRepresentable):
         """Imitate the representation of another object."""
-        for rformat in rformats.CATALOG:
+        for rformat in RFormats.CATALOG:
             # TODO: Minor design flaw: this process will also copy unsupported properties that default to UTF-8.
             self._representations[rformat] = o.represent(rformat)
-
-
 
 
 class Glyph(PersistingRepresentable):
@@ -328,8 +377,8 @@ class Glyph(PersistingRepresentable):
         """
         super().__init__(*args, **kwargs)
 
-class Glyphs:
 
+class Glyphs:
     # Number sets
     standard_0 = Glyph(utf8='0', latex=r'0', html='0', usascii='0')
     standard_1 = Glyph(utf8='1', latex=r'1', html='1', usascii='1')
@@ -360,7 +409,6 @@ class Glyphs:
     logical_disjunction = Glyph(utf8='∨', latex=r'\lor', html='&or;', usascii='or')
     logical_material_implication = Glyph(utf8='⇒', latex=r'\implies', html='&rArr;', usascii='implies')
     logical_material_equivalence = Glyph(utf8='⇔', latex=r'\iif', html='&hArr;', usascii='iif')
-
 
     # Greek Letters
     phi_plain_small = Glyph(utf8='φ', latex=r'\phi', html='&phi;', usascii='phi')
@@ -417,14 +465,11 @@ def represent(o: object, rformat: str = None, *args, **kwargs) -> str:
         # we return an empty string to facilitate concatenations.
         return ''
     if rformat is None:
-        rformat = rformats.DEFAULT
+        rformat = RFormats.DEFAULT
     if isinstance(o, ABCRepresentable):
         return o.represent(rformat, *args, **kwargs)
     else:
         return str(o)
-
-
-
 
 
 def flatten(*args: object, skip_none: bool = True) -> typing.List[typing.Any]:
@@ -460,7 +505,6 @@ def flatten(*args: object, skip_none: bool = True) -> typing.List[typing.Any]:
     return flattened
 
 
-
 def subscriptify(representation: str, rformat: str) -> str:
     """Converts to subscript the representation of object **o**.
 
@@ -491,11 +535,11 @@ def subscriptify(representation: str, rformat: str) -> str:
     if representation is None:
         return ''
     if rformat is None:
-        rformat = rformats.DEFAULT
+        rformat = RFormats.DEFAULT
     if not isinstance(representation, str):
         representation = str(representation)
     match rformat:
-        case rformats.UTF8:
+        case RFormats.UTF8:
             # TODO: Extend support to all available subscript characters in Unicode.
             # TODO: Issue a Warning for characters that are not supported and skip them.
             subscript_dictionary = {'0': u'₀',
@@ -509,15 +553,14 @@ def subscriptify(representation: str, rformat: str) -> str:
                                     '8': u'₈',
                                     '9': u'₉'}
             return u''.join(subscript_dictionary.get(char, char) for char in representation)
-        case rformats.LATEX:
+        case RFormats.LATEX:
             # ASSUMPTION: The subscriptified result must be concatenated with something.
             return r'_{' + representation + r'}'
-        case rformats.HTML:
+        case RFormats.HTML:
             return r'<sub>' + representation + r'</sub>'
-        case rformats.USASCII:
+        case RFormats.USASCII:
             # TODO: USASCII representation may be ambiguous. Considering issuing a Warning.
             return representation
-
 
 
 def superscriptify(representation: str, rformat: str = None) -> str:
@@ -551,31 +594,30 @@ def superscriptify(representation: str, rformat: str = None) -> str:
     if representation is None or representation == '':
         return ''
     if rformat is None:
-        rformat = rformats.DEFAULT
+        rformat = RFormats.DEFAULT
     match rformat:
-        case rformats.UTF8:
+        case RFormats.UTF8:
             # TODO: Extend support to all available superscript characters in Unicode.
             # TODO: Issue a Warning for characters that are not supported and skip them.
             superscript_dictionary = {'0': u'⁰',
-                                    '1': u'¹',
-                                    '2': u'²',
-                                    '3': u'³',
-                                    '4': u'⁴',
-                                    '5': u'⁵',
-                                    '6': u'⁶',
-                                    '7': u'⁷',
-                                    '8': u'⁸',
-                                    '9': u'⁹'}
+                                      '1': u'¹',
+                                      '2': u'²',
+                                      '3': u'³',
+                                      '4': u'⁴',
+                                      '5': u'⁵',
+                                      '6': u'⁶',
+                                      '7': u'⁷',
+                                      '8': u'⁸',
+                                      '9': u'⁹'}
             return u''.join(superscript_dictionary.get(char, char) for char in representation)
-        case rformats.LATEX:
+        case RFormats.LATEX:
             # ASSUMPTION: The superscriptified result must be concatenated with something.
             return r'^{' + representation + r'}'
-        case rformats.HTML:
+        case RFormats.HTML:
             return r'<sup>' + representation + r'</sup>'
-        case rformats.USASCII:
+        case RFormats.USASCII:
             # TODO: USASCII representation may be ambiguous. Considering issuing a Warning.
             return representation
-
 
 
 def unkwargs(kwargs, key):
@@ -646,10 +688,10 @@ class Concept:
                 qualified_key=self.qualified_key)
 
     def __str__(self):
-        return self.represent(rformats.UTF8)
+        return self.represent(RFormats.UTF8)
 
     def __repr__(self):
-        return self.represent(rformats.UTF8)
+        return self.represent(RFormats.UTF8)
 
     @property
     def arity(self):
@@ -660,7 +702,8 @@ class Concept:
         return self._base_key
 
     @staticmethod
-    def check_concept_from_decomposed_key(scope_key: str, structure_key: str, language_key: str, base_key: str, **kwargs):
+    def check_concept_from_decomposed_key(scope_key: str, structure_key: str, language_key: str, base_key: str,
+                                          **kwargs):
         if scope_key is not None and structure_key is not None and language_key is not None and base_key is not None:
             qualified_key = get_qualified_key(scope_key, structure_key, language_key, base_key)
             return Concept.check_concept_from_qualified_key(
@@ -733,7 +776,7 @@ class Concept:
             The object's representation in the requested format.
         """
         if rformat is None:
-            rformat = rformats.DEFAULT
+            rformat = RFormats.DEFAULT
         # TODO: Check that rformat is an allowed value.
         if hasattr(self, rformat):
             return getattr(self, rformat)
@@ -741,7 +784,7 @@ class Concept:
             # We fall back on UTF-8
             return self._utf8
         else:
-            log_error(f'This concept has no representation in {rformat} nor {rformats.UTF8}.', rformat=rformat,
+            log_error(f'This concept has no representation in {rformat} nor {RFormats.UTF8}.', rformat=rformat,
                       qualified_key=self.qualified_key)
 
     @property
@@ -820,7 +863,6 @@ class Scope(Concept):
             # Representation properties
             utf8=None, latex=None, html=None, usascii=None, tokens=None,
             **kwargs):
-
         # Call the base class initializer.
         #   Executing this at the end of the initialization process
         #   assures that the new concept is not appended to the
@@ -902,20 +944,24 @@ def declare_atomic_variable(codomain, base_name=None, indexes=None):
             base_key = base_key + '__' + str(indexes)
         else:
             base_key = base_key + '__' + '_'.join(str(index) for index in indexes)
-    if Concept.check_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key):
-        variable = Concept.get_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key)
-        log_warning('This variable is already declared. In consequence, the existing variable is returned, instead of declaring a new one.', variable=variable, scope_key=scope_key)
+    if Concept.check_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key,
+                                                 language_key=language_key, base_key=base_key):
+        variable = Concept.get_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key,
+                                                           language_key=language_key, base_key=base_key)
+        log_warning(
+            'This variable is already declared. In consequence, the existing variable is returned, instead of declaring a new one.',
+            variable=variable, scope_key=scope_key)
         return variable
     else:
         variable = Formula(
             scope_key=scope_key, language_key=language_key, base_key=base_key,
             category=Formula.ATOMIC_VARIABLE,
-            codomain= codomain, base_name=base_name, indexes=indexes)
+            codomain=codomain, base_name=base_name, indexes=indexes)
         log_info(variable.represent_declaration())
         return variable
 
 
-def av(codomain, base_name = None, indexes = None):
+def av(codomain, base_name=None, indexes=None):
     """Shorthand alias for :ref:`declare_atomic_variable` **declare_atomic_variable**."""
     return declare_atomic_variable(codomain, base_name, indexes)
 
@@ -949,7 +995,8 @@ class Formula(Concept):
     SYSTEM_UNARY_OPERATOR_CALL = 'formula_unary_operator_call'
     SYSTEM_BINARY_OPERATOR_CALL = 'formula_binary_operator_call'
     SYSTEM_N_ARY_FUNCTION_CALL = 'formula_n_ary_function_call'
-    CATEGORIES = [ATOMIC_VARIABLE, FORMULA_VARIABLE, SYSTEM_CONSTANT_CALL, SYSTEM_UNARY_OPERATOR_CALL, SYSTEM_BINARY_OPERATOR_CALL,
+    CATEGORIES = [ATOMIC_VARIABLE, FORMULA_VARIABLE, SYSTEM_CONSTANT_CALL, SYSTEM_UNARY_OPERATOR_CALL,
+                  SYSTEM_BINARY_OPERATOR_CALL,
                   SYSTEM_N_ARY_FUNCTION_CALL]
 
     def __init__(
@@ -960,9 +1007,9 @@ class Formula(Concept):
             category,
             # Conditional complementary properties
             # ...for system function calls:
-            system_function = None, arguments = None,
+            system_function=None, arguments=None,
             # ...for atomic variables
-            domain = None, codomain = None, base_name = None, indexes = None,
+            domain=None, codomain=None, base_name=None, indexes=None,
             **kwargs):
         # Identification properties
         structure_key = _STRUCTURE_FORMULA
@@ -1021,7 +1068,8 @@ class Formula(Concept):
             return self.system_function.arity
         else:
             # TODO: Implement the arity property for all object categories.
-            log_warning('The arity property has not been implemented for this concept category.', category=self.category, self=self)
+            log_warning('The arity property has not been implemented for this concept category.',
+                        category=self.category, self=self)
 
     @property
     def category(self):
@@ -1038,7 +1086,8 @@ class Formula(Concept):
             return self.system_function.codomain
         else:
             # TODO: Implement the codomain property for all object categories.
-            log_warning('The codomain property has not been implemented for this concept category.', category=self.category, self=self)
+            log_warning('The codomain property has not been implemented for this concept category.',
+                        category=self.category, self=self)
 
     @property
     def domain(self):
@@ -1065,7 +1114,8 @@ class Formula(Concept):
         """Return the sorted set of variables present in the formula, and its subformulae recursively."""
         l = set()
         for a in self.arguments:
-            if isinstance(a, Formula) and a.category == Formula.ATOMIC_VARIABLE:  # Using a union type to avoid import issues.
+            if isinstance(a,
+                          Formula) and a.category == Formula.ATOMIC_VARIABLE:  # Using a union type to avoid import issues.
                 l.add(a)
             elif isinstance(a, Formula):  # Using a union type to avoid import issues.
                 l_prime = a.list_atomic_variables()
@@ -1081,7 +1131,7 @@ class Formula(Concept):
 
     def represent(self, rformat: str = None, *args, **kwargs) -> str:
         if rformat is None:
-            rformat = rformats.DEFAULT
+            rformat = RFormats.DEFAULT
         # if self.category == Formula.ATOMIC_VARIABLE:
         #     return self.symbol.represent(rformat, *args, **kwargs)
         match self.category:
@@ -1115,9 +1165,9 @@ class Formula(Concept):
             log_error('Formula category not supported for declaration.')
         else:
             if rformat is None:
-                rformat = rformats.DEFAULT
+                rformat = RFormats.DEFAULT
             match rformat:
-                case rformats.UTF8:
+                case RFormats.UTF8:
                     return f'With {self.represent(rformat)} ∈ {self.codomain.represent(rformat)}.'
                 case _:
                     raise NotImplementedError('TODO')
@@ -1137,7 +1187,9 @@ class Counter(object):
             self.value += 1
             return self.value
 
+
 _FORMULA_AUTO_COUNTER = Counter()
+
 
 def write_formula(o, *args):
     global _FORMULA_AUTO_COUNTER
@@ -1253,7 +1305,8 @@ class SystemFunction(Concept):
 
     def equal_programmatic_value(self, other):
         """Return true if two formula yield identical values, false otherwise."""
-        if isinstance(other, Formula) and other.subcategory == SystemFunction.SYSTEM_CONSTANT:  # Using a union type to avoid import issues.
+        if isinstance(other,
+                      Formula) and other.subcategory == SystemFunction.SYSTEM_CONSTANT:  # Using a union type to avoid import issues.
             return self.compute_programmatic_value() == other.compute_programmatic_value()
         else:
             raise NotImplementedError('oooops again')
@@ -1272,27 +1325,30 @@ initial_user_defined_scope = Scope(
     scope_key='sys', structure_key=_STRUCTURE_SCOPE, language_key=_LANGUAGE_NAIVE,
     base_key=_USER_DEFINED_KEY_PREFIX + 'scope_1',
     utf8='scope_key₁', latex=r'\text{scope_key}_1', html=r'scope_key<sub>1</sub>', usascii='scope1')
+
+
 # TODO: Question: what should be the scope_key of user defined scopes? sys? the scope_key itself?
 
 def convert_formula_to_graphviz_digraph(formula: Formula, digraph=None):
-
-    title = formula.represent(rformats.UTF8)
+    title = formula.represent(RFormats.UTF8)
     id = formula.qualified_key
 
     if digraph is None:
         digraph = graphviz.Digraph(id)
 
     digraph.node(id, title)
-    if isinstance(formula.arguments, collections.abc.Iterable):
+    if isinstance(formula, Formula) and isinstance(formula.arguments, collections.abc.Iterable):
         for argument in formula.arguments:
             convert_formula_to_graphviz_digraph(formula=argument, digraph=digraph)
             digraph.edge(id, argument.qualified_key, dir='back')
 
     return digraph
 
+
 def convert_formula_to_dot(formula: Formula):
     digraph = convert_formula_to_graphviz_digraph(formula=formula)
     return digraph.source
+
 
 def render_formula_as_ipython_mimebundle(formula: Formula):
     """
@@ -1399,6 +1455,7 @@ _LANGUAGE_BA1 = 'ba1_language'
 truth = None
 falsum = None
 
+
 # Algorithms.
 def falsum_algorithm(vector_size: int = 1) -> typing.List[SystemFunction]:
     """The vectorized falsum boolean function.
@@ -1409,6 +1466,7 @@ def falsum_algorithm(vector_size: int = 1) -> typing.List[SystemFunction]:
     global falsum
     return [falsum] * vector_size
 
+
 def truth_algorithm(vector_size: int = 1) -> typing.List[SystemFunction]:
     """The vectorized truth boolean function.
 
@@ -1417,6 +1475,7 @@ def truth_algorithm(vector_size: int = 1) -> typing.List[SystemFunction]:
     """
     global truth
     return [truth] * vector_size
+
 
 def negation_algorithm(v: typing.List[SystemFunction]) -> typing.List[SystemFunction]:
     """The vectorized negation boolean function.
@@ -1432,6 +1491,7 @@ def negation_algorithm(v: typing.List[SystemFunction]) -> typing.List[SystemFunc
     # v = coerce(v, BooleanConstant)  # TODO: Consider support for list coercion.
     v = flatten(v)  # If scalar, convert to list.
     return [falsum if e == truth else truth for e in v]
+
 
 def conjunction_algorithm(
         v1: typing.List[SystemFunction],
@@ -1454,6 +1514,7 @@ def conjunction_algorithm(
     v2 = flatten(v2)  # If scalar, convert to list.
     return [truth if (b1 == truth and b2 == truth) else falsum for b1, b2 in zip(v1, v2)]
 
+
 def disjunction_algorithm(
         v1: typing.List[SystemFunction],
         v2: typing.List[SystemFunction]) -> \
@@ -1475,6 +1536,7 @@ def disjunction_algorithm(
     v2 = flatten(v2)  # If scalar, convert to list.
     return [truth if (b1 == truth or b2 == truth) else falsum for b1, b2 in zip(v1, v2)]
 
+
 # Scope.
 ba1_scope = Scope(
     scope_key=_SCOPE_BA1, structure_key=_STRUCTURE_SCOPE, language_key=_LANGUAGE_BA1, base_key='ba1_language',
@@ -1493,6 +1555,7 @@ b = Domain(
 b2 = Domain(
     scope_key=_SCOPE_BA1, structure_key=_STRUCTURE_DOMAIN, language_key=_LANGUAGE_BA1, base_key='b2',
     utf8='𝔹²', latex=r'\mathbb{B}^{2}', html=r'&Bopf;<sup>2</sup>', usascii='B2')
+
 
 def get_bn_domain(n):
     """Returns the n-tuple codomain 𝔹ⁿ where n is a natural number > 0.
@@ -1514,15 +1577,16 @@ def get_bn_domain(n):
         base_key = 'b' + str(n)  # TODO: Check it is an int
         # TODO: Consider implementing a lock to avoid bugs with multithreading when checking the static dictionary
         if Concept.check_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key,
-                                                          language_key=language_key, base_key=base_key):
+                                                     language_key=language_key, base_key=base_key):
             return Concept.get_concept_from_decomposed_key(scope_key=scope_key,
-                                                                structure_key=structure_key,
-                                                                language_key=language_key, base_key=base_key)
+                                                           structure_key=structure_key,
+                                                           language_key=language_key, base_key=base_key)
         else:
             return Domain(
                 scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
                 utf8='𝔹' + superscriptify(n), latex=r'\mathbb{B}^{' + str(n) + r'}',
                 html=r'&Bopf;<sup>' + str(n) + '</sup>', usascii='B' + str(n))
+
 
 # Functions.
 truth = SystemFunction(
@@ -1554,18 +1618,15 @@ disjunction = SystemFunction(
     domain=b, arity=2)
 
 
-
-
-
 def parse_string_utf8(code):
-
     metamodel_source = None
     try:
         metamodel_source = pkg_resources.resource_string('naive', 'data/ba1_utf8.tx').decode('utf-8')
     except:
-        with open(r'c:\users\David\pycharmprojects\naive\src\naive\data\ba1_utf8.tx', 'r', encoding='utf-8') as source_file:
+        with open(r'c:\users\David\pycharmprojects\naive\src\naive\data\ba1_utf8.tx', 'r',
+                  encoding='utf-8') as source_file:
             metamodel_source = source_file.read()
-    #log_debug(metamodel_source=metamodel_source)
+    # log_debug(metamodel_source=metamodel_source)
     metamodel = metamodel_from_str(metamodel_source)
     model = metamodel.model_from_str(code)
     if model.token:
@@ -1574,6 +1635,7 @@ def parse_string_utf8(code):
         return formula
     else:
         log_warning('Parsing result is empty.')
+
 
 def inflate_object(model_object):
     arguments = []
@@ -1599,10 +1661,10 @@ def inflate_object(model_object):
         case 'BA1AtomicVariableFormula':
             return av(b, token)
 
+
 def parse_file_utf8():
     # TODO: Implement this.
     pass
 
 
 set_default_scope('scope_1')
-

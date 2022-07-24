@@ -4,8 +4,8 @@ import importlib.metadata
 try:
     __version__ = importlib.metadata.version('naive')
 except:
-    __version__ = '0.0.3'  # Initial version for the first build.
+    __version__ = '0.0.4'  # Initial version for the first build.
 
-from core import *
+from naive.core import *
 
 logging.info(f'Naive initialization completed. Package version: {__version__}.')
