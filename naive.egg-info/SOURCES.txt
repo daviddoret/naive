@@ -27,5 +27,8 @@ src/naive/ba1.py
 src/naive/core.py
 src/naive/glyphs.py
 src/naive/log.py
+src/naive/parsing.py
 src/naive/rformats.py
+src/naive/data/ba1_utf8.dot
 src/naive/data/ba1_utf8.tx
+src/naive/data/generate_dot.py
