@@ -88,12 +88,18 @@ def debug(message: str = '', code: int = 0, **kwargs):
         logger.debug(message)
 
 
+USE_PRINT_FOR_INFO = True
+"""Better output in Jupyter notebooks."""
+
 def info(message: str = '', code: int = 0, **kwargs):
     global logger
     if code not in code_exclusion_list:
         d = stringify_dictionary(**kwargs)
         message = f'{message} {d}'
-        logging.info(message)
+        if USE_PRINT_FOR_INFO:
+            print(message)
+        else:
+            logging.info(message)
 
 
 def warning(message: str = '', code: int = 0, **kwargs):
