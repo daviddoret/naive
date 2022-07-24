@@ -19,6 +19,9 @@ commonmark==0.9.1
 recommonmark==0.7.1
 readthedocs-sphinx-ext>=2.1.8
 
+jupyterlab
+notebook
+
 # Integration of Jupyter notebooks in the documentation
 jupyter-sphinx>=0.4.0
 
@@ -37,4 +40,4 @@ typing>=3.7.4.3
 dataclasses>=0.6
 rich
 
-# naive
+naive

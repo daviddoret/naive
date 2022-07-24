@@ -37,7 +37,7 @@ class TestFunction(TestCase):
 class Test_User_Scope(TestCase):
     def test_set_default_scope(self):
         self.assertEqual('scope_1', naive.core.get_default_scope())
-        naive.core.set_default_scope('new scope_key')
+        naive.core.set_default_scope('newscope')
         self.assertEqual('newscope', naive.core.get_default_scope())
         naive.core.set_default_scope('scope_1')
         self.assertEqual('scope_1', naive.core.get_default_scope())

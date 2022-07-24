@@ -28,17 +28,27 @@ print(f'naive_source: {naive_source}')
 sys.path.insert(0, naive_source.as_posix())
 sys.path.insert(0, source_folder.as_posix())
 
+
 # Reference: https://stackoverflow.com/questions/10324393/sphinx-build-fail-autodoc-cant-import-find-module
+# https://jupyter-sphinx.readthedocs.io/en/latest/
 package_path = project_root.as_posix() #os.path.abspath('src')
+print(f'package_path = {package_path}')
+package_path2 = os.path.abspath('../..')
+print(f'package_path2 = {package_path2}')
 os.environ['PYTHONPATH'] = ':'.join((package_path, os.environ.get('PYTHONPATH', '')))
-print(f'package_path: {package_path}')
+print(f'os.environ["PYTHONPATH"] = {os.environ["PYTHONPATH"]}')
 python_path = os.environ['PYTHONPATH']
-print(f'python_path: {python_path}')
+print(f'python_path = {python_path}')
 print(f'sys.path: {sys.path}')
 print(f'os.getcwd(): {os.getcwd()}')
 print(' ')
 
-# import naive
+
+
+os.environ['PYTHONPATH'] = ':'.join((package_path, os.environ.get('PYTHONPATH', '')))
+
+
+import naive
 # naive.hello_world('Mira')
 
 # -- Project information
@@ -90,6 +100,13 @@ extensions = [
     #'jupyter_sphinx.execute'
 ]
 
+# # https://myst-nb.readthedocs.io/en/v0.9.0/use/execute.html
+# jupyter_execute_notebooks = "force"
+# # jupyter_execute_notebooks = "cache"
+# # jupyter_execute_notebooks = "auto"
+# # jupyter_execute_notebooks = "off"
+# # jupyter_execute_notebooks = "cache"
+# execution_allow_errors=True
 
 bibtex_bibfiles = ['bibliography.bib']
 

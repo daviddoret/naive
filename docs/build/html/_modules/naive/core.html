@@ -374,7 +374,27 @@
 
 
 <div class="viewcode-block" id="set_default_scope"><a class="viewcode-back" href="../../core_function_set_default_scope_doc.html#naive.core.set_default_scope">[docs]</a><span class="k">def</span> <span class="nf">set_default_scope</span><span class="p">(</span><span class="n">scope_key</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Set the default current context.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Sets the default user-defined scope. Creates it if necessary.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        scope_key (str): A unique key to identify the user-defined scope.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        N/A</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">        .. jupyter-execute::</span>
+<span class="sd">            :raises:</span>
+<span class="sd">            :stderr:</span>
+
+<span class="sd">            import naive</span>
+<span class="sd">            name = &#39;world&#39;</span>
+<span class="sd">            print(&#39;hello &#39; + name + &#39;!&#39;)</span>
+<span class="sd">            naive.core.set_default_scope(&#39;my_scope&#39;)</span>
+<span class="sd">            naive.core.set_default_scope(&#39;another_scope&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">_DEFAULT_SCOPE_KEY</span>
     <span class="c1"># TODO: Allow the usage of friendly name, notes or documentation, etc.</span>
     <span class="k">if</span> <span class="n">scope_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

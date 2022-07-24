@@ -292,7 +292,27 @@ class Scope(Concept):
 
 
 def set_default_scope(scope_key):
-    """Set the default current context."""
+    """Sets the default user-defined scope. Creates it if necessary.
+
+    Args:
+        scope_key (str): A unique key to identify the user-defined scope.
+
+    Returns:
+        N/A
+
+    Example:
+
+        .. jupyter-execute::
+            :raises:
+            :stderr:
+
+            import naive
+            name = 'world'
+            print('hello ' + name + '!')
+            naive.core.set_default_scope('my_scope')
+            naive.core.set_default_scope('another_scope')
+
+    """
     global _DEFAULT_SCOPE_KEY
     # TODO: Allow the usage of friendly name, notes or documentation, etc.
     if scope_key is None:
