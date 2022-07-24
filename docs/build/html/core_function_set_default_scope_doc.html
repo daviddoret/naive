@@ -132,22 +132,29 @@
 <p class="rubric">Example</p>
 <div class="jupyter_cell jupyter_container docutils container">
 <div class="cell_input code_cell docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">naive</span>
-<span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;world&#39;</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;hello &#39;</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;!&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">initial_scope</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">get_default_scope</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The initial scope was: </span><span class="si">{</span><span class="n">initial_scope</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
 <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">set_default_scope</span><span class="p">(</span><span class="s1">&#39;my_scope&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Do something...&#39;</span><span class="p">)</span>
+
 <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">set_default_scope</span><span class="p">(</span><span class="s1">&#39;another_scope&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Do something...&#39;</span><span class="p">)</span>
+
+<span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">set_default_scope</span><span class="p">(</span><span class="n">initial_scope</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Do something...&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>Naive initialization started. 
-Naive version: 0.0.2 
-Default scope_key: scope_1 
-Naive initialization completed. 
-hello world!
-Default scope_key: my_scope 
-Default scope_key: another_scope 
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="nn">Input In [1],</span> in <span class="ni">&lt;cell line: 1&gt;</span><span class="nt">()</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">initial_scope</span> <span class="o">=</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">get_default_scope</span><span class="p">()</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The initial scope was: </span><span class="si">{</span><span class="n">initial_scope</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="n">naive</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">set_default_scope</span><span class="p">(</span><span class="s1">&#39;my_scope&#39;</span><span class="p">)</span>
+
+<span class="ne">NameError</span>: name &#39;naive&#39; is not defined
 </pre></div>
 </div>
 </div>

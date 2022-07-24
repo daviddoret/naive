@@ -389,11 +389,17 @@
 <span class="sd">            :raises:</span>
 <span class="sd">            :stderr:</span>
 
-<span class="sd">            import naive</span>
-<span class="sd">            name = &#39;world&#39;</span>
-<span class="sd">            print(&#39;hello &#39; + name + &#39;!&#39;)</span>
+<span class="sd">            initial_scope = naive.core.get_default_scope()</span>
+<span class="sd">            print(f&#39;The initial scope was: {initial_scope}&#39;)</span>
+
 <span class="sd">            naive.core.set_default_scope(&#39;my_scope&#39;)</span>
+<span class="sd">            print(&#39;Do something...&#39;)</span>
+
 <span class="sd">            naive.core.set_default_scope(&#39;another_scope&#39;)</span>
+<span class="sd">            print(&#39;Do something...&#39;)</span>
+
+<span class="sd">            naive.core.set_default_scope(initial_scope)</span>
+<span class="sd">            print(&#39;Do something...&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">_DEFAULT_SCOPE_KEY</span>
