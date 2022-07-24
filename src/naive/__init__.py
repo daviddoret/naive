@@ -6,7 +6,7 @@ import importlib.metadata
 try:
     __version__ = importlib.metadata.version('naive')
 except:
-    __version__ = '1.1.1'  # Initial version for the first build.
+    __version__ = '0.0.2'  # Initial version for the first build.
 #log.info(f'Naive version: {__version__}')
 
 import core

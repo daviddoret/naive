@@ -4,8 +4,8 @@
 
 # LOGGING
 import logging
-logging.info('Naive Package: setup started.')
-logging.info(f'__name__: {__name__}')
+logging.info('Naive package setup: started.')
+#logging.info(f'__name__: {__name__}')
 
 # IMPORTS
 from setuptools import setup
@@ -16,8 +16,8 @@ import importlib.metadata
 try:
     __version__ = importlib.metadata.version('naive')
 except:
-    __version__ = '0.0.1'  # Initial version for the first build.
-logging.info(f'__version__: {__version__}')
+    __version__ = '0.0.2'  # Initial version for the first build.
+logging.info(f'Version: {__version__}')
 
 
 setup(name='naive',
@@ -38,4 +38,4 @@ setup(name='naive',
           ],
       )
 
-logging.info('Naive Package: setup completed.')
+logging.info('Naive package setup: completed.')
