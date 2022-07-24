@@ -1,3 +1,4 @@
+@ECHO Commit the project to GitHub
 
 REM References
 REM     * https://github.com/git-guides/git-commit
