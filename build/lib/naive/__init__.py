@@ -10,7 +10,7 @@ except:
 log.info(f'Naive version: {__version__}')
 
 import core
-import ba1
+import ba1_module
 import rformats
 import glyphs
 

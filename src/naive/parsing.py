@@ -3,7 +3,7 @@ import pkg_resources
 
 import naive.log
 import naive.core
-import naive.ba1
+import naive.ba1_module
 
 
 def parse_string_utf8(code):

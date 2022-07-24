@@ -613,10 +613,10 @@ class SystemFunction(Concept):
     """
 
     # Constants
-    SYSTEM_CONSTANT = 'atomic_constant'  # Aka a 0-ary function.
-    SYSTEM_UNARY_OPERATOR = 'atomic_unary_operator'  # Aka a unary function with operator notation.
-    SYSTEM_BINARY_OPERATOR = 'atomic_binary_operator'  # Aka a binary function with operator notation.
-    SYSTEM_N_ARY_FUNCTION = 'atomic_n_ary_function'
+    SYSTEM_CONSTANT = 'system_constant'  # Aka a 0-ary function.
+    SYSTEM_UNARY_OPERATOR = 'system_unary_operator'  # Aka a unary function with operator notation.
+    SYSTEM_BINARY_OPERATOR = 'system_binary_operator'  # Aka a binary function with operator notation.
+    SYSTEM_N_ARY_FUNCTION = 'system_n_ary_function'
     CATEGORIES = [SYSTEM_CONSTANT, SYSTEM_UNARY_OPERATOR, SYSTEM_BINARY_OPERATOR, SYSTEM_N_ARY_FUNCTION]
 
     def __init__(
