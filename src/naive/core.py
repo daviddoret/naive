@@ -93,33 +93,6 @@ def set_error_level():
     logging.root.setLevel(logging.ERROR)
 
 
-_BASE_KEY = 'base_key'
-_STRUCTURE_KEY = 'structure_key'
-_SCOPE_KEY = 'scope_key'
-_LANGUAGE_KEY = 'language_key'
-
-# SystemFunction Complementary Properties
-_DOMAIN = 'codomain'
-_CODOMAIN = 'codomain'
-_ARITY = 'arity'
-_PYTHON_VALUE = 'python_value'
-
-# NType Keys
-_STRUCTURE_SCOPE = 'scope_key'
-_STRUCTURE_LANGUAGE = 'language_key'
-_STRUCTURE_DOMAIN = 'codomain'
-_STRUCTURE_FUNCTION = 'function'
-_STRUCTURE_ATOMIC_PROPERTY = 'ap'
-_STRUCTURE_VARIABLE = 'variable'
-_STRUCTURE_FORMULA = 'formula'
-
-_QUALIFIED_KEY_SEPARATOR = '.'
-_MNEMONIC_KEY_ALLOWED_CHARACTERS = 'abcdefghijklmnopqrstuvwxyz012345679_'
-
-_DEFAULT_SCOPE_KEY = ''
-_SYSTEM_DEFINED_KEY_PREFIX = 'sys_'
-_USER_DEFINED_KEY_PREFIX = 'ud_'
-_LANGUAGE_NAIVE = 'naive'
 
 COERCION_SUCCESS = 1
 COERCION_FAILURE = 2
@@ -642,237 +615,6 @@ def clean_mnemonic_key(mnemonic_key):
         return ''.join(c for c in mnemonic_key if c in _MNEMONIC_KEY_ALLOWED_CHARACTERS)
 
 
-class Concept:
-    _concept_database = {}
-    """The static database of concepts."""
-
-    _token_database = {}
-    """The static database of tokens."""
-
-    def __init__(self, scope_key, structure_key, language_key, base_key,
-                 utf8=None, latex=None, html=None, usascii=None, tokens=None,
-                 domain=None, codomain=None, arity=None, pythong_value=None,
-                 **kwargs):
-        # Identification Properties that constitute the Qualified Key.
-        if scope_key is None:
-            scope_key = get_default_scope()
-        self._scope_key = clean_mnemonic_key(scope_key)
-        self._structure_key = clean_mnemonic_key(structure_key)
-        self._language_key = clean_mnemonic_key(language_key)
-        self._base_key = clean_mnemonic_key(base_key)
-        # Representation Properties
-        self._utf8 = utf8
-        self._latex = latex
-        self._html = html
-        self._usascii = usascii
-        self._tokens = tokens
-        # Populate the token-concept mapping
-        # to facilitate the retrieval of concepts during parsing
-        # TODO: Consider the following approach: append utf8, latex, etc. as primary tokens,
-        #  and consider the tokens argument for complementary tokens only.
-        if self.tokens is not None:
-            for token in self.tokens:
-                if token not in Concept._token_database:
-                    # TODO: Question: should we store a reference to the Concept or store the Concept qualified key?
-                    Concept._token_database[token] = self
-                else:
-                    log_error(
-                        f'The "{token}" token was already in the token static database. We need to implement a priority algorithm to manage these situations.',
-                        token=token, self=self)
-        # Append the concept in the database
-        if self.qualified_key not in Concept._concept_database:
-            Concept._concept_database[self.qualified_key] = self
-        else:
-            log_error(
-                'The initialization of the concept could not be completed because the qualified key was already present in the static database.',
-                qualified_key=self.qualified_key)
-
-    def __str__(self):
-        return self.represent(RFormats.UTF8)
-
-    def __repr__(self):
-        return self.represent(RFormats.UTF8)
-
-    @property
-    def arity(self):
-        return self._arity
-
-    @property
-    def base_key(self):
-        return self._base_key
-
-    @staticmethod
-    def check_concept_from_decomposed_key(scope_key: str, structure_key: str, language_key: str, base_key: str,
-                                          **kwargs):
-        if scope_key is not None and structure_key is not None and language_key is not None and base_key is not None:
-            qualified_key = get_qualified_key(scope_key, structure_key, language_key, base_key)
-            return Concept.check_concept_from_qualified_key(
-                qualified_key, scope=scope_key, ntype=structure_key, language=language_key, nkey=base_key,
-                **kwargs)
-        else:
-            log_error('Some identification properties are None', scope=scope_key, ntype=structure_key,
-                      language=language_key, nkey=base_key, **kwargs)
-
-    @staticmethod
-    def check_concept_from_qualified_key(qualified_key, **kwargs):
-        if qualified_key is not None:
-            return qualified_key in Concept._concept_database
-        else:
-            log_error('Checking concept with None qualified key is impossible.',
-                      qualified_key=qualified_key, **kwargs)
-
-    @staticmethod
-    def get_concept_from_decomposed_key(scope_key: str, structure_key: str, language_key: str, base_key: str, **kwargs):
-        if scope_key is not None and structure_key is not None and language_key is not None and base_key is not None:
-            qualified_key = get_qualified_key(scope_key, structure_key, language_key, base_key)
-            return Concept.get_concept_from_qualified_key(
-                qualified_key, scope=scope_key, ntype=structure_key, language=language_key, nkey=base_key,
-                **kwargs)
-        else:
-            log_error('Some identification properties are None', scope=scope_key, ntype=structure_key,
-                      language=language_key, nkey=base_key, **kwargs)
-
-    @staticmethod
-    def get_concept_from_qualified_key(qualified_key, **kwargs):
-        if qualified_key is not None:
-            if qualified_key in Concept._concept_database:
-                return Concept._concept_database[qualified_key]
-            else:
-                return Concept(qualified_key=qualified_key, **kwargs)
-        else:
-            log_error('Getting concept with None qualified key is impossible.',
-                      qualified_key=qualified_key, **kwargs)
-
-    @staticmethod
-    def get_concept_from_token(token):
-        """
-
-        Definition:
-        A **token** is a list of text symbols that is mapped to a specific concept.
-        """
-        # TODO: Resume implementation here.
-        #   - In Concept __init__: subscribe tokens to a global indexes and check for unicity.
-        if token in Concept._token_database:
-            return Concept._token_database[token]
-        else:
-            return None
-
-    def is_equal_concept(self, other: Concept):
-        return self.qualified_key == other.qualified_key
-
-    @property
-    def language(self):
-        return self._language_key
-
-    def represent(self, rformat: str = None, *args, **kwargs) -> str:
-        """Get the object's representation in a supported format.
-
-        Args:
-            rformat (str): A representation format.
-            args: For future use.
-            kwargs: For future use.
-
-        Returns:
-            The object's representation in the requested format.
-        """
-        if rformat is None:
-            rformat = RFormats.DEFAULT
-        # TODO: Check that rformat is an allowed value.
-        if hasattr(self, rformat):
-            return getattr(self, rformat)
-        elif self._utf8 is not None:
-            # We fall back on UTF-8
-            return self._utf8
-        else:
-            log_error(f'This concept has no representation in {rformat} nor {RFormats.UTF8}.', rformat=rformat,
-                      qualified_key=self.qualified_key)
-
-    @property
-    def structure_key(self) -> str:
-        return self._structure_key
-
-    @property
-    def python_value(self):
-        return self._python_value
-
-    @property
-    def qualified_key(self):
-        return get_qualified_key(scope_key=self.scope_key, structure_key=self.structure_key, language_key=self.language,
-                                 base_key=self.base_key)
-
-    @property
-    def scope_key(self):
-        return self._scope_key
-
-    @property
-    def tokens(self):
-        return self._tokens
-
-
-class Language(Concept):
-    def __init__(
-            self,
-            # Identification properties
-            scope_key, structure_key, language_key, base_key,
-            # Mandatory complementary properties
-            # Conditional complementary properties
-            # Representation properties
-            utf8=None, latex=None, html=None, usascii=None, tokens=None,
-            **kwargs):
-        # ...
-
-        # Call the base class initializer.
-        #   Executing this at the end of the initialization process
-        #   assures that the new concept is not appended to the
-        #   static concept and token databases before it is fully initialized.
-        super().__init__(
-            scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
-            utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
-            **kwargs)
-
-
-class Domain(Concept):
-    def __init__(
-            self,
-            # Identification properties
-            scope_key, structure_key, language_key, base_key,
-            # Mandatory complementary properties
-            # Conditional complementary properties
-            # Representation properties
-            utf8=None, latex=None, html=None, usascii=None, tokens=None,
-            **kwargs):
-        # ...
-
-        # Call the base class initializer.
-        #   Executing this at the end of the initialization process
-        #   assures that the new concept is not appended to the
-        #   static concept and token databases before it is fully initialized.
-        super().__init__(
-            scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
-            utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
-            **kwargs)
-
-
-class Scope(Concept):
-    def __init__(
-            self,
-            # Identification properties
-            scope_key, structure_key, language_key, base_key,
-            # Mandatory complementary properties
-            # Conditional complementary properties
-            # Representation properties
-            utf8=None, latex=None, html=None, usascii=None, tokens=None,
-            **kwargs):
-        # Call the base class initializer.
-        #   Executing this at the end of the initialization process
-        #   assures that the new concept is not appended to the
-        #   static concept and token databases before it is fully initialized.
-        super().__init__(
-            scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
-            utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
-            **kwargs)
-
-
 def set_default_scope(scope_key):
     """Sets the default user-defined scope. Creates it if necessary.
 
@@ -917,264 +659,21 @@ def set_default_scope(scope_key):
         log_error(
             f'An empty string is not a valid context key. Please provide a non-empty string composed of the allowed characters: "{_MNEMONIC_KEY_ALLOWED_CHARACTERS}".')
 
-    prefixed_key = _USER_DEFINED_KEY_PREFIX + scope_key_cleaned
+    prefixed_key = Core._USER_DEFINED_KEY_PREFIX + scope_key_cleaned
     _DEFAULT_SCOPE_KEY = prefixed_key
     log_info(f'Default scope_key: {scope_key_cleaned}')
 
 
 def get_default_scope():
-    return _DEFAULT_SCOPE_KEY[len(_USER_DEFINED_KEY_PREFIX):]
+    return _DEFAULT_SCOPE_KEY[len(Core._USER_DEFINED_KEY_PREFIX):]
 
 
-def declare_atomic_variable(codomain, base_name=None, indexes=None):
-    # TODO: Provide support for different math fonts (e.g.: https://www.overleaf.com/learn/latex/Mathematical_fonts)
-    # TODO: Provide support for indexed variables. Variable declaration should be made with indexes bounds and not individual indexes values.
-    codomain_key = None
-    # Identification properties
-    scope_key = _DEFAULT_SCOPE_KEY
-    structure_key = _STRUCTURE_FORMULA
-    language_key = _LANGUAGE_NAIVE
-    if base_name is None:
-        # TODO: Make this a scope preference setting, letting the user choose the default
-        #   variable base_name in that scope.
-        base_name = 'x'
-    base_key = base_name
-    if indexes is not None:
-        if not isinstance(indexes, collections.abc.Iterable):
-            base_key = base_key + '__' + str(indexes)
-        else:
-            base_key = base_key + '__' + '_'.join(str(index) for index in indexes)
-    if Concept.check_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key,
-                                                 language_key=language_key, base_key=base_key):
-        variable = Concept.get_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key,
-                                                           language_key=language_key, base_key=base_key)
-        log_warning(
-            'This variable is already declared. In consequence, the existing variable is returned, instead of declaring a new one.',
-            variable=variable, scope_key=scope_key)
-        return variable
-    else:
-        variable = Formula(
-            scope_key=scope_key, language_key=language_key, base_key=base_key,
-            category=Formula.ATOMIC_VARIABLE,
-            codomain=codomain, base_name=base_name, indexes=indexes)
-        log_info(variable.represent_declaration())
-        return variable
 
 
 def av(codomain, base_name=None, indexes=None):
     """Shorthand alias for :ref:`declare_atomic_variable` **declare_atomic_variable**."""
-    return declare_atomic_variable(codomain, base_name, indexes)
+    return Core.declare_atomic_variable(codomain, base_name, indexes)
 
-
-class Formula(Concept):
-    """
-
-    Definition:
-    A formula, in the context of the naive package,
-    is a tree of "calls" to functions, constants, or variables.
-    ...
-
-    Different types of formula:
-    - Atomic Variable (aka Unknown) (e.g. x + 5 = 17, x ∉ ℕ₀)
-    - Formula Variable (e.g. φ = ¬x ∨ y, z ∧ φ)
-    - n-ary SystemFunction Call with n in N0 (e.g. za1 abs)
-
-    Different sub-types of n-ary Functions:
-    - 0-ary Operator (aka Constant) (e.g. ba1_language truth)
-    - Unary Operator (e.g. ba1_language negation)
-    - Binary Operator (e.g. ba1_language conjunction)
-    - n-ary SystemFunction
-
-    """
-    # TODO: Issue a warning when a property is accessed when the category make it invalid.
-
-    # Constants
-    ATOMIC_VARIABLE = 'formula_atomic_variable'  # TODO: Question: is it justified to distinguish this from FORMULA_VARIABLE?
-    FORMULA_VARIABLE = 'formula_formula_variable'  # TODO: Question: is it justified to distinguish this from ATOMIC_VARIABLE?
-    SYSTEM_CONSTANT_CALL = 'formula_constant_call'  # Aka a 0-ary function.
-    SYSTEM_UNARY_OPERATOR_CALL = 'formula_unary_operator_call'
-    SYSTEM_BINARY_OPERATOR_CALL = 'formula_binary_operator_call'
-    SYSTEM_N_ARY_FUNCTION_CALL = 'formula_n_ary_function_call'
-    CATEGORIES = [ATOMIC_VARIABLE, FORMULA_VARIABLE, SYSTEM_CONSTANT_CALL, SYSTEM_UNARY_OPERATOR_CALL,
-                  SYSTEM_BINARY_OPERATOR_CALL,
-                  SYSTEM_N_ARY_FUNCTION_CALL]
-
-    def __init__(
-            self,
-            # Identification properties
-            scope_key, language_key, base_key,
-            # Mandatory complementary properties
-            category,
-            # Conditional complementary properties
-            # ...for system function calls:
-            system_function=None, arguments=None,
-            # ...for atomic variables
-            domain=None, codomain=None, base_name=None, indexes=None,
-            **kwargs):
-        # Identification properties
-        structure_key = _STRUCTURE_FORMULA
-        # Mandatory complementary properties.
-        if category not in Formula.CATEGORIES:
-            log_error('Invalid formula category',
-                      category=category,
-                      scope_key=scope_key, language_key=language_key, base_key=base_key,
-                      system_function=system_function, arguments=arguments,
-                      domain=domain, codomain=codomain, base_name=base_name, indexes=indexes)
-        self._category = category
-        self._arity = None
-        self._system_function = system_function
-        # match category:
-        #     case Formula.ATOMIC_VARIABLE:
-        #         # The rationale for this arity = 0 is that atomic variables have no input.
-        #         # This would be wrong of formula variables.
-        #         self._arity = 0
-        #     case Formula.SYSTEM_CONSTANT_CALL:
-        #         self._arity = 0
-        #     case Formula.SYSTEM_UNARY_OPERATOR_CALL:
-        #         self._arity = 1
-        #     case Formula.SYSTEM_BINARY_OPERATOR_CALL:
-        #         self._arity = 2
-        #     # Replace the match ... case ... with system.function.arity.
-        #     # TODO: Implement arity for n-ary system function calls.
-        #     # TODO: Implement arity for formula variables.
-        #     # TODO: Consider making this property a dynamic property.
-        self._arguments = arguments
-        self._domain = 'NOT IMPLEMENTED'  # TODO: Implement formula domain. It may be None, a base domain or a tuple of domains.
-        self._codomain = codomain  # TODO: Check that codomain is only passed as argument when appicable. Otherwise, issue a warning.
-        self._base_name = base_name
-        self._indexes = indexes
-        # Call the base class initializer.
-        #   Executing this at the end of the initialization process
-        #   assures that the new concept is not appended to the
-        #   static concept and token databases before it is fully initialized.
-        super().__init__(
-            scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
-            **kwargs)
-
-    @property
-    def arguments(self):
-        return self._arguments
-
-    @property
-    def arity(self):
-        if self.category == Formula.ATOMIC_VARIABLE:
-            # For atomic variables, the arity is 0.
-            # The rationale is that an atomic variable doesn't get any input.
-            # This would be wrong of formula variables which deserver a distinct implementation.
-            return 0
-        elif self.is_system_function_call:
-            # For system function calls, the arity of the call
-            # is equal to the arity of the function being called.
-            return self.system_function.arity
-        else:
-            # TODO: Implement the arity property for all object categories.
-            log_warning('The arity property has not been implemented for this concept category.',
-                        category=self.category, self=self)
-
-    @property
-    def category(self):
-        return self._category
-
-    @property
-    def codomain(self):
-        if self.category == Formula.ATOMIC_VARIABLE:
-            # For atomic variables, the codomain is part of the object.
-            return self._codomain
-        elif self.is_system_function_call:
-            # For system function calls, the codomain of the function call
-            # is equal to the codomain of the function being called.
-            return self.system_function.codomain
-        else:
-            # TODO: Implement the codomain property for all object categories.
-            log_warning('The codomain property has not been implemented for this concept category.',
-                        category=self.category, self=self)
-
-    @property
-    def domain(self):
-        raise NotImplementedError('Please implement the domain property')
-        return self._domain
-
-    @property
-    def indexes(self):
-        return self._indexes
-
-    @property
-    def is_system_function_call(self):
-        """Return *True* if this is a system function call, *False* otherwise.
-
-        If *True*, the instance has the *system_function* property.
-        """
-        return self.category in [
-            Formula.SYSTEM_CONSTANT_CALL,
-            Formula.SYSTEM_UNARY_OPERATOR_CALL,
-            Formula.SYSTEM_BINARY_OPERATOR_CALL,
-            Formula.SYSTEM_N_ARY_FUNCTION_CALL]
-
-    def list_atomic_variables(self):
-        """Return the sorted set of variables present in the formula, and its subformulae recursively."""
-        l = set()
-        for a in self.arguments:
-            if isinstance(a,
-                          Formula) and a.category == Formula.ATOMIC_VARIABLE:  # Using a union type to avoid import issues.
-                l.add(a)
-            elif isinstance(a, Formula):  # Using a union type to avoid import issues.
-                l_prime = a.list_atomic_variables()
-                for a_prime in l_prime:
-                    l.add(a_prime)
-            else:
-                log_error('Not implemented yet', a=a, self=self)
-
-        # To allow sorting and indexing, convert the set to a list.
-        l = list(l)
-        l.sort(key=lambda x: x.base_key)
-        return l
-
-    def represent(self, rformat: str = None, *args, **kwargs) -> str:
-        if rformat is None:
-            rformat = RFormats.DEFAULT
-        # if self.category == Formula.ATOMIC_VARIABLE:
-        #     return self.symbol.represent(rformat, *args, **kwargs)
-        match self.category:
-            case Formula.ATOMIC_VARIABLE:
-                # x
-                # TODO: Modify approach. Storing and returning the _base_name like this
-                #   prevent support for other mathematical fonts, such as MathCal, etc.
-                #   As an initial approach, it provides support for ASCII like variables.
-                #   We may consider storing a Glyph as the base name,
-                #   and calling the static represent() function.
-                return self._base_name + \
-                       subscriptify(represent(self._indexes, rformat), rformat)
-            case Formula.SYSTEM_CONSTANT_CALL:
-                # x
-                return f'{self._system_function.represent(rformat)}'
-            case Formula.SYSTEM_UNARY_OPERATOR_CALL:
-                # fx
-                return f'{self._system_function.represent(rformat)}{self.arguments[0].represent(rformat)}'
-            case Formula.SYSTEM_BINARY_OPERATOR_CALL:
-                # (x f y)
-                return f'{Glyphs.parenthesis_left.represent(rformat)}{self.arguments[0].represent(rformat)}{Glyphs.small_space.represent(rformat)}{self._system_function.represent(rformat)}{Glyphs.small_space.represent(rformat)}{self.arguments[1].represent(rformat)}{Glyphs.parenthesis_right.represent(rformat)}'
-            case Formula.SYSTEM_N_ARY_FUNCTION_CALL:
-                # f(x,y,z)
-                variable_list = ', '.join(map(lambda a: a.represent(), self.arguments))
-                return f'{self._system_function.represent(rformat)}{Glyphs.parenthesis_left.represent(rformat)}{variable_list}{Glyphs.parenthesis_right.represent(rformat)}'
-            case _:
-                log_error('Unsupported formula category', category=self.category, qualified_key=self.qualified_key)
-
-    def represent_declaration(self, rformat: str = None, *args, **kwargs) -> str:
-        if self.category != Formula.ATOMIC_VARIABLE:
-            log_error('Formula category not supported for declaration.')
-        else:
-            if rformat is None:
-                rformat = RFormats.DEFAULT
-            match rformat:
-                case RFormats.UTF8:
-                    return f'With {self.represent(rformat)} ∈ {self.codomain.represent(rformat)}.'
-                case _:
-                    raise NotImplementedError('TODO')
-
-    @property
-    def system_function(self):
-        return self._system_function
 
 
 class Counter(object):
@@ -1188,148 +687,661 @@ class Counter(object):
             return self.value
 
 
-_FORMULA_AUTO_COUNTER = Counter()
-
-
-def write_formula(o, *args):
-    global _FORMULA_AUTO_COUNTER
-    scope_key = _DEFAULT_SCOPE_KEY
-    index = _FORMULA_AUTO_COUNTER.get_value()
-    base_key = 'f' + str(index)
-    category = None
-    system_function = None
-    if isinstance(o, SystemFunction):  # Using a union type to avoid import issues.
-        system_function = o
-        match o.category:
-            case SystemFunction.SYSTEM_CONSTANT:
-                category = Formula.SYSTEM_CONSTANT_CALL
-            case SystemFunction.SYSTEM_UNARY_OPERATOR:
-                category = Formula.SYSTEM_UNARY_OPERATOR_CALL
-            case SystemFunction.SYSTEM_BINARY_OPERATOR:
-                category = Formula.SYSTEM_BINARY_OPERATOR_CALL
-            # TODO: Implement all other possibilities
-    arguments = args
-    formula = Formula(
-        # Identification properties
-        scope_key=scope_key, language_key=_LANGUAGE_NAIVE, base_key=base_key,
-        # Mandatory complementary properties
-        category=category,
-        # Conditional complementary properties
-        system_function=system_function, arguments=arguments
-    )
-    log_info(formula.represent())
-    return formula
 
 
 def f(o, *args):
     """Shorthand function to write a formula."""
-    return write_formula(o, *args)
+    return Core.write_formula(o, *args)
 
-
-class SystemFunction(Concept):
-    """The system function class.
-
-    Definition:
-    A system function, in the context of the naive package,
-    is a function that is predefined in the sense that it is accompanied by a programmatic algorithm and not a formula,
-    and atomic in the sense that it cannot be further decomposed into constituent sub-formulae.
-
-    """
-
-    # Constants
-    SYSTEM_CONSTANT = 'atomic_constant'  # Aka a 0-ary function.
-    SYSTEM_UNARY_OPERATOR = 'atomic_unary_operator'  # Aka a unary function with operator notation.
-    SYSTEM_BINARY_OPERATOR = 'atomic_binary_operator'  # Aka a binary function with operator notation.
-    SYSTEM_N_ARY_FUNCTION = 'atomic_n_ary_function'
-    CATEGORIES = [SYSTEM_CONSTANT, SYSTEM_UNARY_OPERATOR, SYSTEM_BINARY_OPERATOR, SYSTEM_N_ARY_FUNCTION]
-
-    def __init__(
-            self,
-            # Identification properties
-            scope_key, structure_key, language_key, base_key,
-            # Mandatory complementary properties
-            category, codomain, algorithm,
-            # Conditional complementary properties
-            domain=None, arity=None, python_value=None,
-            # Representation properties
-            utf8=None, latex=None, html=None, usascii=None, tokens=None,
-            **kwargs):
-        # Mandatory complementary properties.
-        self._codomain = codomain  # TODO: Implement validation against the static concept database.
-        self._algorithm = algorithm
-        if category not in SystemFunction.CATEGORIES:
-            log_error('Invalid formula category',
-                      category=category, qualified_key=self.qualified_key)
-        self._category = category
-        # Conditional complementary properties.
-        self._domain = domain  # TODO: Implement validation against the static concept database.
-        self._arity = arity  # TODO: Implement validation logic dependent of subcategory.
-        if category == SystemFunction.SYSTEM_CONSTANT and python_value is None:
-            log_error('python_value is mandatory for constants (0-ary functions) but it was None.',
-                      python_value=python_value, category=category, qualified_key=self.qualified_key)
-        self._python_value = python_value  # TODO: Question: Should it be mandatory for subcategory = constant?
-        # Call the base class initializer.
-        #   Executing this at the end of the initialization process
-        #   assures that the new concept is not appended to the
-        #   static concept and token databases before it is fully initialized.
-        super().__init__(
-            scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
-            utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
-            **kwargs)
-
-    @property
-    def algorithm(self):
-        return self._algorithm
-
-    @property
-    def category(self):
-        return self._category
-
-    @property
-    def codomain(self):
-        return self._codomain
-
-    @property
-    def domain(self):
-        return self._domain
-
-    @property
-    def compute_programmatic_value(self):
-        # TODO: The idea is to distinguish the computerized or programmatic value,
-        #   here as a canonical mapping to a python object,
-        #   with the symbolic value, the later being the naive concept.
-        if self.category == SystemFunction.SYSTEM_CONSTANT:
-            return self._python_value
-        else:
-            raise NotImplementedError('ooops')
-
-    def equal_programmatic_value(self, other):
-        """Return true if two formula yield identical values, false otherwise."""
-        if isinstance(other,
-                      Formula) and other.subcategory == SystemFunction.SYSTEM_CONSTANT:  # Using a union type to avoid import issues.
-            return self.compute_programmatic_value() == other.compute_programmatic_value()
-        else:
-            raise NotImplementedError('oooops again')
 
 
 def get_qualified_key(scope_key, structure_key, language_key, base_key):
     return f'{scope_key}{_QUALIFIED_KEY_SEPARATOR}{structure_key}{_QUALIFIED_KEY_SEPARATOR}{language_key}{_QUALIFIED_KEY_SEPARATOR}{base_key}'
 
 
-# Scope.
-system_scope = Scope(
-    scope_key='sys', structure_key=_STRUCTURE_SCOPE, language_key=_LANGUAGE_NAIVE, base_key='sys',
-    utf8='sys', latex=r'\text{sys}', html='sys', usascii='sys')
 
-initial_user_defined_scope = Scope(
-    scope_key='sys', structure_key=_STRUCTURE_SCOPE, language_key=_LANGUAGE_NAIVE,
-    base_key=_USER_DEFINED_KEY_PREFIX + 'scope_1',
-    utf8='scope_key₁', latex=r'\text{scope_key}_1', html=r'scope_key<sub>1</sub>', usascii='scope1')
+_QUALIFIED_KEY_SEPARATOR = '.'
+_MNEMONIC_KEY_ALLOWED_CHARACTERS = 'abcdefghijklmnopqrstuvwxyz012345679_'
+
+_concept_database = {}
+"""The static database of concepts."""
+
+_token_database = {}
+"""The static database of tokens."""
+
+class Core:
+    _BASE_KEY = 'base_key'
+    _STRUCTURE_KEY = 'structure_key'
+    _SCOPE_KEY = 'scope_key'
+    _LANGUAGE_KEY = 'language_key'
+
+    # SystemFunction Complementary Properties
+    _DOMAIN = 'codomain'
+    _CODOMAIN = 'codomain'
+    _ARITY = 'arity'
+    _PYTHON_VALUE = 'python_value'
+
+    # NType Keys
+    _STRUCTURE_SCOPE = 'scope_key'
+    _STRUCTURE_LANGUAGE = 'language_key'
+    _STRUCTURE_DOMAIN = 'codomain'
+    _STRUCTURE_FUNCTION = 'function'
+    _STRUCTURE_ATOMIC_PROPERTY = 'ap'
+    _STRUCTURE_VARIABLE = 'variable'
+    _STRUCTURE_FORMULA = 'formula'
+
+    _DEFAULT_SCOPE_KEY = ''
+    _SYSTEM_DEFINED_KEY_PREFIX = 'sys_'
+    _USER_DEFINED_KEY_PREFIX = 'ud_'
+    _LANGUAGE_NAIVE = 'naive'
+
+
+
+    class Concept:
+
+        global _concept_database
+        global _token_database
+
+        def __init__(self, scope_key, structure_key, language_key, base_key,
+                     utf8=None, latex=None, html=None, usascii=None, tokens=None,
+                     domain=None, codomain=None, arity=None, pythong_value=None,
+                     **kwargs):
+            # Identification Properties that constitute the Qualified Key.
+            if scope_key is None:
+                scope_key = get_default_scope()
+            self._scope_key = clean_mnemonic_key(scope_key)
+            self._structure_key = clean_mnemonic_key(structure_key)
+            self._language_key = clean_mnemonic_key(language_key)
+            self._base_key = clean_mnemonic_key(base_key)
+            # Representation Properties
+            self._utf8 = utf8
+            self._latex = latex
+            self._html = html
+            self._usascii = usascii
+            self._tokens = tokens
+            # Populate the token-concept mapping
+            # to facilitate the retrieval of concepts during parsing
+            # TODO: Consider the following approach: append utf8, latex, etc. as primary tokens,
+            #  and consider the tokens argument for complementary tokens only.
+            if self.tokens is not None:
+                for token in self.tokens:
+                    if token not in _token_database:
+                        # TODO: Question: should we store a reference to the Concept or store the Concept qualified key?
+                        _token_database[token] = self
+                    else:
+                        log_error(
+                            f'The "{token}" token was already in the token static database. We need to implement a priority algorithm to manage these situations.',
+                            token=token, self=self)
+            # Append the concept in the database
+            if self.qualified_key not in _concept_database:
+                _concept_database[self.qualified_key] = self
+            else:
+                log_error(
+                    'The initialization of the concept could not be completed because the qualified key was already present in the static database.',
+                    qualified_key=self.qualified_key)
+
+        def __str__(self):
+            return self.represent(RFormats.UTF8)
+
+        def __repr__(self):
+            return self.represent(RFormats.UTF8)
+
+        @property
+        def arity(self):
+            return self._arity
+
+        @property
+        def base_key(self):
+            return self._base_key
+
+        @staticmethod
+        def check_concept_from_decomposed_key(scope_key: str, structure_key: str, language_key: str, base_key: str,
+                                              **kwargs):
+            if scope_key is not None and structure_key is not None and language_key is not None and base_key is not None:
+                qualified_key = get_qualified_key(scope_key, structure_key, language_key, base_key)
+                return Core.Concept.check_concept_from_qualified_key(
+                    qualified_key, scope=scope_key, ntype=structure_key, language=language_key, nkey=base_key,
+                    **kwargs)
+            else:
+                log_error('Some identification properties are None', scope=scope_key, ntype=structure_key,
+                          language=language_key, nkey=base_key, **kwargs)
+
+        @staticmethod
+        def check_concept_from_qualified_key(qualified_key, **kwargs):
+            if qualified_key is not None:
+                return qualified_key in _concept_database
+            else:
+                log_error('Checking concept with None qualified key is impossible.',
+                          qualified_key=qualified_key, **kwargs)
+
+        @staticmethod
+        def get_concept_from_decomposed_key(scope_key: str, structure_key: str, language_key: str, base_key: str,
+                                            **kwargs):
+            if scope_key is not None and structure_key is not None and language_key is not None and base_key is not None:
+                qualified_key = get_qualified_key(scope_key, structure_key, language_key, base_key)
+                return Core.Concept.get_concept_from_qualified_key(
+                    qualified_key, scope=scope_key, ntype=structure_key, language=language_key, nkey=base_key,
+                    **kwargs)
+            else:
+                log_error('Some identification properties are None', scope=scope_key, ntype=structure_key,
+                          language=language_key, nkey=base_key, **kwargs)
+
+        @staticmethod
+        def get_concept_from_qualified_key(qualified_key, **kwargs):
+            if qualified_key is not None:
+                if qualified_key in _concept_database:
+                    return _concept_database[qualified_key]
+                else:
+                    return Core.Concept(qualified_key=qualified_key, **kwargs)
+            else:
+                log_error('Getting concept with None qualified key is impossible.',
+                          qualified_key=qualified_key, **kwargs)
+
+        @staticmethod
+        def get_concept_from_token(token):
+            """
+
+            Definition:
+            A **token** is a list of text symbols that is mapped to a specific concept.
+            """
+            # TODO: Resume implementation here.
+            #   - In Concept __init__: subscribe tokens to a global indexes and check for unicity.
+            if token in Core.Concept._token_database:
+                return Core.Concept._token_database[token]
+            else:
+                return None
+
+        def is_equal_concept(self, other: Core.Concept):
+            return self.qualified_key == other.qualified_key
+
+        @property
+        def language(self):
+            return self._language_key
+
+        def represent(self, rformat: str = None, *args, **kwargs) -> str:
+            """Get the object's representation in a supported format.
+
+            Args:
+                rformat (str): A representation format.
+                args: For future use.
+                kwargs: For future use.
+
+            Returns:
+                The object's representation in the requested format.
+            """
+            if rformat is None:
+                rformat = RFormats.DEFAULT
+            # TODO: Check that rformat is an allowed value.
+            if hasattr(self, rformat):
+                return getattr(self, rformat)
+            elif self._utf8 is not None:
+                # We fall back on UTF-8
+                return self._utf8
+            else:
+                log_error(f'This concept has no representation in {rformat} nor {RFormats.UTF8}.', rformat=rformat,
+                          qualified_key=self.qualified_key)
+
+        @property
+        def structure_key(self) -> str:
+            return self._structure_key
+
+        @property
+        def python_value(self):
+            return self._python_value
+
+        @property
+        def qualified_key(self):
+            return get_qualified_key(scope_key=self.scope_key, structure_key=self.structure_key,
+                                     language_key=self.language,
+                                     base_key=self.base_key)
+
+        @property
+        def scope_key(self):
+            return self._scope_key
+
+        @property
+        def tokens(self):
+            return self._tokens
+
+    class Language(Concept):
+        def __init__(
+                self,
+                # Identification properties
+                scope_key, structure_key, language_key, base_key,
+                # Mandatory complementary properties
+                # Conditional complementary properties
+                # Representation properties
+                utf8=None, latex=None, html=None, usascii=None, tokens=None,
+                **kwargs):
+            # ...
+
+            # Call the base class initializer.
+            #   Executing this at the end of the initialization process
+            #   assures that the new concept is not appended to the
+            #   static concept and token databases before it is fully initialized.
+            super().__init__(
+                scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
+                utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
+                **kwargs)
+
+    class Domain(Concept):
+        def __init__(
+                self,
+                # Identification properties
+                scope_key, structure_key, language_key, base_key,
+                # Mandatory complementary properties
+                # Conditional complementary properties
+                # Representation properties
+                utf8=None, latex=None, html=None, usascii=None, tokens=None,
+                **kwargs):
+            # ...
+
+            # Call the base class initializer.
+            #   Executing this at the end of the initialization process
+            #   assures that the new concept is not appended to the
+            #   static concept and token databases before it is fully initialized.
+            super().__init__(
+                scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
+                utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
+                **kwargs)
+
+    class Scope(Concept):
+        def __init__(
+                self,
+                # Identification properties
+                scope_key, structure_key, language_key, base_key,
+                # Mandatory complementary properties
+                # Conditional complementary properties
+                # Representation properties
+                utf8=None, latex=None, html=None, usascii=None, tokens=None,
+                **kwargs):
+            # Call the base class initializer.
+            #   Executing this at the end of the initialization process
+            #   assures that the new concept is not appended to the
+            #   static concept and token databases before it is fully initialized.
+            super().__init__(
+                scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
+                utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
+                **kwargs)
+
+    # Scope.
+    system_scope = Scope(
+        scope_key='sys', structure_key=_STRUCTURE_SCOPE, language_key=_LANGUAGE_NAIVE, base_key='sys',
+        utf8='sys', latex=r'\text{sys}', html='sys', usascii='sys')
+
+    initial_user_defined_scope = Scope(
+        scope_key='sys', structure_key=_STRUCTURE_SCOPE, language_key=_LANGUAGE_NAIVE,
+        base_key=_USER_DEFINED_KEY_PREFIX + 'scope_1',
+        utf8='scope_key₁', latex=r'\text{scope_key}_1', html=r'scope_key<sub>1</sub>', usascii='scope1')
+
+
+    class SystemFunction(Concept):
+        """The system function class.
+
+        Definition:
+        A system function, in the context of the naive package,
+        is a function that is predefined in the sense that it is accompanied by a programmatic algorithm and not a formula,
+        and atomic in the sense that it cannot be further decomposed into constituent sub-formulae.
+
+        """
+
+        # Constants
+        SYSTEM_CONSTANT = 'atomic_constant'  # Aka a 0-ary function.
+        SYSTEM_UNARY_OPERATOR = 'atomic_unary_operator'  # Aka a unary function with operator notation.
+        SYSTEM_BINARY_OPERATOR = 'atomic_binary_operator'  # Aka a binary function with operator notation.
+        SYSTEM_N_ARY_FUNCTION = 'atomic_n_ary_function'
+        CATEGORIES = [SYSTEM_CONSTANT, SYSTEM_UNARY_OPERATOR, SYSTEM_BINARY_OPERATOR, SYSTEM_N_ARY_FUNCTION]
+
+        def __init__(
+                self,
+                # Identification properties
+                scope_key, structure_key, language_key, base_key,
+                # Mandatory complementary properties
+                category, codomain, algorithm,
+                # Conditional complementary properties
+                domain=None, arity=None, python_value=None,
+                # Representation properties
+                utf8=None, latex=None, html=None, usascii=None, tokens=None,
+                **kwargs):
+            # Mandatory complementary properties.
+            self._codomain = codomain  # TODO: Implement validation against the static concept database.
+            self._algorithm = algorithm
+            if category not in Core.SystemFunction.CATEGORIES:
+                log_error('Invalid formula category',
+                          category=category, qualified_key=self.qualified_key)
+            self._category = category
+            # Conditional complementary properties.
+            self._domain = domain  # TODO: Implement validation against the static concept database.
+            self._arity = arity  # TODO: Implement validation logic dependent of subcategory.
+            if category == Core.SystemFunction.SYSTEM_CONSTANT and python_value is None:
+                log_error('python_value is mandatory for constants (0-ary functions) but it was None.',
+                          python_value=python_value, category=category, qualified_key=self.qualified_key)
+            self._python_value = python_value  # TODO: Question: Should it be mandatory for subcategory = constant?
+            # Call the base class initializer.
+            #   Executing this at the end of the initialization process
+            #   assures that the new concept is not appended to the
+            #   static concept and token databases before it is fully initialized.
+            super().__init__(
+                scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
+                utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
+                **kwargs)
+
+        @property
+        def algorithm(self):
+            return self._algorithm
+
+        @property
+        def category(self):
+            return self._category
+
+        @property
+        def codomain(self):
+            return self._codomain
+
+        @property
+        def domain(self):
+            return self._domain
+
+        @property
+        def compute_programmatic_value(self):
+            # TODO: The idea is to distinguish the computerized or programmatic value,
+            #   here as a canonical mapping to a python object,
+            #   with the symbolic value, the later being the naive concept.
+            if self.category == Core.SystemFunction.SYSTEM_CONSTANT:
+                return self._python_value
+            else:
+                raise NotImplementedError('ooops')
+
+        def equal_programmatic_value(self, other):
+            """Return true if two formula yield identical values, false otherwise."""
+            if isinstance(other,
+                          Core.Formula) and other.subcategory == Core.SystemFunction.SYSTEM_CONSTANT:  # Using a union type to avoid import issues.
+                return self.compute_programmatic_value() == other.compute_programmatic_value()
+            else:
+                raise NotImplementedError('oooops again')
+
+
+    class Formula(Concept):
+        """
+
+        Definition:
+        A formula, in the context of the naive package,
+        is a tree of "calls" to functions, constants, or variables.
+        ...
+
+        Different types of formula:
+        - Atomic Variable (aka Unknown) (e.g. x + 5 = 17, x ∉ ℕ₀)
+        - Formula Variable (e.g. φ = ¬x ∨ y, z ∧ φ)
+        - n-ary SystemFunction Call with n in N0 (e.g. za1 abs)
+
+        Different sub-types of n-ary Functions:
+        - 0-ary Operator (aka Constant) (e.g. ba1_language truth)
+        - Unary Operator (e.g. ba1_language negation)
+        - Binary Operator (e.g. ba1_language conjunction)
+        - n-ary SystemFunction
+
+        """
+        # TODO: Issue a warning when a property is accessed when the category make it invalid.
+
+        # Constants
+        ATOMIC_VARIABLE = 'formula_atomic_variable'  # TODO: Question: is it justified to distinguish this from FORMULA_VARIABLE?
+        FORMULA_VARIABLE = 'formula_formula_variable'  # TODO: Question: is it justified to distinguish this from ATOMIC_VARIABLE?
+        SYSTEM_CONSTANT_CALL = 'formula_constant_call'  # Aka a 0-ary function.
+        SYSTEM_UNARY_OPERATOR_CALL = 'formula_unary_operator_call'
+        SYSTEM_BINARY_OPERATOR_CALL = 'formula_binary_operator_call'
+        SYSTEM_N_ARY_FUNCTION_CALL = 'formula_n_ary_function_call'
+        CATEGORIES = [ATOMIC_VARIABLE, FORMULA_VARIABLE, SYSTEM_CONSTANT_CALL, SYSTEM_UNARY_OPERATOR_CALL,
+                      SYSTEM_BINARY_OPERATOR_CALL,
+                      SYSTEM_N_ARY_FUNCTION_CALL]
+
+        def __init__(
+                self,
+                # Identification properties
+                scope_key, language_key, base_key,
+                # Mandatory complementary properties
+                category,
+                # Conditional complementary properties
+                # ...for system function calls:
+                system_function=None, arguments=None,
+                # ...for atomic variables
+                domain=None, codomain=None, base_name=None, indexes=None,
+                **kwargs):
+            # Identification properties
+            structure_key = Core._STRUCTURE_FORMULA
+            # Mandatory complementary properties.
+            if category not in Core.Formula.CATEGORIES:
+                log_error('Invalid formula category',
+                          category=category,
+                          scope_key=scope_key, language_key=language_key, base_key=base_key,
+                          system_function=system_function, arguments=arguments,
+                          domain=domain, codomain=codomain, base_name=base_name, indexes=indexes)
+            self._category = category
+            self._arity = None
+            self._system_function = system_function
+            # match category:
+            #     case Formula.ATOMIC_VARIABLE:
+            #         # The rationale for this arity = 0 is that atomic variables have no input.
+            #         # This would be wrong of formula variables.
+            #         self._arity = 0
+            #     case Formula.SYSTEM_CONSTANT_CALL:
+            #         self._arity = 0
+            #     case Formula.SYSTEM_UNARY_OPERATOR_CALL:
+            #         self._arity = 1
+            #     case Formula.SYSTEM_BINARY_OPERATOR_CALL:
+            #         self._arity = 2
+            #     # Replace the match ... case ... with system.function.arity.
+            #     # TODO: Implement arity for n-ary system function calls.
+            #     # TODO: Implement arity for formula variables.
+            #     # TODO: Consider making this property a dynamic property.
+            self._arguments = arguments
+            self._domain = 'NOT IMPLEMENTED'  # TODO: Implement formula domain. It may be None, a base domain or a tuple of domains.
+            self._codomain = codomain  # TODO: Check that codomain is only passed as argument when appicable. Otherwise, issue a warning.
+            self._base_name = base_name
+            self._indexes = indexes
+            # Call the base class initializer.
+            #   Executing this at the end of the initialization process
+            #   assures that the new concept is not appended to the
+            #   static concept and token databases before it is fully initialized.
+            super().__init__(
+                scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
+                **kwargs)
+
+        @property
+        def arguments(self):
+            return self._arguments
+
+        @property
+        def arity(self):
+            if self.category == Core.Formula.ATOMIC_VARIABLE:
+                # For atomic variables, the arity is 0.
+                # The rationale is that an atomic variable doesn't get any input.
+                # This would be wrong of formula variables which deserver a distinct implementation.
+                return 0
+            elif self.is_system_function_call:
+                # For system function calls, the arity of the call
+                # is equal to the arity of the function being called.
+                return self.system_function.arity
+            else:
+                # TODO: Implement the arity property for all object categories.
+                log_warning('The arity property has not been implemented for this concept category.',
+                            category=self.category, self=self)
+
+        @property
+        def category(self):
+            return self._category
+
+        @property
+        def codomain(self):
+            if self.category == Core.Formula.ATOMIC_VARIABLE:
+                # For atomic variables, the codomain is part of the object.
+                return self._codomain
+            elif self.is_system_function_call:
+                # For system function calls, the codomain of the function call
+                # is equal to the codomain of the function being called.
+                return self.system_function.codomain
+            else:
+                # TODO: Implement the codomain property for all object categories.
+                log_warning('The codomain property has not been implemented for this concept category.',
+                            category=self.category, self=self)
+
+        @property
+        def domain(self):
+            raise NotImplementedError('Please implement the domain property')
+            return self._domain
+
+        @property
+        def indexes(self):
+            return self._indexes
+
+        @property
+        def is_system_function_call(self):
+            """Return *True* if this is a system function call, *False* otherwise.
+
+            If *True*, the instance has the *system_function* property.
+            """
+            return self.category in [
+                Core.Formula.SYSTEM_CONSTANT_CALL,
+                Core.Formula.SYSTEM_UNARY_OPERATOR_CALL,
+                Core.Formula.SYSTEM_BINARY_OPERATOR_CALL,
+                Core.Formula.SYSTEM_N_ARY_FUNCTION_CALL]
+
+        def list_atomic_variables(self):
+            """Return the sorted set of variables present in the formula, and its subformulae recursively."""
+            l = set()
+            for a in self.arguments:
+                if isinstance(a,
+                              Core.Formula) and a.category == Core.Formula.ATOMIC_VARIABLE:  # Using a union type to avoid import issues.
+                    l.add(a)
+                elif isinstance(a, Core.Formula):  # Using a union type to avoid import issues.
+                    l_prime = a.list_atomic_variables()
+                    for a_prime in l_prime:
+                        l.add(a_prime)
+                else:
+                    log_error('Not implemented yet', a=a, self=self)
+
+            # To allow sorting and indexing, convert the set to a list.
+            l = list(l)
+            l.sort(key=lambda x: x.base_key)
+            return l
+
+        def represent(self, rformat: str = None, *args, **kwargs) -> str:
+            if rformat is None:
+                rformat = RFormats.DEFAULT
+            # if self.category == Formula.ATOMIC_VARIABLE:
+            #     return self.symbol.represent(rformat, *args, **kwargs)
+            match self.category:
+                case Core.Formula.ATOMIC_VARIABLE:
+                    # x
+                    # TODO: Modify approach. Storing and returning the _base_name like this
+                    #   prevent support for other mathematical fonts, such as MathCal, etc.
+                    #   As an initial approach, it provides support for ASCII like variables.
+                    #   We may consider storing a Glyph as the base name,
+                    #   and calling the static represent() function.
+                    return self._base_name + \
+                           subscriptify(represent(self._indexes, rformat), rformat)
+                case Core.Formula.SYSTEM_CONSTANT_CALL:
+                    # x
+                    return f'{self._system_function.represent(rformat)}'
+                case Core.Formula.SYSTEM_UNARY_OPERATOR_CALL:
+                    # fx
+                    return f'{self._system_function.represent(rformat)}{self.arguments[0].represent(rformat)}'
+                case Core.Formula.SYSTEM_BINARY_OPERATOR_CALL:
+                    # (x f y)
+                    return f'{Glyphs.parenthesis_left.represent(rformat)}{self.arguments[0].represent(rformat)}{Glyphs.small_space.represent(rformat)}{self._system_function.represent(rformat)}{Glyphs.small_space.represent(rformat)}{self.arguments[1].represent(rformat)}{Glyphs.parenthesis_right.represent(rformat)}'
+                case Core.Formula.SYSTEM_N_ARY_FUNCTION_CALL:
+                    # f(x,y,z)
+                    variable_list = ', '.join(map(lambda a: a.represent(), self.arguments))
+                    return f'{self._system_function.represent(rformat)}{Glyphs.parenthesis_left.represent(rformat)}{variable_list}{Glyphs.parenthesis_right.represent(rformat)}'
+                case _:
+                    log_error('Unsupported formula category', category=self.category, qualified_key=self.qualified_key)
+
+        def represent_declaration(self, rformat: str = None, *args, **kwargs) -> str:
+            if self.category != Core.Formula.ATOMIC_VARIABLE:
+                log_error('Formula category not supported for declaration.')
+            else:
+                if rformat is None:
+                    rformat = RFormats.DEFAULT
+                match rformat:
+                    case RFormats.UTF8:
+                        return f'With {self.represent(rformat)} ∈ {self.codomain.represent(rformat)}.'
+                    case _:
+                        raise NotImplementedError('TODO')
+
+        @property
+        def system_function(self):
+            return self._system_function
+
+    _FORMULA_AUTO_COUNTER = Counter()
+
+    @staticmethod
+    def write_formula(o, *args):
+        global _FORMULA_AUTO_COUNTER
+        scope_key = _DEFAULT_SCOPE_KEY
+        index = Core._FORMULA_AUTO_COUNTER.get_value()
+        base_key = 'f' + str(index)
+        category = None
+        system_function = None
+        if isinstance(o, Core.SystemFunction):  # Using a union type to avoid import issues.
+            system_function = o
+            match o.category:
+                case Core.SystemFunction.SYSTEM_CONSTANT:
+                    category = Core.Formula.SYSTEM_CONSTANT_CALL
+                case Core.SystemFunction.SYSTEM_UNARY_OPERATOR:
+                    category = Core.Formula.SYSTEM_UNARY_OPERATOR_CALL
+                case Core.SystemFunction.SYSTEM_BINARY_OPERATOR:
+                    category = Core.Formula.SYSTEM_BINARY_OPERATOR_CALL
+                # TODO: Implement all other possibilities
+        arguments = args
+        formula = Core.Formula(
+            # Identification properties
+            scope_key=scope_key, language_key=Core._LANGUAGE_NAIVE, base_key=base_key,
+            # Mandatory complementary properties
+            category=category,
+            # Conditional complementary properties
+            system_function=system_function, arguments=arguments
+        )
+        log_info(formula.represent())
+        return formula
+
+    @staticmethod
+    def declare_atomic_variable(codomain, base_name=None, indexes=None):
+        # TODO: Provide support for different math fonts (e.g.: https://www.overleaf.com/learn/latex/Mathematical_fonts)
+        # TODO: Provide support for indexed variables. Variable declaration should be made with indexes bounds and not individual indexes values.
+        codomain_key = None
+        # Identification properties
+        scope_key = _DEFAULT_SCOPE_KEY
+        structure_key = Core._STRUCTURE_FORMULA
+        language_key = Core._LANGUAGE_NAIVE
+        if base_name is None:
+            # TODO: Make this a scope preference setting, letting the user choose the default
+            #   variable base_name in that scope.
+            base_name = 'x'
+        base_key = base_name
+        if indexes is not None:
+            if not isinstance(indexes, collections.abc.Iterable):
+                base_key = base_key + '__' + str(indexes)
+            else:
+                base_key = base_key + '__' + '_'.join(str(index) for index in indexes)
+        if Core.Concept.check_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key,
+                                                     language_key=language_key, base_key=base_key):
+            variable = Core.Concept.get_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key,
+                                                               language_key=language_key, base_key=base_key)
+            log_warning(
+                'This variable is already declared. In consequence, the existing variable is returned, instead of declaring a new one.',
+                variable=variable, scope_key=scope_key)
+            return variable
+        else:
+            variable = Core.Formula(
+                scope_key=scope_key, language_key=language_key, base_key=base_key,
+                category=Core.Formula.ATOMIC_VARIABLE,
+                codomain=codomain, base_name=base_name, indexes=indexes)
+            log_info(variable.represent_declaration())
+            return variable
 
 
 # TODO: Question: what should be the scope_key of user defined scopes? sys? the scope_key itself?
 
-def convert_formula_to_graphviz_digraph(formula: Formula, digraph=None):
+def convert_formula_to_graphviz_digraph(formula: Core.Formula, digraph=None):
     title = formula.represent(RFormats.UTF8)
     id = formula.qualified_key
 
@@ -1337,7 +1349,7 @@ def convert_formula_to_graphviz_digraph(formula: Formula, digraph=None):
         digraph = graphviz.Digraph(id)
 
     digraph.node(id, title)
-    if isinstance(formula, Formula) and isinstance(formula.arguments, collections.abc.Iterable):
+    if isinstance(formula, Core.Formula) and isinstance(formula.arguments, collections.abc.Iterable):
         for argument in formula.arguments:
             convert_formula_to_graphviz_digraph(formula=argument, digraph=digraph)
             digraph.edge(id, argument.qualified_key, dir='back')
@@ -1345,12 +1357,12 @@ def convert_formula_to_graphviz_digraph(formula: Formula, digraph=None):
     return digraph
 
 
-def convert_formula_to_dot(formula: Formula):
+def convert_formula_to_dot(formula: Core.Formula):
     digraph = convert_formula_to_graphviz_digraph(formula=formula)
     return digraph.source
 
 
-def render_formula_as_ipython_mimebundle(formula: Formula):
+def render_formula_as_ipython_mimebundle(formula: Core.Formula):
     """
     Render the formula as a digraph in SVG format,
     in Jupyter Notebook, Jupyter QT Console, and/or insider Spyder IDE.
@@ -1379,28 +1391,28 @@ class BA1:
 
 
     # Scope.
-    ba1_scope = Scope(
-        scope_key=_SCOPE_BA1, structure_key=_STRUCTURE_SCOPE, language_key=_LANGUAGE_BA1, base_key='ba1_language',
+    ba1_scope = Core.Scope(
+        scope_key=_SCOPE_BA1, structure_key=Core._STRUCTURE_SCOPE, language_key=_LANGUAGE_BA1, base_key='ba1_language',
         utf8='ba1_language', latex=r'\text{ba1_language}', html='ba1_language', usascii='ba1_language')
 
     # Language.
-    ba1_language = Language(
-        scope_key=_SCOPE_BA1, structure_key=_STRUCTURE_LANGUAGE, language_key=_LANGUAGE_BA1,
+    ba1_language = Core.Language(
+        scope_key=_SCOPE_BA1, structure_key=Core._STRUCTURE_LANGUAGE, language_key=_LANGUAGE_BA1,
         base_key='ba1_language',
         utf8='ba1_language', latex=r'\text{ba1_language}', html='ba1_language', usascii='ba1_language')
 
     # Domains.
-    b = Domain(
-        scope_key=_SCOPE_BA1, structure_key=_STRUCTURE_DOMAIN, language_key=_LANGUAGE_BA1, base_key='b',
+    b = Core.Domain(
+        scope_key=_SCOPE_BA1, structure_key=Core._STRUCTURE_DOMAIN, language_key=_LANGUAGE_BA1, base_key='b',
         utf8='𝔹', latex=r'\mathbb{B}', html='&Bopf;', usascii='B')
-    b2 = Domain(
-        scope_key=_SCOPE_BA1, structure_key=_STRUCTURE_DOMAIN, language_key=_LANGUAGE_BA1, base_key='b2',
+    b2 = Core.Domain(
+        scope_key=_SCOPE_BA1, structure_key=Core._STRUCTURE_DOMAIN, language_key=_LANGUAGE_BA1, base_key='b2',
         utf8='𝔹²', latex=r'\mathbb{B}^{2}', html=r'&Bopf;<sup>2</sup>', usascii='B2')
 
 
     # Algorithms.
     @staticmethod
-    def falsum_algorithm(vector_size: int = 1) -> typing.List[SystemFunction]:
+    def falsum_algorithm(vector_size: int = 1) -> typing.List[Core.SystemFunction]:
         """The vectorized falsum boolean function.
 
         Returns:
@@ -1409,7 +1421,7 @@ class BA1:
         return [BA1.falsum] * vector_size
 
     @staticmethod
-    def truth_algorithm(vector_size: int = 1) -> typing.List[SystemFunction]:
+    def truth_algorithm(vector_size: int = 1) -> typing.List[Core.SystemFunction]:
         """The vectorized truth boolean function.
 
         Returns:
@@ -1418,7 +1430,7 @@ class BA1:
         return [BA1.truth] * vector_size
 
     @staticmethod
-    def negation_algorithm(v: typing.List[SystemFunction]) -> typing.List[SystemFunction]:
+    def negation_algorithm(v: typing.List[Core.SystemFunction]) -> typing.List[Core.SystemFunction]:
         """The vectorized negation boolean function.
 
         Args:
@@ -1433,9 +1445,9 @@ class BA1:
 
     @staticmethod
     def conjunction_algorithm(
-            v1: typing.List[SystemFunction],
-            v2: typing.List[SystemFunction]) -> \
-            typing.List[SystemFunction]:
+            v1: typing.List[Core.SystemFunction],
+            v2: typing.List[Core.SystemFunction]) -> \
+            typing.List[Core.SystemFunction]:
         """The vectorized conjunction boolean function.
 
         Args:
@@ -1453,9 +1465,9 @@ class BA1:
 
     @staticmethod
     def disjunction_algorithm(
-            v1: typing.List[SystemFunction],
-            v2: typing.List[SystemFunction]) -> \
-            typing.List[SystemFunction]:
+            v1: typing.List[Core.SystemFunction],
+            v2: typing.List[Core.SystemFunction]) -> \
+            typing.List[Core.SystemFunction]:
         """The vectorized disjunction boolean function.
 
         Args:
@@ -1473,32 +1485,32 @@ class BA1:
 
 
     # Functions.
-    truth = SystemFunction(
-        scope_key=_SCOPE_BA1, structure_key=_STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='truth',
-        codomain=b, category=SystemFunction.SYSTEM_CONSTANT, algorithm=truth_algorithm,
+    truth = Core.SystemFunction(
+        scope_key=_SCOPE_BA1, structure_key=Core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='truth',
+        codomain=b, category=Core.SystemFunction.SYSTEM_CONSTANT, algorithm=truth_algorithm,
         utf8='⊤', latex=r'\top', html='&top;', usascii='truth', tokens=['⊤', 'truth', 'true', 't', '1'],
         arity=0, python_value=True)
 
-    falsum = SystemFunction(
-        scope_key=_SCOPE_BA1, structure_key=_STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='falsum',
-        codomain=b, category=SystemFunction.SYSTEM_CONSTANT, algorithm=falsum_algorithm,
+    falsum = Core.SystemFunction(
+        scope_key=_SCOPE_BA1, structure_key=Core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='falsum',
+        codomain=b, category=Core.SystemFunction.SYSTEM_CONSTANT, algorithm=falsum_algorithm,
         utf8='⊥', latex=r'\bot', html='&perp;', usascii='falsum', tokens=['⊥', 'falsum', 'false', 'f', '0'],
         arity=0, python_value=False)
-    negation = SystemFunction(
-        scope_key=_SCOPE_BA1, structure_key=_STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='negation',
-        codomain=b, category=SystemFunction.SYSTEM_UNARY_OPERATOR, algorithm=negation_algorithm,
+    negation = Core.SystemFunction(
+        scope_key=_SCOPE_BA1, structure_key=Core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='negation',
+        codomain=b, category=Core.SystemFunction.SYSTEM_UNARY_OPERATOR, algorithm=negation_algorithm,
         utf8='¬', latex=r'\lnot', html='&not;', usascii='not', tokens=['¬', 'not', 'lnot'],
         domain=b, arity=1)
-    conjunction = SystemFunction(
-        scope_key=_SCOPE_BA1, structure_key=_STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1,
+    conjunction = Core.SystemFunction(
+        scope_key=_SCOPE_BA1, structure_key=Core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1,
         base_key='conjunction',
-        codomain=b, category=SystemFunction.SYSTEM_BINARY_OPERATOR, algorithm=conjunction_algorithm,
+        codomain=b, category=Core.SystemFunction.SYSTEM_BINARY_OPERATOR, algorithm=conjunction_algorithm,
         utf8='∧', latex=r'\land', html='&and;', usascii='and', tokens=['∧', 'and', 'land'],
         domain=b, arity=2)
-    disjunction = SystemFunction(
-        scope_key=_SCOPE_BA1, structure_key=_STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1,
+    disjunction = Core.SystemFunction(
+        scope_key=_SCOPE_BA1, structure_key=Core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1,
         base_key='disjunction',
-        codomain=b, category=SystemFunction.SYSTEM_BINARY_OPERATOR, algorithm=disjunction_algorithm,
+        codomain=b, category=Core.SystemFunction.SYSTEM_BINARY_OPERATOR, algorithm=disjunction_algorithm,
         utf8='∨', latex=r'\lor', html='&or;', usascii='or', tokens=['∨', 'or', 'lor'],
         domain=b, arity=2)
 
@@ -1518,17 +1530,17 @@ class BA1:
             return BA1.b2
         else:
             scope_key = BA1._SCOPE_BA1
-            structure_key = _STRUCTURE_DOMAIN
+            structure_key = Core._STRUCTURE_DOMAIN
             language_key = BA1._LANGUAGE_BA1
             base_key = 'b' + str(n)  # TODO: Check it is an int
             # TODO: Consider implementing a lock to avoid bugs with multithreading when checking the static dictionary
-            if Concept.check_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key,
+            if Core.Concept.check_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key,
                                                          language_key=language_key, base_key=base_key):
-                return Concept.get_concept_from_decomposed_key(scope_key=scope_key,
+                return Core.Concept.get_concept_from_decomposed_key(scope_key=scope_key,
                                                                structure_key=structure_key,
                                                                language_key=language_key, base_key=base_key)
             else:
-                return Domain(
+                return Core.Domain(
                     scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
                     utf8='𝔹' + superscriptify(n), latex=r'\mathbb{B}^{' + str(n) + r'}',
                     html=r'&Bopf;<sup>' + str(n) + '</sup>', usascii='B' + str(n))
@@ -1543,7 +1555,7 @@ class BA1:
         return [(BA1.truth if (integer_value & 1 << c != 0) else BA1.falsum) for integer_value in range(0, 2 ** n)]
 
     @staticmethod
-    def satisfaction_index(phi: Formula, variables_list=None):
+    def satisfaction_index(phi: Core.Formula, variables_list=None):
         """Compute the **satisfaction indexes** (:math:`\text{sat}_I`) of a Boolean formula (:math:`\phi`).
 
         Alias:
@@ -1573,7 +1585,7 @@ class BA1:
                 argument_type=type(argument),
                 argument_codomain=argument.codomain,
                 argument_is_system_function_call=argument.is_system_function_call)
-            if isinstance(argument, Formula) and \
+            if isinstance(argument, Core.Formula) and \
                     argument.is_system_function_call and \
                     argument.codomain == BA1.b:
                 # This argument is a Boolean Formula.
@@ -1582,8 +1594,8 @@ class BA1:
                 # restricting the variables list to the subset of necessary variables.
                 vector = BA1.satisfaction_index(argument, variables_list=variables_list)
                 argument_vectors[argument_index] = vector
-            elif isinstance(argument, Formula) and \
-                    argument.category == Formula.ATOMIC_VARIABLE and \
+            elif isinstance(argument, Core.Formula) and \
+                    argument.category == Core.Formula.ATOMIC_VARIABLE and \
                     argument.codomain == BA1.b:
                 # This argument is a Boolean atomic proposition.
                 log_debug('This argument is a Boolean atomic proposition')
