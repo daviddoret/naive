@@ -8,4 +8,4 @@ except:
 
 from naive.core import *
 
-logging.info(f'Naive initialization completed. Package version: {__version__}.')
+logging.info(f'Naive package initialization completed. Version: {__version__}.')

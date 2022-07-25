@@ -8,8 +8,6 @@ import abc
 from textx import metamodel_from_file, metamodel_from_str
 import pkg_resources
 
-
-
 # This sets the root logger to write to stdout (your console).
 # Your script/app needs to call this somewhere at least once.
 # Reference: https://stackoverflow.com/questions/7016056/python-logging-not-outputting-anything
@@ -21,6 +19,9 @@ logging.basicConfig(format='%(message)s')
 # that do not set a less verbose level.
 # Reference: https://stackoverflow.com/questions/7016056/python-logging-not-outputting-anything
 logging.root.setLevel(logging.INFO)
+
+_QUALIFIED_KEY_SEPARATOR = '.'
+_MNEMONIC_KEY_ALLOWED_CHARACTERS = 'abcdefghijklmnopqrstuvwxyz012345679_'
 
 
 class RFormats:
@@ -77,7 +78,9 @@ class RFormats:
     """The list of all available formats."""
     CATALOG = [USASCII, UTF8, LATEX, HTML]
 
+
 class Log:
+    """A library of logging and error handling functions and classes."""
 
     @staticmethod
     def set_debug_level():
@@ -103,11 +106,9 @@ class Log:
     @staticmethod
     def log_debug(message: str = '', code: int = 0, **kwargs):
         if code not in Log.code_exclusion_list:
-            d = stringify_dictionary(**kwargs)
+            d = Utils.stringify_dictionary(**kwargs)
             message = f'DEBUGGING: {message} {d}.'
             logging.debug(message)
-
-
 
     USE_PRINT_FOR_INFO = True
     """Better output in Jupyter notebooks."""
@@ -115,7 +116,7 @@ class Log:
     @staticmethod
     def log_info(message: str = '', code: int = 0, **kwargs):
         if code not in Log.code_exclusion_list:
-            d = stringify_dictionary(**kwargs)
+            d = Utils.stringify_dictionary(**kwargs)
             message = f'{message} {d}'
             if Log.USE_PRINT_FOR_INFO:
                 print(message)
@@ -129,10 +130,9 @@ class Log:
     @staticmethod
     def log_warning(message: str = '', code: int = 0, **kwargs):
         if code not in Log.code_exclusion_list:
-            d = stringify_dictionary(**kwargs)
+            d = Utils.stringify_dictionary(**kwargs)
             message = f'WARNING: {message} {d}'
             logging.warning(message)
-
 
     class NaiveError(Exception):
         """The generic exception type raised by the **naive** library."""
@@ -141,228 +141,464 @@ class Log:
     @staticmethod
     def log_error(message: str = '', *args, code: int = 0, **kwargs):
         if code not in Log.code_exclusion_list:
-            d = stringify_dictionary(**kwargs)
+            d = Utils.stringify_dictionary(**kwargs)
             message = f'ERROR: {message}. {d}.'
             logging.error(message, exc_info=True)
             raise Log.NaiveError(message)
 
 
-def stringify_dictionary(**kwargs):
-    s = ''
-    for k, v in kwargs.items():
-        s = f'{s}\n  {k}: {str(v)}'
-    return s
-    # return jsonpickle.encode(kwargs)
+class Utils:
+    """A library of miscellaneous utility classes and functions."""
+
+    class Counter(object):
+        def __init__(self):
+            self.value = 1
+            self._lock = threading.Lock()
+
+        def get_value(self):
+            with self._lock:
+                self.value += 1
+                return self.value
+
+    @staticmethod
+    def stringify_dictionary(**kwargs):
+        s = ''
+        for k, v in kwargs.items():
+            s = f'{s}\n  {k}: {str(v)}'
+        return s
+        # return jsonpickle.encode(kwargs)
+
+    @staticmethod
+    def coerce(
+            o: (None, object),
+            cls: type) -> (None, object):
+        """Coerces an object **representation** to type **cls**.
+
+        This function is useful to implement single line argument type coercion for the validation of arguments in functions and methods.
+
+        The assumption behind **coerce** is that all classes implement a coercive constructor.
+
+        Args:
+            o (object): An object of undetermined type, but compatible with **cls**.
+            cls (type): A class that implements a coercive constructor.
+
+        Returns:
+            object: **None**, or an object of type **cls**.
+
+        Raises:
+            NaiveWarning: If ambiguous type coercion was necessary.
+            NaiveError: If type coercion failed.
+
+        Example:
+
+            .. jupyter-execute::
+
+                # import naive
+                n = "5"
+                print(n)
+                #n_prime = coerce(n, NN0)
+                #print(type(n_prime))
+                #print(n_prime)
+
+        Notes:
+            High-level algorithm:
+
+            1. If **representation** is **None**, returns **None**.
+
+            2. Else if **representation** is of type **cls**, returns **representation**.
+
+            3. Else if **representation** is not of type **cls**, creates an instance of **cls** by calling its default constructor, i.e. ``cls(representation)`` and issue a **NaiveWarning**.
 
 
-def coerce(
-        o: (None, object),
-        cls: type) -> (None, object):
-    """Coerces an object **representation** to type **cls**.
-
-    This function is useful to implement single line argument type coercion for the validation of arguments in functions and methods.
-
-    The assumption behind **coerce** is that all classes implement a coercive constructor.
-
-    Args:
-        o (object): An object of undetermined type, but compatible with **cls**.
-        cls (type): A class that implements a coercive constructor.
-
-    Returns:
-        object: **None**, or an object of type **cls**.
-
-    Raises:
-        NaiveWarning: If ambiguous type coercion was necessary.
-        NaiveError: If type coercion failed.
-
-    Example:
-
-        .. jupyter-execute::
-
-            # import naive
-            n = "5"
-            print(n)
-            #n_prime = coerce(n, NN0)
-            #print(type(n_prime))
-            #print(n_prime)
-
-    Notes:
-        High-level algorithm:
-
-        1. If **representation** is **None**, returns **None**.
-
-        2. Else if **representation** is of type **cls**, returns **representation**.
-
-        3. Else if **representation** is not of type **cls**, creates an instance of **cls** by calling its default constructor, i.e. ``cls(representation)`` and issue a **NaiveWarning**.
-
-
-    """
-    if o is None:
-        return None
-    elif isinstance(o, cls):
-        # The object is already of the expected type.
-        # Return the object itself.
-        return o
-    else:
-        # The object is not of the expected type,
-        # we must attempt to force its conversion,
-        # by calling the constructor of the desired type,
-        # passing it the source object.
-        try:
-            coerced_o = cls(o)
-        except Exception as e:
-            Log.log_error(code=Log.COERCION_FAILURE, o=o, cls=cls)
+        """
+        if o is None:
+            return None
+        elif isinstance(o, cls):
+            # The object is already of the expected type.
+            # Return the object itself.
+            return o
         else:
-            Log.log_debug(code=Log.COERCION_SUCCESS, o=o, cls=cls)
-        return cls(o)
-
-
-class ABCRepresentable(abc.ABC):
-    """An abstract class for objects that support representation in multiple formats.
-
-    See also:
-        * :class:`PersistingRepresentable` class.
-    """
-
-    def __init__(self, *args, **kwargs):
-        super().__init__()
-
-    def __str__(self) -> str:
-        # TODO: For future development, if images or other media are supported, the output of get_presentation() will need to be converted to text.
-        return self.represent()
-
-    def __repr__(self):
-        return self.__str__()
-
-    def __lt__(self, other):
-        """Less Than.
-
-        Allows sorting of variables by their names.
-        Not to be confused with sorting variables by their values."""
-        return str(self) < str(other)
-
-    @abc.abstractmethod
-    def represent(self, rformat: str = None, *args, **kwargs) -> str:
-        """Get the object's representation in the desired format.
-
-        Args:
-            rformat (str): The representation format.
-            args:
-            kwargs:
-
-        Returns:
-            The object's representation in the desired format.
-        """
-        raise NotImplementedError('Abstract method must be implemented in subclass.')
-
-
-"""Safe types for type coercion."""
-CoercibleABCRepresentable = typing.TypeVar(
-    'CoercibleABCRepresentable',
-    ABCRepresentable,
-    bytes,  # Support for raw USASCII strings.
-    str
-)
-
-
-class PersistingRepresentable(ABCRepresentable):
-    """A helper class for objects that support representation in multiple formats by storing representations in
-    object properties."""
-
-    def __init__(self, source=None, source_representable=None, source_string=None, **kwargs):
-        """Initializes the object and stores its representations in available formats.
-
-        Kwargs:
-            source_representable (ABCRepresentable): A source source_representable object whose representation should be imitated.
-            source_string (source_string): A source object that may be converted to **source_string** to get a UTF-8 representation.
-            ...: Representation formats may be passed in kwargs (e.g. usascii='phi', latex=r'\phi').
-        """
-        if source is not None:
-            # Support for implicit conversion during type coercion.
-            if isinstance(source, ABCRepresentable):
-                source_representable = source
+            # The object is not of the expected type,
+            # we must attempt to force its conversion,
+            # by calling the constructor of the desired type,
+            # passing it the source object.
+            try:
+                coerced_o = cls(o)
+            except Exception as e:
+                Log.log_error(code=Log.COERCION_FAILURE, o=o, cls=cls)
             else:
-                source_string = str(source)
+                Log.log_debug(code=Log.COERCION_SUCCESS, o=o, cls=cls)
+            return cls(o)
 
-        source_representable = coerce(source_representable, ABCRepresentable)
-        source_string = coerce(source_string, str)
+    def flatten(*args: object, skip_none: bool = True) -> typing.List[typing.Any]:
+        """Flatten iterable objects of arbitrary depth.
 
-        self._representations = {}
+        This utility function converts embedded lists or multidimensional objects to vectors.
 
-        if source_representable is not None:
-            # If a PersistingRepresentable object was passed as argument,
-            # imitate this object's representations.
-            self.imitate(source_representable)
-        elif source_string is not None:
-            # Otherwise, we must assume it was a string or other
-            # string-like Unicode representation.
-            self._representations[RFormats.UTF8] = source_string
+        If v is already a flat list, returns a new list instance with the same elements.
 
-        # If representations are provided in specific formats,
-        # store these representations.
-        # Note that these get priority over above imitation.
-        for arg_key, arg_value in kwargs.items():
-            if arg_key in RFormats.CATALOG:
-                # This is a representation format.
-                if not isinstance(arg_value, str):
-                    # TODO: In future development, if images or other media are supported, reconsider this.
-                    arg_value = str(arg_value)
-                self._representations[arg_key] = arg_value
+        If v is not iterable, returns an iterable version of v, that is: [v].
 
-        super().__init__(**kwargs)
-
-    def represent(self, rformat: str = None, *args, **kwargs) -> str:
-        """Get the object's representation in a supported format.
+        If v is None, returns an empty list, that is [].
 
         Args:
-            rformat (str): A representation format.
-            args: For future use.
-            kwargs: For future use.
+            x (object): Any object but preferably an iterable object of type: abc.Iterable[typing.Any].
+            skip_none (bool): Do not include None as an element in the resulting list.
 
         Returns:
-            The object's representation in the requested format.
+             A flat list.
+
         """
+        flattened = []
+        for y in args:
+            # Recursive call for sub-structures
+            # except strings that are understood as atomic in this context
+            if isinstance(y, collections.abc.Iterable) and not isinstance(y, str):
+                # We cannot call directly extend to support n-depth structures
+                sub_flattened = Utils.flatten(*y)
+                if sub_flattened is not None or not skip_none:
+                    flattened.extend(sub_flattened)
+            elif y is not None or not skip_none:
+                flattened.append(y)
+        return flattened
+
+
+class Repr:
+    """A library of functions and classes that help representing (or rendering, or visualizing) objects."""
+
+    class ABCRepresentable(abc.ABC):
+        """An abstract class for objects that support representation in multiple formats.
+
+        See also:
+            * :class:`PersistingRepresentable` class.
+        """
+
+        def __init__(self, *args, **kwargs):
+            super().__init__()
+
+        def __str__(self) -> str:
+            # TODO: For future development, if images or other media are supported, the output of get_presentation() will need to be converted to text.
+            return self.represent()
+
+        def __repr__(self):
+            return self.__str__()
+
+        def __lt__(self, other):
+            """Less Than.
+
+            Allows sorting of variables by their names.
+            Not to be confused with sorting variables by their values."""
+            return str(self) < str(other)
+
+        @abc.abstractmethod
+        def represent(self, rformat: str = None, *args, **kwargs) -> str:
+            """Get the object's representation in the desired format.
+
+            Args:
+                rformat (str): The representation format.
+                args:
+                kwargs:
+
+            Returns:
+                The object's representation in the desired format.
+            """
+            raise NotImplementedError('Abstract method must be implemented in subclass.')
+
+
+    """Safe types for type coercion."""
+    CoercibleABCRepresentable = typing.TypeVar(
+        'CoercibleABCRepresentable',
+        ABCRepresentable,
+        bytes,  # Support for raw USASCII strings.
+        str
+    )
+
+
+    class PersistingRepresentable(ABCRepresentable):
+        """A helper class for objects that support representation in multiple formats by storing representations in
+        object properties."""
+
+        def __init__(self, source=None, source_representable=None, source_string=None, **kwargs):
+            """Initializes the object and stores its representations in available formats.
+
+            Kwargs:
+                source_representable (ABCRepresentable): A source source_representable object whose representation should be imitated.
+                source_string (source_string): A source object that may be converted to **source_string** to get a UTF-8 representation.
+                ...: Representation formats may be passed in kwargs (e.g. usascii='phi', latex=r'\phi').
+            """
+            if source is not None:
+                # Support for implicit conversion during type coercion.
+                if isinstance(source, Repr.ABCRepresentable):
+                    source_representable = source
+                else:
+                    source_string = str(source)
+
+            source_representable = Utils.coerce(source_representable, Repr.ABCRepresentable)
+            source_string = Utils.coerce(source_string, str)
+
+            self._representations = {}
+
+            if source_representable is not None:
+                # If a PersistingRepresentable object was passed as argument,
+                # imitate this object's representations.
+                self.imitate(source_representable)
+            elif source_string is not None:
+                # Otherwise, we must assume it was a string or other
+                # string-like Unicode representation.
+                self._representations[RFormats.UTF8] = source_string
+
+            # If representations are provided in specific formats,
+            # store these representations.
+            # Note that these get priority over above imitation.
+            for arg_key, arg_value in kwargs.items():
+                if arg_key in RFormats.CATALOG:
+                    # This is a representation format.
+                    if not isinstance(arg_value, str):
+                        # TODO: In future development, if images or other media are supported, reconsider this.
+                        arg_value = str(arg_value)
+                    self._representations[arg_key] = arg_value
+
+            super().__init__(**kwargs)
+
+        def represent(self, rformat: str = None, *args, **kwargs) -> str:
+            """Get the object's representation in a supported format.
+
+            Args:
+                rformat (str): A representation format.
+                args: For future use.
+                kwargs: For future use.
+
+            Returns:
+                The object's representation in the requested format.
+            """
+            if rformat is None:
+                rformat = RFormats.DEFAULT
+            if rformat in self._representations:
+                return self._representations[rformat]
+            elif RFormats.UTF8 in self._representations:
+                # We fall back on UTF-8
+                return self._representations[RFormats.UTF8]
+            else:
+                raise ValueError(f'PersistingRepresentable object has no representations in {rformat} nor {RFormats.UTF8}.')
+
+        def imitate(self, o: Repr.ABCRepresentable):
+            """Imitate the representation of another object."""
+            for rformat in RFormats.CATALOG:
+                # TODO: Minor design flaw: this process will also copy unsupported properties that default to UTF-8.
+                self._representations[rformat] = o.represent(rformat)
+
+
+    class Glyph(PersistingRepresentable):
+        """A glyph is an elemental representation item."""
+
+        def __init__(self, *args, **kwargs):
+            """Initializes a Glyph object.
+
+            Args:
+                *args: Variable length argument list.
+                **kwargs: Arbitrary keyword arguments.
+            """
+            super().__init__(*args, **kwargs)
+
+
+    """Safe types for type coercion."""
+    CoerciblePersistingRepresentable = typing.TypeVar(
+        'CoerciblePersistingRepresentable',
+        ABCRepresentable,
+        bytes,  # Support for raw USASCII strings.
+        PersistingRepresentable,
+        str
+    )
+
+
+    def subscriptify(representation: str, rformat: str) -> str:
+        """Converts to subscript the representation of object **o**.
+
+        Use cases:
+            * Render beautiful indexed math variables (e.g. v₁, v₂, v₃).
+
+        Args:
+            representation (str): The representation of the object in that format.
+            rformat (str): A supported format from the formats.CATALOG.
+
+        Returns:
+            str: The representation in subscript.
+
+        Example:
+
+            .. jupyter-execute::
+
+                # TODO: Rewrite
+                #import naive
+                #o = 'Indexed math variables look beautiful with subscript: v1, v2, x3'
+                #s_prime = subscript(o)
+                #print(s_prime)
+
+        References:
+            * https://stackoverflow.com/questions/13875507/convert-numeric-strings-to-superscript
+
+        """
+        if representation is None:
+            return ''
         if rformat is None:
             rformat = RFormats.DEFAULT
-        if rformat in self._representations:
-            return self._representations[rformat]
-        elif RFormats.UTF8 in self._representations:
-            # We fall back on UTF-8
-            return self._representations[RFormats.UTF8]
-        else:
-            raise ValueError(f'PersistingRepresentable object has no representations in {rformat} nor {RFormats.UTF8}.')
+        if not isinstance(representation, str):
+            representation = str(representation)
+        match rformat:
+            case RFormats.UTF8:
+                # TODO: Extend support to all available subscript characters in Unicode.
+                # TODO: Issue a Warning for characters that are not supported and skip them.
+                subscript_dictionary = {'0': u'₀',
+                                        '1': u'₁',
+                                        '2': u'₂',
+                                        '3': u'₃',
+                                        '4': u'₄',
+                                        '5': u'₅',
+                                        '6': u'₆',
+                                        '7': u'₇',
+                                        '8': u'₈',
+                                        '9': u'₉'}
+                return u''.join(subscript_dictionary.get(char, char) for char in representation)
+            case RFormats.LATEX:
+                # ASSUMPTION: The subscriptified result must be concatenated with something.
+                return r'_{' + representation + r'}'
+            case RFormats.HTML:
+                return r'<sub>' + representation + r'</sub>'
+            case RFormats.USASCII:
+                # TODO: USASCII representation may be ambiguous. Considering issuing a Warning.
+                return representation
 
-    def imitate(self, o: ABCRepresentable):
-        """Imitate the representation of another object."""
-        for rformat in RFormats.CATALOG:
-            # TODO: Minor design flaw: this process will also copy unsupported properties that default to UTF-8.
-            self._representations[rformat] = o.represent(rformat)
 
+    def superscriptify(representation: str, rformat: str = None) -> str:
+        """Converts to superscript the representation of object **o**.
 
-class Glyph(PersistingRepresentable):
-    """A glyph is an elemental representation item."""
-
-    def __init__(self, *args, **kwargs):
-        """Initializes a Glyph object.
+        Use cases:
+            * Render beautiful indexed math variables (e.g. v₁, v₂, v₃).
 
         Args:
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
+            representation (str): The representation of the object in that format.
+            rformat (str): A supported format from the formats.CATALOG.
+
+        Returns:
+            str: The representation in superscript.
+
+        Example:
+
+            .. jupyter-execute::
+
+                # TODO: Rewrite
+                #import naive
+                #o = 'Indexed math variables look beautiful with superscript: v1, v2, x3'
+                #s_prime = superscript(o)
+                #print(s_prime)
+
+        References:
+            * https://stackoverflow.com/questions/13875507/convert-numeric-strings-to-superscript
+
         """
-        super().__init__(*args, **kwargs)
+        representation = Utils.coerce(representation, str)
+        if representation is None or representation == '':
+            return ''
+        if rformat is None:
+            rformat = RFormats.DEFAULT
+        match rformat:
+            case RFormats.UTF8:
+                # TODO: Extend support to all available superscript characters in Unicode.
+                # TODO: Issue a Warning for characters that are not supported and skip them.
+                superscript_dictionary = {'0': u'⁰',
+                                          '1': u'¹',
+                                          '2': u'²',
+                                          '3': u'³',
+                                          '4': u'⁴',
+                                          '5': u'⁵',
+                                          '6': u'⁶',
+                                          '7': u'⁷',
+                                          '8': u'⁸',
+                                          '9': u'⁹'}
+                return u''.join(superscript_dictionary.get(char, char) for char in representation)
+            case RFormats.LATEX:
+                # ASSUMPTION: The superscriptified result must be concatenated with something.
+                return r'^{' + representation + r'}'
+            case RFormats.HTML:
+                return r'<sup>' + representation + r'</sup>'
+            case RFormats.USASCII:
+                # TODO: USASCII representation may be ambiguous. Considering issuing a Warning.
+                return representation
+
+
+    def convert_formula_to_graphviz_digraph(formula: Core.Formula, digraph=None):
+        title = formula.represent(RFormats.UTF8)
+        id = formula.qualified_key
+
+        if digraph is None:
+            digraph = graphviz.Digraph(id)
+
+        digraph.node(id, title)
+        if isinstance(formula, Core.Formula) and isinstance(formula.arguments, collections.abc.Iterable):
+            for argument in formula.arguments:
+                Repr.convert_formula_to_graphviz_digraph(formula=argument, digraph=digraph)
+                digraph.edge(id, argument.qualified_key, dir='back')
+
+        return digraph
+
+
+    def convert_formula_to_dot(formula: Core.Formula):
+        digraph = Repr.convert_formula_to_graphviz_digraph(formula=formula)
+        return digraph.source
+
+
+    def render_formula_as_ipython_mimebundle(formula: Core.Formula):
+        """
+        Render the formula as a digraph in SVG format,
+        in Jupyter Notebook, Jupyter QT Console, and/or insider Spyder IDE.
+
+        Bibliography:
+            * https://graphviz.readthedocs.io/en/stable/api.html#graphviz.Graph._repr_mimebundle_
+            * https://graphviz.readthedocs.io/en/stable/manual.html
+        """
+        digraph = Repr.convert_formula_to_graphviz_digraph(formula=formula)
+        digraph._repr_mimebundle_()
+
+
+
+    def represent(o: object, rformat: str = None, *args, **kwargs) -> str:
+        """Get the object'representation representation in the desired format.
+
+        If **representation** is None, return an empty string.
+        Else if **representation** is ABCRepresentable, return **representation**.get_representation().
+        Else, return source_string(**representation**).
+
+        Args:
+            o (object): The object to be represented.
+            rformat (str): The representation format.
+
+        Returns:
+            The object'representation representation, if support in the desired format.
+        """
+        if o is None:
+            # If nothing is passed for representation,
+            # we return an empty string to facilitate concatenations.
+            return ''
+        if rformat is None:
+            rformat = RFormats.DEFAULT
+        if isinstance(o, Repr.ABCRepresentable):
+            return o.represent(rformat, *args, **kwargs)
+        else:
+            return str(o)
+
 
 
 class Glyphs:
     # Number sets
-    standard_0 = Glyph(utf8='0', latex=r'0', html='0', usascii='0')
-    standard_1 = Glyph(utf8='1', latex=r'1', html='1', usascii='1')
-    standard_x_lowercase = Glyph(utf8='v', latex=r'v', html='v', usascii='v')
-    standard_y_lowercase = Glyph(utf8='y', latex=r'y', html='y', usascii='y')
-    standard_z_lowercase = Glyph(utf8='z', latex=r'z', html='z', usascii='z')
-    mathbb_a_uppercase = Glyph(utf8='𝔸', latex=r'\mathbb{A}', html='&Aopf;', usascii='A')
-    mathbb_b_uppercase = Glyph(utf8='𝔹', latex=r'\mathbb{B}', html='&Bopf;', usascii='B')
-    mathbb_n_uppercase = Glyph(utf8='ℕ', latex=r'\mathbb{N}', html='&Nopf;', usascii='N')
-    mathbb_z_uppercase = Glyph(utf8='ℤ', latex=r'\mathbb{Z}', html='&Zopf;', usascii='Z')
+    standard_0 = Repr.Glyph(utf8='0', latex=r'0', html='0', usascii='0')
+    standard_1 = Repr.Glyph(utf8='1', latex=r'1', html='1', usascii='1')
+    standard_x_lowercase = Repr.Glyph(utf8='v', latex=r'v', html='v', usascii='v')
+    standard_y_lowercase = Repr.Glyph(utf8='y', latex=r'y', html='y', usascii='y')
+    standard_z_lowercase = Repr.Glyph(utf8='z', latex=r'z', html='z', usascii='z')
+    mathbb_a_uppercase = Repr.Glyph(utf8='𝔸', latex=r'\mathbb{A}', html='&Aopf;', usascii='A')
+    mathbb_b_uppercase = Repr.Glyph(utf8='𝔹', latex=r'\mathbb{B}', html='&Bopf;', usascii='B')
+    mathbb_n_uppercase = Repr.Glyph(utf8='ℕ', latex=r'\mathbb{N}', html='&Nopf;', usascii='N')
+    mathbb_z_uppercase = Repr.Glyph(utf8='ℤ', latex=r'\mathbb{Z}', html='&Zopf;', usascii='Z')
     # {\displaystyle \mathbb {C} }\mathbb{C} 	ℂ	Complex number	\mathbb{C}, \Complex	&Copf;	U+2102
     # {\displaystyle \mathbb {H} }\mathbb {H} 	ℍ	Quaternion	\mathbb{H}, \H	&quaternions;	U+210D
     # {\displaystyle \mathbb {O} }\mathbb {O} 	𝕆	Octonion	\mathbb{O}	&Oopf;	U+1D546
@@ -370,228 +606,46 @@ class Glyphs:
     # {\displaystyle \mathbb {R} }\mathbb {R} 	ℝ	Real number	\mathbb{R}, \R	&Ropf;	U+211D
     # {\displaystyle \mathbb {S} }\mathbb {S} 	𝕊	Sedenion	\mathbb{S}	&Sopf;	U+1D54A
 
-    to = Glyph(utf8='⟶', latex=r'\longrightarrow', html=r'&rarr;', usascii='-->')
-    maps_to = Glyph(utf8='⟼', latex=r'\longmapsto', html=r'&mapsto;', usascii='|->')
-    colon = Glyph(utf8=':', latex=r'\colon', html=r':', usascii=':')
+    to = Repr.Glyph(utf8='⟶', latex=r'\longrightarrow', html=r'&rarr;', usascii='-->')
+    maps_to = Repr.Glyph(utf8='⟼', latex=r'\longmapsto', html=r'&mapsto;', usascii='|->')
+    colon = Repr.Glyph(utf8=':', latex=r'\colon', html=r':', usascii=':')
 
     # Bibliography:
     #   * https://en.wikipedia.org/wiki/List_of_logic_symbols
-    logical_falsum = Glyph(utf8='⊥', latex=r'\bot', html='&perp;', usascii='F')
-    logical_truth = Glyph(utf8='⊤', latex=r'\top', html='&top;', usascii='T')
-    logical_negation = Glyph(utf8='¬', latex=r'\lnot', html='&not;', usascii='not')
-    logical_conjunction = Glyph(utf8='∧', latex=r'\land', html='&and;', usascii='and')
-    logical_disjunction = Glyph(utf8='∨', latex=r'\lor', html='&or;', usascii='or')
-    logical_material_implication = Glyph(utf8='⇒', latex=r'\implies', html='&rArr;', usascii='implies')
-    logical_material_equivalence = Glyph(utf8='⇔', latex=r'\iif', html='&hArr;', usascii='iif')
+    logical_falsum = Repr.Glyph(utf8='⊥', latex=r'\bot', html='&perp;', usascii='F')
+    logical_truth = Repr.Glyph(utf8='⊤', latex=r'\top', html='&top;', usascii='T')
+    logical_negation = Repr.Glyph(utf8='¬', latex=r'\lnot', html='&not;', usascii='not')
+    logical_conjunction = Repr.Glyph(utf8='∧', latex=r'\land', html='&and;', usascii='and')
+    logical_disjunction = Repr.Glyph(utf8='∨', latex=r'\lor', html='&or;', usascii='or')
+    logical_material_implication = Repr.Glyph(utf8='⇒', latex=r'\implies', html='&rArr;', usascii='implies')
+    logical_material_equivalence = Repr.Glyph(utf8='⇔', latex=r'\iif', html='&hArr;', usascii='iif')
 
     # Greek Letters
-    phi_plain_small = Glyph(utf8='φ', latex=r'\phi', html='&phi;', usascii='phi')
-    phi_plain_cap = Glyph(utf8='Φ', latex=r'\Phi', html='&Phi;', usascii='Phi')
-    psi_plain_small = Glyph(utf8='ψ', latex=r'\psi', html='&psi;', usascii='psi')
-    psi_plain_cap = Glyph(utf8='Ψ', latex=r'\Psi', html='&Psi;', usascii='Psi')
+    phi_plain_small = Repr.Glyph(utf8='φ', latex=r'\phi', html='&phi;', usascii='phi')
+    phi_plain_cap = Repr.Glyph(utf8='Φ', latex=r'\Phi', html='&Phi;', usascii='Phi')
+    psi_plain_small = Repr.Glyph(utf8='ψ', latex=r'\psi', html='&psi;', usascii='psi')
+    psi_plain_cap = Repr.Glyph(utf8='Ψ', latex=r'\Psi', html='&Psi;', usascii='Psi')
 
     # Brackets
     # Sources:
     #   * https://en.wikipedia.org/wiki/Bracket
-    parenthesis_left = Glyph(utf8='(', latex=r'\left(', html='&lparen;', usascii='(')
-    parenthesis_right = Glyph(utf8=')', latex=r'\right)', html='&rparen;', usascii=')')
-    square_bracket_left = Glyph(utf8='[', latex=r'\left[', html='&91;', usascii='[')
-    square_bracket_right = Glyph(utf8=']', latex=r'\right]', html='&93;', usascii=']')
-    curly_bracket_left = Glyph(utf8='{', latex=r'\left\{', html='&123;', usascii='{')
-    curly_bracket_right = Glyph(utf8='}', latex=r'\right\}', html='&125;', usascii='}')
-    angle_bracket_left = Glyph(utf8='⟨', latex=r'\left\langle', html='&lang;', usascii='<')
-    angle_bracket_right = Glyph(utf8='⟩', latex=r'\right\rangle', html='&rang;', usascii='>')
+    parenthesis_left = Repr.Glyph(utf8='(', latex=r'\left(', html='&lparen;', usascii='(')
+    parenthesis_right = Repr.Glyph(utf8=')', latex=r'\right)', html='&rparen;', usascii=')')
+    square_bracket_left = Repr.Glyph(utf8='[', latex=r'\left[', html='&91;', usascii='[')
+    square_bracket_right = Repr.Glyph(utf8=']', latex=r'\right]', html='&93;', usascii=']')
+    curly_bracket_left = Repr.Glyph(utf8='{', latex=r'\left\{', html='&123;', usascii='{')
+    curly_bracket_right = Repr.Glyph(utf8='}', latex=r'\right\}', html='&125;', usascii='}')
+    angle_bracket_left = Repr.Glyph(utf8='⟨', latex=r'\left\langle', html='&lang;', usascii='<')
+    angle_bracket_right = Repr.Glyph(utf8='⟩', latex=r'\right\rangle', html='&rang;', usascii='>')
 
     # Set Theory
-    element_of = Glyph(utf8='∈∉', latex=r'\in')
-    not_element_of = Glyph(utf8='∉', latex=r'\notin')
+    element_of = Repr.Glyph(utf8='∈∉', latex=r'\in')
+    not_element_of = Repr.Glyph(utf8='∉', latex=r'\notin')
 
     # Spaces
-    small_space = Glyph(utf8=' ', latex=r'\,', html='&nbsp;', usascii=' ')
+    small_space = Repr.Glyph(utf8=' ', latex=r'\,', html='&nbsp;', usascii=' ')
 
 
-"""Safe types for type coercion."""
-CoerciblePersistingRepresentable = typing.TypeVar(
-    'CoerciblePersistingRepresentable',
-    ABCRepresentable,
-    bytes,  # Support for raw USASCII strings.
-    PersistingRepresentable,
-    str
-)
-
-
-def represent(o: object, rformat: str = None, *args, **kwargs) -> str:
-    """Get the object'representation representation in the desired format.
-
-    If **representation** is None, return an empty string.
-    Else if **representation** is ABCRepresentable, return **representation**.get_representation().
-    Else, return source_string(**representation**).
-
-    Args:
-        o (object): The object to be represented.
-        rformat (str): The representation format.
-
-    Returns:
-        The object'representation representation, if support in the desired format.
-    """
-    if o is None:
-        # If nothing is passed for representation,
-        # we return an empty string to facilitate concatenations.
-        return ''
-    if rformat is None:
-        rformat = RFormats.DEFAULT
-    if isinstance(o, ABCRepresentable):
-        return o.represent(rformat, *args, **kwargs)
-    else:
-        return str(o)
-
-
-def flatten(*args: object, skip_none: bool = True) -> typing.List[typing.Any]:
-    """Flatten iterable objects of arbitrary depth.
-
-    This utility function converts embedded lists or multidimensional objects to vectors.
-
-    If v is already a flat list, returns a new list instance with the same elements.
-
-    If v is not iterable, returns an iterable version of v, that is: [v].
-
-    If v is None, returns an empty list, that is [].
-
-    Args:
-        x (object): Any object but preferably an iterable object of type: abc.Iterable[typing.Any].
-        skip_none (bool): Do not include None as an element in the resulting list.
-
-    Returns:
-         A flat list.
-
-    """
-    flattened = []
-    for y in args:
-        # Recursive call for sub-structures
-        # except strings that are understood as atomic in this context
-        if isinstance(y, collections.abc.Iterable) and not isinstance(y, str):
-            # We cannot call directly extend to support n-depth structures
-            sub_flattened = flatten(*y)
-            if sub_flattened is not None or not skip_none:
-                flattened.extend(sub_flattened)
-        elif y is not None or not skip_none:
-            flattened.append(y)
-    return flattened
-
-
-def subscriptify(representation: str, rformat: str) -> str:
-    """Converts to subscript the representation of object **o**.
-
-    Use cases:
-        * Render beautiful indexed math variables (e.g. v₁, v₂, v₃).
-
-    Args:
-        representation (str): The representation of the object in that format.
-        rformat (str): A supported format from the formats.CATALOG.
-
-    Returns:
-        str: The representation in subscript.
-
-    Example:
-
-        .. jupyter-execute::
-
-            # TODO: Rewrite
-            #import naive
-            #o = 'Indexed math variables look beautiful with subscript: v1, v2, x3'
-            #s_prime = subscript(o)
-            #print(s_prime)
-
-    References:
-        * https://stackoverflow.com/questions/13875507/convert-numeric-strings-to-superscript
-
-    """
-    if representation is None:
-        return ''
-    if rformat is None:
-        rformat = RFormats.DEFAULT
-    if not isinstance(representation, str):
-        representation = str(representation)
-    match rformat:
-        case RFormats.UTF8:
-            # TODO: Extend support to all available subscript characters in Unicode.
-            # TODO: Issue a Warning for characters that are not supported and skip them.
-            subscript_dictionary = {'0': u'₀',
-                                    '1': u'₁',
-                                    '2': u'₂',
-                                    '3': u'₃',
-                                    '4': u'₄',
-                                    '5': u'₅',
-                                    '6': u'₆',
-                                    '7': u'₇',
-                                    '8': u'₈',
-                                    '9': u'₉'}
-            return u''.join(subscript_dictionary.get(char, char) for char in representation)
-        case RFormats.LATEX:
-            # ASSUMPTION: The subscriptified result must be concatenated with something.
-            return r'_{' + representation + r'}'
-        case RFormats.HTML:
-            return r'<sub>' + representation + r'</sub>'
-        case RFormats.USASCII:
-            # TODO: USASCII representation may be ambiguous. Considering issuing a Warning.
-            return representation
-
-
-def superscriptify(representation: str, rformat: str = None) -> str:
-    """Converts to superscript the representation of object **o**.
-
-    Use cases:
-        * Render beautiful indexed math variables (e.g. v₁, v₂, v₃).
-
-    Args:
-        representation (str): The representation of the object in that format.
-        rformat (str): A supported format from the formats.CATALOG.
-
-    Returns:
-        str: The representation in superscript.
-
-    Example:
-
-        .. jupyter-execute::
-
-            # TODO: Rewrite
-            #import naive
-            #o = 'Indexed math variables look beautiful with superscript: v1, v2, x3'
-            #s_prime = superscript(o)
-            #print(s_prime)
-
-    References:
-        * https://stackoverflow.com/questions/13875507/convert-numeric-strings-to-superscript
-
-    """
-    representation = coerce(representation, str)
-    if representation is None or representation == '':
-        return ''
-    if rformat is None:
-        rformat = RFormats.DEFAULT
-    match rformat:
-        case RFormats.UTF8:
-            # TODO: Extend support to all available superscript characters in Unicode.
-            # TODO: Issue a Warning for characters that are not supported and skip them.
-            superscript_dictionary = {'0': u'⁰',
-                                      '1': u'¹',
-                                      '2': u'²',
-                                      '3': u'³',
-                                      '4': u'⁴',
-                                      '5': u'⁵',
-                                      '6': u'⁶',
-                                      '7': u'⁷',
-                                      '8': u'⁸',
-                                      '9': u'⁹'}
-            return u''.join(superscript_dictionary.get(char, char) for char in representation)
-        case RFormats.LATEX:
-            # ASSUMPTION: The superscriptified result must be concatenated with something.
-            return r'^{' + representation + r'}'
-        case RFormats.HTML:
-            return r'<sup>' + representation + r'</sup>'
-        case RFormats.USASCII:
-            # TODO: USASCII representation may be ambiguous. Considering issuing a Warning.
-            return representation
 
 
 def unkwargs(kwargs, key):
@@ -669,25 +723,9 @@ def get_default_scope():
     return _DEFAULT_SCOPE_KEY[len(Core._USER_DEFINED_KEY_PREFIX):]
 
 
-
-
 def av(codomain, base_name=None, indexes=None):
     """Shorthand alias for :ref:`declare_atomic_variable` **declare_atomic_variable**."""
     return Core.declare_atomic_variable(codomain, base_name, indexes)
-
-
-
-class Counter(object):
-    def __init__(self):
-        self.value = 1
-        self._lock = threading.Lock()
-
-    def get_value(self):
-        with self._lock:
-            self.value += 1
-            return self.value
-
-
 
 
 def f(o, *args):
@@ -695,20 +733,16 @@ def f(o, *args):
     return Core.write_formula(o, *args)
 
 
-
 def get_qualified_key(scope_key, structure_key, language_key, base_key):
     return f'{scope_key}{_QUALIFIED_KEY_SEPARATOR}{structure_key}{_QUALIFIED_KEY_SEPARATOR}{language_key}{_QUALIFIED_KEY_SEPARATOR}{base_key}'
 
-
-
-_QUALIFIED_KEY_SEPARATOR = '.'
-_MNEMONIC_KEY_ALLOWED_CHARACTERS = 'abcdefghijklmnopqrstuvwxyz012345679_'
 
 _concept_database = {}
 """The static database of concepts."""
 
 _token_database = {}
 """The static database of tokens."""
+
 
 class Core:
     _BASE_KEY = 'base_key'
@@ -735,8 +769,6 @@ class Core:
     _SYSTEM_DEFINED_KEY_PREFIX = 'sys_'
     _USER_DEFINED_KEY_PREFIX = 'ud_'
     _LANGUAGE_NAIVE = 'naive'
-
-
 
     class Concept:
 
@@ -805,7 +837,7 @@ class Core:
                     **kwargs)
             else:
                 Log.log_error('Some identification properties are None', scope=scope_key, ntype=structure_key,
-                          language=language_key, nkey=base_key, **kwargs)
+                              language=language_key, nkey=base_key, **kwargs)
 
         @staticmethod
         def check_concept_from_qualified_key(qualified_key, **kwargs):
@@ -813,7 +845,7 @@ class Core:
                 return qualified_key in _concept_database
             else:
                 Log.log_error('Checking concept with None qualified key is impossible.',
-                          qualified_key=qualified_key, **kwargs)
+                              qualified_key=qualified_key, **kwargs)
 
         @staticmethod
         def get_concept_from_decomposed_key(scope_key: str, structure_key: str, language_key: str, base_key: str,
@@ -825,7 +857,7 @@ class Core:
                     **kwargs)
             else:
                 Log.log_error('Some identification properties are None', scope=scope_key, ntype=structure_key,
-                          language=language_key, nkey=base_key, **kwargs)
+                              language=language_key, nkey=base_key, **kwargs)
 
         @staticmethod
         def get_concept_from_qualified_key(qualified_key, **kwargs):
@@ -836,7 +868,7 @@ class Core:
                     return Core.Concept(qualified_key=qualified_key, **kwargs)
             else:
                 Log.log_error('Getting concept with None qualified key is impossible.',
-                          qualified_key=qualified_key, **kwargs)
+                              qualified_key=qualified_key, **kwargs)
 
         @staticmethod
         def get_concept_from_token(token):
@@ -880,7 +912,7 @@ class Core:
                 return self._utf8
             else:
                 Log.log_error(f'This concept has no representation in {rformat} nor {RFormats.UTF8}.', rformat=rformat,
-                          qualified_key=self.qualified_key)
+                              qualified_key=self.qualified_key)
 
         @property
         def structure_key(self) -> str:
@@ -975,7 +1007,6 @@ class Core:
         base_key=_USER_DEFINED_KEY_PREFIX + 'scope_1',
         utf8='scope_key₁', latex=r'\text{scope_key}_1', html=r'scope_key<sub>1</sub>', usascii='scope1')
 
-
     class SystemFunction(Concept):
         """The system function class.
 
@@ -1009,14 +1040,14 @@ class Core:
             self._algorithm = algorithm
             if category not in Core.SystemFunction.CATEGORIES:
                 Log.log_error('Invalid formula category',
-                          category=category, qualified_key=self.qualified_key)
+                              category=category, qualified_key=self.qualified_key)
             self._category = category
             # Conditional complementary properties.
             self._domain = domain  # TODO: Implement validation against the static concept database.
             self._arity = arity  # TODO: Implement validation logic dependent of subcategory.
             if category == Core.SystemFunction.SYSTEM_CONSTANT and python_value is None:
                 Log.log_error('python_value is mandatory for constants (0-ary functions) but it was None.',
-                          python_value=python_value, category=category, qualified_key=self.qualified_key)
+                              python_value=python_value, category=category, qualified_key=self.qualified_key)
             self._python_value = python_value  # TODO: Question: Should it be mandatory for subcategory = constant?
             # Call the base class initializer.
             #   Executing this at the end of the initialization process
@@ -1060,7 +1091,6 @@ class Core:
                 return self.compute_programmatic_value() == other.compute_programmatic_value()
             else:
                 raise NotImplementedError('oooops again')
-
 
     class Formula(Concept):
         """
@@ -1112,10 +1142,10 @@ class Core:
             # Mandatory complementary properties.
             if category not in Core.Formula.CATEGORIES:
                 Log.log_error('Invalid formula category',
-                          category=category,
-                          scope_key=scope_key, language_key=language_key, base_key=base_key,
-                          system_function=system_function, arguments=arguments,
-                          domain=domain, codomain=codomain, base_name=base_name, indexes=indexes)
+                              category=category,
+                              scope_key=scope_key, language_key=language_key, base_key=base_key,
+                              system_function=system_function, arguments=arguments,
+                              domain=domain, codomain=codomain, base_name=base_name, indexes=indexes)
             self._category = category
             self._arity = None
             self._system_function = system_function
@@ -1165,7 +1195,7 @@ class Core:
             else:
                 # TODO: Implement the arity property for all object categories.
                 Log.log_warning('The arity property has not been implemented for this concept category.',
-                            category=self.category, self=self)
+                                category=self.category, self=self)
 
         @property
         def category(self):
@@ -1183,7 +1213,7 @@ class Core:
             else:
                 # TODO: Implement the codomain property for all object categories.
                 Log.log_warning('The codomain property has not been implemented for this concept category.',
-                            category=self.category, self=self)
+                                category=self.category, self=self)
 
         @property
         def domain(self):
@@ -1239,7 +1269,7 @@ class Core:
                     #   We may consider storing a Glyph as the base name,
                     #   and calling the static represent() function.
                     return self._base_name + \
-                           subscriptify(represent(self._indexes, rformat), rformat)
+                           Repr.subscriptify(Repr.represent(self._indexes, rformat), rformat)
                 case Core.Formula.SYSTEM_CONSTANT_CALL:
                     # x
                     return f'{self._system_function.represent(rformat)}'
@@ -1254,7 +1284,8 @@ class Core:
                     variable_list = ', '.join(map(lambda a: a.represent(), self.arguments))
                     return f'{self._system_function.represent(rformat)}{Glyphs.parenthesis_left.represent(rformat)}{variable_list}{Glyphs.parenthesis_right.represent(rformat)}'
                 case _:
-                    Log.log_error('Unsupported formula category', category=self.category, qualified_key=self.qualified_key)
+                    Log.log_error('Unsupported formula category', category=self.category,
+                                  qualified_key=self.qualified_key)
 
         def represent_declaration(self, rformat: str = None, *args, **kwargs) -> str:
             if self.category != Core.Formula.ATOMIC_VARIABLE:
@@ -1272,7 +1303,7 @@ class Core:
         def system_function(self):
             return self._system_function
 
-    _FORMULA_AUTO_COUNTER = Counter()
+    _FORMULA_AUTO_COUNTER = Utils.Counter()
 
     @staticmethod
     def write_formula(o, *args):
@@ -1324,9 +1355,9 @@ class Core:
             else:
                 base_key = base_key + '__' + '_'.join(str(index) for index in indexes)
         if Core.Concept.check_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key,
-                                                     language_key=language_key, base_key=base_key):
+                                                          language_key=language_key, base_key=base_key):
             variable = Core.Concept.get_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key,
-                                                               language_key=language_key, base_key=base_key)
+                                                                    language_key=language_key, base_key=base_key)
             Log.log_warning(
                 'This variable is already declared. In consequence, the existing variable is returned, instead of declaring a new one.',
                 variable=variable, scope_key=scope_key)
@@ -1342,45 +1373,14 @@ class Core:
 
 # TODO: Question: what should be the scope_key of user defined scopes? sys? the scope_key itself?
 
-def convert_formula_to_graphviz_digraph(formula: Core.Formula, digraph=None):
-    title = formula.represent(RFormats.UTF8)
-    id = formula.qualified_key
-
-    if digraph is None:
-        digraph = graphviz.Digraph(id)
-
-    digraph.node(id, title)
-    if isinstance(formula, Core.Formula) and isinstance(formula.arguments, collections.abc.Iterable):
-        for argument in formula.arguments:
-            convert_formula_to_graphviz_digraph(formula=argument, digraph=digraph)
-            digraph.edge(id, argument.qualified_key, dir='back')
-
-    return digraph
-
-
-def convert_formula_to_dot(formula: Core.Formula):
-    digraph = convert_formula_to_graphviz_digraph(formula=formula)
-    return digraph.source
-
-
-def render_formula_as_ipython_mimebundle(formula: Core.Formula):
-    """
-    Render the formula as a digraph in SVG format,
-    in Jupyter Notebook, Jupyter QT Console, and/or insider Spyder IDE.
-
-    Bibliography:
-        * https://graphviz.readthedocs.io/en/stable/api.html#graphviz.Graph._repr_mimebundle_
-        * https://graphviz.readthedocs.io/en/stable/manual.html
-    """
-    digraph = convert_formula_to_graphviz_digraph(formula=formula)
-    digraph._repr_mimebundle_()
-
-
 
 class BA1:
+    """Boolean Algebra 1.
+
+    """
+
     _SCOPE_BA1 = 'sys_ba1'
     _LANGUAGE_BA1 = 'ba1_language'
-
 
     # Dirty little trick to overcome circular references
     # between algorithm function definitions,
@@ -1389,7 +1389,6 @@ class BA1:
     # of this module.
     truth = None
     falsum = None
-
 
     # Scope.
     ba1_scope = Core.Scope(
@@ -1409,7 +1408,6 @@ class BA1:
     b2 = Core.Domain(
         scope_key=_SCOPE_BA1, structure_key=Core._STRUCTURE_DOMAIN, language_key=_LANGUAGE_BA1, base_key='b2',
         utf8='𝔹²', latex=r'\mathbb{B}^{2}', html=r'&Bopf;<sup>2</sup>', usascii='B2')
-
 
     # Algorithms.
     @staticmethod
@@ -1441,7 +1439,7 @@ class BA1:
             typing.List[BooleanConstant]: A vector of the negation of **x**.
         """
         # v = coerce(v, BooleanConstant)  # TODO: Consider support for list coercion.
-        v = flatten(v)  # If scalar, convert to list.
+        v = Utils.flatten(v)  # If scalar, convert to list.
         return [BA1.falsum if e == BA1.truth else BA1.truth for e in v]
 
     @staticmethod
@@ -1460,8 +1458,8 @@ class BA1:
         """
         # v1 = coerce(v1, BooleanConstant)  # TODO: Consider support for list coercion.
         # v2 = coerce(v2, BooleanConstant)  # TODO: Consider support for list coercion.
-        v1 = flatten(v1)  # If scalar, convert to list.
-        v2 = flatten(v2)  # If scalar, convert to list.
+        v1 = Utils.flatten(v1)  # If scalar, convert to list.
+        v2 = Utils.flatten(v2)  # If scalar, convert to list.
         return [BA1.truth if (b1 == BA1.truth and b2 == BA1.truth) else BA1.falsum for b1, b2 in zip(v1, v2)]
 
     @staticmethod
@@ -1480,10 +1478,9 @@ class BA1:
         """
         # v1 = coerce(v1, BooleanConstant)  # TODO: Consider support for list coercion.
         # v2 = coerce(v2, BooleanConstant)  # TODO: Consider support for list coercion.
-        v1 = flatten(v1)  # If scalar, convert to list.
-        v2 = flatten(v2)  # If scalar, convert to list.
+        v1 = Utils.flatten(v1)  # If scalar, convert to list.
+        v2 = Utils.flatten(v2)  # If scalar, convert to list.
         return [BA1.truth if (b1 == BA1.truth or b2 == BA1.truth) else BA1.falsum for b1, b2 in zip(v1, v2)]
-
 
     # Functions.
     truth = Core.SystemFunction(
@@ -1536,14 +1533,14 @@ class BA1:
             base_key = 'b' + str(n)  # TODO: Check it is an int
             # TODO: Consider implementing a lock to avoid bugs with multithreading when checking the static dictionary
             if Core.Concept.check_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key,
-                                                         language_key=language_key, base_key=base_key):
+                                                              language_key=language_key, base_key=base_key):
                 return Core.Concept.get_concept_from_decomposed_key(scope_key=scope_key,
-                                                               structure_key=structure_key,
-                                                               language_key=language_key, base_key=base_key)
+                                                                    structure_key=structure_key,
+                                                                    language_key=language_key, base_key=base_key)
             else:
                 return Core.Domain(
                     scope_key=scope_key, structure_key=structure_key, language_key=language_key, base_key=base_key,
-                    utf8='𝔹' + superscriptify(n), latex=r'\mathbb{B}^{' + str(n) + r'}',
+                    utf8='𝔹' + Repr.superscriptify(n), latex=r'\mathbb{B}^{' + str(n) + r'}',
                     html=r'&Bopf;<sup>' + str(n) + '</sup>', usascii='B' + str(n))
 
     @staticmethod
@@ -1610,7 +1607,7 @@ class BA1:
                 argument_vectors[argument_index] = vector
             else:
                 Log.log_error('Unexpected type', argument=argument, t=type(argument), category=argument.category,
-                          codomain=argument.codomain)
+                              codomain=argument.codomain)
         Log.log_debug(argument_vectors=argument_vectors)
         output_vector = None
         Log.log_debug(phi=phi, arity=phi.arity, system_function=phi.system_function)
@@ -1625,7 +1622,6 @@ class BA1:
                 Log.log_error('Arity > 2 are not yet supported, sorry')
         Log.log_debug(output_vector=output_vector)
         return output_vector
-
 
 
 def parse_string_utf8(code):
@@ -1666,11 +1662,11 @@ def inflate_object(model_object):
             return f(BA1.negation, *arguments)
         case 'BA1TruthFormula':
             # TODO: Question: use the system function directly or embed it into a formula?
-            #return BA1.truth
+            # return BA1.truth
             return f(BA1.truth)
         case 'BA1FalsumFormula':
             # TODO: Question: use the system function directly or embed it into a formula?
-            #return BA1.falsum
+            # return BA1.falsum
             return f(BA1.falsum)
         case 'BA1AtomicVariableFormula':
             return av(BA1.b, token)

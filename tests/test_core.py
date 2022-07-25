@@ -138,7 +138,7 @@ class Test_User_Scope(TestCase):
         code_1 = r'(((⊤ ∨ b1) ∧ (⊥ ∧ ¬⊥)) ∧ ¬b2)'
         parsed_formula_1 = naive.parse_string_utf8(code_1)
         self.assertEqual(code_1, parsed_formula_1.represent(naive.RFormats.UTF8))
-        g = naive.convert_formula_to_graphviz_digraph(parsed_formula_1)
+        g = naive.Repr.convert_formula_to_graphviz_digraph(parsed_formula_1)
         g.render('test', format='svg', view=True)
 
         code_1_extra_parenthesis = r'(((((((⊤ ∨ ((((b1))))))) ∧ (⊥ ∧ ¬⊥)))) ∧ ¬b2)'
@@ -149,21 +149,21 @@ class Test_User_Scope(TestCase):
         code_2 = r'¬⊥'
         parsed_formula_2 = naive.parse_string_utf8(code_2)
         self.assertEqual(code_2, parsed_formula_2.represent(naive.RFormats.UTF8))
-        g = naive.convert_formula_to_graphviz_digraph(parsed_formula_2)
+        g = naive.Repr.convert_formula_to_graphviz_digraph(parsed_formula_2)
         g.render('test', format='svg', view=True)
 
     def test_parsing_code_3(self):
         code_3 = r'⊥'
         parsed_formula_3 = naive.parse_string_utf8(code_3)
         self.assertEqual(code_3, parsed_formula_3.represent(naive.RFormats.UTF8))
-        g = naive.convert_formula_to_graphviz_digraph(parsed_formula_3)
+        g = naive.Repr.convert_formula_to_graphviz_digraph(parsed_formula_3)
         g.render('test', format='svg', view=True)
 
     def test_parsing_code_4(self):
         code_4 = r'b₇₃'
         parsed_formula_4 = naive.parse_string_utf8(code_4)
         self.assertEqual(code_4, parsed_formula_4.represent(naive.RFormats.UTF8))
-        g = naive.convert_formula_to_graphviz_digraph(parsed_formula_4)
+        g = naive.Repr.convert_formula_to_graphviz_digraph(parsed_formula_4)
         g.render('test', format='svg', view=True)
 
     def test_parsing_code_5(self):
@@ -172,7 +172,7 @@ class Test_User_Scope(TestCase):
         code_5 = r'(p ∨ q)'
         parsed_formula_5 = naive.parse_string_utf8(code_5)
         self.assertEqual(code_5, parsed_formula_5.represent(naive.RFormats.UTF8))
-        g = naive.convert_formula_to_graphviz_digraph(parsed_formula_5)
+        g = naive.Repr.convert_formula_to_graphviz_digraph(parsed_formula_5)
         g.render('test', format='svg', view=True)
 
     def test_dot(self):
@@ -180,5 +180,5 @@ class Test_User_Scope(TestCase):
         code_5 = r'(p ∨ q)'
         parsed_formula_5 = naive.parse_string_utf8(code_5)
         self.assertEqual(code_5, parsed_formula_5.represent(naive.RFormats.UTF8))
-        print(naive.convert_formula_to_dot(parsed_formula_5))
+        print(naive.Repr.convert_formula_to_dot(parsed_formula_5))
 
