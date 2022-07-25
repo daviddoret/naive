@@ -1,0 +1,7 @@
+digraph "ud_scope_1.formula.naive.f2" {
+	"ud_scope_1.formula.naive.f2" [label="(p ∨ q)"]
+	"ud_scope_1.formula.naive.p" [label=p]
+	"ud_scope_1.formula.naive.f2" -> "ud_scope_1.formula.naive.p" [dir=back]
+	"ud_scope_1.formula.naive.q" [label=q]
+	"ud_scope_1.formula.naive.f2" -> "ud_scope_1.formula.naive.q" [dir=back]
+}

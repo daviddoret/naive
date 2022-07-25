@@ -1,0 +1,7 @@
+digraph "ud_test_formula_representation.formula.naive.f37" {
+	"ud_test_formula_representation.formula.naive.f37" [label="(p ∨ q)"]
+	"ud_test_formula_representation.formula.naive.p" [label=p]
+	"ud_test_formula_representation.formula.naive.f37" -> "ud_test_formula_representation.formula.naive.p" [dir=back]
+	"ud_test_formula_representation.formula.naive.q" [label=q]
+	"ud_test_formula_representation.formula.naive.f37" -> "ud_test_formula_representation.formula.naive.q" [dir=back]
+}
