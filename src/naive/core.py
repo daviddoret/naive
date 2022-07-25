@@ -9,6 +9,20 @@ from textx import metamodel_from_file, metamodel_from_str
 import pkg_resources
 
 
+
+# This sets the root logger to write to stdout (your console).
+# Your script/app needs to call this somewhere at least once.
+# Reference: https://stackoverflow.com/questions/7016056/python-logging-not-outputting-anything
+logging.basicConfig(format='%(message)s')
+
+# By default the root logger is set to WARNING and all loggers you define
+# inherit that value. Here we set the root logger to NOTSET. This logging
+# level is automatically inherited by all existing and new sub-loggers
+# that do not set a less verbose level.
+# Reference: https://stackoverflow.com/questions/7016056/python-logging-not-outputting-anything
+logging.root.setLevel(logging.INFO)
+
+
 class RFormats:
     """Representation Formats.
 
@@ -63,41 +77,74 @@ class RFormats:
     """The list of all available formats."""
     CATALOG = [USASCII, UTF8, LATEX, HTML]
 
+class Log:
 
-# This sets the root logger to write to stdout (your console).
-# Your script/app needs to call this somewhere at least once.
-# Reference: https://stackoverflow.com/questions/7016056/python-logging-not-outputting-anything
-logging.basicConfig(format='%(message)s')
+    @staticmethod
+    def set_debug_level():
+        logging.root.setLevel(logging.DEBUG)
 
-# By default the root logger is set to WARNING and all loggers you define
-# inherit that value. Here we set the root logger to NOTSET. This logging
-# level is automatically inherited by all existing and new sub-loggers
-# that do not set a less verbose level.
-# Reference: https://stackoverflow.com/questions/7016056/python-logging-not-outputting-anything
-logging.root.setLevel(logging.INFO)
+    @staticmethod
+    def set_info_level():
+        logging.root.setLevel(logging.INFO)
+
+    @staticmethod
+    def set_warning_level():
+        logging.root.setLevel(logging.WARNING)
+
+    @staticmethod
+    def set_error_level():
+        logging.root.setLevel(logging.ERROR)
+
+    COERCION_SUCCESS = 1
+    COERCION_FAILURE = 2
+
+    code_exclusion_list = [1]
+
+    @staticmethod
+    def log_debug(message: str = '', code: int = 0, **kwargs):
+        if code not in Log.code_exclusion_list:
+            d = stringify_dictionary(**kwargs)
+            message = f'DEBUGGING: {message} {d}.'
+            logging.debug(message)
 
 
-def set_debug_level():
-    logging.root.setLevel(logging.DEBUG)
+
+    USE_PRINT_FOR_INFO = True
+    """Better output in Jupyter notebooks."""
+
+    @staticmethod
+    def log_info(message: str = '', code: int = 0, **kwargs):
+        if code not in Log.code_exclusion_list:
+            d = stringify_dictionary(**kwargs)
+            message = f'{message} {d}'
+            if Log.USE_PRINT_FOR_INFO:
+                print(message)
+            else:
+                logging.info(message)
+
+    class NaiveWarning(UserWarning):
+        """The generic category of warning issued by the **naive** library."""
+        pass
+
+    @staticmethod
+    def log_warning(message: str = '', code: int = 0, **kwargs):
+        if code not in Log.code_exclusion_list:
+            d = stringify_dictionary(**kwargs)
+            message = f'WARNING: {message} {d}'
+            logging.warning(message)
 
 
-def set_info_level():
-    logging.root.setLevel(logging.INFO)
+    class NaiveError(Exception):
+        """The generic exception type raised by the **naive** library."""
+        pass
 
-
-def set_warning_level():
-    logging.root.setLevel(logging.WARNING)
-
-
-def set_error_level():
-    logging.root.setLevel(logging.ERROR)
-
-
-
-COERCION_SUCCESS = 1
-COERCION_FAILURE = 2
-
-code_exclusion_list = [1]
+    @staticmethod
+    def log_error(message: str = '', *args, code: int = 0, **kwargs):
+        if code not in Log.code_exclusion_list:
+            d = stringify_dictionary(**kwargs)
+            message = f'ERROR: {message}. {d}.'
+            logging.error(message, exc_info=True)
+            raise Log.NaiveError(message)
 
 
 def stringify_dictionary(**kwargs):
@@ -106,52 +153,6 @@ def stringify_dictionary(**kwargs):
         s = f'{s}\n  {k}: {str(v)}'
     return s
     # return jsonpickle.encode(kwargs)
-
-
-def log_debug(message: str = '', code: int = 0, **kwargs):
-    if code not in code_exclusion_list:
-        d = stringify_dictionary(**kwargs)
-        message = f'DEBUGGING: {message} {d}.'
-        logging.debug(message)
-
-
-USE_PRINT_FOR_INFO = True
-"""Better output in Jupyter notebooks."""
-
-
-def log_info(message: str = '', code: int = 0, **kwargs):
-    if code not in code_exclusion_list:
-        d = stringify_dictionary(**kwargs)
-        message = f'{message} {d}'
-        if USE_PRINT_FOR_INFO:
-            print(message)
-        else:
-            logging.info(message)
-
-
-class NaiveWarning(UserWarning):
-    """The generic category of warning issued by the **naive** library."""
-    pass
-
-
-def log_warning(message: str = '', code: int = 0, **kwargs):
-    if code not in code_exclusion_list:
-        d = stringify_dictionary(**kwargs)
-        message = f'WARNING: {message} {d}'
-        logging.warning(message)
-
-
-class NaiveError(Exception):
-    """The generic exception type raised by the **naive** library."""
-    pass
-
-
-def log_error(message: str = '', *args, code: int = 0, **kwargs):
-    if code not in code_exclusion_list:
-        d = stringify_dictionary(**kwargs)
-        message = f'ERROR: {message}. {d}.'
-        logging.error(message, exc_info=True)
-        raise NaiveError(message)
 
 
 def coerce(
@@ -210,9 +211,9 @@ def coerce(
         try:
             coerced_o = cls(o)
         except Exception as e:
-            log_error(code=COERCION_FAILURE, o=o, cls=cls)
+            Log.log_error(code=Log.COERCION_FAILURE, o=o, cls=cls)
         else:
-            log_debug(code=COERCION_SUCCESS, o=o, cls=cls)
+            Log.log_debug(code=Log.COERCION_SUCCESS, o=o, cls=cls)
         return cls(o)
 
 
@@ -609,7 +610,7 @@ def extract_scope_key_from_qualified_key(qualified_key):
 
 def clean_mnemonic_key(mnemonic_key):
     if mnemonic_key is None:
-        log_error('NKey is None')
+        Log.log_error('NKey is None')
     else:
         mnemonic_key = str(mnemonic_key)
         return ''.join(c for c in mnemonic_key if c in _MNEMONIC_KEY_ALLOWED_CHARACTERS)
@@ -646,22 +647,22 @@ def set_default_scope(scope_key):
     global _DEFAULT_SCOPE_KEY
     # TODO: Allow the usage of friendly name, notes or documentation, etc.
     if scope_key is None:
-        log_error(
+        Log.log_error(
             f'None is not a valid context key. Please provide a non-empty string composed of the allowed characters: "{_MNEMONIC_KEY_ALLOWED_CHARACTERS}".')
     if not isinstance(scope_key, str):
-        log_error(
+        Log.log_error(
             f'The object "{scope_key}" of type "{type(scope_key)}" is not a valid context key. Please provide a non-empty string composed of the allowed characters: "{_MNEMONIC_KEY_ALLOWED_CHARACTERS}".')
     scope_key_cleaned = clean_mnemonic_key(scope_key)
     if scope_key_cleaned != scope_key:
-        log_warning(
+        Log.log_warning(
             f'Please note that the context key "{scope_key}" contained unsupported characters. The allowed characters for context keys are: "{_MNEMONIC_KEY_ALLOWED_CHARACTERS}". It was automatically cleaned from unsupported characters. The resulting context key is: {scope_key_cleaned}')
     if scope_key == '':
-        log_error(
+        Log.log_error(
             f'An empty string is not a valid context key. Please provide a non-empty string composed of the allowed characters: "{_MNEMONIC_KEY_ALLOWED_CHARACTERS}".')
 
     prefixed_key = Core._USER_DEFINED_KEY_PREFIX + scope_key_cleaned
     _DEFAULT_SCOPE_KEY = prefixed_key
-    log_info(f'Default scope_key: {scope_key_cleaned}')
+    Log.log_info(f'Default scope_key: {scope_key_cleaned}')
 
 
 def get_default_scope():
@@ -769,14 +770,14 @@ class Core:
                         # TODO: Question: should we store a reference to the Concept or store the Concept qualified key?
                         _token_database[token] = self
                     else:
-                        log_error(
+                        Log.log_error(
                             f'The "{token}" token was already in the token static database. We need to implement a priority algorithm to manage these situations.',
                             token=token, self=self)
             # Append the concept in the database
             if self.qualified_key not in _concept_database:
                 _concept_database[self.qualified_key] = self
             else:
-                log_error(
+                Log.log_error(
                     'The initialization of the concept could not be completed because the qualified key was already present in the static database.',
                     qualified_key=self.qualified_key)
 
@@ -803,7 +804,7 @@ class Core:
                     qualified_key, scope=scope_key, ntype=structure_key, language=language_key, nkey=base_key,
                     **kwargs)
             else:
-                log_error('Some identification properties are None', scope=scope_key, ntype=structure_key,
+                Log.log_error('Some identification properties are None', scope=scope_key, ntype=structure_key,
                           language=language_key, nkey=base_key, **kwargs)
 
         @staticmethod
@@ -811,7 +812,7 @@ class Core:
             if qualified_key is not None:
                 return qualified_key in _concept_database
             else:
-                log_error('Checking concept with None qualified key is impossible.',
+                Log.log_error('Checking concept with None qualified key is impossible.',
                           qualified_key=qualified_key, **kwargs)
 
         @staticmethod
@@ -823,7 +824,7 @@ class Core:
                     qualified_key, scope=scope_key, ntype=structure_key, language=language_key, nkey=base_key,
                     **kwargs)
             else:
-                log_error('Some identification properties are None', scope=scope_key, ntype=structure_key,
+                Log.log_error('Some identification properties are None', scope=scope_key, ntype=structure_key,
                           language=language_key, nkey=base_key, **kwargs)
 
         @staticmethod
@@ -834,7 +835,7 @@ class Core:
                 else:
                     return Core.Concept(qualified_key=qualified_key, **kwargs)
             else:
-                log_error('Getting concept with None qualified key is impossible.',
+                Log.log_error('Getting concept with None qualified key is impossible.',
                           qualified_key=qualified_key, **kwargs)
 
         @staticmethod
@@ -878,7 +879,7 @@ class Core:
                 # We fall back on UTF-8
                 return self._utf8
             else:
-                log_error(f'This concept has no representation in {rformat} nor {RFormats.UTF8}.', rformat=rformat,
+                Log.log_error(f'This concept has no representation in {rformat} nor {RFormats.UTF8}.', rformat=rformat,
                           qualified_key=self.qualified_key)
 
         @property
@@ -1007,14 +1008,14 @@ class Core:
             self._codomain = codomain  # TODO: Implement validation against the static concept database.
             self._algorithm = algorithm
             if category not in Core.SystemFunction.CATEGORIES:
-                log_error('Invalid formula category',
+                Log.log_error('Invalid formula category',
                           category=category, qualified_key=self.qualified_key)
             self._category = category
             # Conditional complementary properties.
             self._domain = domain  # TODO: Implement validation against the static concept database.
             self._arity = arity  # TODO: Implement validation logic dependent of subcategory.
             if category == Core.SystemFunction.SYSTEM_CONSTANT and python_value is None:
-                log_error('python_value is mandatory for constants (0-ary functions) but it was None.',
+                Log.log_error('python_value is mandatory for constants (0-ary functions) but it was None.',
                           python_value=python_value, category=category, qualified_key=self.qualified_key)
             self._python_value = python_value  # TODO: Question: Should it be mandatory for subcategory = constant?
             # Call the base class initializer.
@@ -1110,7 +1111,7 @@ class Core:
             structure_key = Core._STRUCTURE_FORMULA
             # Mandatory complementary properties.
             if category not in Core.Formula.CATEGORIES:
-                log_error('Invalid formula category',
+                Log.log_error('Invalid formula category',
                           category=category,
                           scope_key=scope_key, language_key=language_key, base_key=base_key,
                           system_function=system_function, arguments=arguments,
@@ -1163,7 +1164,7 @@ class Core:
                 return self.system_function.arity
             else:
                 # TODO: Implement the arity property for all object categories.
-                log_warning('The arity property has not been implemented for this concept category.',
+                Log.log_warning('The arity property has not been implemented for this concept category.',
                             category=self.category, self=self)
 
         @property
@@ -1181,7 +1182,7 @@ class Core:
                 return self.system_function.codomain
             else:
                 # TODO: Implement the codomain property for all object categories.
-                log_warning('The codomain property has not been implemented for this concept category.',
+                Log.log_warning('The codomain property has not been implemented for this concept category.',
                             category=self.category, self=self)
 
         @property
@@ -1217,7 +1218,7 @@ class Core:
                     for a_prime in l_prime:
                         l.add(a_prime)
                 else:
-                    log_error('Not implemented yet', a=a, self=self)
+                    Log.log_error('Not implemented yet', a=a, self=self)
 
             # To allow sorting and indexing, convert the set to a list.
             l = list(l)
@@ -1253,11 +1254,11 @@ class Core:
                     variable_list = ', '.join(map(lambda a: a.represent(), self.arguments))
                     return f'{self._system_function.represent(rformat)}{Glyphs.parenthesis_left.represent(rformat)}{variable_list}{Glyphs.parenthesis_right.represent(rformat)}'
                 case _:
-                    log_error('Unsupported formula category', category=self.category, qualified_key=self.qualified_key)
+                    Log.log_error('Unsupported formula category', category=self.category, qualified_key=self.qualified_key)
 
         def represent_declaration(self, rformat: str = None, *args, **kwargs) -> str:
             if self.category != Core.Formula.ATOMIC_VARIABLE:
-                log_error('Formula category not supported for declaration.')
+                Log.log_error('Formula category not supported for declaration.')
             else:
                 if rformat is None:
                     rformat = RFormats.DEFAULT
@@ -1300,7 +1301,7 @@ class Core:
             # Conditional complementary properties
             system_function=system_function, arguments=arguments
         )
-        log_info(formula.represent())
+        Log.log_info(formula.represent())
         return formula
 
     @staticmethod
@@ -1326,7 +1327,7 @@ class Core:
                                                      language_key=language_key, base_key=base_key):
             variable = Core.Concept.get_concept_from_decomposed_key(scope_key=scope_key, structure_key=structure_key,
                                                                language_key=language_key, base_key=base_key)
-            log_warning(
+            Log.log_warning(
                 'This variable is already declared. In consequence, the existing variable is returned, instead of declaring a new one.',
                 variable=variable, scope_key=scope_key)
             return variable
@@ -1335,7 +1336,7 @@ class Core:
                 scope_key=scope_key, language_key=language_key, base_key=base_key,
                 category=Core.Formula.ATOMIC_VARIABLE,
                 codomain=codomain, base_name=base_name, indexes=indexes)
-            log_info(variable.represent_declaration())
+            Log.log_info(variable.represent_declaration())
             return variable
 
 
@@ -1521,9 +1522,9 @@ class BA1:
         Assures the presence of the codomain 𝔹ⁿ in the concept database.
         """
         if not isinstance(n, int):
-            log_error('n must be an int')
+            Log.log_error('n must be an int')
         elif n < 1:
-            log_error('n must be > 1')
+            Log.log_error('n must be > 1')
         elif n == 1:
             return BA1.b
         elif n == 2:
@@ -1576,10 +1577,10 @@ class BA1:
         variables_number = len(variables_list)
         arguments_number = phi.arity
         argument_vectors = [None] * arguments_number
-        log_debug(arguments_number=arguments_number)
+        Log.log_debug(arguments_number=arguments_number)
         for argument_index in range(0, arguments_number):
             argument = phi.arguments[argument_index]
-            log_debug(
+            Log.log_debug(
                 argument=argument,
                 argument_index=argument_index,
                 argument_type=type(argument),
@@ -1589,7 +1590,7 @@ class BA1:
                     argument.is_system_function_call and \
                     argument.codomain == BA1.b:
                 # This argument is a Boolean Formula.
-                log_debug('This argument is a Boolean Formula')
+                Log.log_debug('This argument is a Boolean Formula')
                 # Recursively compute the satisfaction set of that formula,
                 # restricting the variables list to the subset of necessary variables.
                 vector = BA1.satisfaction_index(argument, variables_list=variables_list)
@@ -1598,21 +1599,21 @@ class BA1:
                     argument.category == Core.Formula.ATOMIC_VARIABLE and \
                     argument.codomain == BA1.b:
                 # This argument is a Boolean atomic proposition.
-                log_debug('This argument is a Boolean atomic proposition')
+                Log.log_debug('This argument is a Boolean atomic proposition')
                 # We want to retrieve its values from the corresponding bit combinations column.
                 # But we need the vector to be relative to variables_list.
                 # Thus we must first find the position of this atomic variable,
                 # in the variables_list.
                 atomic_variable_index = variables_list.index(argument)
                 vector = BA1.get_boolean_combinations_column(variables_number, atomic_variable_index)
-                log_debug(vector=vector)
+                Log.log_debug(vector=vector)
                 argument_vectors[argument_index] = vector
             else:
-                log_error('Unexpected type', argument=argument, t=type(argument), category=argument.category,
+                Log.log_error('Unexpected type', argument=argument, t=type(argument), category=argument.category,
                           codomain=argument.codomain)
-        log_debug(argument_vectors=argument_vectors)
+        Log.log_debug(argument_vectors=argument_vectors)
         output_vector = None
-        log_debug(phi=phi, arity=phi.arity, system_function=phi.system_function)
+        Log.log_debug(phi=phi, arity=phi.arity, system_function=phi.system_function)
         match phi.arity:
             case 0:
                 output_vector = phi.system_function.algorithm(vector_size=2 ** variables_number)
@@ -1621,8 +1622,8 @@ class BA1:
             case 2:
                 output_vector = phi.system_function.algorithm(argument_vectors[0], argument_vectors[1])
             case _:
-                log_error('Arity > 2 are not yet supported, sorry')
-        log_debug(output_vector=output_vector)
+                Log.log_error('Arity > 2 are not yet supported, sorry')
+        Log.log_debug(output_vector=output_vector)
         return output_vector
 
 
@@ -1640,10 +1641,10 @@ def parse_string_utf8(code):
     model = metamodel.model_from_str(code)
     if model.token:
         formula = inflate_object(model)
-        log_debug(parsed_formula=formula)
+        Log.log_debug(parsed_formula=formula)
         return formula
     else:
-        log_warning('Parsing result is empty.')
+        Log.log_warning('Parsing result is empty.')
 
 
 def inflate_object(model_object):

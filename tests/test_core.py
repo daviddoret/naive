@@ -70,7 +70,7 @@ class Test_User_Scope(TestCase):
         self.assertEqual('𝔹²³⁴', naive.BA1.get_bn_domain(234).represent(naive.RFormats.UTF8))
 
     def test_formula_representation(self):
-        naive.set_debug_level()
+        naive.Log.set_debug_level()
         naive.USE_PRINT_FOR_INFO = False
         naive.set_default_scope('test_formula_representation')
 
