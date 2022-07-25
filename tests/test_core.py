@@ -6,8 +6,8 @@ import naive
 class Test(TestCase):
     def test_clean_key(self):
         naive.set_unique_scope()
-        self.assertEqual('abcd', naive.clean_mnemonic_key('abcd'))
-        self.assertEqual('abcd', naive.clean_mnemonic_key('a⊤b¬ c 𝔹 ⟼φΦd'))
+        self.assertEqual('abcd', naive.Utils.clean_mnemonic_key('abcd'))
+        self.assertEqual('abcd', naive.Utils.clean_mnemonic_key('a⊤b¬ c 𝔹 ⟼φΦd'))
 
 
 class TestConcept(TestCase):

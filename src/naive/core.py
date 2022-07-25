@@ -21,8 +21,37 @@ logging.basicConfig(format='%(message)s')
 # Reference: https://stackoverflow.com/questions/7016056/python-logging-not-outputting-anything
 logging.root.setLevel(logging.INFO)
 
-_QUALIFIED_KEY_SEPARATOR = '.'
-_MNEMONIC_KEY_ALLOWED_CHARACTERS = 'abcdefghijklmnopqrstuvwxyz0123456789_'
+
+class Const:
+    """A library of general-purpose pseudo-constants."""
+
+    _BASE_KEY = 'base_key'
+    _STRUCTURE_KEY = 'structure_key'
+    _SCOPE_KEY = 'scope_key'
+    _LANGUAGE_KEY = 'language_key'
+
+    # SystemFunction Complementary Properties
+    _DOMAIN = 'codomain'
+    _CODOMAIN = 'codomain'
+    _ARITY = 'arity'
+    _PYTHON_VALUE = 'python_value'
+
+    # NType Keys
+    _STRUCTURE_SCOPE = 'scope_key'
+    _STRUCTURE_LANGUAGE = 'language_key'
+    _STRUCTURE_DOMAIN = 'codomain'
+    _STRUCTURE_FUNCTION = 'function'
+    _STRUCTURE_ATOMIC_PROPERTY = 'ap'
+    _STRUCTURE_VARIABLE = 'variable'
+    _STRUCTURE_FORMULA = 'formula'
+
+    _DEFAULT_SCOPE_KEY = ''
+    _SYSTEM_DEFINED_KEY_PREFIX = 'sys_'
+    _USER_DEFINED_KEY_PREFIX = 'ud1_'
+    _LANGUAGE_NAIVE = 'naive'
+
+    _QUALIFIED_KEY_SEPARATOR = '.'
+    _MNEMONIC_KEY_ALLOWED_CHARACTERS = 'abcdefghijklmnopqrstuvwxyz0123456789_'
 
 
 class RFormats:
@@ -263,10 +292,8 @@ class Utils:
                 flattened.append(y)
         return flattened
 
-
     def unkwargs(kwargs, key):
         return None if key not in kwargs else kwargs[key]
-
 
     def extract_scope_key_from_qualified_key(qualified_key):
         """Extract the scope_key key from a qualified key."""
@@ -274,18 +301,15 @@ class Utils:
             return None
         else:
             qualified_key = str(qualified_key)
-            first_separator_position = qualified_key.find(_QUALIFIED_KEY_SEPARATOR)
+            first_separator_position = qualified_key.find(Const._QUALIFIED_KEY_SEPARATOR)
             return qualified_key[0, first_separator_position]
-
 
     def clean_mnemonic_key(mnemonic_key):
         if mnemonic_key is None:
             Log.log_error('NKey is None')
         else:
             mnemonic_key = str(mnemonic_key)
-            return ''.join(c for c in mnemonic_key if c in _MNEMONIC_KEY_ALLOWED_CHARACTERS)
-
-
+            return ''.join(c for c in mnemonic_key if c in Const._MNEMONIC_KEY_ALLOWED_CHARACTERS)
 
 
 class Repr:
@@ -329,7 +353,6 @@ class Repr:
             """
             raise NotImplementedError('Abstract method must be implemented in subclass.')
 
-
     """Safe types for type coercion."""
     CoercibleABCRepresentable = typing.TypeVar(
         'CoercibleABCRepresentable',
@@ -337,7 +360,6 @@ class Repr:
         bytes,  # Support for raw USASCII strings.
         str
     )
-
 
     class PersistingRepresentable(ABCRepresentable):
         """A helper class for objects that support representation in multiple formats by storing representations in
@@ -404,14 +426,14 @@ class Repr:
                 # We fall back on UTF-8
                 return self._representations[RFormats.UTF8]
             else:
-                raise ValueError(f'PersistingRepresentable object has no representations in {rformat} nor {RFormats.UTF8}.')
+                raise ValueError(
+                    f'PersistingRepresentable object has no representations in {rformat} nor {RFormats.UTF8}.')
 
         def imitate(self, o: Repr.ABCRepresentable):
             """Imitate the representation of another object."""
             for rformat in RFormats.CATALOG:
                 # TODO: Minor design flaw: this process will also copy unsupported properties that default to UTF-8.
                 self._representations[rformat] = o.represent(rformat)
-
 
     class Glyph(PersistingRepresentable):
         """A glyph is an elemental representation item."""
@@ -425,7 +447,6 @@ class Repr:
             """
             super().__init__(*args, **kwargs)
 
-
     """Safe types for type coercion."""
     CoerciblePersistingRepresentable = typing.TypeVar(
         'CoerciblePersistingRepresentable',
@@ -434,7 +455,6 @@ class Repr:
         PersistingRepresentable,
         str
     )
-
 
     def subscriptify(representation: str, rformat: str) -> str:
         """Converts to subscript the representation of object **o**.
@@ -493,7 +513,6 @@ class Repr:
                 # TODO: USASCII representation may be ambiguous. Considering issuing a Warning.
                 return representation
 
-
     def superscriptify(representation: str, rformat: str = None) -> str:
         """Converts to superscript the representation of object **o**.
 
@@ -550,7 +569,6 @@ class Repr:
                 # TODO: USASCII representation may be ambiguous. Considering issuing a Warning.
                 return representation
 
-
     def convert_formula_to_graphviz_digraph(formula: Core.Formula, digraph=None):
         title = formula.represent(RFormats.UTF8)
         id = formula.qualified_key
@@ -566,11 +584,9 @@ class Repr:
 
         return digraph
 
-
     def convert_formula_to_dot(formula: Core.Formula):
         digraph = Repr.convert_formula_to_graphviz_digraph(formula=formula)
         return digraph.source
-
 
     def render_formula_as_ipython_mimebundle(formula: Core.Formula):
         """
@@ -583,8 +599,6 @@ class Repr:
         """
         digraph = Repr.convert_formula_to_graphviz_digraph(formula=formula)
         digraph._repr_mimebundle_()
-
-
 
     def represent(o: object, rformat: str = None, *args, **kwargs) -> str:
         """Get the object'representation representation in the desired format.
@@ -610,7 +624,6 @@ class Repr:
             return o.represent(rformat, *args, **kwargs)
         else:
             return str(o)
-
 
 
 class Glyphs:
@@ -671,7 +684,6 @@ class Glyphs:
     small_space = Repr.Glyph(utf8=' ', latex=r'\,', html='&nbsp;', usascii=' ')
 
 
-
 def set_unique_scope() -> str:
     """Creates a new, unique user-defined scope, and set it as the current default scope.
 
@@ -680,7 +692,7 @@ def set_unique_scope() -> str:
     Returns:
         str: The new scope key.
         """
-    user_defined_scope_key = str(uuid.uuid4()).replace('-','_')
+    user_defined_scope_key = Const._USER_DEFINED_KEY_PREFIX + str(uuid.uuid4()).replace('-', '_')
     return set_default_scope(user_defined_scope_key)
 
 
@@ -716,25 +728,25 @@ def set_default_scope(scope_key):
     # TODO: Allow the usage of friendly name, notes or documentation, etc.
     if scope_key is None:
         Log.log_error(
-            f'None is not a valid context key. Please provide a non-empty string composed of the allowed characters: "{_MNEMONIC_KEY_ALLOWED_CHARACTERS}".')
+            f'None is not a valid context key. Please provide a non-empty string composed of the allowed characters: "{Const._MNEMONIC_KEY_ALLOWED_CHARACTERS}".')
     if not isinstance(scope_key, str):
         Log.log_error(
-            f'The object "{scope_key}" of type "{type(scope_key)}" is not a valid context key. Please provide a non-empty string composed of the allowed characters: "{_MNEMONIC_KEY_ALLOWED_CHARACTERS}".')
+            f'The object "{scope_key}" of type "{type(scope_key)}" is not a valid context key. Please provide a non-empty string composed of the allowed characters: "{Const._MNEMONIC_KEY_ALLOWED_CHARACTERS}".')
     scope_key_cleaned = Utils.clean_mnemonic_key(scope_key)
     if scope_key_cleaned != scope_key:
         Log.log_warning(
-            f'Please note that the context key "{scope_key}" contained unsupported characters. The allowed characters for context keys are: "{_MNEMONIC_KEY_ALLOWED_CHARACTERS}". It was automatically cleaned from unsupported characters. The resulting context key is: {scope_key_cleaned}')
+            f'Please note that the context key "{scope_key}" contained unsupported characters. The allowed characters for context keys are: "{Const._MNEMONIC_KEY_ALLOWED_CHARACTERS}". It was automatically cleaned from unsupported characters. The resulting context key is: {scope_key_cleaned}')
     if scope_key == '':
         Log.log_error(
-            f'An empty string is not a valid context key. Please provide a non-empty string composed of the allowed characters: "{_MNEMONIC_KEY_ALLOWED_CHARACTERS}".')
+            f'An empty string is not a valid context key. Please provide a non-empty string composed of the allowed characters: "{Const._MNEMONIC_KEY_ALLOWED_CHARACTERS}".')
 
-    prefixed_key = Core._USER_DEFINED_KEY_PREFIX + scope_key_cleaned
+    prefixed_key = Const._USER_DEFINED_KEY_PREFIX + scope_key_cleaned
     _DEFAULT_SCOPE_KEY = prefixed_key
     Log.log_info(f'Default scope_key: {scope_key_cleaned}')
 
 
 def get_default_scope():
-    return _DEFAULT_SCOPE_KEY[len(Core._USER_DEFINED_KEY_PREFIX):]
+    return _DEFAULT_SCOPE_KEY[len(Const._USER_DEFINED_KEY_PREFIX):]
 
 
 def av(codomain, base_name=None, indexes=None):
@@ -748,7 +760,7 @@ def f(o, *args):
 
 
 def get_qualified_key(scope_key, structure_key, language_key, base_key):
-    return f'{scope_key}{_QUALIFIED_KEY_SEPARATOR}{structure_key}{_QUALIFIED_KEY_SEPARATOR}{language_key}{_QUALIFIED_KEY_SEPARATOR}{base_key}'
+    return f'{scope_key}{Const._QUALIFIED_KEY_SEPARATOR}{structure_key}{Const._QUALIFIED_KEY_SEPARATOR}{language_key}{Const._QUALIFIED_KEY_SEPARATOR}{base_key}'
 
 
 _concept_database = {}
@@ -758,32 +770,9 @@ _token_database = {}
 """The static database of tokens."""
 
 
+
+
 class Core:
-    _BASE_KEY = 'base_key'
-    _STRUCTURE_KEY = 'structure_key'
-    _SCOPE_KEY = 'scope_key'
-    _LANGUAGE_KEY = 'language_key'
-
-    # SystemFunction Complementary Properties
-    _DOMAIN = 'codomain'
-    _CODOMAIN = 'codomain'
-    _ARITY = 'arity'
-    _PYTHON_VALUE = 'python_value'
-
-    # NType Keys
-    _STRUCTURE_SCOPE = 'scope_key'
-    _STRUCTURE_LANGUAGE = 'language_key'
-    _STRUCTURE_DOMAIN = 'codomain'
-    _STRUCTURE_FUNCTION = 'function'
-    _STRUCTURE_ATOMIC_PROPERTY = 'ap'
-    _STRUCTURE_VARIABLE = 'variable'
-    _STRUCTURE_FORMULA = 'formula'
-
-    _DEFAULT_SCOPE_KEY = ''
-    _SYSTEM_DEFINED_KEY_PREFIX = 'sys_'
-    _USER_DEFINED_KEY_PREFIX = 'ud_'
-    _LANGUAGE_NAIVE = 'naive'
-
     class Concept:
 
         global _concept_database
@@ -1013,12 +1002,12 @@ class Core:
 
     # Scope.
     system_scope = Scope(
-        scope_key='sys', structure_key=_STRUCTURE_SCOPE, language_key=_LANGUAGE_NAIVE, base_key='sys',
+        scope_key='sys', structure_key=Const._STRUCTURE_SCOPE, language_key=Const._LANGUAGE_NAIVE, base_key='sys',
         utf8='sys', latex=r'\text{sys}', html='sys', usascii='sys')
 
     initial_user_defined_scope = Scope(
-        scope_key='sys', structure_key=_STRUCTURE_SCOPE, language_key=_LANGUAGE_NAIVE,
-        base_key=_USER_DEFINED_KEY_PREFIX + 'scope_1',
+        scope_key='sys', structure_key=Const._STRUCTURE_SCOPE, language_key=Const._LANGUAGE_NAIVE,
+        base_key=Const._USER_DEFINED_KEY_PREFIX + 'scope_1',
         utf8='scope_key₁', latex=r'\text{scope_key}_1', html=r'scope_key<sub>1</sub>', usascii='scope1')
 
     class SystemFunction(Concept):
@@ -1152,7 +1141,7 @@ class Core:
                 domain=None, codomain=None, base_name=None, indexes=None,
                 **kwargs):
             # Identification properties
-            structure_key = Core._STRUCTURE_FORMULA
+            structure_key = Const._STRUCTURE_FORMULA
             # Mandatory complementary properties.
             if category not in Core.Formula.CATEGORIES:
                 Log.log_error('Invalid formula category',
@@ -1340,7 +1329,7 @@ class Core:
         arguments = args
         formula = Core.Formula(
             # Identification properties
-            scope_key=scope_key, language_key=Core._LANGUAGE_NAIVE, base_key=base_key,
+            scope_key=scope_key, language_key=Const._LANGUAGE_NAIVE, base_key=base_key,
             # Mandatory complementary properties
             category=category,
             # Conditional complementary properties
@@ -1356,8 +1345,8 @@ class Core:
         codomain_key = None
         # Identification properties
         scope_key = _DEFAULT_SCOPE_KEY
-        structure_key = Core._STRUCTURE_FORMULA
-        language_key = Core._LANGUAGE_NAIVE
+        structure_key = Const._STRUCTURE_FORMULA
+        language_key = Const._LANGUAGE_NAIVE
         if base_name is None:
             # TODO: Make this a scope preference setting, letting the user choose the default
             #   variable base_name in that scope.
@@ -1389,8 +1378,9 @@ class Core:
 
 
 class BA1:
-    """Boolean Algebra 1.
+    """The **Boolean Algebra 1** library.
 
+    This library generates the mathematical objects that composes the basic Boolean algebra.
     """
 
     _SCOPE_BA1 = 'sys_ba1'
@@ -1406,21 +1396,21 @@ class BA1:
 
     # Scope.
     ba1_scope = Core.Scope(
-        scope_key=_SCOPE_BA1, structure_key=Core._STRUCTURE_SCOPE, language_key=_LANGUAGE_BA1, base_key='ba1_language',
+        scope_key=_SCOPE_BA1, structure_key=Const._STRUCTURE_SCOPE, language_key=_LANGUAGE_BA1, base_key='ba1_language',
         utf8='ba1_language', latex=r'\text{ba1_language}', html='ba1_language', usascii='ba1_language')
 
     # Language.
     ba1_language = Core.Language(
-        scope_key=_SCOPE_BA1, structure_key=Core._STRUCTURE_LANGUAGE, language_key=_LANGUAGE_BA1,
+        scope_key=_SCOPE_BA1, structure_key=Const._STRUCTURE_LANGUAGE, language_key=_LANGUAGE_BA1,
         base_key='ba1_language',
         utf8='ba1_language', latex=r'\text{ba1_language}', html='ba1_language', usascii='ba1_language')
 
     # Domains.
     b = Core.Domain(
-        scope_key=_SCOPE_BA1, structure_key=Core._STRUCTURE_DOMAIN, language_key=_LANGUAGE_BA1, base_key='b',
+        scope_key=_SCOPE_BA1, structure_key=Const._STRUCTURE_DOMAIN, language_key=_LANGUAGE_BA1, base_key='b',
         utf8='𝔹', latex=r'\mathbb{B}', html='&Bopf;', usascii='B')
     b2 = Core.Domain(
-        scope_key=_SCOPE_BA1, structure_key=Core._STRUCTURE_DOMAIN, language_key=_LANGUAGE_BA1, base_key='b2',
+        scope_key=_SCOPE_BA1, structure_key=Const._STRUCTURE_DOMAIN, language_key=_LANGUAGE_BA1, base_key='b2',
         utf8='𝔹²', latex=r'\mathbb{B}^{2}', html=r'&Bopf;<sup>2</sup>', usascii='B2')
 
     # Algorithms.
@@ -1498,29 +1488,29 @@ class BA1:
 
     # Functions.
     truth = Core.SystemFunction(
-        scope_key=_SCOPE_BA1, structure_key=Core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='truth',
+        scope_key=_SCOPE_BA1, structure_key=Const._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='truth',
         codomain=b, category=Core.SystemFunction.SYSTEM_CONSTANT, algorithm=truth_algorithm,
         utf8='⊤', latex=r'\top', html='&top;', usascii='truth', tokens=['⊤', 'truth', 'true', 't', '1'],
         arity=0, python_value=True)
 
     falsum = Core.SystemFunction(
-        scope_key=_SCOPE_BA1, structure_key=Core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='falsum',
+        scope_key=_SCOPE_BA1, structure_key=Const._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='falsum',
         codomain=b, category=Core.SystemFunction.SYSTEM_CONSTANT, algorithm=falsum_algorithm,
         utf8='⊥', latex=r'\bot', html='&perp;', usascii='falsum', tokens=['⊥', 'falsum', 'false', 'f', '0'],
         arity=0, python_value=False)
     negation = Core.SystemFunction(
-        scope_key=_SCOPE_BA1, structure_key=Core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='negation',
+        scope_key=_SCOPE_BA1, structure_key=Const._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='negation',
         codomain=b, category=Core.SystemFunction.SYSTEM_UNARY_OPERATOR, algorithm=negation_algorithm,
         utf8='¬', latex=r'\lnot', html='&not;', usascii='not', tokens=['¬', 'not', 'lnot'],
         domain=b, arity=1)
     conjunction = Core.SystemFunction(
-        scope_key=_SCOPE_BA1, structure_key=Core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1,
+        scope_key=_SCOPE_BA1, structure_key=Const._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1,
         base_key='conjunction',
         codomain=b, category=Core.SystemFunction.SYSTEM_BINARY_OPERATOR, algorithm=conjunction_algorithm,
         utf8='∧', latex=r'\land', html='&and;', usascii='and', tokens=['∧', 'and', 'land'],
         domain=b, arity=2)
     disjunction = Core.SystemFunction(
-        scope_key=_SCOPE_BA1, structure_key=Core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1,
+        scope_key=_SCOPE_BA1, structure_key=Const._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1,
         base_key='disjunction',
         codomain=b, category=Core.SystemFunction.SYSTEM_BINARY_OPERATOR, algorithm=disjunction_algorithm,
         utf8='∨', latex=r'\lor', html='&or;', usascii='or', tokens=['∨', 'or', 'lor'],
@@ -1542,7 +1532,7 @@ class BA1:
             return BA1.b2
         else:
             scope_key = BA1._SCOPE_BA1
-            structure_key = Core._STRUCTURE_DOMAIN
+            structure_key = Const._STRUCTURE_DOMAIN
             language_key = BA1._LANGUAGE_BA1
             base_key = 'b' + str(n)  # TODO: Check it is an int
             # TODO: Consider implementing a lock to avoid bugs with multithreading when checking the static dictionary
@@ -1636,6 +1626,12 @@ class BA1:
                 Log.log_error('Arity > 2 are not yet supported, sorry')
         Log.log_debug(output_vector=output_vector)
         return output_vector
+
+
+class ST1:
+    """The **Set Theory 1** library."""
+    _SCOPE_ST1 = 'sys_st1'
+    _LANGUAGE_ST1 = 'ba1_language'
 
 
 def parse_string_utf8(code):
