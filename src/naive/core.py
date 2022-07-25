@@ -7,6 +7,7 @@ import typing
 import abc
 from textx import metamodel_from_file, metamodel_from_str
 import pkg_resources
+import uuid
 
 # This sets the root logger to write to stdout (your console).
 # Your script/app needs to call this somewhere at least once.
@@ -21,7 +22,7 @@ logging.basicConfig(format='%(message)s')
 logging.root.setLevel(logging.INFO)
 
 _QUALIFIED_KEY_SEPARATOR = '.'
-_MNEMONIC_KEY_ALLOWED_CHARACTERS = 'abcdefghijklmnopqrstuvwxyz012345679_'
+_MNEMONIC_KEY_ALLOWED_CHARACTERS = 'abcdefghijklmnopqrstuvwxyz0123456789_'
 
 
 class RFormats:
@@ -668,6 +669,11 @@ def clean_mnemonic_key(mnemonic_key):
     else:
         mnemonic_key = str(mnemonic_key)
         return ''.join(c for c in mnemonic_key if c in _MNEMONIC_KEY_ALLOWED_CHARACTERS)
+
+
+def set_unique_scope():
+    user_defined_scope_key = str(uuid.uuid4()).replace('-','_')
+    return set_default_scope(user_defined_scope_key)
 
 
 def set_default_scope(scope_key):

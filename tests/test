@@ -1,7 +1,7 @@
-digraph "ud_test_formula_representation.formula.naive.f37" {
-	"ud_test_formula_representation.formula.naive.f37" [label="(p ∨ q)"]
-	"ud_test_formula_representation.formula.naive.p" [label=p]
-	"ud_test_formula_representation.formula.naive.f37" -> "ud_test_formula_representation.formula.naive.p" [dir=back]
-	"ud_test_formula_representation.formula.naive.q" [label=q]
-	"ud_test_formula_representation.formula.naive.f37" -> "ud_test_formula_representation.formula.naive.q" [dir=back]
+digraph "ud_34288830_0e75_475a_ad6a_2325e4ee1e24.formula.naive.f37" {
+	"ud_34288830_0e75_475a_ad6a_2325e4ee1e24.formula.naive.f37" [label="(p ∨ q)"]
+	"ud_34288830_0e75_475a_ad6a_2325e4ee1e24.formula.naive.p" [label=p]
+	"ud_34288830_0e75_475a_ad6a_2325e4ee1e24.formula.naive.f37" -> "ud_34288830_0e75_475a_ad6a_2325e4ee1e24.formula.naive.p" [dir=back]
+	"ud_34288830_0e75_475a_ad6a_2325e4ee1e24.formula.naive.q" [label=q]
+	"ud_34288830_0e75_475a_ad6a_2325e4ee1e24.formula.naive.f37" -> "ud_34288830_0e75_475a_ad6a_2325e4ee1e24.formula.naive.q" [dir=back]
 }

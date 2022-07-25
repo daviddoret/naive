@@ -5,12 +5,14 @@ import naive
 
 class Test(TestCase):
     def test_clean_key(self):
+        naive.set_unique_scope()
         self.assertEqual('abcd', naive.clean_mnemonic_key('abcd'))
         self.assertEqual('abcd', naive.clean_mnemonic_key('a⊤b¬ c 𝔹 ⟼φΦd'))
 
 
 class TestConcept(TestCase):
     def test_init(self):
+        naive.set_unique_scope()
         c1 = naive.Core.Concept(
             scope_key='scopetest', structure_key='structuretest', language_key='languagetest', base_key='test1',
             utf8='test1', latex=r'\text{test}_{1}', html=r'test<sub>1</sub>', usascii='test1')
@@ -22,6 +24,7 @@ class TestConcept(TestCase):
 
 class TestFunction(TestCase):
     def test_init(self):
+        naive.set_unique_scope()
         f1 = naive.Core.SystemFunction(
             scope_key='scope_test', structure_key='structure_test', language_key='language_test', base_key='test_1',
             codomain='domain_test', category=naive.Core.SystemFunction.SYSTEM_CONSTANT, algorithm=naive.BA1.falsum_algorithm,
@@ -36,6 +39,7 @@ class TestFunction(TestCase):
 
 class Test_User_Scope(TestCase):
     def test_set_default_scope(self):
+        naive.set_unique_scope()
         #self.assertEqual('scope_1', naive.get_default_scope())
         naive.set_default_scope('newscope')
         self.assertEqual('newscope', naive.get_default_scope())
@@ -44,14 +48,17 @@ class Test_User_Scope(TestCase):
 
 
     def test_basic_atomic_variable_declaration(self):
+        naive.set_unique_scope()
         b1 = naive.av(naive.BA1.b, base_name='b', indexes=1)
         self.assertEqual('b₁', b1.represent(naive.RFormats.UTF8))
 
     def test_representation_of_truth_and_falsum(self):
+        naive.set_unique_scope()
         self.assertEqual(naive.BA1.truth.represent(naive.RFormats.UTF8), '⊤')
         self.assertEqual(naive.BA1.falsum.represent(naive.RFormats.UTF8), '⊥')
 
     def test_b_variable_declaration(self):
+        naive.set_unique_scope()
         x = naive.av(naive.BA1.b, 'x')
         self.assertEqual('x', x.represent(naive.RFormats.UTF8))
         y = naive.av(naive.BA1.b, 'y')
@@ -60,6 +67,7 @@ class Test_User_Scope(TestCase):
         self.assertEqual('z', z.represent(naive.RFormats.UTF8))
 
     def test_representation_of_domains_and_b_tuple_domains(self):
+        naive.set_unique_scope()
         self.assertEqual('𝔹', naive.BA1.b.represent(naive.RFormats.UTF8))
         self.assertEqual('𝔹²', naive.BA1.b2.represent(naive.RFormats.UTF8))
 
@@ -70,6 +78,7 @@ class Test_User_Scope(TestCase):
         self.assertEqual('𝔹²³⁴', naive.BA1.get_bn_domain(234).represent(naive.RFormats.UTF8))
 
     def test_formula_representation(self):
+        naive.set_unique_scope()
         naive.Log.set_debug_level()
         naive.USE_PRINT_FOR_INFO = False
         naive.set_default_scope('test_formula_representation')
@@ -90,6 +99,7 @@ class Test_User_Scope(TestCase):
         self.assertEqual('(⊤ ∨ ⊥)', phi5.represent(naive.RFormats.UTF8))
 
     def test_atomic_variable_as_formula(self):
+        naive.set_unique_scope()
         x = naive.av(naive.BA1.b, 'x')
         y = naive.av(naive.BA1.b, 'y')
 
@@ -100,6 +110,7 @@ class Test_User_Scope(TestCase):
         self.assertEqual('(x ∧ y)', phi2.represent(naive.RFormats.UTF8))
 
     def test_formula_composition(self):
+        naive.set_unique_scope()
         z = naive.av(naive.BA1.b, 'z')
         x = naive.av(naive.BA1.b, 'x')
         y = naive.av(naive.BA1.b, 'y')
@@ -119,6 +130,7 @@ class Test_User_Scope(TestCase):
         self.assertEqual('[x, y]', str(phi3.list_atomic_variables()))
 
     def test_complex_programmatic_construction_and_satisfaction_set(self):
+        naive.set_unique_scope()
         # naive.log.set_debug_level()
         naive.set_default_scope('test_complex_programmatic_construction_and_satisfaction_set')
         b3 = naive.av(codomain=naive.BA1.b, base_name='b', indexes=3)
@@ -135,6 +147,7 @@ class Test_User_Scope(TestCase):
         self.assertEqual('[⊥, ⊥, ⊥, ⊤, ⊥, ⊥, ⊥, ⊤]', str(sat_i))
 
     def test_parsing_code(self):
+        naive.set_unique_scope()
         code_1 = r'(((⊤ ∨ b1) ∧ (⊥ ∧ ¬⊥)) ∧ ¬b2)'
         parsed_formula_1 = naive.parse_string_utf8(code_1)
         self.assertEqual(code_1, parsed_formula_1.represent(naive.RFormats.UTF8))
@@ -146,6 +159,7 @@ class Test_User_Scope(TestCase):
         self.assertEqual(code_1, parsed_formula_1_extra_parenthesis.represent(naive.RFormats.UTF8))
 
     def test_parsing_code_2(self):
+        naive.set_unique_scope()
         code_2 = r'¬⊥'
         parsed_formula_2 = naive.parse_string_utf8(code_2)
         self.assertEqual(code_2, parsed_formula_2.represent(naive.RFormats.UTF8))
@@ -153,6 +167,7 @@ class Test_User_Scope(TestCase):
         g.render('test', format='svg', view=True)
 
     def test_parsing_code_3(self):
+        naive.set_unique_scope()
         code_3 = r'⊥'
         parsed_formula_3 = naive.parse_string_utf8(code_3)
         self.assertEqual(code_3, parsed_formula_3.represent(naive.RFormats.UTF8))
@@ -160,6 +175,7 @@ class Test_User_Scope(TestCase):
         g.render('test', format='svg', view=True)
 
     def test_parsing_code_4(self):
+        naive.set_unique_scope()
         code_4 = r'b₇₃'
         parsed_formula_4 = naive.parse_string_utf8(code_4)
         self.assertEqual(code_4, parsed_formula_4.represent(naive.RFormats.UTF8))
@@ -167,6 +183,7 @@ class Test_User_Scope(TestCase):
         g.render('test', format='svg', view=True)
 
     def test_parsing_code_5(self):
+        naive.set_unique_scope()
         from PIL import Image
         import graphviz
         code_5 = r'(p ∨ q)'
@@ -176,6 +193,7 @@ class Test_User_Scope(TestCase):
         g.render('test', format='svg', view=True)
 
     def test_dot(self):
+        naive.set_unique_scope()
         naive.set_default_scope('test_dot')
         code_5 = r'(p ∨ q)'
         parsed_formula_5 = naive.parse_string_utf8(code_5)
