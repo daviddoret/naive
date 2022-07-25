@@ -264,6 +264,30 @@ class Utils:
         return flattened
 
 
+    def unkwargs(kwargs, key):
+        return None if key not in kwargs else kwargs[key]
+
+
+    def extract_scope_key_from_qualified_key(qualified_key):
+        """Extract the scope_key key from a qualified key."""
+        if qualified_key is None:
+            return None
+        else:
+            qualified_key = str(qualified_key)
+            first_separator_position = qualified_key.find(_QUALIFIED_KEY_SEPARATOR)
+            return qualified_key[0, first_separator_position]
+
+
+    def clean_mnemonic_key(mnemonic_key):
+        if mnemonic_key is None:
+            Log.log_error('NKey is None')
+        else:
+            mnemonic_key = str(mnemonic_key)
+            return ''.join(c for c in mnemonic_key if c in _MNEMONIC_KEY_ALLOWED_CHARACTERS)
+
+
+
+
 class Repr:
     """A library of functions and classes that help representing (or rendering, or visualizing) objects."""
 
@@ -648,30 +672,14 @@ class Glyphs:
 
 
 
+def set_unique_scope() -> str:
+    """Creates a new, unique user-defined scope, and set it as the current default scope.
 
-def unkwargs(kwargs, key):
-    return None if key not in kwargs else kwargs[key]
+    To avoid scope collisions, the unique key is generated as a UUID using the uuid.uuid4() function. The dot ('.') characters are then replaced by underscores ('_') to avoid syntaxic confusion, the dot ('.') being used as the namespace separator.
 
-
-def extract_scope_key_from_qualified_key(qualified_key):
-    """Extract the scope_key key from a qualified key."""
-    if qualified_key is None:
-        return None
-    else:
-        qualified_key = str(qualified_key)
-        first_separator_position = qualified_key.find(_QUALIFIED_KEY_SEPARATOR)
-        return qualified_key[0, first_separator_position]
-
-
-def clean_mnemonic_key(mnemonic_key):
-    if mnemonic_key is None:
-        Log.log_error('NKey is None')
-    else:
-        mnemonic_key = str(mnemonic_key)
-        return ''.join(c for c in mnemonic_key if c in _MNEMONIC_KEY_ALLOWED_CHARACTERS)
-
-
-def set_unique_scope():
+    Returns:
+        str: The new scope key.
+        """
     user_defined_scope_key = str(uuid.uuid4()).replace('-','_')
     return set_default_scope(user_defined_scope_key)
 
@@ -680,7 +688,7 @@ def set_default_scope(scope_key):
     """Sets the default user-defined scope. Creates it if necessary.
 
     Args:
-        scope_key (str): A unique key to identify the user-defined scope.
+        scope_key (str): A key to identify that user-defined scope.
 
     Returns:
         N/A
@@ -712,7 +720,7 @@ def set_default_scope(scope_key):
     if not isinstance(scope_key, str):
         Log.log_error(
             f'The object "{scope_key}" of type "{type(scope_key)}" is not a valid context key. Please provide a non-empty string composed of the allowed characters: "{_MNEMONIC_KEY_ALLOWED_CHARACTERS}".')
-    scope_key_cleaned = clean_mnemonic_key(scope_key)
+    scope_key_cleaned = Utils.clean_mnemonic_key(scope_key)
     if scope_key_cleaned != scope_key:
         Log.log_warning(
             f'Please note that the context key "{scope_key}" contained unsupported characters. The allowed characters for context keys are: "{_MNEMONIC_KEY_ALLOWED_CHARACTERS}". It was automatically cleaned from unsupported characters. The resulting context key is: {scope_key_cleaned}')
@@ -788,10 +796,10 @@ class Core:
             # Identification Properties that constitute the Qualified Key.
             if scope_key is None:
                 scope_key = get_default_scope()
-            self._scope_key = clean_mnemonic_key(scope_key)
-            self._structure_key = clean_mnemonic_key(structure_key)
-            self._language_key = clean_mnemonic_key(language_key)
-            self._base_key = clean_mnemonic_key(base_key)
+            self._scope_key = Utils.clean_mnemonic_key(scope_key)
+            self._structure_key = Utils.clean_mnemonic_key(structure_key)
+            self._language_key = Utils.clean_mnemonic_key(language_key)
+            self._base_key = Utils.clean_mnemonic_key(base_key)
             # Representation Properties
             self._utf8 = utf8
             self._latex = latex
@@ -1683,4 +1691,4 @@ def parse_file_utf8():
     pass
 
 
-set_default_scope('scope_1')
+set_unique_scope()
