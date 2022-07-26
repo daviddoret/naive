@@ -23,7 +23,10 @@
 
 # TODO: Remove obsolete category usages and replace with facets
 
-# DESIGN CHOICE: wrap concept creation in a generic function. check facets consistency in that function.
+# TODO: DESIGN CHOICE: wrap concept creation in a generic function. check facets consistency in that function.
 #    like this, we assume that concepts are consistent at initialization time and avoid rechecking consistency at use time.
 
+# TODO: DESIGN CHOICE: instead of populating all utf8, html, etc. properties, inject a single Representable object
+#    as a concept property. Like this we can directly reuse Glyphs or other constructions.
+#   and we avoid
 
