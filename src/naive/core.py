@@ -26,7 +26,7 @@ class Const:
     """A library of general-purpose pseudo-constants."""
 
     _BASE_KEY = 'base_key'
-    _FACET_KEY = 'facet_key'
+    _FACET_KEY = 'facets'
     _SCOPE_KEY = 'scope_key'
     _LANGUAGE_KEY = 'language_key'
 
@@ -36,18 +36,6 @@ class Const:
     _ARITY = 'arity'
     _PYTHON_VALUE = 'python_value'
 
-    # NType Keys
-    # TODO: Find a new name to designate these "types" of objects.
-    # TODO: Make these "types" non-exclusive.
-    _FACET_SCOPE = 'scope'
-    _FACET_LANGUAGE = 'language'
-    _FACET_DOMAIN = 'codomain'
-    _FACET_FUNCTION = 'function'
-    _FACET_ATOMIC_PROPERTY = 'ap'
-    _FACET_VARIABLE = 'variable'
-    _FACET_FORMULA = 'formula'
-    _FACET_SET = 'set'
-
 
     _DEFAULT_SCOPE_KEY = ''
     _SYSTEM_DEFINED_KEY_PREFIX = 'sys_'
@@ -56,6 +44,22 @@ class Const:
 
     _QUALIFIED_KEY_SEPARATOR = '.'
     _MNEMONIC_KEY_ALLOWED_CHARACTERS = 'abcdefghijklmnopqrstuvwxyz0123456789_'
+
+
+class Facets:
+
+    # NType Keys
+    # TODO: Find a new name to designate these "types" of objects.
+    # TODO: Make these "types" non-exclusive.
+    _FACET_SCOPE = 'scope'
+    _FACET_LANGUAGE = 'language'
+    _FACET_DOMAIN = 'codomain'
+    _FACET_FUNCTION = 'function'
+    _FACET_SYSTEM_FUNCTION ='system_function'
+    _FACET_ATOMIC_PROPERTY = 'ap'
+    _FACET_VARIABLE = 'variable'
+    _FACET_FORMULA = 'formula'
+    _FACET_SET = 'set'
 
 
 class RFormats:
@@ -763,8 +767,8 @@ def f(o, *args):
     return Core.write_formula(o, *args)
 
 
-def get_qualified_key(scope_key, facet_key, language_key, base_key):
-    return f'{scope_key}{Const._QUALIFIED_KEY_SEPARATOR}{facet_key}{Const._QUALIFIED_KEY_SEPARATOR}{language_key}{Const._QUALIFIED_KEY_SEPARATOR}{base_key}'
+def get_qualified_key(scope_key, language_key, base_key):
+    return f'{scope_key}{Const._QUALIFIED_KEY_SEPARATOR}{language_key}{Const._QUALIFIED_KEY_SEPARATOR}{base_key}'
 
 
 _concept_database = {}
@@ -773,16 +777,14 @@ _concept_database = {}
 _token_database = {}
 """The static database of tokens."""
 
-
-
-
 class Core:
     class Concept:
 
         global _concept_database
         global _token_database
 
-        def __init__(self, scope_key, facet_key, language_key, base_key,
+        def __init__(self, scope_key, language_key, base_key,
+                     facets,
                      utf8=None, latex=None, html=None, usascii=None, tokens=None,
                      domain=None, codomain=None, arity=None, pythong_value=None,
                      **kwargs):
@@ -790,9 +792,10 @@ class Core:
             if scope_key is None:
                 scope_key = get_default_scope()
             self._scope_key = Utils.clean_mnemonic_key(scope_key)
-            self._facet_key = Utils.clean_mnemonic_key(facet_key)
             self._language_key = Utils.clean_mnemonic_key(language_key)
             self._base_key = Utils.clean_mnemonic_key(base_key)
+            # Structural properties
+            self._facets = facets
             # Representation Properties
             self._utf8 = utf8
             self._latex = latex
@@ -835,16 +838,16 @@ class Core:
             return self._base_key
 
         @staticmethod
-        def check_concept_from_decomposed_key(scope_key: str, facet_key: str, language_key: str, base_key: str,
+        def check_concept_from_decomposed_key(scope_key: str, language_key: str, base_key: str,
                                               **kwargs):
-            if scope_key is not None and facet_key is not None and language_key is not None and base_key is not None:
-                qualified_key = get_qualified_key(scope_key, facet_key, language_key, base_key)
+            if scope_key is not None and language_key is not None and base_key is not None:
+                qualified_key = get_qualified_key(scope_key, language_key, base_key)
                 return Core.Concept.check_concept_from_qualified_key(
-                    qualified_key, scope=scope_key, ntype=facet_key, language=language_key, nkey=base_key,
+                    qualified_key, scope=scope_key, language=language_key, base_key=base_key,
                     **kwargs)
             else:
-                Log.log_error('Some identification properties are None', scope=scope_key, ntype=facet_key,
-                              language=language_key, nkey=base_key, **kwargs)
+                Log.log_error('Some identification properties are None',
+                              scope=scope_key, language=language_key, base_key=base_key, **kwargs)
 
         @staticmethod
         def check_concept_from_qualified_key(qualified_key, **kwargs):
@@ -855,16 +858,16 @@ class Core:
                               qualified_key=qualified_key, **kwargs)
 
         @staticmethod
-        def get_concept_from_decomposed_key(scope_key: str, facet_key: str, language_key: str, base_key: str,
+        def get_concept_from_decomposed_key(scope_key: str, language_key: str, base_key: str,
                                             **kwargs):
-            if scope_key is not None and facet_key is not None and language_key is not None and base_key is not None:
-                qualified_key = get_qualified_key(scope_key, facet_key, language_key, base_key)
+            if scope_key is not None and language_key is not None and base_key is not None:
+                qualified_key = get_qualified_key(scope_key, language_key, base_key)
                 return Core.Concept.get_concept_from_qualified_key(
-                    qualified_key, scope=scope_key, ntype=facet_key, language=language_key, nkey=base_key,
+                    qualified_key, scope=scope_key, language=language_key, base_key=base_key,
                     **kwargs)
             else:
-                Log.log_error('Some identification properties are None', scope=scope_key, ntype=facet_key,
-                              language=language_key, nkey=base_key, **kwargs)
+                Log.log_error('Some identification properties are None',
+                              scope=scope_key, language=language_key, base_key=base_key, **kwargs)
 
         @staticmethod
         def get_concept_from_qualified_key(qualified_key, **kwargs):
@@ -922,8 +925,8 @@ class Core:
                               qualified_key=self.qualified_key)
 
         @property
-        def facet_key(self) -> str:
-            return self._facet_key
+        def facets(self) -> str:
+            return self._facets
 
         @property
         def python_value(self):
@@ -931,7 +934,7 @@ class Core:
 
         @property
         def qualified_key(self):
-            return get_qualified_key(scope_key=self.scope_key, facet_key=self.facet_key,
+            return get_qualified_key(scope_key=self.scope_key,
                                      language_key=self.language,
                                      base_key=self.base_key)
 
@@ -943,74 +946,16 @@ class Core:
         def tokens(self):
             return self._tokens
 
-    class Language(Concept):
-        def __init__(
-                self,
-                # Identification properties
-                scope_key, facet_key, language_key, base_key,
-                # Mandatory complementary properties
-                # Conditional complementary properties
-                # Representation properties
-                utf8=None, latex=None, html=None, usascii=None, tokens=None,
-                **kwargs):
-            # ...
-
-            # Call the base class initializer.
-            #   Executing this at the end of the initialization process
-            #   assures that the new concept is not appended to the
-            #   static concept and token databases before it is fully initialized.
-            super().__init__(
-                scope_key=scope_key, facet_key=facet_key, language_key=language_key, base_key=base_key,
-                utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
-                **kwargs)
-
-    class Domain(Concept):
-        def __init__(
-                self,
-                # Identification properties
-                scope_key, facet_key, language_key, base_key,
-                # Mandatory complementary properties
-                # Conditional complementary properties
-                # Representation properties
-                utf8=None, latex=None, html=None, usascii=None, tokens=None,
-                **kwargs):
-            # ...
-
-            # Call the base class initializer.
-            #   Executing this at the end of the initialization process
-            #   assures that the new concept is not appended to the
-            #   static concept and token databases before it is fully initialized.
-            super().__init__(
-                scope_key=scope_key, facet_key=facet_key, language_key=language_key, base_key=base_key,
-                utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
-                **kwargs)
-
-    class Scope(Concept):
-        def __init__(
-                self,
-                # Identification properties
-                scope_key, facet_key, language_key, base_key,
-                # Mandatory complementary properties
-                # Conditional complementary properties
-                # Representation properties
-                utf8=None, latex=None, html=None, usascii=None, tokens=None,
-                **kwargs):
-            # Call the base class initializer.
-            #   Executing this at the end of the initialization process
-            #   assures that the new concept is not appended to the
-            #   static concept and token databases before it is fully initialized.
-            super().__init__(
-                scope_key=scope_key, facet_key=facet_key, language_key=language_key, base_key=base_key,
-                utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
-                **kwargs)
-
     # Scope.
-    system_scope = Scope(
-        scope_key='sys', facet_key=Const._FACET_SCOPE, language_key=Const._LANGUAGE_NAIVE, base_key='sys',
+    system_scope = Concept(
+        scope_key='sys', language_key=Const._LANGUAGE_NAIVE, base_key='sys',
+        facets=[Facets._FACET_SCOPE],
         utf8='sys', latex=r'\text{sys}', html='sys', usascii='sys')
 
-    initial_user_defined_scope = Scope(
-        scope_key='sys', facet_key=Const._FACET_SCOPE, language_key=Const._LANGUAGE_NAIVE,
+    # TODO: Check that we do create a new scope object whenever we set the scope.
+    initial_user_defined_scope = Concept(
+        scope_key='sys', language_key=Const._LANGUAGE_NAIVE,
+        facets=[Facets._FACET_SCOPE],
         base_key=Const._USER_DEFINED_KEY_PREFIX + 'scope_1',
         utf8='scope_key₁', latex=r'\text{scope_key}_1', html=r'scope_key<sub>1</sub>', usascii='scope1')
 
@@ -1034,7 +979,8 @@ class Core:
         def __init__(
                 self,
                 # Identification properties
-                scope_key, facet_key, language_key, base_key,
+                scope_key, language_key, base_key,
+                facets,
                 # Mandatory complementary properties
                 category, codomain, algorithm,
                 # Conditional complementary properties
@@ -1061,7 +1007,8 @@ class Core:
             #   assures that the new concept is not appended to the
             #   static concept and token databases before it is fully initialized.
             super().__init__(
-                scope_key=scope_key, facet_key=facet_key, language_key=language_key, base_key=base_key,
+                scope_key=scope_key, language_key=language_key, base_key=base_key,
+                facets=facets,
                 utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
                 **kwargs)
 
@@ -1136,16 +1083,22 @@ class Core:
                 self,
                 # Identification properties
                 scope_key, language_key, base_key,
+                # Structural properties
+                facets = None,
                 # Mandatory complementary properties
-                category,
+                category = None,  # TODO: Get rid of this property and replace with facets?
                 # Conditional complementary properties
                 # ...for system function calls:
                 system_function=None, arguments=None,
                 # ...for atomic variables
                 domain=None, codomain=None, base_name=None, indexes=None,
                 **kwargs):
-            # Identification properties
-            facet_key = Const._FACET_FORMULA
+            # Structural properties
+            if facets is None:
+                facets = [Facets._FACET_FORMULA]
+            else:
+                if Facets._FACET_FORMULA not in facets:
+                    facets.append(Facets._FACET_FORMULA)
             # Mandatory complementary properties.
             if category not in Core.Formula.CATEGORIES:
                 Log.log_error('Invalid formula category',
@@ -1181,7 +1134,8 @@ class Core:
             #   assures that the new concept is not appended to the
             #   static concept and token databases before it is fully initialized.
             super().__init__(
-                scope_key=scope_key, facet_key=facet_key, language_key=language_key, base_key=base_key,
+                scope_key=scope_key, language_key=language_key, base_key=base_key,
+                facets=facets,
                 **kwargs)
 
         @property
@@ -1320,7 +1274,7 @@ class Core:
         base_key = 'f' + str(index)
         category = None
         system_function = None
-        if isinstance(o, Core.SystemFunction):  # Using a union type to avoid import issues.
+        if Facets._FACET_SYSTEM_FUNCTION in o.facets:
             system_function = o
             match o.category:
                 case Core.SystemFunction.SYSTEM_CONSTANT:
@@ -1349,7 +1303,6 @@ class Core:
         codomain_key = None
         # Identification properties
         scope_key = _DEFAULT_SCOPE_KEY
-        facet_key = Const._FACET_FORMULA
         language_key = Const._LANGUAGE_NAIVE
         if base_name is None:
             # TODO: Make this a scope preference setting, letting the user choose the default
@@ -1361,17 +1314,21 @@ class Core:
                 base_key = base_key + '__' + str(indexes)
             else:
                 base_key = base_key + '__' + '_'.join(str(index) for index in indexes)
-        if Core.Concept.check_concept_from_decomposed_key(scope_key=scope_key, facet_key=facet_key,
-                                                          language_key=language_key, base_key=base_key):
-            variable = Core.Concept.get_concept_from_decomposed_key(scope_key=scope_key, facet_key=facet_key,
-                                                                    language_key=language_key, base_key=base_key)
+        # Structural properties
+        facets = [Facets._FACET_FORMULA, Facets._FACET_ATOMIC_PROPERTY]
+        if Core.Concept.check_concept_from_decomposed_key(
+                scope_key=scope_key, language_key=language_key, base_key=base_key):
+            variable = Core.Concept.get_concept_from_decomposed_key(
+                scope_key=scope_key, language_key=language_key, base_key=base_key)
+            # TODO: Assert that variable concept is of facet variable
             Log.log_warning(
                 'This variable is already declared. In consequence, the existing variable is returned, instead of declaring a new one.',
-                variable=variable, scope_key=scope_key)
+                variable=variable, scope_key=scope_key, base_key=base_key)
             return variable
         else:
             variable = Core.Formula(
                 scope_key=scope_key, language_key=language_key, base_key=base_key,
+                facets = facets,
                 category=Core.Formula.ATOMIC_VARIABLE,
                 codomain=codomain, base_name=base_name, indexes=indexes)
             Log.log_info(variable.represent_declaration())
@@ -1400,22 +1357,25 @@ class BA1:
     falsum = None
 
     # Scope.
-    ba1_scope = Core.Scope(
-        scope_key=_SCOPE_BA1, facet_key=Const._FACET_SCOPE, language_key=_LANGUAGE_BA1, base_key='ba1_language',
-        utf8='ba1_language', latex=r'\text{ba1_language}', html='ba1_language', usascii='ba1_language')
+    ba1_scope = Core.Concept(
+        scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='ba1_scope',
+        facets=[Facets._FACET_SCOPE],
+        utf8='ba1_scope', latex=r'\text{ba1_scope}', html='ba1_scope', usascii='ba1_scope')
 
     # Language.
-    ba1_language = Core.Language(
-        scope_key=_SCOPE_BA1, facet_key=Const._FACET_LANGUAGE, language_key=_LANGUAGE_BA1,
-        base_key='ba1_language',
+    ba1_language = Core.Concept(
+        scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='ba1_language',
+        facets=[Facets._FACET_LANGUAGE],
         utf8='ba1_language', latex=r'\text{ba1_language}', html='ba1_language', usascii='ba1_language')
 
     # Domains.
-    b = Core.Domain(
-        scope_key=_SCOPE_BA1, facet_key=Const._FACET_DOMAIN, language_key=_LANGUAGE_BA1, base_key='b',
+    b = Core.Concept(
+        scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='b',
+        facets=[Facets._FACET_DOMAIN],
         utf8='𝔹', latex=r'\mathbb{B}', html='&Bopf;', usascii='B')
-    b2 = Core.Domain(
-        scope_key=_SCOPE_BA1, facet_key=Const._FACET_DOMAIN, language_key=_LANGUAGE_BA1, base_key='b2',
+    b2 = Core.Concept(
+        scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='b2',
+        facets=[Facets._FACET_DOMAIN],
         utf8='𝔹²', latex=r'\mathbb{B}^{2}', html=r'&Bopf;<sup>2</sup>', usascii='B2')
 
     # Algorithms.
@@ -1493,30 +1453,36 @@ class BA1:
 
     # Functions.
     truth = Core.SystemFunction(
-        scope_key=_SCOPE_BA1, facet_key=Const._FACET_FUNCTION, language_key=_LANGUAGE_BA1, base_key='truth',
+        scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='truth',
+        facets=[Facets._FACET_FUNCTION, Facets._FACET_SYSTEM_FUNCTION],
         codomain=b, category=Core.SystemFunction.SYSTEM_CONSTANT, algorithm=truth_algorithm,
         utf8='⊤', latex=r'\top', html='&top;', usascii='truth', tokens=['⊤', 'truth', 'true', 't', '1'],
         arity=0, python_value=True)
 
     falsum = Core.SystemFunction(
-        scope_key=_SCOPE_BA1, facet_key=Const._FACET_FUNCTION, language_key=_LANGUAGE_BA1, base_key='falsum',
+        scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='falsum',
+        facets=[Facets._FACET_FUNCTION, Facets._FACET_SYSTEM_FUNCTION],
         codomain=b, category=Core.SystemFunction.SYSTEM_CONSTANT, algorithm=falsum_algorithm,
         utf8='⊥', latex=r'\bot', html='&perp;', usascii='falsum', tokens=['⊥', 'falsum', 'false', 'f', '0'],
         arity=0, python_value=False)
+
     negation = Core.SystemFunction(
-        scope_key=_SCOPE_BA1, facet_key=Const._FACET_FUNCTION, language_key=_LANGUAGE_BA1, base_key='negation',
+        scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='negation',
+        facets=[Facets._FACET_FUNCTION, Facets._FACET_SYSTEM_FUNCTION],
         codomain=b, category=Core.SystemFunction.SYSTEM_UNARY_OPERATOR, algorithm=negation_algorithm,
         utf8='¬', latex=r'\lnot', html='&not;', usascii='not', tokens=['¬', 'not', 'lnot'],
         domain=b, arity=1)
+
     conjunction = Core.SystemFunction(
-        scope_key=_SCOPE_BA1, facet_key=Const._FACET_FUNCTION, language_key=_LANGUAGE_BA1,
-        base_key='conjunction',
+        scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='conjunction',
+        facets=[Facets._FACET_FUNCTION, Facets._FACET_SYSTEM_FUNCTION],
         codomain=b, category=Core.SystemFunction.SYSTEM_BINARY_OPERATOR, algorithm=conjunction_algorithm,
         utf8='∧', latex=r'\land', html='&and;', usascii='and', tokens=['∧', 'and', 'land'],
         domain=b, arity=2)
+
     disjunction = Core.SystemFunction(
-        scope_key=_SCOPE_BA1, facet_key=Const._FACET_FUNCTION, language_key=_LANGUAGE_BA1,
-        base_key='disjunction',
+        scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='disjunction',
+        facets=[Facets._FACET_FUNCTION, Facets._FACET_SYSTEM_FUNCTION],
         codomain=b, category=Core.SystemFunction.SYSTEM_BINARY_OPERATOR, algorithm=disjunction_algorithm,
         utf8='∨', latex=r'\lor', html='&or;', usascii='or', tokens=['∨', 'or', 'lor'],
         domain=b, arity=2)
@@ -1537,18 +1503,18 @@ class BA1:
             return BA1.b2
         else:
             scope_key = BA1._SCOPE_BA1
-            facet_key = Const._FACET_DOMAIN
+            facets = [Facets._FACET_DOMAIN]
             language_key = BA1._LANGUAGE_BA1
             base_key = 'b' + str(n)  # TODO: Check it is an int
             # TODO: Consider implementing a lock to avoid bugs with multithreading when checking the static dictionary
-            if Core.Concept.check_concept_from_decomposed_key(scope_key=scope_key, facet_key=facet_key,
-                                                              language_key=language_key, base_key=base_key):
-                return Core.Concept.get_concept_from_decomposed_key(scope_key=scope_key,
-                                                                    facet_key=facet_key,
-                                                                    language_key=language_key, base_key=base_key)
+            if Core.Concept.check_concept_from_decomposed_key(
+                    scope_key=scope_key, language_key=language_key, base_key=base_key):
+                return Core.Concept.get_concept_from_decomposed_key(
+                    scope_key=scope_key, language_key=language_key, base_key=base_key)
             else:
-                return Core.Domain(
-                    scope_key=scope_key, facet_key=facet_key, language_key=language_key, base_key=base_key,
+                return Core.Concept(
+                    scope_key=scope_key, language_key=language_key, base_key=base_key,
+                    facets=facets,
                     utf8='𝔹' + Repr.superscriptify(n), latex=r'\mathbb{B}^{' + str(n) + r'}',
                     html=r'&Bopf;<sup>' + str(n) + '</sup>', usascii='B' + str(n))
 
@@ -1641,13 +1607,13 @@ class ST1:
     _LANGUAGE_ST1 = 'ba1_language'
 
     # Scope.
-    st1_scope = Core.Scope(
-        scope_key=_SCOPE_ST1, facet_key=Const._FACET_SCOPE, language_key=_LANGUAGE_ST1, base_key='st1_scope',
+    st1_scope = Core.Concept(
+        scope_key=_SCOPE_ST1, facets=[Facets._FACET_SCOPE], language_key=_LANGUAGE_ST1, base_key='st1_scope',
         utf8='st1_scope', latex=r'\text{st1_scope}', html='st1_scope', usascii='st1_scope')
 
     # Language.
-    st1_language = Core.Language(
-        scope_key=_SCOPE_ST1, facet_key=Const._FACET_LANGUAGE, language_key=_LANGUAGE_ST1, base_key='st1_language',
+    st1_language = Core.Concept(
+        scope_key=_SCOPE_ST1, facets=[Facets._FACET_LANGUAGE], language_key=_LANGUAGE_ST1, base_key='st1_language',
         utf8='st1_language', latex=r'\text{st1_language}', html='st1_language', usascii='st1_language')
 
     @staticmethod
@@ -1657,18 +1623,18 @@ class ST1:
         In the naive library, a finite set is any concept that is tagged with the "finite set" facet.
         """
         scope_key = ST1.scope
-        facet_key = [Const._FACET_SET, Const._FACET_FINITE_SET]
+        facets = [Facets._FACET_SET, Facets._FACET_FINITE_SET]
         language_key = ST1._LANGUAGE_ST1
         base_key = 'TO BE DEFINED'
         # TODO: Consider implementing a lock to avoid bugs with multithreading when checking the static dictionary
         if Core.Concept.check_concept_from_decomposed_key(
-                scope_key=scope_key, facet_key=facet_key,
-                language_key=language_key, base_key=base_key):
+                scope_key=scope_key, language_key=language_key, base_key=base_key):
             return Core.Concept.get_concept_from_decomposed_key(
-                scope_key=scope_key, facet_key=facet_key,
-                language_key=language_key, base_key=base_key)
+                scope_key=scope_key, language_key=language_key, base_key=base_key)
         else:
-            return Core.Concept(scope_key=scope_key, facet_key=facet_key, language_key=language_key, base_key=base_key)
+            return Core.Concept(
+                scope_key=scope_key, language_key=language_key, base_key=base_key,
+                facets=facets)
 
 
 def parse_string_utf8(code):

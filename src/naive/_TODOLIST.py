@@ -1,9 +1,7 @@
 # LIST
 #
-# TODO: Core: Rename facet_key to facets and provide support with generic functions for multiple facets per concept
 
-# TODO: Core: Because of support for multiple facets, concept identification can no longer rely on facets. Also,
-#   ...the language key is ambiguous. I suggest to remove it and rely on scope + base_key to uniquely identify concepts.
+# TODO: Core: Question: The language key is ambiguous. Should we remove it and rely on scope + base_key to uniquely identify concepts?
 
 # TODO: ST1: Complete the declare_finite_set function.
 
@@ -21,5 +19,11 @@
 
 # TODO: BA1: Satisfies operator.
 
-# TODO: Move Facets to a specialized Facets class umbrella.
+# TODO: Remove obsolete subcategory usages and replace with facets
+
+# TODO: Remove obsolete category usages and replace with facets
+
+# DESIGN CHOICE: wrap concept creation in a generic function. check facets consistency in that function.
+#    like this, we assume that concepts are consistent at initialization time and avoid rechecking consistency at use time.
+
 

@@ -1,7 +1,7 @@
-digraph "ud1_ud1_7de30390_6258_432b_901a_adaddf36fc3e.formula.naive.f37" {
-	"ud1_ud1_7de30390_6258_432b_901a_adaddf36fc3e.formula.naive.f37" [label="(p ∨ q)"]
-	"ud1_ud1_7de30390_6258_432b_901a_adaddf36fc3e.formula.naive.p" [label=p]
-	"ud1_ud1_7de30390_6258_432b_901a_adaddf36fc3e.formula.naive.f37" -> "ud1_ud1_7de30390_6258_432b_901a_adaddf36fc3e.formula.naive.p" [dir=back]
-	"ud1_ud1_7de30390_6258_432b_901a_adaddf36fc3e.formula.naive.q" [label=q]
-	"ud1_ud1_7de30390_6258_432b_901a_adaddf36fc3e.formula.naive.f37" -> "ud1_ud1_7de30390_6258_432b_901a_adaddf36fc3e.formula.naive.q" [dir=back]
+digraph "ud1_ud1_555621d5_a56b_4e9f_90d2_37e69941eb9c.naive.f37" {
+	"ud1_ud1_555621d5_a56b_4e9f_90d2_37e69941eb9c.naive.f37" [label="(p ∨ q)"]
+	"ud1_ud1_555621d5_a56b_4e9f_90d2_37e69941eb9c.naive.p" [label=p]
+	"ud1_ud1_555621d5_a56b_4e9f_90d2_37e69941eb9c.naive.f37" -> "ud1_ud1_555621d5_a56b_4e9f_90d2_37e69941eb9c.naive.p" [dir=back]
+	"ud1_ud1_555621d5_a56b_4e9f_90d2_37e69941eb9c.naive.q" [label=q]
+	"ud1_ud1_555621d5_a56b_4e9f_90d2_37e69941eb9c.naive.f37" -> "ud1_ud1_555621d5_a56b_4e9f_90d2_37e69941eb9c.naive.q" [dir=back]
 }

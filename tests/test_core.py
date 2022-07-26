@@ -14,27 +14,29 @@ class TestConcept(TestCase):
     def test_init(self):
         naive.set_unique_scope()
         c1 = naive.Core.Concept(
-            scope_key='scopetest', facet_key='facet_test', language_key='language_test', base_key='test1',
+            scope_key='scopetest', language_key='language_test', base_key='base_test_1',
+            facets=['facet_test'],
             utf8='test1', latex=r'\text{test}_{1}', html=r'test<sub>1</sub>', usascii='test1')
-        self.assertEqual('scopetest.facet_test.language_test.test1', c1.qualified_key)
+        self.assertEqual('scopetest.language_test.base_test_1', c1.qualified_key)
         self.assertEqual(c1, naive.Core.Concept.get_concept_from_qualified_key(c1.qualified_key))
         self.assertEqual(c1, naive.Core.Concept.get_concept_from_decomposed_key(
-            scope_key=c1.scope_key, facet_key=c1.facet_key, language_key=c1.language, base_key=c1.base_key))
+            scope_key=c1.scope_key, language_key=c1.language, base_key=c1.base_key))
 
 
 class TestFunction(TestCase):
     def test_init(self):
         naive.set_unique_scope()
         f1 = naive.Core.SystemFunction(
-            scope_key='scope_test', facet_key='facet_test', language_key='language_test', base_key='test_1',
+            scope_key='scope_test', language_key='language_test', base_key='test_1',
+            facets=['facet_test'],
             codomain='domain_test', category=naive.Core.SystemFunction.SYSTEM_CONSTANT, algorithm=naive.BA1.falsum_algorithm,
             utf8='test₁', latex=r'\text{test}_{1}', html=r'test<sub>1</sub>', usascii='test1',
             domain='domain_test', arity=17, python_value='test python value'
         )
-        self.assertEqual('scope_test.facet_test.language_test.test_1', f1.qualified_key)
+        self.assertEqual('scope_test.language_test.test_1', f1.qualified_key)
         self.assertEqual(f1, naive.Core.Concept.get_concept_from_qualified_key(f1.qualified_key))
         self.assertEqual(f1, naive.Core.Concept.get_concept_from_decomposed_key(
-            scope_key=f1.scope_key, facet_key=f1.facet_key, language_key=f1.language, base_key=f1.base_key))
+            scope_key=f1.scope_key, language_key=f1.language, base_key=f1.base_key))
 
 
 class Test_User_Scope(TestCase):
