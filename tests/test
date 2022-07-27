@@ -1,7 +1,7 @@
-digraph "ud1_ud1_947f99fa_24c2_4064_8d2a_1b1d766514eb.naive.f37" {
-	"ud1_ud1_947f99fa_24c2_4064_8d2a_1b1d766514eb.naive.f37" [label="(p ∨ q)"]
-	"ud1_ud1_947f99fa_24c2_4064_8d2a_1b1d766514eb.naive.p" [label=p]
-	"ud1_ud1_947f99fa_24c2_4064_8d2a_1b1d766514eb.naive.f37" -> "ud1_ud1_947f99fa_24c2_4064_8d2a_1b1d766514eb.naive.p" [dir=back]
-	"ud1_ud1_947f99fa_24c2_4064_8d2a_1b1d766514eb.naive.q" [label=q]
-	"ud1_ud1_947f99fa_24c2_4064_8d2a_1b1d766514eb.naive.f37" -> "ud1_ud1_947f99fa_24c2_4064_8d2a_1b1d766514eb.naive.q" [dir=back]
+digraph "ud1_ud1_67439bc2_c700_4c62_9259_44ad7f352196.naive.f37" {
+	"ud1_ud1_67439bc2_c700_4c62_9259_44ad7f352196.naive.f37" [label="(p ∨ q)"]
+	"ud1_ud1_67439bc2_c700_4c62_9259_44ad7f352196.naive.p" [label=p]
+	"ud1_ud1_67439bc2_c700_4c62_9259_44ad7f352196.naive.f37" -> "ud1_ud1_67439bc2_c700_4c62_9259_44ad7f352196.naive.p" [dir=back]
+	"ud1_ud1_67439bc2_c700_4c62_9259_44ad7f352196.naive.q" [label=q]
+	"ud1_ud1_67439bc2_c700_4c62_9259_44ad7f352196.naive.f37" -> "ud1_ud1_67439bc2_c700_4c62_9259_44ad7f352196.naive.q" [dir=back]
 }

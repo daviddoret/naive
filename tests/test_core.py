@@ -196,9 +196,12 @@ class Test_User_Scope(TestCase):
 
     def test_dot(self):
         naive.set_unique_scope()
-        naive.set_default_scope('test_dot')
         code_5 = r'(p ∨ q)'
         parsed_formula_5 = naive.parse_string_utf8(code_5)
         self.assertEqual(code_5, parsed_formula_5.represent(naive.RFormats.UTF8))
         print(naive.Repr.convert_formula_to_dot(parsed_formula_5))
 
+    def test_set(self):
+        naive.set_unique_scope()
+        s1 = naive.ST1.declare_finite_set(elements=[1,2,3])
+        print(s1.represent())

@@ -90,7 +90,6 @@ class Facets:
 
     formula = Facet('formula')
 
-    set2 = Facet('set')
 
     atomic_variable = Facet('formula_atomic_variable', inclusions=[formula])
 
@@ -108,6 +107,11 @@ class Facets:
     system_unary_operator_call = Facet('formula_unary_operator_call', inclusions=[system_function_call])
     system_binary_operator_call = Facet('formula_binary_operator_call', inclusions=[system_function_call])
     system_n_ary_function_call = Facet('formula_n_ary_function_call', inclusions=[system_function_call])
+
+    # ST1
+    set2 = Facet('set')
+    finite_set = Facet('finite_set', inclusions=[set2])
+    infinite_set = Facet('infinite_set', inclusions=[set2])
 
 
 def has_facet(o, facet):
@@ -677,7 +681,7 @@ class Repr:
         digraph = Repr.convert_formula_to_graphviz_digraph(formula=formula)
         digraph._repr_mimebundle_()
 
-    def represent(o: object, rformat: str = None, *args, **kwargs) -> str:
+    def represent(o: object, rformat: str = None, *args, left_bracket=None, right_bracket=None, element_separator=None, **kwargs) -> str:
         """Get the object'representation representation in the desired format.
 
         If **representation** is None, return an empty string.
@@ -857,7 +861,7 @@ class Core:
                      facets,
                      utf8=None, latex=None, html=None, usascii=None, tokens=None,
                      domain=None, codomain=None, arity=None, python_value=None,
-                     arguments=None, algorithm=None,
+                     arguments=None, algorithm=None, base_name=None, indexes=None, elements=None,
                      **kwargs):
             # Identification Properties that constitute the Qualified Key.
             if scope_key is None:
@@ -873,6 +877,8 @@ class Core:
             self._latex = latex
             self._html = html
             self._usascii = usascii
+            self._base_name = base_name
+            self._indexes = indexes
             self._tokens = tokens
             # Other properties
             self._arguments = arguments
@@ -880,6 +886,7 @@ class Core:
             self._domain = domain
             self._codomain = codomain
             self._algorithm = algorithm
+            self._elements = elements
             # Populate the token-concept mapping
             # to facilitate the retrieval of concepts during parsing
             # TODO: Consider the following approach: append utf8, latex, etc. as primary tokens,
@@ -920,6 +927,10 @@ class Core:
             return self._arguments
 
         @property
+        def base_name(self):
+            return self._base_name
+
+        @property
         def base_key(self):
             return self._base_key
 
@@ -950,6 +961,14 @@ class Core:
         @property
         def domain(self):
             return self._domain
+
+        @property
+        def elements(self):
+            return self._elements
+
+        @property
+        def facets(self) -> str:
+            return self._facets
 
         @staticmethod
         def get_concept_from_decomposed_key(scope_key: str, language_key: str, base_key: str,
@@ -988,6 +1007,10 @@ class Core:
             else:
                 return None
 
+        @property
+        def indexes(self):
+            return self._indexes
+
         def is_equal_concept(self, other: Core.Concept):
             return self.qualified_key == other.qualified_key
 
@@ -1018,9 +1041,28 @@ class Core:
                 Log.log_error(f'This concept has no representation in {rformat} nor {RFormats.UTF8}.', rformat=rformat,
                               qualified_key=self.qualified_key)
 
-        @property
-        def facets(self) -> str:
-            return self._facets
+        def represent_declaration(self, rformat: str = None, *args, **kwargs) -> str:
+            if has_facet(self, Facets.atomic_variable):
+                if rformat is None:
+                    rformat = RFormats.DEFAULT
+                match rformat:
+                    case RFormats.UTF8:
+                        return f'With {self.represent(rformat)} ∈ {self.codomain.represent(rformat)}.'
+                    case _:
+                        raise NotImplementedError('TODO')
+            if has_facet(self, Facets.finite_set):
+                if rformat is None:
+                    rformat = RFormats.DEFAULT
+                match rformat:
+                    case RFormats.UTF8:
+                        element_list = ', '.join(map(lambda a: Repr.represent(a, rformat), self.elements))
+                        return f'Let {self.represent(rformat)} := {Glyphs.curly_bracket_left.represent(rformat)}{element_list}{Glyphs.curly_bracket_right.represent(rformat)}'
+                    case _:
+                        raise NotImplementedError('TODO')
+            else:
+                Log.log_error(f'Declaration is not supportted for these facets.',
+                              facets=self.facets,
+                              qualified_key=self.qualified_key, rformat=rformat)
 
         @property
         def python_value(self):
@@ -1200,22 +1242,12 @@ class Core:
                 # f(x,y,z)
                 variable_list = ', '.join(map(lambda a: a.represent(), self.arguments))
                 return f'{self._system_function.represent(rformat)}{Glyphs.parenthesis_left.represent(rformat)}{variable_list}{Glyphs.parenthesis_right.represent(rformat)}'
+            elif has_facet(self, Facets.finite_set):
+                return self._base_name + \
+                       Repr.subscriptify(Repr.represent(self._indexes, rformat), rformat)
             else:
                 Log.log_error('Unsupported facets', facets=self.facets,
                               qualified_key=self.qualified_key)
-
-        def represent_declaration(self, rformat: str = None, *args, **kwargs) -> str:
-            if not has_facet(self, Facets.atomic_variable):
-                Log.log_error(f'Declaration is only support for facet "{Facets.atomic_variable}".',
-                              qualified_key=self.qualified_key, rformat=rformat)
-            else:
-                if rformat is None:
-                    rformat = RFormats.DEFAULT
-                match rformat:
-                    case RFormats.UTF8:
-                        return f'With {self.represent(rformat)} ∈ {self.codomain.represent(rformat)}.'
-                    case _:
-                        raise NotImplementedError('TODO')
 
         @property
         def system_function(self):
@@ -1575,24 +1607,41 @@ class ST1:
         utf8='st1_language', latex=r'\text{st1_language}', html='st1_language', usascii='st1_language')
 
     @staticmethod
-    def get_finite_set(symbol=None, elements=None, scope=None):
-        """Returns a finite set.
-
-        In the naive library, a finite set is any concept that is tagged with the "finite set" facet.
-        """
-        scope_key = ST1.scope
-        facets = [Facets.set2, Facets._FACET_FINITE_SET]
-        language_key = ST1._LANGUAGE_ST1
-        base_key = 'TO BE DEFINED'
-        # TODO: Consider implementing a lock to avoid bugs with multithreading when checking the static dictionary
+    def declare_finite_set(base_name=None, indexes=None, elements=None, scope=None):
+        # TODO: Provide support for a relative parent (aka universal) set, and enforce consistency of elements.
+        # TODO: Provide support for different math fonts (e.g.: https://www.overleaf.com/learn/latex/Mathematical_fonts)
+        # TODO: Provide support for indexed variables. Variable declaration should be possible with indexes bounds and not only with individual indexes values.
+        # Identification properties
+        scope_key = _DEFAULT_SCOPE_KEY
+        language_key = Const._LANGUAGE_NAIVE
+        if base_name is None:
+            # TODO: Make this a scope preference setting, letting the user choose the default
+            #   variable base_name in that scope.
+            base_name = 'S'
+        base_key = base_name
+        if indexes is not None:
+            if not isinstance(indexes, collections.abc.Iterable):
+                base_key = base_key + '__' + str(indexes)
+            else:
+                base_key = base_key + '__' + '_'.join(str(index) for index in indexes)
+        # Structural properties
         if Core.Concept.check_concept_from_decomposed_key(
                 scope_key=scope_key, language_key=language_key, base_key=base_key):
-            return Core.Concept.get_concept_from_decomposed_key(
+            finite_set = Core.Concept.get_concept_from_decomposed_key(
                 scope_key=scope_key, language_key=language_key, base_key=base_key)
+            # TODO: Assert that variable concept is of facet variable
+            Log.log_warning(
+                'This finite set is already declared. In consequence, the existing variable is returned, instead of declaring a new one.',
+                finite_set=finite_set, scope_key=scope_key, base_key=base_key)
+            return finite_set
         else:
-            return Core.Concept(
+            finite_set = Core.Concept(
                 scope_key=scope_key, language_key=language_key, base_key=base_key,
-                facets=facets)
+                facets=[Facets.finite_set],
+                utf8=base_name,
+                base_name=base_name, indexes=indexes, elements=elements)
+            Log.log_info(finite_set.represent_declaration())
+            return finite_set
 
 
 def parse_string_utf8(code):
