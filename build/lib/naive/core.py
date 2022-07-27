@@ -375,7 +375,7 @@ class Formula(Concept):
 
     # Constants
     ATOMIC_VARIABLE = 'formula_atomic_variable'  # TODO: Question: is it justified to distinguish this from FORMULA_VARIABLE?
-    FORMULA_VARIABLE = 'formula_formula_variable'  # TODO: Question: is it justified to distinguish this from ATOMIC_VARIABLE?
+    FORMULA_VARIABLE = 'formula_formula_variable'  # TODO: Question: is it justified to distinguish this from atomic_variable?
     SYSTEM_CONSTANT_CALL = 'formula_constant_call'  # Aka a 0-ary function.
     SYSTEM_UNARY_OPERATOR_CALL = 'formula_unary_operator_call'
     SYSTEM_BINARY_OPERATOR_CALL = 'formula_binary_operator_call'
@@ -405,15 +405,15 @@ class Formula(Concept):
         self._arity = None
         self._system_function = system_function
         # match category:
-        #     case Formula.ATOMIC_VARIABLE:
+        #     case Formula.atomic_variable:
         #         # The rationale for this arity = 0 is that atomic variables have no input.
         #         # This would be wrong of formula variables.
         #         self._arity = 0
-        #     case Formula.SYSTEM_CONSTANT_CALL:
+        #     case Formula.system_constant_call:
         #         self._arity = 0
-        #     case Formula.SYSTEM_UNARY_OPERATOR_CALL:
+        #     case Formula.system_unary_operator_call:
         #         self._arity = 1
-        #     case Formula.SYSTEM_BINARY_OPERATOR_CALL:
+        #     case Formula.system_binary_operator_call:
         #         self._arity = 2
         #     # Replace the match ... case ... with system.function.arity.
         #     # TODO: Implement arity for n-ary system function calls.
@@ -510,7 +510,7 @@ class Formula(Concept):
     def represent(self, rformat: str = None, *args, **kwargs) -> str:
         if rformat is None:
             rformat = rformats.DEFAULT
-        # if self.category == Formula.ATOMIC_VARIABLE:
+        # if self.category == Formula.atomic_variable:
         #     return self.symbol.represent(rformat, *args, **kwargs)
         match self.category:
             case Formula.ATOMIC_VARIABLE:

@@ -31,11 +31,10 @@ class Const:
     _LANGUAGE_KEY = 'language_key'
 
     # SystemFunction Complementary Properties
-    _DOMAIN = 'codomain'
+    _DOMAIN = 'domain'
     _CODOMAIN = 'codomain'
     _ARITY = 'arity'
     _PYTHON_VALUE = 'python_value'
-
 
     _DEFAULT_SCOPE_KEY = ''
     _SYSTEM_DEFINED_KEY_PREFIX = 'sys_'
@@ -46,20 +45,90 @@ class Const:
     _MNEMONIC_KEY_ALLOWED_CHARACTERS = 'abcdefghijklmnopqrstuvwxyz0123456789_'
 
 
+class Facet(str):
+    def __new__(
+            cls,
+            *args,
+            inclusions: typing.Iterable[Facet] = None,
+            exclusions: typing.Iterable[Facet] = None,
+            **kwargs):
+        """
+
+        Definition:
+        A facet is a class or a type or a category or a taxon of objects that delineates a meaningful set of objects based on their common properties and/or behaviors.
+        Facets are not mutually exclusive by definition, but inclusivity or exclusivity constraints may be implemented to assure consistency with the data model.
+
+        Args:
+            inclusions (typing.Iterable[Facet]): Conditional: an iterable of facets that must be added whenever that facet is added.
+            exclusions (typing.Iterable[Facet]): Conditional: an iterable of facets that must not be present whenever that facet included added.
+        """
+        facet = super().__new__(cls, *args, **kwargs)
+        facet._inclusions = inclusions
+        facet._exclusions = exclusions
+        return facet
+
+    @property
+    def inclusions(self):
+        return self._inclusions
+
+    @property
+    def exclusions(self):
+        return self._exclusions
+
+
 class Facets:
 
-    # NType Keys
-    # TODO: Find a new name to designate these "types" of objects.
-    # TODO: Make these "types" non-exclusive.
-    _FACET_SCOPE = 'scope'
-    _FACET_LANGUAGE = 'language'
-    _FACET_DOMAIN = 'codomain'
-    _FACET_FUNCTION = 'function'
-    _FACET_SYSTEM_FUNCTION ='system_function'
-    _FACET_ATOMIC_PROPERTY = 'ap'
-    _FACET_VARIABLE = 'variable'
-    _FACET_FORMULA = 'formula'
-    _FACET_SET = 'set'
+    scope = Facet('scope')
+
+    language = Facet('language')
+
+    domain = Facet('domain')
+
+    function = Facet('function')
+
+    atomic_property = Facet('atomic_property')
+
+    formula = Facet('formula')
+
+    set2 = Facet('set')
+
+    atomic_variable = Facet('formula_atomic_variable', inclusions=[formula])
+
+    system_function = Facet('system_function')
+
+    system_constant = Facet('atomic_constant', inclusions=[system_function])  # Aka a 0-ary function.
+    system_unary_operator = Facet('atomic_unary_operator', inclusions=[system_function])  # Aka a unary function with operator notation.
+    system_binary_operator = Facet('atomic_binary_operator', inclusions=[system_function])  # Aka a binary function with operator notation.
+    system_n_ary_function = Facet('atomic_n_ary_function', inclusions=[system_function])
+
+    system_function_call = Facet('system_function_call', inclusions=[formula])
+    """A formula that is a call to a system (programmatic) function."""
+
+    system_constant_call = Facet('formula_constant_call', inclusions=[system_function_call])  # Aka a 0-ary function.
+    system_unary_operator_call = Facet('formula_unary_operator_call', inclusions=[system_function_call])
+    system_binary_operator_call = Facet('formula_binary_operator_call', inclusions=[system_function_call])
+    system_n_ary_function_call = Facet('formula_n_ary_function_call', inclusions=[system_function_call])
+
+
+def has_facet(o, facet):
+    """Returns **True** if **o** has facet **facet**, **False** otherwise."""
+    return facet in o.facets
+
+
+def has_any_facet(o, facets):
+    """Returns **True** if **o** has at least one **facet** among **facets**, **False** otherwise."""
+    return True if o.facets.intersection(facets) else False
+
+
+def add_facets(o, *args):
+    """Add one or multiple facets to **o**, and enforce any related constraints such as automated inclusions."""
+    args = Utils.flatten(args)
+    for facet in args:
+        o.facets.add(facet)
+        if facet.inclusions is not None:
+            for included_facet in facet.inclusions:
+                add_facets(o, included_facet)
+        # TODO: Implement exclusions. Note that it will be harder to keep it truly consistent.
 
 
 class RFormats:
@@ -162,7 +231,7 @@ class Log:
                 logging.info(message)
 
     class NaiveWarning(UserWarning):
-        """The generic category of warning issued by the **naive** library."""
+        """The generic warning issued by the **naive** library."""
         pass
 
     @staticmethod
@@ -777,6 +846,7 @@ _concept_database = {}
 _token_database = {}
 """The static database of tokens."""
 
+
 class Core:
     class Concept:
 
@@ -786,7 +856,8 @@ class Core:
         def __init__(self, scope_key, language_key, base_key,
                      facets,
                      utf8=None, latex=None, html=None, usascii=None, tokens=None,
-                     domain=None, codomain=None, arity=None, pythong_value=None,
+                     domain=None, codomain=None, arity=None, python_value=None,
+                     arguments=None, algorithm=None,
                      **kwargs):
             # Identification Properties that constitute the Qualified Key.
             if scope_key is None:
@@ -795,13 +866,20 @@ class Core:
             self._language_key = Utils.clean_mnemonic_key(language_key)
             self._base_key = Utils.clean_mnemonic_key(base_key)
             # Structural properties
-            self._facets = facets
+            self._facets = set()
+            add_facets(self, facets)
             # Representation Properties
             self._utf8 = utf8
             self._latex = latex
             self._html = html
             self._usascii = usascii
             self._tokens = tokens
+            # Other properties
+            self._arguments = arguments
+            self._arity = arity
+            self._domain = domain
+            self._codomain = codomain
+            self._algorithm = algorithm
             # Populate the token-concept mapping
             # to facilitate the retrieval of concepts during parsing
             # TODO: Consider the following approach: append utf8, latex, etc. as primary tokens,
@@ -830,8 +908,16 @@ class Core:
             return self.represent(RFormats.UTF8)
 
         @property
+        def algorithm(self):
+            return self._algorithm
+
+        @property
         def arity(self):
             return self._arity
+
+        @property
+        def arguments(self):
+            return self._arguments
 
         @property
         def base_key(self):
@@ -856,6 +942,14 @@ class Core:
             else:
                 Log.log_error('Checking concept with None qualified key is impossible.',
                               qualified_key=qualified_key, **kwargs)
+
+        @property
+        def codomain(self):
+            return self._codomain
+
+        @property
+        def domain(self):
+            return self._domain
 
         @staticmethod
         def get_concept_from_decomposed_key(scope_key: str, language_key: str, base_key: str,
@@ -949,13 +1043,13 @@ class Core:
     # Scope.
     system_scope = Concept(
         scope_key='sys', language_key=Const._LANGUAGE_NAIVE, base_key='sys',
-        facets=[Facets._FACET_SCOPE],
+        facets=[Facets.scope],
         utf8='sys', latex=r'\text{sys}', html='sys', usascii='sys')
 
     # TODO: Check that we do create a new scope object whenever we set the scope.
     initial_user_defined_scope = Concept(
         scope_key='sys', language_key=Const._LANGUAGE_NAIVE,
-        facets=[Facets._FACET_SCOPE],
+        facets=[Facets.scope],
         base_key=Const._USER_DEFINED_KEY_PREFIX + 'scope_1',
         utf8='scope_key₁', latex=r'\text{scope_key}_1', html=r'scope_key<sub>1</sub>', usascii='scope1')
 
@@ -969,82 +1063,50 @@ class Core:
 
         """
 
-        # Constants
-        SYSTEM_CONSTANT = 'atomic_constant'  # Aka a 0-ary function.
-        SYSTEM_UNARY_OPERATOR = 'atomic_unary_operator'  # Aka a unary function with operator notation.
-        SYSTEM_BINARY_OPERATOR = 'atomic_binary_operator'  # Aka a binary function with operator notation.
-        SYSTEM_N_ARY_FUNCTION = 'atomic_n_ary_function'
-        CATEGORIES = [SYSTEM_CONSTANT, SYSTEM_UNARY_OPERATOR, SYSTEM_BINARY_OPERATOR, SYSTEM_N_ARY_FUNCTION]
-
         def __init__(
                 self,
                 # Identification properties
                 scope_key, language_key, base_key,
                 facets,
                 # Mandatory complementary properties
-                category, codomain, algorithm,
+                codomain, algorithm,
                 # Conditional complementary properties
                 domain=None, arity=None, python_value=None,
                 # Representation properties
                 utf8=None, latex=None, html=None, usascii=None, tokens=None,
                 **kwargs):
-            # Mandatory complementary properties.
-            self._codomain = codomain  # TODO: Implement validation against the static concept database.
-            self._algorithm = algorithm
-            if category not in Core.SystemFunction.CATEGORIES:
-                Log.log_error('Invalid formula category',
-                              category=category, qualified_key=self.qualified_key)
-            self._category = category
-            # Conditional complementary properties.
-            self._domain = domain  # TODO: Implement validation against the static concept database.
-            self._arity = arity  # TODO: Implement validation logic dependent of subcategory.
-            if category == Core.SystemFunction.SYSTEM_CONSTANT and python_value is None:
-                Log.log_error('python_value is mandatory for constants (0-ary functions) but it was None.',
-                              python_value=python_value, category=category, qualified_key=self.qualified_key)
-            self._python_value = python_value  # TODO: Question: Should it be mandatory for subcategory = constant?
-            # Call the base class initializer.
-            #   Executing this at the end of the initialization process
-            #   assures that the new concept is not appended to the
-            #   static concept and token databases before it is fully initialized.
             super().__init__(
                 scope_key=scope_key, language_key=language_key, base_key=base_key,
                 facets=facets,
                 utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
+                arity=arity, codomain=codomain, python_value=python_value,
+                algorithm=algorithm,
                 **kwargs)
+            add_facets(self, Facets.system_function)
+            # TODO: Data consistency check: assure the Concept has at least 1 facet among "System Function Categories".
+            # Conditional complementary properties.
+            if has_facet(self, Facets.system_constant) and python_value is None:
+                Log.log_error('python_value is mandatory for constants (0-ary functions) but it was None.',
+                              python_value=python_value, facets=facets, qualified_key=self.qualified_key)
+            self._python_value = python_value  # TODO: Question: Should it be mandatory if it is a 0-ary function (ie a constant)?
 
         @property
         def algorithm(self):
             return self._algorithm
 
         @property
-        def category(self):
-            return self._category
-
-        @property
-        def codomain(self):
-            return self._codomain
-
-        @property
-        def domain(self):
-            return self._domain
-
-        @property
         def compute_programmatic_value(self):
             # TODO: The idea is to distinguish the computerized or programmatic value,
             #   here as a canonical mapping to a python object,
             #   with the symbolic value, the later being the naive concept.
-            if self.category == Core.SystemFunction.SYSTEM_CONSTANT:
+            if has_facet(self, Facets.system_constant):
                 return self._python_value
             else:
                 raise NotImplementedError('ooops')
 
         def equal_programmatic_value(self, other):
             """Return true if two formula yield identical values, false otherwise."""
-            if isinstance(other,
-                          Core.Formula) and other.subcategory == Core.SystemFunction.SYSTEM_CONSTANT:  # Using a union type to avoid import issues.
-                return self.compute_programmatic_value() == other.compute_programmatic_value()
-            else:
-                raise NotImplementedError('oooops again')
+            return self.compute_programmatic_value() == other.compute_programmatic_value()
 
     class Formula(Concept):
         """
@@ -1066,150 +1128,47 @@ class Core:
         - n-ary SystemFunction
 
         """
-        # TODO: Issue a warning when a property is accessed when the category make it invalid.
-
-        # Constants
-        ATOMIC_VARIABLE = 'formula_atomic_variable'  # TODO: Question: is it justified to distinguish this from FORMULA_VARIABLE?
-        FORMULA_VARIABLE = 'formula_formula_variable'  # TODO: Question: is it justified to distinguish this from ATOMIC_VARIABLE?
-        SYSTEM_CONSTANT_CALL = 'formula_constant_call'  # Aka a 0-ary function.
-        SYSTEM_UNARY_OPERATOR_CALL = 'formula_unary_operator_call'
-        SYSTEM_BINARY_OPERATOR_CALL = 'formula_binary_operator_call'
-        SYSTEM_N_ARY_FUNCTION_CALL = 'formula_n_ary_function_call'
-        CATEGORIES = [ATOMIC_VARIABLE, FORMULA_VARIABLE, SYSTEM_CONSTANT_CALL, SYSTEM_UNARY_OPERATOR_CALL,
-                      SYSTEM_BINARY_OPERATOR_CALL,
-                      SYSTEM_N_ARY_FUNCTION_CALL]
 
         def __init__(
                 self,
                 # Identification properties
                 scope_key, language_key, base_key,
                 # Structural properties
-                facets = None,
+                facets=None,
                 # Mandatory complementary properties
-                category = None,  # TODO: Get rid of this property and replace with facets?
                 # Conditional complementary properties
                 # ...for system function calls:
-                system_function=None, arguments=None,
+                system_function=None, arguments=None, arity=None,
                 # ...for atomic variables
                 domain=None, codomain=None, base_name=None, indexes=None,
                 **kwargs):
-            # Structural properties
-            if facets is None:
-                facets = [Facets._FACET_FORMULA]
-            else:
-                if Facets._FACET_FORMULA not in facets:
-                    facets.append(Facets._FACET_FORMULA)
-            # Mandatory complementary properties.
-            if category not in Core.Formula.CATEGORIES:
-                Log.log_error('Invalid formula category',
-                              category=category,
-                              scope_key=scope_key, language_key=language_key, base_key=base_key,
-                              system_function=system_function, arguments=arguments,
-                              domain=domain, codomain=codomain, base_name=base_name, indexes=indexes)
-            self._category = category
-            self._arity = None
-            self._system_function = system_function
-            # match category:
-            #     case Formula.ATOMIC_VARIABLE:
-            #         # The rationale for this arity = 0 is that atomic variables have no input.
-            #         # This would be wrong of formula variables.
-            #         self._arity = 0
-            #     case Formula.SYSTEM_CONSTANT_CALL:
-            #         self._arity = 0
-            #     case Formula.SYSTEM_UNARY_OPERATOR_CALL:
-            #         self._arity = 1
-            #     case Formula.SYSTEM_BINARY_OPERATOR_CALL:
-            #         self._arity = 2
-            #     # Replace the match ... case ... with system.function.arity.
-            #     # TODO: Implement arity for n-ary system function calls.
-            #     # TODO: Implement arity for formula variables.
-            #     # TODO: Consider making this property a dynamic property.
-            self._arguments = arguments
-            self._domain = 'NOT IMPLEMENTED'  # TODO: Implement formula domain. It may be None, a base domain or a tuple of domains.
-            self._codomain = codomain  # TODO: Check that codomain is only passed as argument when appicable. Otherwise, issue a warning.
-            self._base_name = base_name
-            self._indexes = indexes
-            # Call the base class initializer.
-            #   Executing this at the end of the initialization process
-            #   assures that the new concept is not appended to the
-            #   static concept and token databases before it is fully initialized.
             super().__init__(
                 scope_key=scope_key, language_key=language_key, base_key=base_key,
-                facets=facets,
+                facets=facets, arguments=arguments, arity=arity, codomain=codomain,
                 **kwargs)
-
-        @property
-        def arguments(self):
-            return self._arguments
-
-        @property
-        def arity(self):
-            if self.category == Core.Formula.ATOMIC_VARIABLE:
-                # For atomic variables, the arity is 0.
-                # The rationale is that an atomic variable doesn't get any input.
-                # This would be wrong of formula variables which deserver a distinct implementation.
-                return 0
-            elif self.is_system_function_call:
-                # For system function calls, the arity of the call
-                # is equal to the arity of the function being called.
-                return self.system_function.arity
-            else:
-                # TODO: Implement the arity property for all object categories.
-                Log.log_warning('The arity property has not been implemented for this concept category.',
-                                category=self.category, self=self)
-
-        @property
-        def category(self):
-            return self._category
-
-        @property
-        def codomain(self):
-            if self.category == Core.Formula.ATOMIC_VARIABLE:
-                # For atomic variables, the codomain is part of the object.
-                return self._codomain
-            elif self.is_system_function_call:
-                # For system function calls, the codomain of the function call
-                # is equal to the codomain of the function being called.
-                return self.system_function.codomain
-            else:
-                # TODO: Implement the codomain property for all object categories.
-                Log.log_warning('The codomain property has not been implemented for this concept category.',
-                                category=self.category, self=self)
-
-        @property
-        def domain(self):
-            raise NotImplementedError('Please implement the domain property')
-            return self._domain
+            add_facets(self, Facets.formula)
+            # Mandatory complementary properties.
+            self._system_function = system_function
+            self._base_name = base_name
+            self._indexes = indexes
 
         @property
         def indexes(self):
             return self._indexes
 
-        @property
-        def is_system_function_call(self):
-            """Return *True* if this is a system function call, *False* otherwise.
-
-            If *True*, the instance has the *system_function* property.
-            """
-            return self.category in [
-                Core.Formula.SYSTEM_CONSTANT_CALL,
-                Core.Formula.SYSTEM_UNARY_OPERATOR_CALL,
-                Core.Formula.SYSTEM_BINARY_OPERATOR_CALL,
-                Core.Formula.SYSTEM_N_ARY_FUNCTION_CALL]
-
         def list_atomic_variables(self):
             """Return the sorted set of variables present in the formula, and its subformulae recursively."""
             l = set()
-            for a in self.arguments:
-                if isinstance(a,
-                              Core.Formula) and a.category == Core.Formula.ATOMIC_VARIABLE:  # Using a union type to avoid import issues.
-                    l.add(a)
-                elif isinstance(a, Core.Formula):  # Using a union type to avoid import issues.
-                    l_prime = a.list_atomic_variables()
-                    for a_prime in l_prime:
-                        l.add(a_prime)
-                else:
-                    Log.log_error('Not implemented yet', a=a, self=self)
+            if self.arguments is not None:
+                for a in self.arguments:
+                    if has_facet(a, Facets.atomic_variable):
+                        l.add(a)
+                    elif has_facet(a, Facets.formula):
+                        l_prime = a.list_atomic_variables()
+                        for a_prime in l_prime:
+                            l.add(a_prime)
+                    else:
+                        Log.log_error('Not implemented yet', a=a, self=self)
 
             # To allow sorting and indexing, convert the set to a list.
             l = list(l)
@@ -1219,38 +1178,36 @@ class Core:
         def represent(self, rformat: str = None, *args, **kwargs) -> str:
             if rformat is None:
                 rformat = RFormats.DEFAULT
-            # if self.category == Formula.ATOMIC_VARIABLE:
-            #     return self.symbol.represent(rformat, *args, **kwargs)
-            match self.category:
-                case Core.Formula.ATOMIC_VARIABLE:
-                    # x
-                    # TODO: Modify approach. Storing and returning the _base_name like this
-                    #   prevent support for other mathematical fonts, such as MathCal, etc.
-                    #   As an initial approach, it provides support for ASCII like variables.
-                    #   We may consider storing a Glyph as the base name,
-                    #   and calling the static represent() function.
-                    return self._base_name + \
-                           Repr.subscriptify(Repr.represent(self._indexes, rformat), rformat)
-                case Core.Formula.SYSTEM_CONSTANT_CALL:
-                    # x
-                    return f'{self._system_function.represent(rformat)}'
-                case Core.Formula.SYSTEM_UNARY_OPERATOR_CALL:
-                    # fx
-                    return f'{self._system_function.represent(rformat)}{self.arguments[0].represent(rformat)}'
-                case Core.Formula.SYSTEM_BINARY_OPERATOR_CALL:
-                    # (x f y)
-                    return f'{Glyphs.parenthesis_left.represent(rformat)}{self.arguments[0].represent(rformat)}{Glyphs.small_space.represent(rformat)}{self._system_function.represent(rformat)}{Glyphs.small_space.represent(rformat)}{self.arguments[1].represent(rformat)}{Glyphs.parenthesis_right.represent(rformat)}'
-                case Core.Formula.SYSTEM_N_ARY_FUNCTION_CALL:
-                    # f(x,y,z)
-                    variable_list = ', '.join(map(lambda a: a.represent(), self.arguments))
-                    return f'{self._system_function.represent(rformat)}{Glyphs.parenthesis_left.represent(rformat)}{variable_list}{Glyphs.parenthesis_right.represent(rformat)}'
-                case _:
-                    Log.log_error('Unsupported formula category', category=self.category,
-                                  qualified_key=self.qualified_key)
+            if has_facet(self, Facets.atomic_variable):
+                # x
+                # TODO: Modify approach. Storing and returning the _base_name like this
+                #   prevent support for other mathematical fonts, such as MathCal, etc.
+                #   As an initial approach, it provides support for ASCII like variables.
+                #   We may consider storing a Glyph as the base name,
+                #   and calling the static represent() function.
+                return self._base_name + \
+                       Repr.subscriptify(Repr.represent(self._indexes, rformat), rformat)
+            elif has_facet(self, Facets.system_constant_call):
+                # x
+                return f'{self._system_function.represent(rformat)}'
+            elif has_facet(self, Facets.system_unary_operator_call):
+                # fx
+                return f'{self._system_function.represent(rformat)}{self.arguments[0].represent(rformat)}'
+            elif has_facet(self, Facets.system_binary_operator_call):
+                # (x f y)
+                return f'{Glyphs.parenthesis_left.represent(rformat)}{self.arguments[0].represent(rformat)}{Glyphs.small_space.represent(rformat)}{self._system_function.represent(rformat)}{Glyphs.small_space.represent(rformat)}{self.arguments[1].represent(rformat)}{Glyphs.parenthesis_right.represent(rformat)}'
+            elif has_facet(self, Facets.system_n_ary_function_call):
+                # f(x,y,z)
+                variable_list = ', '.join(map(lambda a: a.represent(), self.arguments))
+                return f'{self._system_function.represent(rformat)}{Glyphs.parenthesis_left.represent(rformat)}{variable_list}{Glyphs.parenthesis_right.represent(rformat)}'
+            else:
+                Log.log_error('Unsupported facets', facets=self.facets,
+                              qualified_key=self.qualified_key)
 
         def represent_declaration(self, rformat: str = None, *args, **kwargs) -> str:
-            if self.category != Core.Formula.ATOMIC_VARIABLE:
-                Log.log_error('Formula category not supported for declaration.')
+            if not has_facet(self, Facets.atomic_variable):
+                Log.log_error(f'Declaration is only support for facet "{Facets.atomic_variable}".',
+                              qualified_key=self.qualified_key, rformat=rformat)
             else:
                 if rformat is None:
                     rformat = RFormats.DEFAULT
@@ -1272,26 +1229,30 @@ class Core:
         scope_key = _DEFAULT_SCOPE_KEY
         index = Core._FORMULA_AUTO_COUNTER.get_value()
         base_key = 'f' + str(index)
-        category = None
         system_function = None
-        if Facets._FACET_SYSTEM_FUNCTION in o.facets:
+        facets = None
+        arity = None
+
+        if has_facet(o, Facets.system_function):
             system_function = o
-            match o.category:
-                case Core.SystemFunction.SYSTEM_CONSTANT:
-                    category = Core.Formula.SYSTEM_CONSTANT_CALL
-                case Core.SystemFunction.SYSTEM_UNARY_OPERATOR:
-                    category = Core.Formula.SYSTEM_UNARY_OPERATOR_CALL
-                case Core.SystemFunction.SYSTEM_BINARY_OPERATOR:
-                    category = Core.Formula.SYSTEM_BINARY_OPERATOR_CALL
+            arity = system_function.arity
+            codomain = system_function.codomain
+            if has_facet(o, Facets.system_constant):
+                facets = [Facets.system_constant_call]
+            elif has_facet(o, Facets.system_unary_operator):
+                facets = [Facets.system_unary_operator_call]
+            elif has_facet(o, Facets.system_binary_operator):
+                facets = [Facets.system_binary_operator_call]
                 # TODO: Implement all other possibilities
         arguments = args
         formula = Core.Formula(
             # Identification properties
             scope_key=scope_key, language_key=Const._LANGUAGE_NAIVE, base_key=base_key,
-            # Mandatory complementary properties
-            category=category,
+            # Structural properties
+            facets=facets,
             # Conditional complementary properties
-            system_function=system_function, arguments=arguments
+            system_function=system_function, arguments=arguments,
+            arity=arity, codomain=codomain
         )
         Log.log_info(formula.represent())
         return formula
@@ -1299,8 +1260,7 @@ class Core:
     @staticmethod
     def declare_atomic_variable(codomain, base_name=None, indexes=None):
         # TODO: Provide support for different math fonts (e.g.: https://www.overleaf.com/learn/latex/Mathematical_fonts)
-        # TODO: Provide support for indexed variables. Variable declaration should be made with indexes bounds and not individual indexes values.
-        codomain_key = None
+        # TODO: Provide support for indexed variables. Variable declaration should be possible with indexes bounds and not only with individual indexes values.
         # Identification properties
         scope_key = _DEFAULT_SCOPE_KEY
         language_key = Const._LANGUAGE_NAIVE
@@ -1315,7 +1275,6 @@ class Core:
             else:
                 base_key = base_key + '__' + '_'.join(str(index) for index in indexes)
         # Structural properties
-        facets = [Facets._FACET_FORMULA, Facets._FACET_ATOMIC_PROPERTY]
         if Core.Concept.check_concept_from_decomposed_key(
                 scope_key=scope_key, language_key=language_key, base_key=base_key):
             variable = Core.Concept.get_concept_from_decomposed_key(
@@ -1326,11 +1285,11 @@ class Core:
                 variable=variable, scope_key=scope_key, base_key=base_key)
             return variable
         else:
+            arity = 0
             variable = Core.Formula(
                 scope_key=scope_key, language_key=language_key, base_key=base_key,
-                facets = facets,
-                category=Core.Formula.ATOMIC_VARIABLE,
-                codomain=codomain, base_name=base_name, indexes=indexes)
+                facets=[Facets.atomic_variable],
+                codomain=codomain, base_name=base_name, indexes=indexes, arity=arity)
             Log.log_info(variable.represent_declaration())
             return variable
 
@@ -1359,23 +1318,23 @@ class BA1:
     # Scope.
     ba1_scope = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='ba1_scope',
-        facets=[Facets._FACET_SCOPE],
+        facets=[Facets.scope],
         utf8='ba1_scope', latex=r'\text{ba1_scope}', html='ba1_scope', usascii='ba1_scope')
 
     # Language.
     ba1_language = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='ba1_language',
-        facets=[Facets._FACET_LANGUAGE],
+        facets=[Facets.language],
         utf8='ba1_language', latex=r'\text{ba1_language}', html='ba1_language', usascii='ba1_language')
 
     # Domains.
     b = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='b',
-        facets=[Facets._FACET_DOMAIN],
+        facets=[Facets.domain],
         utf8='𝔹', latex=r'\mathbb{B}', html='&Bopf;', usascii='B')
     b2 = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='b2',
-        facets=[Facets._FACET_DOMAIN],
+        facets=[Facets.domain],
         utf8='𝔹²', latex=r'\mathbb{B}^{2}', html=r'&Bopf;<sup>2</sup>', usascii='B2')
 
     # Algorithms.
@@ -1454,36 +1413,36 @@ class BA1:
     # Functions.
     truth = Core.SystemFunction(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='truth',
-        facets=[Facets._FACET_FUNCTION, Facets._FACET_SYSTEM_FUNCTION],
-        codomain=b, category=Core.SystemFunction.SYSTEM_CONSTANT, algorithm=truth_algorithm,
+        facets=[Facets.function, Facets.system_function, Facets.system_constant],
+        codomain=b, algorithm=truth_algorithm,
         utf8='⊤', latex=r'\top', html='&top;', usascii='truth', tokens=['⊤', 'truth', 'true', 't', '1'],
         arity=0, python_value=True)
 
     falsum = Core.SystemFunction(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='falsum',
-        facets=[Facets._FACET_FUNCTION, Facets._FACET_SYSTEM_FUNCTION],
-        codomain=b, category=Core.SystemFunction.SYSTEM_CONSTANT, algorithm=falsum_algorithm,
+        facets=[Facets.function, Facets.system_function, Facets.system_constant],
+        codomain=b, algorithm=falsum_algorithm,
         utf8='⊥', latex=r'\bot', html='&perp;', usascii='falsum', tokens=['⊥', 'falsum', 'false', 'f', '0'],
         arity=0, python_value=False)
 
     negation = Core.SystemFunction(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='negation',
-        facets=[Facets._FACET_FUNCTION, Facets._FACET_SYSTEM_FUNCTION],
-        codomain=b, category=Core.SystemFunction.SYSTEM_UNARY_OPERATOR, algorithm=negation_algorithm,
+        facets=[Facets.function, Facets.system_function, Facets.system_unary_operator],
+        codomain=b, algorithm=negation_algorithm,
         utf8='¬', latex=r'\lnot', html='&not;', usascii='not', tokens=['¬', 'not', 'lnot'],
         domain=b, arity=1)
 
     conjunction = Core.SystemFunction(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='conjunction',
-        facets=[Facets._FACET_FUNCTION, Facets._FACET_SYSTEM_FUNCTION],
-        codomain=b, category=Core.SystemFunction.SYSTEM_BINARY_OPERATOR, algorithm=conjunction_algorithm,
+        facets=[Facets.function, Facets.system_function, Facets.system_binary_operator],
+        codomain=b, algorithm=conjunction_algorithm,
         utf8='∧', latex=r'\land', html='&and;', usascii='and', tokens=['∧', 'and', 'land'],
         domain=b, arity=2)
 
     disjunction = Core.SystemFunction(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='disjunction',
-        facets=[Facets._FACET_FUNCTION, Facets._FACET_SYSTEM_FUNCTION],
-        codomain=b, category=Core.SystemFunction.SYSTEM_BINARY_OPERATOR, algorithm=disjunction_algorithm,
+        facets=[Facets.function, Facets.system_function, Facets.system_binary_operator],
+        codomain=b, algorithm=disjunction_algorithm,
         utf8='∨', latex=r'\lor', html='&or;', usascii='or', tokens=['∨', 'or', 'lor'],
         domain=b, arity=2)
 
@@ -1503,7 +1462,7 @@ class BA1:
             return BA1.b2
         else:
             scope_key = BA1._SCOPE_BA1
-            facets = [Facets._FACET_DOMAIN]
+            facets = [Facets.domain]
             language_key = BA1._LANGUAGE_BA1
             base_key = 'b' + str(n)  # TODO: Check it is an int
             # TODO: Consider implementing a lock to avoid bugs with multithreading when checking the static dictionary
@@ -1557,9 +1516,8 @@ class BA1:
                 argument_index=argument_index,
                 argument_type=type(argument),
                 argument_codomain=argument.codomain,
-                argument_is_system_function_call=argument.is_system_function_call)
-            if isinstance(argument, Core.Formula) and \
-                    argument.is_system_function_call and \
+                argument_facets=argument.facets)
+            if has_facet(argument, Facets.system_function_call) and \
                     argument.codomain == BA1.b:
                 # This argument is a Boolean Formula.
                 Log.log_debug('This argument is a Boolean Formula')
@@ -1567,8 +1525,7 @@ class BA1:
                 # restricting the variables list to the subset of necessary variables.
                 vector = BA1.satisfaction_index(argument, variables_list=variables_list)
                 argument_vectors[argument_index] = vector
-            elif isinstance(argument, Core.Formula) and \
-                    argument.category == Core.Formula.ATOMIC_VARIABLE and \
+            elif has_facet(argument, Facets.atomic_variable) and \
                     argument.codomain == BA1.b:
                 # This argument is a Boolean atomic proposition.
                 Log.log_debug('This argument is a Boolean atomic proposition')
@@ -1581,7 +1538,8 @@ class BA1:
                 Log.log_debug(vector=vector)
                 argument_vectors[argument_index] = vector
             else:
-                Log.log_error('Unexpected type', argument=argument, t=type(argument), category=argument.category,
+                Log.log_error('Unexpected type',
+                              argument=argument, t=type(argument), facets=argument.facets,
                               codomain=argument.codomain)
         Log.log_debug(argument_vectors=argument_vectors)
         output_vector = None
@@ -1608,12 +1566,12 @@ class ST1:
 
     # Scope.
     st1_scope = Core.Concept(
-        scope_key=_SCOPE_ST1, facets=[Facets._FACET_SCOPE], language_key=_LANGUAGE_ST1, base_key='st1_scope',
+        scope_key=_SCOPE_ST1, facets=[Facets.scope], language_key=_LANGUAGE_ST1, base_key='st1_scope',
         utf8='st1_scope', latex=r'\text{st1_scope}', html='st1_scope', usascii='st1_scope')
 
     # Language.
     st1_language = Core.Concept(
-        scope_key=_SCOPE_ST1, facets=[Facets._FACET_LANGUAGE], language_key=_LANGUAGE_ST1, base_key='st1_language',
+        scope_key=_SCOPE_ST1, facets=[Facets.language], language_key=_LANGUAGE_ST1, base_key='st1_language',
         utf8='st1_language', latex=r'\text{st1_language}', html='st1_language', usascii='st1_language')
 
     @staticmethod
@@ -1623,7 +1581,7 @@ class ST1:
         In the naive library, a finite set is any concept that is tagged with the "finite set" facet.
         """
         scope_key = ST1.scope
-        facets = [Facets._FACET_SET, Facets._FACET_FINITE_SET]
+        facets = [Facets.set2, Facets._FACET_FINITE_SET]
         language_key = ST1._LANGUAGE_ST1
         base_key = 'TO BE DEFINED'
         # TODO: Consider implementing a lock to avoid bugs with multithreading when checking the static dictionary

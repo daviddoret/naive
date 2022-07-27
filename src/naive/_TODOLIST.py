@@ -19,10 +19,6 @@
 
 # TODO: BA1: Satisfies operator.
 
-# TODO: Remove obsolete subcategory usages and replace with facets
-
-# TODO: Remove obsolete category usages and replace with facets
-
 # TODO: DESIGN CHOICE: wrap concept creation in a generic function. check facets consistency in that function.
 #    like this, we assume that concepts are consistent at initialization time and avoid rechecking consistency at use time.
 

@@ -154,27 +154,27 @@ def get_bn_domain(n):
 # Functions.
 truth = core.SystemFunction(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='truth',
-    codomain=b, category=core.SystemFunction.SYSTEM_CONSTANT, algorithm=truth_algorithm,
+    codomain=b, category=core.SystemFunction.system_constant, algorithm=truth_algorithm,
     utf8='⊤', latex=r'\top', html='&top;', usascii='truth', tokens=['⊤', 'truth', 'true', 't', '1'],
     arity=0, python_value=True)
 falsum = core.SystemFunction(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='falsum',
-    codomain=b, category=core.SystemFunction.SYSTEM_CONSTANT, algorithm=falsum_algorithm(),
+    codomain=b, category=core.SystemFunction.system_constant, algorithm=falsum_algorithm(),
     utf8='⊥', latex=r'\bot', html='&perp;', usascii='falsum', tokens=['⊥', 'falsum', 'false', 'f', '0'],
     arity=0, python_value=False)
 negation = core.SystemFunction(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='negation',
-    codomain=b, category=core.SystemFunction.SYSTEM_UNARY_OPERATOR, algorithm=negation_algorithm,
+    codomain=b, category=core.SystemFunction.system_unary_operator, algorithm=negation_algorithm,
     utf8='¬', latex=r'\lnot', html='&not;', usascii='not', tokens=['¬', 'not', 'lnot'],
     domain=b, arity=1)
 conjunction = core.SystemFunction(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='conjunction',
-    codomain=b, category=core.SystemFunction.SYSTEM_BINARY_OPERATOR, algorithm=conjunction_algorithm,
+    codomain=b, category=core.SystemFunction.system_binary_operator, algorithm=conjunction_algorithm,
     utf8='∧', latex=r'\land', html='&and;', usascii='and', tokens=['∧', 'and', 'land'],
     domain=b, arity=2)
 disjunction = core.SystemFunction(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='disjunction',
-    codomain=b, category=core.SystemFunction.SYSTEM_BINARY_OPERATOR, algorithm=disjunction_algorithm,
+    codomain=b, category=core.SystemFunction.system_binary_operator, algorithm=disjunction_algorithm,
     utf8='∨', latex=r'\lor', html='&or;', usascii='or', tokens=['∨', 'or', 'lor'],
     domain=b, arity=2)
 
@@ -228,7 +228,7 @@ def satisfaction_index(phi: core.Formula, variables_list=None):
             vector = satisfaction_index(argument, variables_list=variables_list)
             argument_vectors[argument_index] = vector
         elif isinstance(argument, core.Formula) and \
-                argument.category == core.Formula.ATOMIC_VARIABLE and \
+                argument.category == core.Formula.atomic_variable and \
                 argument.codomain == b:
             # This argument is a Boolean atomic proposition.
             log.debug('This argument is a Boolean atomic proposition')
