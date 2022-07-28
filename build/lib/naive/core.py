@@ -28,7 +28,7 @@ _STRUCTURE_DOMAIN = 'codomain'
 _STRUCTURE_FUNCTION = 'function'
 _STRUCTURE_ATOMIC_PROPERTY = 'ap'
 _STRUCTURE_VARIABLE = 'variable'
-_STRUCTURE_FORMULA = 'formula'
+_STRUCTURE_FORMULA = 'phi'
 
 _QUALIFIED_KEY_SEPARATOR = '.'
 _MNEMONIC_KEY_ALLOWED_CHARACTERS = 'abcdefghijklmnopqrstuvwxyz012345679_'
@@ -355,11 +355,11 @@ class Formula(Concept):
     """
 
     Definition:
-    A formula, in the context of the naive package,
+    A phi, in the context of the naive package,
     is a tree of "calls" to functions, constants, or variables.
     ...
 
-    Different types of formula:
+    Different types of phi:
     - Atomic Variable (aka Unknown) (e.g. x + 5 = 17, x ∉ ℕ₀)
     - Formula Variable (e.g. φ = ¬x ∨ y, z ∧ φ)
     - n-ary SystemFunction Call with n in N0 (e.g. za1 abs)
@@ -399,7 +399,7 @@ class Formula(Concept):
         structure_key = _STRUCTURE_FORMULA
         # Mandatory complementary properties.
         if category not in Formula.CATEGORIES:
-            log.error('Invalid formula category',
+            log.error('Invalid phi category',
                       category=category, qualified_key=self.qualified_key)
         self._category = category
         self._arity = None
@@ -407,7 +407,7 @@ class Formula(Concept):
         # match category:
         #     case Formula.atomic_variable:
         #         # The rationale for this arity = 0 is that atomic variables have no input.
-        #         # This would be wrong of formula variables.
+        #         # This would be wrong of phi variables.
         #         self._arity = 0
         #     case Formula.system_constant_call:
         #         self._arity = 0
@@ -417,10 +417,10 @@ class Formula(Concept):
         #         self._arity = 2
         #     # Replace the match ... case ... with system.function.arity.
         #     # TODO: Implement arity for n-ary system function calls.
-        #     # TODO: Implement arity for formula variables.
+        #     # TODO: Implement arity for phi variables.
         #     # TODO: Consider making this property a dynamic property.
         self._arguments = arguments
-        self._domain = 'NOT IMPLEMENTED'  # TODO: Implement formula domain. It may be None, a base domain or a tuple of domains.
+        self._domain = 'NOT IMPLEMENTED'  # TODO: Implement phi domain. It may be None, a base domain or a tuple of domains.
         self._codomain = codomain  # TODO: Check that codomain is only passed as argument when appicable. Otherwise, issue a warning.
         self._base_name = base_name
         self._indexes = indexes
@@ -441,7 +441,7 @@ class Formula(Concept):
         if self.category == Formula.ATOMIC_VARIABLE:
             # For atomic variables, the arity is 0.
             # The rationale is that an atomic variable doesn't get any input.
-            # This would be wrong of formula variables which deserver a distinct implementation.
+            # This would be wrong of phi variables which deserver a distinct implementation.
             return 0
         elif self.is_system_function_call:
             # For system function calls, the arity of the call
@@ -490,7 +490,7 @@ class Formula(Concept):
             Formula.SYSTEM_N_ARY_FUNCTION_CALL]
 
     def list_atomic_variables(self):
-        """Return the sorted set of variables present in the formula, and its subformulae recursively."""
+        """Return the sorted set of variables present in the phi, and its subformulae recursively."""
         l = set()
         for a in self.arguments:
             if isinstance(a, Formula) and a.category == Formula.ATOMIC_VARIABLE:
@@ -536,7 +536,7 @@ class Formula(Concept):
                 variable_list = ', '.join(map(lambda a: a.represent(), self.arguments))
                 return f'{self._system_function.represent(rformat)}{glyphs.parenthesis_left.represent(rformat)}{variable_list}{glyphs.parenthesis_right.represent(rformat)}'
             case _:
-                log.error('Unsupported formula category', category=self.category, qualified_key=self.qualified_key)
+                log.error('Unsupported phi category', category=self.category, qualified_key=self.qualified_key)
 
     def represent_declaration(self, rformat: str = None, *args, **kwargs) -> str:
         if self.category != Formula.ATOMIC_VARIABLE:
@@ -598,7 +598,7 @@ def write_formula(o, *args):
 
 
 def f(o, *args):
-    """Shorthand function to write a formula."""
+    """Shorthand function to write a phi."""
     return write_formula(o, *args)
 
 
@@ -607,7 +607,7 @@ class SystemFunction(Concept):
 
     Definition:
     A system function, in the context of the naive package,
-    is a function that is predefined in the sense that it is accompanied by a programmatic algorithm and not a formula,
+    is a function that is predefined in the sense that it is accompanied by a programmatic algorithm and not a phi,
     and atomic in the sense that it cannot be further decomposed into constituent sub-formulae.
 
     """
@@ -634,7 +634,7 @@ class SystemFunction(Concept):
         self._codomain = codomain  # TODO: Implement validation against the static concept database.
         self._algorithm = algorithm
         if category not in SystemFunction.CATEGORIES:
-            log.error('Invalid formula category',
+            log.error('Invalid phi category',
                       category=category, qualified_key=self.qualified_key)
         self._category = category
         # Conditional complementary properties.
@@ -680,7 +680,7 @@ class SystemFunction(Concept):
             raise NotImplementedError('ooops')
 
     def equal_programmatic_value(self, other):
-        """Return true if two formula yield identical values, false otherwise."""
+        """Return true if two phi yield identical values, false otherwise."""
         if isinstance(other, Formula) and other.subcategory == SystemFunction.SYSTEM_CONSTANT:
             return self.compute_programmatic_value() == other.compute_programmatic_value()
         else:

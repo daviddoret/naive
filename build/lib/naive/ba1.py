@@ -189,20 +189,20 @@ def get_boolean_combinations_column(n, c):
 
 
 def satisfaction_index(phi: core.Formula, variables_list=None):
-    """Compute the **satisfaction indexes** (:math:`\text{sat}_I`) of a Boolean formula (:math:`\phi`).
+    """Compute the **satisfaction indexes** (:math:`\text{sat}_I`) of a Boolean phi (:math:`\phi`).
 
     Alias:
     **sat_i**
 
     Definition:
-    Let :math:`\phi` be a Boolean formula.
+    Let :math:`\phi` be a Boolean phi.
     :math:`\text{sat}_I \colon= ` the truth value of :math:`\phi` in all possible worlds.
 
     Args:
-        phi (BooleanFormula): The Boolean formula :math:`\phi` .
+        phi (BooleanFormula): The Boolean phi :math:`\phi` .
     """
     # Retrieve the computed results
-    # TODO: Check that all formula are Boolean formula. Otherwise, the formula
+    # TODO: Check that all phi are Boolean phi. Otherwise, the phi
     #   may not return a Boolean value, forbidding the computation of a satisfaction set.
     if variables_list is None:
         variables_list = phi.list_formula_atomic_variables()
@@ -223,7 +223,7 @@ def satisfaction_index(phi: core.Formula, variables_list=None):
                 argument.codomain == b:
             # This argument is a Boolean Formula.
             log.debug('This argument is a Boolean Formula')
-            # Recursively compute the satisfaction set of that formula,
+            # Recursively compute the satisfaction set of that phi,
             # restricting the variables list to the subset of necessary variables.
             vector = satisfaction_index(argument, variables_list=variables_list)
             argument_vectors[argument_index] = vector

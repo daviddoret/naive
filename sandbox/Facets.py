@@ -19,7 +19,7 @@ class Facets:
     function = Facet('function')
     atomic_property = Facet('ap')
     variable = Facet('variable')
-    formula = Facet('formula')
+    formula = Facet('phi')
     set = Facet('set')
 
 

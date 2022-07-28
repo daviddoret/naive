@@ -88,14 +88,14 @@ class Facets:
 
     atomic_property = Facet('atomic_property')
 
-    formula = Facet('formula')
-    """A mathematical formula.
+    formula = Facet('phi')
+    """A mathematical phi.
 
     Definition:
-    A formula, in the context of the naive package, is a tree of "calls" to functions, constants, and/or atomic variables.
+    A phi, in the context of the naive package, is a tree of "calls" to functions, constants, and/or atomic variables.
     ...
 
-    Different types of formula:
+    Different types of phi:
     - Atomic Variable (aka Unknown) (e.g. x + 5 = 17, x ∉ ℕ₀)
     - Formula Variable (e.g. φ = ¬x ∨ y, z ∧ φ)
     - n-ary SystemFunction Call with n in N0 (e.g. za1 abs)
@@ -118,7 +118,7 @@ class Facets:
     system_n_ary_function = Facet('atomic_n_ary_function', inclusions=[system_function])
 
     system_function_call = Facet('system_function_call', inclusions=[formula])
-    """A formula that is a call to a system (programmatic) function."""
+    """A phi that is a call to a system (programmatic) function."""
 
     system_constant_call = Facet('formula_constant_call', inclusions=[system_function_call])  # Aka a 0-ary function.
     system_unary_operator_call = Facet('formula_unary_operator_call', inclusions=[system_function_call])
@@ -644,35 +644,39 @@ class Repr:
                 # TODO: USASCII representation may be ambiguous. Considering issuing a Warning.
                 return representation
 
-    def convert_formula_to_graphviz_digraph(formula: Core.Formula, digraph=None):
-        title = Repr.represent(formula, RFormats.UTF8)
-        id = formula.qualified_key
+    def convert_formula_to_graphviz_digraph(phi: Core.Concept, digraph=None):
+        title = Repr.represent(phi, RFormats.UTF8)
+        id = phi.qualified_key
 
         if digraph is None:
             digraph = graphviz.Digraph(id)
 
         digraph.node(id, title)
-        if isinstance(formula, Core.Formula) and isinstance(formula.arguments, collections.abc.Iterable):
-            for argument in formula.arguments:
-                Repr.convert_formula_to_graphviz_digraph(formula=argument, digraph=digraph)
+        if has_facet(phi, Facets.formula) and isinstance(phi.arguments, collections.abc.Iterable):
+            for argument in phi.arguments:
+                Repr.convert_formula_to_graphviz_digraph(phi=argument, digraph=digraph)
                 digraph.edge(id, argument.qualified_key, dir='back')
 
         return digraph
 
-    def convert_formula_to_dot(formula: Core.Formula):
-        digraph = Repr.convert_formula_to_graphviz_digraph(formula=formula)
+    def convert_formula_to_dot(phi: Core.Concept):
+        if not has_facet(phi, Facets.formula):
+            Log.log_error('Missing phi facet', phi=phi)
+        digraph = Repr.convert_formula_to_graphviz_digraph(phi=phi)
         return digraph.source
 
-    def render_formula_as_ipython_mimebundle(formula: Core.Formula):
+    def render_formula_as_ipython_mimebundle(phi: Core.Concept):
         """
-        Render the formula as a digraph in SVG format,
+        Render the phi as a digraph in SVG format,
         in Jupyter Notebook, Jupyter QT Console, and/or insider Spyder IDE.
 
         Bibliography:
             * https://graphviz.readthedocs.io/en/stable/api.html#graphviz.Graph._repr_mimebundle_
             * https://graphviz.readthedocs.io/en/stable/manual.html
         """
-        digraph = Repr.convert_formula_to_graphviz_digraph(formula=formula)
+        if not has_facet(phi, Facets.formula):
+            Log.log_error('Missing phi facet', phi=phi)
+        digraph = Repr.convert_formula_to_graphviz_digraph(phi=phi)
         digraph._repr_mimebundle_()
 
     @staticmethod
@@ -914,7 +918,7 @@ def av(codomain, base_name=None, indexes=None):
 
 
 def f(o, *args):
-    """Shorthand function to write a formula."""
+    """Shorthand function to write a phi."""
     return Core.write_formula(o, *args)
 
 
@@ -951,6 +955,7 @@ class Core:
             self._base_key = Utils.clean_mnemonic_key(base_key)
             # Structural properties
             self._facets = set()
+            # Recall add_facets to assure that facet logic is applied.
             add_facets(self, facets)
             # Representation Properties
             self._utf8 = utf8
@@ -1010,10 +1015,10 @@ class Core:
 
         @property
         def arguments(self):
-            """The list of arguments linked to a formula.
+            """The list of arguments linked to a phi.
 
             Facets:
-                * formula"""
+                * phi"""
             return self._arguments
 
         @property
@@ -1160,7 +1165,7 @@ class Core:
 
         Definition:
         A system function, in the context of the naive package,
-        is a function that is predefined in the sense that it is accompanied by a programmatic algorithm and not a formula,
+        is a function that is predefined in the sense that it is accompanied by a programmatic algorithm and not a phi,
         and atomic in the sense that it cannot be further decomposed into constituent sub-formulae.
 
         """
@@ -1207,36 +1212,14 @@ class Core:
                 raise NotImplementedError('ooops')
 
         def equal_programmatic_value(self, other):
-            """Return true if two formula yield identical values, false otherwise."""
+            """Return true if two phi yield identical values, false otherwise."""
             return self.compute_programmatic_value() == other.compute_programmatic_value()
-
-    class Formula(Concept):
-
-        def __init__(
-                self,
-                # Identification properties
-                scope_key, language_key, base_key,
-                # Structural properties
-                facets=None,
-                # Mandatory complementary properties
-                # Conditional complementary properties
-                # ...for system function calls:
-                system_function=None, arguments=None, arity=None,
-                # ...for atomic variables
-                domain=None, codomain=None, base_name=None, indexes=None,
-                **kwargs):
-            super().__init__(
-                scope_key=scope_key, language_key=language_key, base_key=base_key,
-                facets=facets, arguments=arguments, arity=arity, codomain=codomain,
-                system_function=system_function, base_name=base_name, indexes=indexes,
-                **kwargs)
-            add_facets(self, Facets.formula)
 
     _FORMULA_AUTO_COUNTER = Utils.Counter()
 
     @staticmethod
     def list_formula_atomic_variables(phi):
-        """Return the sorted set of variables present in the formula, and its subformulae recursively."""
+        """Return the sorted set of variables present in the phi, and its subformulae recursively."""
         atomic_variables = set()
         if phi.arguments is not None:
             for argument in phi.arguments:
@@ -1264,19 +1247,26 @@ class Core:
         facets = None
         arity = None
 
+        if facets is None:
+            facets = set()
+        # Adding the phi facet is unecessary because
+        # the phi-like facet will add it by automatic inclusions.
+        # I nevertheless add it for code clarity.
+        facets.add(Facets.formula)
+
         if has_facet(o, Facets.system_function):
             system_function = o
             arity = system_function.arity
             codomain = system_function.codomain
             if has_facet(o, Facets.system_constant):
-                facets = [Facets.system_constant_call]
+                facets.add(Facets.system_constant_call)
             elif has_facet(o, Facets.system_unary_operator):
-                facets = [Facets.system_unary_operator_call]
+                facets.add(Facets.system_unary_operator_call)
             elif has_facet(o, Facets.system_binary_operator):
-                facets = [Facets.system_binary_operator_call]
+                facets.add(Facets.system_binary_operator_call)
                 # TODO: Implement all other possibilities
         arguments = args
-        formula = Core.Formula(
+        formula = Core.Concept(
             # Identification properties
             scope_key=scope_key, language_key=Const._LANGUAGE_NAIVE, base_key=base_key,
             # Structural properties
@@ -1317,9 +1307,9 @@ class Core:
             return variable
         else:
             arity = 0
-            variable = Core.Formula(
+            variable = Core.Concept(
                 scope_key=scope_key, language_key=language_key, base_key=base_key,
-                facets=[Facets.atomic_variable],
+                facets=Facets.atomic_variable,
                 codomain=codomain, base_name=base_name, indexes=indexes, arity=arity)
             Log.log_info(Repr.represent_declaration(variable))
             return variable
@@ -1349,23 +1339,23 @@ class BA1:
     # Scope.
     ba1_scope = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='ba1_scope',
-        facets=[Facets.scope],
+        facets=Facets.scope,
         utf8='ba1_scope', latex=r'\text{ba1_scope}', html='ba1_scope', usascii='ba1_scope')
 
     # Language.
     ba1_language = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='ba1_language',
-        facets=[Facets.language],
+        facets=Facets.language,
         utf8='ba1_language', latex=r'\text{ba1_language}', html='ba1_language', usascii='ba1_language')
 
     # Domains.
     b = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='b',
-        facets=[Facets.domain],
+        facets=Facets.domain,
         utf8='𝔹', latex=r'\mathbb{B}', html='&Bopf;', usascii='B')
     b2 = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='b2',
-        facets=[Facets.domain],
+        facets=Facets.domain,
         utf8='𝔹²', latex=r'\mathbb{B}^{2}', html=r'&Bopf;<sup>2</sup>', usascii='B2')
 
     # Algorithms.
@@ -1518,21 +1508,21 @@ class BA1:
         return [(BA1.truth if (integer_value & 1 << c != 0) else BA1.falsum) for integer_value in range(0, 2 ** n)]
 
     @staticmethod
-    def satisfaction_index(phi: Core.Formula, variables_list=None):
-        """Compute the **satisfaction indexes** (:math:`\text{sat}_I`) of a Boolean formula (:math:`\phi`).
+    def satisfaction_index(phi: Core.Concept, variables_list=None):
+        """Compute the **satisfaction indexes** (:math:`\text{sat}_I`) of a Boolean phi (:math:`\phi`).
 
         Alias:
         **sat_i**
 
         Definition:
-        Let :math:`\phi` be a Boolean formula.
+        Let :math:`\phi` be a Boolean phi.
         :math:`\text{sat}_I \colon= ` the truth value of :math:`\phi` in all possible worlds.
 
         Args:
-            phi (BooleanFormula): The Boolean formula :math:`\phi` .
+            phi (BooleanFormula): The Boolean phi :math:`\phi` .
         """
         # Retrieve the computed results
-        # TODO: Check that all formula are Boolean formula. Otherwise, the formula
+        # TODO: Check that all phi are Boolean phi. Otherwise, the phi
         #   may not return a Boolean value, forbidding the computation of a satisfaction set.
         if variables_list is None:
             variables_list = Core.list_formula_atomic_variables(phi)
@@ -1552,7 +1542,7 @@ class BA1:
                     argument.codomain == BA1.b:
                 # This argument is a Boolean Formula.
                 Log.log_debug('This argument is a Boolean Formula')
-                # Recursively compute the satisfaction set of that formula,
+                # Recursively compute the satisfaction set of that phi,
                 # restricting the variables list to the subset of necessary variables.
                 vector = BA1.satisfaction_index(argument, variables_list=variables_list)
                 argument_vectors[argument_index] = vector
@@ -1597,12 +1587,12 @@ class ST1:
 
     # Scope.
     st1_scope = Core.Concept(
-        scope_key=_SCOPE_ST1, facets=[Facets.scope], language_key=_LANGUAGE_ST1, base_key='st1_scope',
+        scope_key=_SCOPE_ST1, facets=Facets.scope, language_key=_LANGUAGE_ST1, base_key='st1_scope',
         utf8='st1_scope', latex=r'\text{st1_scope}', html='st1_scope', usascii='st1_scope')
 
     # Language.
     st1_language = Core.Concept(
-        scope_key=_SCOPE_ST1, facets=[Facets.language], language_key=_LANGUAGE_ST1, base_key='st1_language',
+        scope_key=_SCOPE_ST1, facets=Facets.language, language_key=_LANGUAGE_ST1, base_key='st1_language',
         utf8='st1_language', latex=r'\text{st1_language}', html='st1_language', usascii='st1_language')
 
     @staticmethod
@@ -1637,7 +1627,7 @@ class ST1:
         else:
             finite_set = Core.Concept(
                 scope_key=scope_key, language_key=language_key, base_key=base_key,
-                facets=[Facets.extensively_defined_finite_set],
+                facets=Facets.extensively_defined_finite_set,
                 utf8=base_name,
                 base_name=base_name, indexes=indexes, elements=elements)
             Log.log_info(Repr.represent_declaration(finite_set))
@@ -1681,11 +1671,11 @@ def inflate_object(model_object):
         case 'BA1NegationFormula':
             return f(BA1.negation, *arguments)
         case 'BA1TruthFormula':
-            # TODO: Question: use the system function directly or embed it into a formula?
+            # TODO: Question: use the system function directly or embed it into a phi?
             # return BA1.truth
             return f(BA1.truth)
         case 'BA1FalsumFormula':
-            # TODO: Question: use the system function directly or embed it into a formula?
+            # TODO: Question: use the system function directly or embed it into a phi?
             # return BA1.falsum
             return f(BA1.falsum)
         case 'BA1AtomicVariableFormula':

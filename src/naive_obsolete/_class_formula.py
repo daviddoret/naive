@@ -7,7 +7,7 @@ from _class_function import Function, FUNCTION, OPERATOR
 
 
 class Formula(ABCRepresentable):
-    """A generic formula.
+    """A generic phi.
 
     *Formulas are syntactically correct expressions in a formalized language_key defined over a signature, a set of variables, and a logics. In this way, formulas are quite similar to terms. Since predicates and logics symbols are included in their inductive definition, they represent truth values instead of sort values, however.*
     -- https://encyclopediaofmath.org/wiki/Formula
@@ -36,7 +36,7 @@ class Formula(ABCRepresentable):
         return self._arguments
 
     def list_atomic_variables(self):
-        """Return the sorted set of variables present in the formula and its subformulae recursively."""
+        """Return the sorted set of variables present in the phi and its subformulae recursively."""
         l = set()
         for a in self.arguments:
             if isinstance(a, AtomicVariable):
@@ -72,7 +72,7 @@ class Formula(ABCRepresentable):
             else:
                 log.error('Unknown call representation', self=self)
         else:
-            log.error('Symbol of unsupported type in formula.', self=self)
+            log.error('Symbol of unsupported type in phi.', self=self)
 
     @property
     def symbol(self):

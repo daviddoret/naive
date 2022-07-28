@@ -17,8 +17,8 @@ class AtomicVariable(Variable):
     """The atomic variable class.
 
     Definition:
-    An atomic variable is a variable that is not a formula variable,
-    that it is cannot be decomposed into sub-formula.
+    An atomic variable is a variable that is not a phi variable,
+    that it is cannot be decomposed into sub-phi.
     One way to understand it is to see it as an unknown variable.
     """
     def __init__(
