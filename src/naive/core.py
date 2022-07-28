@@ -89,7 +89,24 @@ class Facets:
     atomic_property = Facet('atomic_property')
 
     formula = Facet('formula')
+    """A mathematical formula.
 
+    Definition:
+    A formula, in the context of the naive package, is a tree of "calls" to functions, constants, and/or atomic variables.
+    ...
+
+    Different types of formula:
+    - Atomic Variable (aka Unknown) (e.g. x + 5 = 17, x ∉ ℕ₀)
+    - Formula Variable (e.g. φ = ¬x ∨ y, z ∧ φ)
+    - n-ary SystemFunction Call with n in N0 (e.g. za1 abs)
+
+    Different sub-types of n-ary Functions:
+    - 0-ary Operator (aka Constant) (e.g. ba1_language truth)
+    - Unary Operator (e.g. ba1_language negation)
+    - Binary Operator (e.g. ba1_language conjunction)
+    - n-ary SystemFunction
+
+    """
 
     atomic_variable = Facet('formula_atomic_variable', inclusions=[formula])
 
@@ -125,8 +142,11 @@ class Facets:
 
 
 def has_facet(o, facet):
-    """Returns **True** if **o** has facet **facet**, **False** otherwise."""
-    return facet in o.facets
+    """Returns **True** if **o** has facet **facet**, **False** otherwise.
+
+    Special case:
+    Return **False** for pythonic objects that don't have a **facets** property."""
+    return hasattr(o, 'facets') and facet in o.facets
 
 
 def has_any_facet(o, facets):
@@ -418,7 +438,7 @@ class Repr:
 
         def __str__(self) -> str:
             # TODO: For future development, if images or other media are supported, the output of get_presentation() will need to be converted to text.
-            return self.represent()
+            return Repr.represent(self)
 
         def __repr__(self):
             return self.__str__()
@@ -429,20 +449,6 @@ class Repr:
             Allows sorting of variables by their names.
             Not to be confused with sorting variables by their values."""
             return str(self) < str(other)
-
-        @abc.abstractmethod
-        def represent(self, rformat: str = None, *args, **kwargs) -> str:
-            """Get the object's representation in the desired format.
-
-            Args:
-                rformat (str): The representation format.
-                args:
-                kwargs:
-
-            Returns:
-                The object's representation in the desired format.
-            """
-            raise NotImplementedError('Abstract method must be implemented in subclass.')
 
     """Safe types for type coercion."""
     CoercibleABCRepresentable = typing.TypeVar(
@@ -498,33 +504,11 @@ class Repr:
 
             super().__init__(**kwargs)
 
-        def represent(self, rformat: str = None, *args, **kwargs) -> str:
-            """Get the object's representation in a supported format.
-
-            Args:
-                rformat (str): A representation format.
-                args: For future use.
-                kwargs: For future use.
-
-            Returns:
-                The object's representation in the requested format.
-            """
-            if rformat is None:
-                rformat = RFormats.DEFAULT
-            if rformat in self._representations:
-                return self._representations[rformat]
-            elif RFormats.UTF8 in self._representations:
-                # We fall back on UTF-8
-                return self._representations[RFormats.UTF8]
-            else:
-                raise ValueError(
-                    f'PersistingRepresentable object has no representations in {rformat} nor {RFormats.UTF8}.')
-
         def imitate(self, o: Repr.ABCRepresentable):
             """Imitate the representation of another object."""
             for rformat in RFormats.CATALOG:
                 # TODO: Minor design flaw: this process will also copy unsupported properties that default to UTF-8.
-                self._representations[rformat] = o.represent(rformat)
+                self._representations[rformat] = Repr.represent(o, rformat)
 
     class Glyph(PersistingRepresentable):
         """A glyph is an elemental representation item."""
@@ -661,7 +645,7 @@ class Repr:
                 return representation
 
     def convert_formula_to_graphviz_digraph(formula: Core.Formula, digraph=None):
-        title = formula.represent(RFormats.UTF8)
+        title = Repr.represent(formula, RFormats.UTF8)
         id = formula.qualified_key
 
         if digraph is None:
@@ -691,30 +675,114 @@ class Repr:
         digraph = Repr.convert_formula_to_graphviz_digraph(formula=formula)
         digraph._repr_mimebundle_()
 
-    def represent(o: object, rformat: str = None, *args, left_bracket=None, right_bracket=None, element_separator=None, **kwargs) -> str:
+    @staticmethod
+    def represent(
+            o: object,
+            rformat: str = None,
+            *args,
+            left_bracket=None,
+            right_bracket=None,
+            element_separator=None,
+            **kwargs) -> str:
         """Get the object'representation representation in the desired format.
-
-        If **representation** is None, return an empty string.
-        Else if **representation** is ABCRepresentable, return **representation**.get_representation().
-        Else, return source_string(**representation**).
 
         Args:
             o (object): The object to be represented.
             rformat (str): The representation format.
 
         Returns:
-            The object'representation representation, if support in the desired format.
+            The object's representation, if supported in the desired format.
         """
         if o is None:
             # If nothing is passed for representation,
             # we return an empty string to facilitate concatenations.
             return ''
         if rformat is None:
+            # Default rformat.
             rformat = RFormats.DEFAULT
-        if isinstance(o, Repr.ABCRepresentable):
-            return o.represent(rformat, *args, **kwargs)
-        else:
+        if has_facet(o, Facets.atomic_variable):
+            # Basic symbol representation.
+            # x
+            # TODO: Modify approach. Storing and returning the _base_name like this
+            #   prevent support for other mathematical fonts, such as MathCal, etc.
+            #   As an initial approach, it provides support for ASCII like variables.
+            #   We may consider storing a Glyph as the base name,
+            #   and calling the static represent() function.
+            return o._base_name + \
+                   Repr.subscriptify(Repr.represent(o._indexes, rformat), rformat)
+        elif has_facet(o, Facets.system_constant_call):
+            # x
+            return f'{Repr.represent(o._system_function, rformat)}'
+        elif has_facet(o, Facets.system_unary_operator_call):
+            # fx
+            return f'{Repr.represent(o._system_function, rformat)}{Repr.represent(o.arguments[0], rformat)}'
+        elif has_facet(o, Facets.system_binary_operator_call):
+            # (x f y)
+            return f'{Repr.represent(Glyphs.parenthesis_left, rformat)}{Repr.represent(o.arguments[0], rformat)}{Repr.represent(Glyphs.small_space, rformat)}{Repr.represent(o._system_function, rformat)}{Repr.represent(Glyphs.small_space, rformat)}{Repr.represent(o.arguments[1], rformat)}{Repr.represent(Glyphs.parenthesis_right, rformat)}'
+        elif has_facet(o, Facets.system_n_ary_function_call):
+            # f(x,y,z)
+            variable_list = ', '.join(map(lambda a: Repr.represent(a), o.arguments))
+            return f'{Repr.represent(o._system_function, rformat)}{Repr.represent(Glyphs.parenthesis_left, rformat)}{variable_list}{Repr.represent(Glyphs.parenthesis_right, rformat)}'
+        elif has_facet(o, Facets.extensively_defined_finite_set):
+            return o._base_name + \
+                   Repr.subscriptify(Repr.represent(o._indexes, rformat), rformat)
+        elif hasattr(o, '_' + rformat) or hasattr(o, '_' + RFormats.DEFAULT):
+            # TODO: Question: Used by facet=domain, facet=system_function, etc.
+            #   Don't feel 100% sure this is the correct approach, we would be
+            #   better off reusing a Glyph as a property when available.
+            if hasattr(o, '_' + rformat):
+                return getattr(o, '_' + rformat)
+            elif hasattr(o, '_' + RFormats.DEFAULT):
+                # We fall back on UTF-8
+                return getattr(o, '_' + RFormats.DEFAULT)
+            else:
+                Log.log_error('Missing rformat property', rformat=rformat, __dict__=o.__dict__)
+        elif hasattr(o, '_representations'):
+            Log.log_warning('Obsolete representation method with _representations property ?', rformat=rformat, __dict__=o.__dict__)
+            if rformat in o._representations:
+                return o._representations[rformat]
+            elif RFormats.UTF8 in o._representations:
+                # We fall back on UTF-8
+                return o._representations[RFormats.UTF8]
+            else:
+                Log.log_error('Missing rformat in _representations', rformat=rformat, __dict__=o.__dict__)
+        elif not isinstance(o, Core.Concept):
+            # The final fallback method before raising an error.
+            # Provides support for all base types and non-naive classes.
+            # Note that we exclude Core.Concept from the above
+            # condition to avoid infinite ping-pong plays between
+            # __str__ and represent().
             return str(o)
+        else:
+            Log.log_error('No representation solution',
+                          type=type(o),
+                          rformat=rformat,
+                          facets = o.facets if hasattr(o, 'facets') else None,
+                          __dict__=o.__dict__)
+
+    @staticmethod
+    def represent_declaration(o: object, rformat: str = None, *args, **kwargs) -> str:
+        if has_facet(o, Facets.atomic_variable):
+            if rformat is None:
+                rformat = RFormats.DEFAULT
+            match rformat:
+                case RFormats.UTF8:
+                    return f'With {Repr.represent(o, rformat)} ∈ {Repr.represent(o.codomain, rformat)}.'
+                case _:
+                    raise NotImplementedError('TODO')
+        if has_facet(o, Facets.extensively_defined_finite_set):
+            if rformat is None:
+                rformat = RFormats.DEFAULT
+            match rformat:
+                case RFormats.UTF8:
+                    element_list = ', '.join(map(lambda a: Repr.represent(a, rformat), o.elements))
+                    return f'Let {Repr.represent(o, rformat)} := {Repr.represent(Glyphs.curly_bracket_left, rformat)}{element_list}{Repr.represent(Glyphs.curly_bracket_right, rformat)}'
+                case _:
+                    raise NotImplementedError('TODO')
+        else:
+            Log.log_error(f'Declaration is not supportted for these facets.',
+                          facets=o.facets,
+                          qualified_key=o.qualified_key, rformat=rformat)
 
 
 class Glyphs:
@@ -922,10 +990,10 @@ class Core:
                     qualified_key=self.qualified_key)
 
         def __str__(self):
-            return self.represent(RFormats.UTF8)
+            return Repr.represent(self, RFormats.UTF8)
 
         def __repr__(self):
-            return self.represent(RFormats.UTF8)
+            return Repr.represent(self, RFormats.UTF8)
 
         @property
         def algorithm(self):
@@ -1056,52 +1124,6 @@ class Core:
         def python_value(self):
             return self._python_value
 
-        def represent(self, rformat: str = None, *args, **kwargs) -> str:
-            """Get the object's representation in a supported format.
-
-            Args:
-                rformat (str): A representation format.
-                args: For future use.
-                kwargs: For future use.
-
-            Returns:
-                The object's representation in the requested format.
-            """
-            if rformat is None:
-                rformat = RFormats.DEFAULT
-            # TODO: Check that rformat is an allowed value.
-            if hasattr(self, rformat):
-                return getattr(self, rformat)
-            elif self._utf8 is not None:
-                # We fall back on UTF-8
-                return self._utf8
-            else:
-                Log.log_error(f'This concept has no representation in {rformat} nor {RFormats.UTF8}.', rformat=rformat,
-                              qualified_key=self.qualified_key)
-
-        def represent_declaration(self, rformat: str = None, *args, **kwargs) -> str:
-            if has_facet(self, Facets.atomic_variable):
-                if rformat is None:
-                    rformat = RFormats.DEFAULT
-                match rformat:
-                    case RFormats.UTF8:
-                        return f'With {self.represent(rformat)} ∈ {self.codomain.represent(rformat)}.'
-                    case _:
-                        raise NotImplementedError('TODO')
-            if has_facet(self, Facets.extensively_defined_finite_set):
-                if rformat is None:
-                    rformat = RFormats.DEFAULT
-                match rformat:
-                    case RFormats.UTF8:
-                        element_list = ', '.join(map(lambda a: Repr.represent(a, rformat), self.elements))
-                        return f'Let {self.represent(rformat)} := {Glyphs.curly_bracket_left.represent(rformat)}{element_list}{Glyphs.curly_bracket_right.represent(rformat)}'
-                    case _:
-                        raise NotImplementedError('TODO')
-            else:
-                Log.log_error(f'Declaration is not supportted for these facets.',
-                              facets=self.facets,
-                              qualified_key=self.qualified_key, rformat=rformat)
-
         @property
         def system_function(self):
             return self._system_function
@@ -1189,25 +1211,6 @@ class Core:
             return self.compute_programmatic_value() == other.compute_programmatic_value()
 
     class Formula(Concept):
-        """
-
-        Definition:
-        A formula, in the context of the naive package,
-        is a tree of "calls" to functions, constants, or variables.
-        ...
-
-        Different types of formula:
-        - Atomic Variable (aka Unknown) (e.g. x + 5 = 17, x ∉ ℕ₀)
-        - Formula Variable (e.g. φ = ¬x ∨ y, z ∧ φ)
-        - n-ary SystemFunction Call with n in N0 (e.g. za1 abs)
-
-        Different sub-types of n-ary Functions:
-        - 0-ary Operator (aka Constant) (e.g. ba1_language truth)
-        - Unary Operator (e.g. ba1_language negation)
-        - Binary Operator (e.g. ba1_language conjunction)
-        - n-ary SystemFunction
-
-        """
 
         def __init__(
                 self,
@@ -1229,40 +1232,9 @@ class Core:
                 **kwargs)
             add_facets(self, Facets.formula)
 
-        def represent(self, rformat: str = None, *args, **kwargs) -> str:
-            if rformat is None:
-                rformat = RFormats.DEFAULT
-            if has_facet(self, Facets.atomic_variable):
-                # x
-                # TODO: Modify approach. Storing and returning the _base_name like this
-                #   prevent support for other mathematical fonts, such as MathCal, etc.
-                #   As an initial approach, it provides support for ASCII like variables.
-                #   We may consider storing a Glyph as the base name,
-                #   and calling the static represent() function.
-                return self._base_name + \
-                       Repr.subscriptify(Repr.represent(self._indexes, rformat), rformat)
-            elif has_facet(self, Facets.system_constant_call):
-                # x
-                return f'{self._system_function.represent(rformat)}'
-            elif has_facet(self, Facets.system_unary_operator_call):
-                # fx
-                return f'{self._system_function.represent(rformat)}{self.arguments[0].represent(rformat)}'
-            elif has_facet(self, Facets.system_binary_operator_call):
-                # (x f y)
-                return f'{Glyphs.parenthesis_left.represent(rformat)}{self.arguments[0].represent(rformat)}{Glyphs.small_space.represent(rformat)}{self._system_function.represent(rformat)}{Glyphs.small_space.represent(rformat)}{self.arguments[1].represent(rformat)}{Glyphs.parenthesis_right.represent(rformat)}'
-            elif has_facet(self, Facets.system_n_ary_function_call):
-                # f(x,y,z)
-                variable_list = ', '.join(map(lambda a: a.represent(), self.arguments))
-                return f'{self._system_function.represent(rformat)}{Glyphs.parenthesis_left.represent(rformat)}{variable_list}{Glyphs.parenthesis_right.represent(rformat)}'
-            elif has_facet(self, Facets.extensively_defined_finite_set):
-                return self._base_name + \
-                       Repr.subscriptify(Repr.represent(self._indexes, rformat), rformat)
-            else:
-                Log.log_error('Unsupported facets', facets=self.facets,
-                              qualified_key=self.qualified_key)
-
     _FORMULA_AUTO_COUNTER = Utils.Counter()
 
+    @staticmethod
     def list_formula_atomic_variables(phi):
         """Return the sorted set of variables present in the formula, and its subformulae recursively."""
         atomic_variables = set()
@@ -1313,7 +1285,7 @@ class Core:
             system_function=system_function, arguments=arguments,
             arity=arity, codomain=codomain
         )
-        Log.log_info(formula.represent())
+        Log.log_info(Repr.represent(formula))
         return formula
 
     @staticmethod
@@ -1349,7 +1321,7 @@ class Core:
                 scope_key=scope_key, language_key=language_key, base_key=base_key,
                 facets=[Facets.atomic_variable],
                 codomain=codomain, base_name=base_name, indexes=indexes, arity=arity)
-            Log.log_info(variable.represent_declaration())
+            Log.log_info(Repr.represent_declaration(variable))
             return variable
 
 
@@ -1668,7 +1640,7 @@ class ST1:
                 facets=[Facets.extensively_defined_finite_set],
                 utf8=base_name,
                 base_name=base_name, indexes=indexes, elements=elements)
-            Log.log_info(finite_set.represent_declaration())
+            Log.log_info(Repr.represent_declaration(finite_set))
             return finite_set
 
 

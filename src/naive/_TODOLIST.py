@@ -27,3 +27,18 @@
 #   and we avoid
 
 # TODO: Implement Venn diagram representations of finite sets.
+
+****************
+* TOP PRIORITY *
+****************
+
+# TODO: Complete the replacement of the representation instance methods,
+#   to use the central Repr.represent static function.
+#   Formula is mostly done. System function must still be done.
+#   This will unblock the destruction of the Formula then SystemFunction classes.
+
+# TODO: Remove Formula class and substitute with Concpet with formula facet.
+
+# TODO: Remove SystemFunction class and substitute with Concpet with system_function facet.
+
+
