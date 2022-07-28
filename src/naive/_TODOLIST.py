@@ -26,3 +26,4 @@
 #    as a concept property. Like this we can directly reuse Glyphs or other constructions.
 #   and we avoid
 
+# TODO: Implement Venn diagram representations of finite sets.

@@ -205,7 +205,7 @@ def satisfaction_index(phi: core.Formula, variables_list=None):
     # TODO: Check that all formula are Boolean formula. Otherwise, the formula
     #   may not return a Boolean value, forbidding the computation of a satisfaction set.
     if variables_list is None:
-        variables_list = phi.list_atomic_variables()
+        variables_list = phi.list_formula_atomic_variables()
     variables_number = len(variables_list)
     arguments_number = phi.arity
     argument_vectors = [None] * arguments_number

@@ -109,8 +109,18 @@ class Facets:
     system_n_ary_function_call = Facet('formula_n_ary_function_call', inclusions=[system_function_call])
 
     # ST1
+
     set2 = Facet('set')
+
     finite_set = Facet('finite_set', inclusions=[set2])
+
+    extensively_defined_finite_set = Facet('extensively_defined_finite_set', inclusions=[finite_set])
+    """A finite set that is defined by the extensive list of its elements.
+    
+    Properties:
+        * elements
+    """
+
     infinite_set = Facet('infinite_set', inclusions=[set2])
 
 
@@ -860,8 +870,10 @@ class Core:
         def __init__(self, scope_key, language_key, base_key,
                      facets,
                      utf8=None, latex=None, html=None, usascii=None, tokens=None,
+                     base_name=None, indexes=None,
                      domain=None, codomain=None, arity=None, python_value=None,
-                     arguments=None, algorithm=None, base_name=None, indexes=None, elements=None,
+                     arguments=None, algorithm=None, elements=None,
+                     system_function=None,
                      **kwargs):
             # Identification Properties that constitute the Qualified Key.
             if scope_key is None:
@@ -887,6 +899,7 @@ class Core:
             self._codomain = codomain
             self._algorithm = algorithm
             self._elements = elements
+            self._system_function = system_function
             # Populate the token-concept mapping
             # to facilitate the retrieval of concepts during parsing
             # TODO: Consider the following approach: append utf8, latex, etc. as primary tokens,
@@ -916,6 +929,11 @@ class Core:
 
         @property
         def algorithm(self):
+            """The programmatic / pythonic algorithm that implements a system function.
+
+            Facets:
+                * system_function
+            """
             return self._algorithm
 
         @property
@@ -924,6 +942,10 @@ class Core:
 
         @property
         def arguments(self):
+            """The list of arguments linked to a formula.
+
+            Facets:
+                * formula"""
             return self._arguments
 
         @property
@@ -956,6 +978,9 @@ class Core:
 
         @property
         def codomain(self):
+            """The codomain of a function.
+
+            Constants are 0-ary functions. Hence, they do not have a domain property but do have a codomain property, in the sense that a constant 'outputs' a value which must pertain a domain."""
             return self._codomain
 
         @property
@@ -964,6 +989,15 @@ class Core:
 
         @property
         def elements(self):
+            """The elements of an extensively defined finite set.
+
+            By definition, extensively defined finite sets are defined as the extensive list of their elements. This property exposes this list.
+
+            For obvious programmatic reasons, this property is not exposed for infite sets and sets that are potentially too large.
+
+            Facets:
+                * extensively_defined_finite_set
+            """
             return self._elements
 
         @property
@@ -1018,6 +1052,10 @@ class Core:
         def language(self):
             return self._language_key
 
+        @property
+        def python_value(self):
+            return self._python_value
+
         def represent(self, rformat: str = None, *args, **kwargs) -> str:
             """Get the object's representation in a supported format.
 
@@ -1050,7 +1088,7 @@ class Core:
                         return f'With {self.represent(rformat)} ∈ {self.codomain.represent(rformat)}.'
                     case _:
                         raise NotImplementedError('TODO')
-            if has_facet(self, Facets.finite_set):
+            if has_facet(self, Facets.extensively_defined_finite_set):
                 if rformat is None:
                     rformat = RFormats.DEFAULT
                 match rformat:
@@ -1065,8 +1103,8 @@ class Core:
                               qualified_key=self.qualified_key, rformat=rformat)
 
         @property
-        def python_value(self):
-            return self._python_value
+        def system_function(self):
+            return self._system_function
 
         @property
         def qualified_key(self):
@@ -1187,35 +1225,9 @@ class Core:
             super().__init__(
                 scope_key=scope_key, language_key=language_key, base_key=base_key,
                 facets=facets, arguments=arguments, arity=arity, codomain=codomain,
+                system_function=system_function, base_name=base_name, indexes=indexes,
                 **kwargs)
             add_facets(self, Facets.formula)
-            # Mandatory complementary properties.
-            self._system_function = system_function
-            self._base_name = base_name
-            self._indexes = indexes
-
-        @property
-        def indexes(self):
-            return self._indexes
-
-        def list_atomic_variables(self):
-            """Return the sorted set of variables present in the formula, and its subformulae recursively."""
-            l = set()
-            if self.arguments is not None:
-                for a in self.arguments:
-                    if has_facet(a, Facets.atomic_variable):
-                        l.add(a)
-                    elif has_facet(a, Facets.formula):
-                        l_prime = a.list_atomic_variables()
-                        for a_prime in l_prime:
-                            l.add(a_prime)
-                    else:
-                        Log.log_error('Not implemented yet', a=a, self=self)
-
-            # To allow sorting and indexing, convert the set to a list.
-            l = list(l)
-            l.sort(key=lambda x: x.base_key)
-            return l
 
         def represent(self, rformat: str = None, *args, **kwargs) -> str:
             if rformat is None:
@@ -1242,18 +1254,33 @@ class Core:
                 # f(x,y,z)
                 variable_list = ', '.join(map(lambda a: a.represent(), self.arguments))
                 return f'{self._system_function.represent(rformat)}{Glyphs.parenthesis_left.represent(rformat)}{variable_list}{Glyphs.parenthesis_right.represent(rformat)}'
-            elif has_facet(self, Facets.finite_set):
+            elif has_facet(self, Facets.extensively_defined_finite_set):
                 return self._base_name + \
                        Repr.subscriptify(Repr.represent(self._indexes, rformat), rformat)
             else:
                 Log.log_error('Unsupported facets', facets=self.facets,
                               qualified_key=self.qualified_key)
 
-        @property
-        def system_function(self):
-            return self._system_function
-
     _FORMULA_AUTO_COUNTER = Utils.Counter()
+
+    def list_formula_atomic_variables(phi):
+        """Return the sorted set of variables present in the formula, and its subformulae recursively."""
+        atomic_variables = set()
+        if phi.arguments is not None:
+            for argument in phi.arguments:
+                if has_facet(argument, Facets.atomic_variable):
+                    atomic_variables.add(argument)
+                elif has_facet(argument, Facets.formula):
+                    atomic_variables_prime = Core.list_formula_atomic_variables(argument)
+                    for argument_prime in atomic_variables_prime:
+                        atomic_variables.add(argument_prime)
+                else:
+                    Log.log_error('Not implemented yet', argument=argument, phi=phi)
+
+        # To allow sorting and indexing, convert the set to a list.
+        atomic_variables = list(atomic_variables)
+        atomic_variables.sort(key=lambda x: x.base_key)
+        return atomic_variables
 
     @staticmethod
     def write_formula(o, *args):
@@ -1536,7 +1563,7 @@ class BA1:
         # TODO: Check that all formula are Boolean formula. Otherwise, the formula
         #   may not return a Boolean value, forbidding the computation of a satisfaction set.
         if variables_list is None:
-            variables_list = phi.list_atomic_variables()
+            variables_list = Core.list_formula_atomic_variables(phi)
         variables_number = len(variables_list)
         arguments_number = phi.arity
         argument_vectors = [None] * arguments_number
@@ -1618,6 +1645,7 @@ class ST1:
             # TODO: Make this a scope preference setting, letting the user choose the default
             #   variable base_name in that scope.
             base_name = 'S'
+            # TODO: automate index attribution if indexes is not provided.
         base_key = base_name
         if indexes is not None:
             if not isinstance(indexes, collections.abc.Iterable):
@@ -1637,7 +1665,7 @@ class ST1:
         else:
             finite_set = Core.Concept(
                 scope_key=scope_key, language_key=language_key, base_key=base_key,
-                facets=[Facets.finite_set],
+                facets=[Facets.extensively_defined_finite_set],
                 utf8=base_name,
                 base_name=base_name, indexes=indexes, elements=elements)
             Log.log_info(finite_set.represent_declaration())

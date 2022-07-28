@@ -14,7 +14,7 @@ class Test(TestCase):
         )
         print(psi1)
         self.assertEqual('b₁ ∧ b₂', psi1.represent(rformats.UTF8))
-        self.assertEqual('[b₁, b₂]', str(psi1.list_atomic_variables()))
+        self.assertEqual('[b₁, b₂]', str(psi1.list_formula_atomic_variables()))
         # worlds = naive.ba1_language.get_boolean_combinations(psi1.arity)
         sat_i = naive.ba1.satisfaction_index(psi1)
         self.assertEqual('[⊥, ⊥, ⊥, ⊤]', str(sat_i))

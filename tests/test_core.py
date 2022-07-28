@@ -119,17 +119,17 @@ class Test_User_Scope(TestCase):
 
         phi1 = naive.f(naive.BA1.negation, x)
         self.assertEqual('¬x', phi1.represent(naive.RFormats.UTF8))
-        self.assertEqual('[x]', str(phi1.list_atomic_variables()))
+        self.assertEqual('[x]', str(naive.Core.list_formula_atomic_variables(phi1)))
 
         phi2 = naive.f(naive.BA1.conjunction, phi1, y)
         self.assertEqual('(¬x ∧ y)', phi2.represent(naive.RFormats.UTF8))
-        print(phi2.list_atomic_variables())
-        self.assertEqual('[x, y]', str(phi2.list_atomic_variables()))
+        print(naive.Core.list_formula_atomic_variables(phi2))
+        self.assertEqual('[x, y]', str(naive.Core.list_formula_atomic_variables(phi2)))
 
         phi3 = naive.f(naive.BA1.disjunction, phi2, phi1)
         self.assertEqual('((¬x ∧ y) ∨ ¬x)', phi3.represent(naive.RFormats.UTF8))
-        print(phi3.list_atomic_variables())
-        self.assertEqual('[x, y]', str(phi3.list_atomic_variables()))
+        print(naive.Core.list_formula_atomic_variables(phi3))
+        self.assertEqual('[x, y]', str(naive.Core.list_formula_atomic_variables(phi3)))
 
     def test_complex_programmatic_construction_and_satisfaction_set(self):
         naive.set_unique_scope()
@@ -141,7 +141,7 @@ class Test_User_Scope(TestCase):
         psi1 = naive.f(naive.BA1.conjunction, b1, b2)
         psi2 = naive.f(naive.BA1.disjunction, b3, b1)
         psi3 = naive.f(naive.BA1.conjunction, psi1, psi2)
-        self.assertEqual('[b₁, b₂, b₃]', str(psi3.list_atomic_variables()))
+        self.assertEqual('[b₁, b₂, b₃]', str(naive.Core.list_formula_atomic_variables(psi3)))
         # worlds = naive.BA1.get_boolean_combinations(psi3.arity)
         # print(worlds)
         sat_i = naive.BA1.satisfaction_index(psi3)
@@ -201,7 +201,16 @@ class Test_User_Scope(TestCase):
         self.assertEqual(code_5, parsed_formula_5.represent(naive.RFormats.UTF8))
         print(naive.Repr.convert_formula_to_dot(parsed_formula_5))
 
-    def test_set(self):
+    def test_sa1_1(self):
         naive.set_unique_scope()
         s1 = naive.ST1.declare_finite_set(elements=[1,2,3])
         print(s1.represent())
+
+    def test_sa1_2(self):
+        naive.set_unique_scope()
+        s1 = naive.ST1.declare_finite_set(base_name='S', indexes=1, elements=[1,2,3])
+        print(s1.represent())
+        s2 = naive.ST1.declare_finite_set(base_name='S', indexes=2, elements=[3,4,5])
+        print(s2.represent())
+        s3 = naive.ST1.declare_finite_set(base_name='S', indexes=3, elements=[5,6,1])
+        print(s3.represent())

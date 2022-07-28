@@ -65,7 +65,7 @@ def get_boolean_combinations_column(n, c):
 
 def execute_formula_exhaustively(f: BooleanFormula):
     # Retrieve the set of variables present in the phi.
-    variables_list = f.list_atomic_variables()
+    variables_list = f.list_formula_atomic_variables()
     log.debug(variables_list=str(variables_list))
     # Retrieve the number of variables in the set.
     variables_number = len(variables_list)
@@ -83,7 +83,7 @@ def execute_formula_exhaustively(f: BooleanFormula):
 def satisfaction_set(formula: BooleanFormula, variables_list=None):
     # Retrieve the computed results
     if variables_list is None:
-        variables_list = formula.list_atomic_variables()
+        variables_list = formula.list_formula_atomic_variables()
     variables_number = len(variables_list)
     arguments_number = formula.arity
     argument_vectors = [None] * arguments_number
@@ -121,5 +121,5 @@ def satisfaction_set(formula: BooleanFormula, variables_list=None):
 
 
 psi_test = psi3
-log.info(formula=psi_test, vars=psi_test.list_atomic_variables())
+log.info(formula=psi_test, vars=psi_test.list_formula_atomic_variables())
 compute_formula(psi_test, variables_list = None)
