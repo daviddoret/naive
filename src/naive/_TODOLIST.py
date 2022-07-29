@@ -32,9 +32,6 @@
 * TOP PRIORITY *
 ****************
 
-
-# TODO: Remove Formula class and substitute with Concpet with phi facet.
-
 # TODO: Remove SystemFunction class and substitute with Concpet with system_function facet.
 
 

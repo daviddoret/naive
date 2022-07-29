@@ -111,6 +111,14 @@ class Facets:
     atomic_variable = Facet('formula_atomic_variable', inclusions=[formula])
 
     system_function = Facet('system_function')
+    """Models a *mathematical* function that is implemented by a canonical *pythonic* (programmatic) function.
+
+    Definition:
+    A system function, in the context of the naive package,
+    is a function that is predefined in the sense that it is accompanied by a programmatic algorithm and not a phi,
+    and atomic in the sense that it cannot be further decomposed into constituent sub-formulae.
+
+    """
 
     system_constant = Facet('atomic_constant', inclusions=[system_function])  # Aka a 0-ary function.
     system_unary_operator = Facet('atomic_unary_operator', inclusions=[system_function])  # Aka a unary function with operator notation.
@@ -973,6 +981,7 @@ class Core:
             self._algorithm = algorithm
             self._elements = elements
             self._system_function = system_function
+            self._python_value = python_value
             # Populate the token-concept mapping
             # to facilitate the retrieval of concepts during parsing
             # TODO: Consider the following approach: append utf8, latex, etc. as primary tokens,
@@ -1002,7 +1011,7 @@ class Core:
 
         @property
         def algorithm(self):
-            """The programmatic / pythonic algorithm that implements a system function.
+            """function: The *python* function that implements the canonical algorithm for that *mathematical* function.
 
             Facets:
                 * system_function
@@ -1161,14 +1170,6 @@ class Core:
         utf8='scope_key₁', latex=r'\text{scope_key}_1', html=r'scope_key<sub>1</sub>', usascii='scope1')
 
     class SystemFunction(Concept):
-        """The system function class.
-
-        Definition:
-        A system function, in the context of the naive package,
-        is a function that is predefined in the sense that it is accompanied by a programmatic algorithm and not a phi,
-        and atomic in the sense that it cannot be further decomposed into constituent sub-formulae.
-
-        """
 
         def __init__(
                 self,
@@ -1190,30 +1191,22 @@ class Core:
                 algorithm=algorithm,
                 **kwargs)
             add_facets(self, Facets.system_function)
-            # TODO: Data consistency check: assure the Concept has at least 1 facet among "System Function Categories".
-            # Conditional complementary properties.
-            if has_facet(self, Facets.system_constant) and python_value is None:
-                Log.log_error('python_value is mandatory for constants (0-ary functions) but it was None.',
-                              python_value=python_value, facets=facets, qualified_key=self.qualified_key)
-            self._python_value = python_value  # TODO: Question: Should it be mandatory if it is a 0-ary function (ie a constant)?
 
-        @property
-        def algorithm(self):
-            return self._algorithm
 
-        @property
-        def compute_programmatic_value(self):
-            # TODO: The idea is to distinguish the computerized or programmatic value,
-            #   here as a canonical mapping to a python object,
-            #   with the symbolic value, the later being the naive concept.
-            if has_facet(self, Facets.system_constant):
-                return self._python_value
-            else:
-                raise NotImplementedError('ooops')
+    @staticmethod
+    def compute_programmatic_value(x: Concept):
+        # TODO: The idea is to distinguish the computerized or programmatic value,
+        #   here as a canonical mapping to a python object,
+        #   with the symbolic value, the later being the naive concept.
+        if has_facet(x, Facets.system_constant):
+            return x._python_value
+        else:
+            raise NotImplementedError('Missing system_constant and/or python_value property', x=x)
 
-        def equal_programmatic_value(self, other):
-            """Return true if two phi yield identical values, false otherwise."""
-            return self.compute_programmatic_value() == other.compute_programmatic_value()
+    @staticmethod
+    def equal_programmatic_value(x: Concept, y: (Concept, object)):
+        """Returns **True** if **x**'s programmatic value is equal to **y**'s programmatic value."""
+        return Core.compute_programmatic_value(x) == Core.compute_programmatic_value(y)
 
     _FORMULA_AUTO_COUNTER = Utils.Counter()
 
