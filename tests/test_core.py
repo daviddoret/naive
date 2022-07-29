@@ -26,7 +26,7 @@ class TestConcept(TestCase):
 class TestFunction(TestCase):
     def test_init(self):
         naive.set_unique_scope()
-        f1 = naive.Core.SystemFunction(
+        f1 = naive.Core.Concept(
             scope_key='scope_test', language_key='language_test', base_key='test_1',
             facets=[naive.Facets.language],
             codomain='domain_test', category=naive.Facets.system_constant, algorithm=naive.BA1.falsum_algorithm,

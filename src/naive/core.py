@@ -77,7 +77,6 @@ class Facet(str):
 
 
 class Facets:
-
     scope = Facet('scope')
 
     language = Facet('language')
@@ -121,8 +120,10 @@ class Facets:
     """
 
     system_constant = Facet('atomic_constant', inclusions=[system_function])  # Aka a 0-ary function.
-    system_unary_operator = Facet('atomic_unary_operator', inclusions=[system_function])  # Aka a unary function with operator notation.
-    system_binary_operator = Facet('atomic_binary_operator', inclusions=[system_function])  # Aka a binary function with operator notation.
+    system_unary_operator = Facet('atomic_unary_operator',
+                                  inclusions=[system_function])  # Aka a unary function with operator notation.
+    system_binary_operator = Facet('atomic_binary_operator',
+                                   inclusions=[system_function])  # Aka a binary function with operator notation.
     system_n_ary_function = Facet('atomic_n_ary_function', inclusions=[system_function])
 
     system_function_call = Facet('system_function_call', inclusions=[formula])
@@ -750,7 +751,8 @@ class Repr:
             else:
                 Log.log_error('Missing rformat property', rformat=rformat, __dict__=o.__dict__)
         elif hasattr(o, '_representations'):
-            Log.log_warning('Obsolete representation method with _representations property ?', rformat=rformat, __dict__=o.__dict__)
+            Log.log_warning('Obsolete representation method with _representations property ?', rformat=rformat,
+                            __dict__=o.__dict__)
             if rformat in o._representations:
                 return o._representations[rformat]
             elif RFormats.UTF8 in o._representations:
@@ -769,7 +771,7 @@ class Repr:
             Log.log_error('No representation solution',
                           type=type(o),
                           rformat=rformat,
-                          facets = o.facets if hasattr(o, 'facets') else None,
+                          facets=o.facets if hasattr(o, 'facets') else None,
                           __dict__=o.__dict__)
 
     @staticmethod
@@ -1169,30 +1171,6 @@ class Core:
         base_key=Const._USER_DEFINED_KEY_PREFIX + 'scope_1',
         utf8='scope_key₁', latex=r'\text{scope_key}_1', html=r'scope_key<sub>1</sub>', usascii='scope1')
 
-    class SystemFunction(Concept):
-
-        def __init__(
-                self,
-                # Identification properties
-                scope_key, language_key, base_key,
-                facets,
-                # Mandatory complementary properties
-                codomain, algorithm,
-                # Conditional complementary properties
-                domain=None, arity=None, python_value=None,
-                # Representation properties
-                utf8=None, latex=None, html=None, usascii=None, tokens=None,
-                **kwargs):
-            super().__init__(
-                scope_key=scope_key, language_key=language_key, base_key=base_key,
-                facets=facets,
-                utf8=utf8, latex=latex, html=html, usascii=usascii, tokens=tokens,
-                arity=arity, codomain=codomain, python_value=python_value,
-                algorithm=algorithm,
-                **kwargs)
-            add_facets(self, Facets.system_function)
-
-
     @staticmethod
     def compute_programmatic_value(x: Concept):
         # TODO: The idea is to distinguish the computerized or programmatic value,
@@ -1353,7 +1331,7 @@ class BA1:
 
     # Algorithms.
     @staticmethod
-    def falsum_algorithm(vector_size: int = 1) -> typing.List[Core.SystemFunction]:
+    def falsum_algorithm(vector_size: int = 1) -> typing.List[Core.Concept]:
         """The vectorized falsum boolean function.
 
         Returns:
@@ -1362,7 +1340,7 @@ class BA1:
         return [BA1.falsum] * vector_size
 
     @staticmethod
-    def truth_algorithm(vector_size: int = 1) -> typing.List[Core.SystemFunction]:
+    def truth_algorithm(vector_size: int = 1) -> typing.List[Core.Concept]:
         """The vectorized truth boolean function.
 
         Returns:
@@ -1371,7 +1349,7 @@ class BA1:
         return [BA1.truth] * vector_size
 
     @staticmethod
-    def negation_algorithm(v: typing.List[Core.SystemFunction]) -> typing.List[Core.SystemFunction]:
+    def negation_algorithm(v: typing.List[Core.Concept]) -> typing.List[Core.Concept]:
         """The vectorized negation boolean function.
 
         Args:
@@ -1386,9 +1364,9 @@ class BA1:
 
     @staticmethod
     def conjunction_algorithm(
-            v1: typing.List[Core.SystemFunction],
-            v2: typing.List[Core.SystemFunction]) -> \
-            typing.List[Core.SystemFunction]:
+            v1: typing.List[Core.Concept],
+            v2: typing.List[Core.Concept]) -> \
+            typing.List[Core.Concept]:
         """The vectorized conjunction boolean function.
 
         Args:
@@ -1406,9 +1384,9 @@ class BA1:
 
     @staticmethod
     def disjunction_algorithm(
-            v1: typing.List[Core.SystemFunction],
-            v2: typing.List[Core.SystemFunction]) -> \
-            typing.List[Core.SystemFunction]:
+            v1: typing.List[Core.Concept],
+            v2: typing.List[Core.Concept]) -> \
+            typing.List[Core.Concept]:
         """The vectorized disjunction boolean function.
 
         Args:
@@ -1425,35 +1403,35 @@ class BA1:
         return [BA1.truth if (b1 == BA1.truth or b2 == BA1.truth) else BA1.falsum for b1, b2 in zip(v1, v2)]
 
     # Functions.
-    truth = Core.SystemFunction(
+    truth = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='truth',
         facets=[Facets.function, Facets.system_function, Facets.system_constant],
         codomain=b, algorithm=truth_algorithm,
         utf8='⊤', latex=r'\top', html='&top;', usascii='truth', tokens=['⊤', 'truth', 'true', 't', '1'],
         arity=0, python_value=True)
 
-    falsum = Core.SystemFunction(
+    falsum = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='falsum',
         facets=[Facets.function, Facets.system_function, Facets.system_constant],
         codomain=b, algorithm=falsum_algorithm,
         utf8='⊥', latex=r'\bot', html='&perp;', usascii='falsum', tokens=['⊥', 'falsum', 'false', 'f', '0'],
         arity=0, python_value=False)
 
-    negation = Core.SystemFunction(
+    negation = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='negation',
         facets=[Facets.function, Facets.system_function, Facets.system_unary_operator],
         codomain=b, algorithm=negation_algorithm,
         utf8='¬', latex=r'\lnot', html='&not;', usascii='not', tokens=['¬', 'not', 'lnot'],
         domain=b, arity=1)
 
-    conjunction = Core.SystemFunction(
+    conjunction = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='conjunction',
         facets=[Facets.function, Facets.system_function, Facets.system_binary_operator],
         codomain=b, algorithm=conjunction_algorithm,
         utf8='∧', latex=r'\land', html='&and;', usascii='and', tokens=['∧', 'and', 'land'],
         domain=b, arity=2)
 
-    disjunction = Core.SystemFunction(
+    disjunction = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='disjunction',
         facets=[Facets.function, Facets.system_function, Facets.system_binary_operator],
         codomain=b, algorithm=disjunction_algorithm,
