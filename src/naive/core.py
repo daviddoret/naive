@@ -109,7 +109,7 @@ class Facets:
 
     atomic_variable = Facet('formula_atomic_variable', inclusions=[formula])
 
-    system_function = Facet('system_function')
+    programmatic_function = Facet('programmatic_function', inclusions=[function])
     """Models a *mathematical* function that is implemented by a canonical *pythonic* (programmatic) function.
 
     Definition:
@@ -119,20 +119,19 @@ class Facets:
 
     """
 
-    system_constant = Facet('atomic_constant', inclusions=[system_function])  # Aka a 0-ary function.
-    system_unary_operator = Facet('atomic_unary_operator',
-                                  inclusions=[system_function])  # Aka a unary function with operator notation.
-    system_binary_operator = Facet('atomic_binary_operator',
-                                   inclusions=[system_function])  # Aka a binary function with operator notation.
-    system_n_ary_function = Facet('atomic_n_ary_function', inclusions=[system_function])
+    programmatic_constant = Facet('programmatic_constant', inclusions=[programmatic_function])  # Aka a 0-ary function.
+    programmatic_unary_operator = Facet('programmatic_unary_operator', inclusions=[programmatic_function])  # Aka a unary function with operator notation.
+    programmatic_binary_operator = Facet('atomic_binary_operator',
+                                         inclusions=[programmatic_function])  # Aka a binary function with operator notation.
+    programmatic_n_ary_function = Facet('atomic_n_ary_function', inclusions=[programmatic_function])
 
-    system_function_call = Facet('system_function_call', inclusions=[formula])
+    programmatic_function_call = Facet('programmatic_function_call', inclusions=[formula])
     """A phi that is a call to a system (programmatic) function."""
 
-    system_constant_call = Facet('formula_constant_call', inclusions=[system_function_call])  # Aka a 0-ary function.
-    system_unary_operator_call = Facet('formula_unary_operator_call', inclusions=[system_function_call])
-    system_binary_operator_call = Facet('formula_binary_operator_call', inclusions=[system_function_call])
-    system_n_ary_function_call = Facet('formula_n_ary_function_call', inclusions=[system_function_call])
+    programmatic_constant_call = Facet('programmatic_constant_call', inclusions=[programmatic_function_call])  # Aka a 0-ary function.
+    programmatic_unary_operator_call = Facet('programmatic_unary_operator_call', inclusions=[programmatic_function_call])
+    programmatic_binary_operator_call = Facet('programmatic_binary_operator_call', inclusions=[programmatic_function_call])
+    programmatic_n_ary_function_call = Facet('programmatic_n_ary_function_call', inclusions=[programmatic_function_call])
 
     # ST1
 
@@ -723,16 +722,16 @@ class Repr:
             #   and calling the static represent() function.
             return o._base_name + \
                    Repr.subscriptify(Repr.represent(o._indexes, rformat), rformat)
-        elif has_facet(o, Facets.system_constant_call):
+        elif has_facet(o, Facets.programmatic_constant_call):
             # x
             return f'{Repr.represent(o._system_function, rformat)}'
-        elif has_facet(o, Facets.system_unary_operator_call):
+        elif has_facet(o, Facets.programmatic_unary_operator_call):
             # fx
             return f'{Repr.represent(o._system_function, rformat)}{Repr.represent(o.arguments[0], rformat)}'
-        elif has_facet(o, Facets.system_binary_operator_call):
+        elif has_facet(o, Facets.programmatic_binary_operator_call):
             # (x f y)
             return f'{Repr.represent(Glyphs.parenthesis_left, rformat)}{Repr.represent(o.arguments[0], rformat)}{Repr.represent(Glyphs.small_space, rformat)}{Repr.represent(o._system_function, rformat)}{Repr.represent(Glyphs.small_space, rformat)}{Repr.represent(o.arguments[1], rformat)}{Repr.represent(Glyphs.parenthesis_right, rformat)}'
-        elif has_facet(o, Facets.system_n_ary_function_call):
+        elif has_facet(o, Facets.programmatic_n_ary_function_call):
             # f(x,y,z)
             variable_list = ', '.join(map(lambda a: Repr.represent(a), o.arguments))
             return f'{Repr.represent(o._system_function, rformat)}{Repr.represent(Glyphs.parenthesis_left, rformat)}{variable_list}{Repr.represent(Glyphs.parenthesis_right, rformat)}'
@@ -740,7 +739,7 @@ class Repr:
             return o._base_name + \
                    Repr.subscriptify(Repr.represent(o._indexes, rformat), rformat)
         elif hasattr(o, '_' + rformat) or hasattr(o, '_' + RFormats.DEFAULT):
-            # TODO: Question: Used by facet=domain, facet=system_function, etc.
+            # TODO: Question: Used by facet=domain, facet=programmatic_function, etc.
             #   Don't feel 100% sure this is the correct approach, we would be
             #   better off reusing a Glyph as a property when available.
             if hasattr(o, '_' + rformat):
@@ -1016,7 +1015,7 @@ class Core:
             """function: The *python* function that implements the canonical algorithm for that *mathematical* function.
 
             Facets:
-                * system_function
+                * programmatic_function
             """
             return self._algorithm
 
@@ -1176,10 +1175,10 @@ class Core:
         # TODO: The idea is to distinguish the computerized or programmatic value,
         #   here as a canonical mapping to a python object,
         #   with the symbolic value, the later being the naive concept.
-        if has_facet(x, Facets.system_constant):
+        if has_facet(x, Facets.programmatic_constant):
             return x._python_value
         else:
-            raise NotImplementedError('Missing system_constant and/or python_value property', x=x)
+            raise NotImplementedError('Missing programmatic_constant and/or python_value property', x=x)
 
     @staticmethod
     def equal_programmatic_value(x: Concept, y: (Concept, object)):
@@ -1225,16 +1224,16 @@ class Core:
         # I nevertheless add it for code clarity.
         facets.add(Facets.formula)
 
-        if has_facet(o, Facets.system_function):
+        if has_facet(o, Facets.programmatic_function):
             system_function = o
             arity = system_function.arity
             codomain = system_function.codomain
-            if has_facet(o, Facets.system_constant):
-                facets.add(Facets.system_constant_call)
-            elif has_facet(o, Facets.system_unary_operator):
-                facets.add(Facets.system_unary_operator_call)
-            elif has_facet(o, Facets.system_binary_operator):
-                facets.add(Facets.system_binary_operator_call)
+            if has_facet(o, Facets.programmatic_constant):
+                facets.add(Facets.programmatic_constant_call)
+            elif has_facet(o, Facets.programmatic_unary_operator):
+                facets.add(Facets.programmatic_unary_operator_call)
+            elif has_facet(o, Facets.programmatic_binary_operator):
+                facets.add(Facets.programmatic_binary_operator_call)
                 # TODO: Implement all other possibilities
         arguments = args
         formula = Core.Concept(
@@ -1405,35 +1404,35 @@ class BA1:
     # Functions.
     truth = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='truth',
-        facets=[Facets.function, Facets.system_function, Facets.system_constant],
+        facets=[Facets.function, Facets.programmatic_function, Facets.programmatic_constant],
         codomain=b, algorithm=truth_algorithm,
         utf8='⊤', latex=r'\top', html='&top;', usascii='truth', tokens=['⊤', 'truth', 'true', 't', '1'],
         arity=0, python_value=True)
 
     falsum = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='falsum',
-        facets=[Facets.function, Facets.system_function, Facets.system_constant],
+        facets=[Facets.function, Facets.programmatic_function, Facets.programmatic_constant],
         codomain=b, algorithm=falsum_algorithm,
         utf8='⊥', latex=r'\bot', html='&perp;', usascii='falsum', tokens=['⊥', 'falsum', 'false', 'f', '0'],
         arity=0, python_value=False)
 
     negation = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='negation',
-        facets=[Facets.function, Facets.system_function, Facets.system_unary_operator],
+        facets=[Facets.function, Facets.programmatic_function, Facets.programmatic_unary_operator],
         codomain=b, algorithm=negation_algorithm,
         utf8='¬', latex=r'\lnot', html='&not;', usascii='not', tokens=['¬', 'not', 'lnot'],
         domain=b, arity=1)
 
     conjunction = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='conjunction',
-        facets=[Facets.function, Facets.system_function, Facets.system_binary_operator],
+        facets=[Facets.function, Facets.programmatic_function, Facets.programmatic_binary_operator],
         codomain=b, algorithm=conjunction_algorithm,
         utf8='∧', latex=r'\land', html='&and;', usascii='and', tokens=['∧', 'and', 'land'],
         domain=b, arity=2)
 
     disjunction = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='disjunction',
-        facets=[Facets.function, Facets.system_function, Facets.system_binary_operator],
+        facets=[Facets.function, Facets.programmatic_function, Facets.programmatic_binary_operator],
         codomain=b, algorithm=disjunction_algorithm,
         utf8='∨', latex=r'\lor', html='&or;', usascii='or', tokens=['∨', 'or', 'lor'],
         domain=b, arity=2)
@@ -1509,7 +1508,7 @@ class BA1:
                 argument_type=type(argument),
                 argument_codomain=argument.codomain,
                 argument_facets=argument.facets)
-            if has_facet(argument, Facets.system_function_call) and \
+            if has_facet(argument, Facets.programmatic_function_call) and \
                     argument.codomain == BA1.b:
                 # This argument is a Boolean Formula.
                 Log.log_debug('This argument is a Boolean Formula')

@@ -154,27 +154,27 @@ def get_bn_domain(n):
 # Functions.
 truth = core.SystemFunction(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='truth',
-    codomain=b, category=core.SystemFunction.system_constant, algorithm=truth_algorithm,
+    codomain=b, category=core.SystemFunction.programmatic_constant, algorithm=truth_algorithm,
     utf8='⊤', latex=r'\top', html='&top;', usascii='truth', tokens=['⊤', 'truth', 'true', 't', '1'],
     arity=0, python_value=True)
 falsum = core.SystemFunction(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='falsum',
-    codomain=b, category=core.SystemFunction.system_constant, algorithm=falsum_algorithm(),
+    codomain=b, category=core.SystemFunction.programmatic_constant, algorithm=falsum_algorithm(),
     utf8='⊥', latex=r'\bot', html='&perp;', usascii='falsum', tokens=['⊥', 'falsum', 'false', 'f', '0'],
     arity=0, python_value=False)
 negation = core.SystemFunction(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='negation',
-    codomain=b, category=core.SystemFunction.system_unary_operator, algorithm=negation_algorithm,
+    codomain=b, category=core.SystemFunction.programmatic_unary_operator, algorithm=negation_algorithm,
     utf8='¬', latex=r'\lnot', html='&not;', usascii='not', tokens=['¬', 'not', 'lnot'],
     domain=b, arity=1)
 conjunction = core.SystemFunction(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='conjunction',
-    codomain=b, category=core.SystemFunction.system_binary_operator, algorithm=conjunction_algorithm,
+    codomain=b, category=core.SystemFunction.programmatic_binary_operator, algorithm=conjunction_algorithm,
     utf8='∧', latex=r'\land', html='&and;', usascii='and', tokens=['∧', 'and', 'land'],
     domain=b, arity=2)
 disjunction = core.SystemFunction(
     scope_key=_SCOPE_BA1, structure_key=core._STRUCTURE_FUNCTION, language_key=_LANGUAGE_BA1, base_key='disjunction',
-    codomain=b, category=core.SystemFunction.system_binary_operator, algorithm=disjunction_algorithm,
+    codomain=b, category=core.SystemFunction.programmatic_binary_operator, algorithm=disjunction_algorithm,
     utf8='∨', latex=r'\lor', html='&or;', usascii='or', tokens=['∨', 'or', 'lor'],
     domain=b, arity=2)
 
@@ -245,14 +245,14 @@ def satisfaction_index(phi: core.Formula, variables_list=None):
                       codomain=argument.codomain)
     log.debug(argument_vectors=argument_vectors)
     output_vector = None
-    log.debug(phi=phi, arity=phi.arity, system_function=phi.system_function)
+    log.debug(phi=phi, arity=phi.arity, system_function=phi.programmatic_function)
     match phi.arity:
         case 0:
-            output_vector = phi.system_function.algorithm(vector_size=2 ** variables_number)
+            output_vector = phi.programmatic_function.algorithm(vector_size=2 ** variables_number)
         case 1:
-            output_vector = phi.system_function.algorithm(argument_vectors[0])
+            output_vector = phi.programmatic_function.algorithm(argument_vectors[0])
         case 2:
-            output_vector = phi.system_function.algorithm(argument_vectors[0], argument_vectors[1])
+            output_vector = phi.programmatic_function.algorithm(argument_vectors[0], argument_vectors[1])
         case _:
             log.error('Arity > 2 are not yet supported, sorry')
     log.debug(output_vector=output_vector)

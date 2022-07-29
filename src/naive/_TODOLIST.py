@@ -32,6 +32,6 @@
 * TOP PRIORITY *
 ****************
 
-# TODO: Remove SystemFunction class and substitute with Concpet with system_function facet.
+# TODO: Remove SystemFunction class and substitute with Concpet with programmatic_function facet.
 
 

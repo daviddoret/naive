@@ -15,7 +15,7 @@ class TestConcept(TestCase):
         naive.set_unique_scope()
         c1 = naive.Core.Concept(
             scope_key='scopetest', language_key='language_test', base_key='base_test_1',
-            facets=[naive.Facets.system_constant_call],
+            facets=[naive.Facets.programmatic_constant_call],
             utf8='test1', latex=r'\text{test}_{1}', html=r'test<sub>1</sub>', usascii='test1')
         self.assertEqual('scopetest.language_test.base_test_1', c1.qualified_key)
         self.assertEqual(c1, naive.Core.Concept.get_concept_from_qualified_key(c1.qualified_key))
@@ -29,7 +29,7 @@ class TestFunction(TestCase):
         f1 = naive.Core.Concept(
             scope_key='scope_test', language_key='language_test', base_key='test_1',
             facets=[naive.Facets.language],
-            codomain='domain_test', category=naive.Facets.system_constant, algorithm=naive.BA1.falsum_algorithm,
+            codomain='domain_test', category=naive.Facets.programmatic_constant, algorithm=naive.BA1.falsum_algorithm,
             utf8='test₁', latex=r'\text{test}_{1}', html=r'test<sub>1</sub>', usascii='test1',
             domain='domain_test', arity=17, python_value='test python value'
         )

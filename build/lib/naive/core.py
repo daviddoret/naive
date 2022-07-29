@@ -376,10 +376,10 @@ class Formula(Concept):
     # Constants
     ATOMIC_VARIABLE = 'formula_atomic_variable'  # TODO: Question: is it justified to distinguish this from FORMULA_VARIABLE?
     FORMULA_VARIABLE = 'formula_formula_variable'  # TODO: Question: is it justified to distinguish this from atomic_variable?
-    SYSTEM_CONSTANT_CALL = 'formula_constant_call'  # Aka a 0-ary function.
-    SYSTEM_UNARY_OPERATOR_CALL = 'formula_unary_operator_call'
-    SYSTEM_BINARY_OPERATOR_CALL = 'formula_binary_operator_call'
-    SYSTEM_N_ARY_FUNCTION_CALL = 'formula_n_ary_function_call'
+    SYSTEM_CONSTANT_CALL = 'programmatic_constant_call'  # Aka a 0-ary function.
+    SYSTEM_UNARY_OPERATOR_CALL = 'programmatic_unary_operator_call'
+    SYSTEM_BINARY_OPERATOR_CALL = 'programmatic_binary_operator_call'
+    SYSTEM_N_ARY_FUNCTION_CALL = 'programmatic_n_ary_function_call'
     CATEGORIES = [ATOMIC_VARIABLE, FORMULA_VARIABLE, SYSTEM_CONSTANT_CALL, SYSTEM_UNARY_OPERATOR_CALL, SYSTEM_BINARY_OPERATOR_CALL,
                   SYSTEM_N_ARY_FUNCTION_CALL]
 
@@ -409,11 +409,11 @@ class Formula(Concept):
         #         # The rationale for this arity = 0 is that atomic variables have no input.
         #         # This would be wrong of phi variables.
         #         self._arity = 0
-        #     case Formula.system_constant_call:
+        #     case Formula.programmatic_constant_call:
         #         self._arity = 0
-        #     case Formula.system_unary_operator_call:
+        #     case Formula.programmatic_unary_operator_call:
         #         self._arity = 1
-        #     case Formula.system_binary_operator_call:
+        #     case Formula.programmatic_binary_operator_call:
         #         self._arity = 2
         #     # Replace the match ... case ... with system.function.arity.
         #     # TODO: Implement arity for n-ary system function calls.
@@ -481,7 +481,7 @@ class Formula(Concept):
     def is_system_function_call(self):
         """Return *True* if this is a system function call, *False* otherwise.
 
-        If *True*, the instance has the *system_function* property.
+        If *True*, the instance has the *programmatic_function* property.
         """
         return self.category in [
             Formula.SYSTEM_CONSTANT_CALL,
@@ -613,10 +613,10 @@ class SystemFunction(Concept):
     """
 
     # Constants
-    SYSTEM_CONSTANT = 'system_constant'  # Aka a 0-ary function.
-    SYSTEM_UNARY_OPERATOR = 'system_unary_operator'  # Aka a unary function with operator notation.
-    SYSTEM_BINARY_OPERATOR = 'system_binary_operator'  # Aka a binary function with operator notation.
-    SYSTEM_N_ARY_FUNCTION = 'system_n_ary_function'
+    SYSTEM_CONSTANT = 'programmatic_constant'  # Aka a 0-ary function.
+    SYSTEM_UNARY_OPERATOR = 'programmatic_unary_operator'  # Aka a unary function with operator notation.
+    SYSTEM_BINARY_OPERATOR = 'programmatic_binary_operator'  # Aka a binary function with operator notation.
+    SYSTEM_N_ARY_FUNCTION = 'programmatic_n_ary_function'
     CATEGORIES = [SYSTEM_CONSTANT, SYSTEM_UNARY_OPERATOR, SYSTEM_BINARY_OPERATOR, SYSTEM_N_ARY_FUNCTION]
 
     def __init__(
