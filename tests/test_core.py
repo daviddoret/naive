@@ -201,16 +201,3 @@ class Test_User_Scope(TestCase):
         self.assertEqual(code_5, naive.Repr.represent(parsed_formula_5, naive.RFormats.UTF8))
         print(naive.Repr.convert_formula_to_dot(parsed_formula_5))
 
-    def test_sa1_1(self):
-        naive.set_unique_scope()
-        s1 = naive.ST1.declare_finite_set(elements=[1,2,3])
-        print(s1)
-
-    def test_sa1_2(self):
-        naive.set_unique_scope()
-        s1 = naive.ST1.declare_finite_set(base_name='S', indexes=1, elements=[1,2,3])
-        print(s1)
-        s2 = naive.ST1.declare_finite_set(base_name='S', indexes=2, elements=[3,4,5])
-        print(s2)
-        s3 = naive.ST1.declare_finite_set(base_name='S', indexes=3, elements=[5,6,1])
-        print(s3)

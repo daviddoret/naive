@@ -4,4 +4,4 @@ import naive
 
 class Test(TestCase):
     def test_ba_b2(self):
-        self.assertEqual(naive.b2.dimensions, 2)
+        self.assertEqual(naive.BA1.b2.dimensions, 2)

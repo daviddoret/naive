@@ -121,8 +121,7 @@ class Facets:
 
     programmatic_constant = Facet('programmatic_constant', inclusions=[programmatic_function])  # Aka a 0-ary function.
     programmatic_unary_operator = Facet('programmatic_unary_operator', inclusions=[programmatic_function])  # Aka a unary function with operator notation.
-    programmatic_binary_operator = Facet('atomic_binary_operator',
-                                         inclusions=[programmatic_function])  # Aka a binary function with operator notation.
+    programmatic_binary_operator = Facet('atomic_binary_operator', inclusions=[programmatic_function])  # Aka a binary function with operator notation.
     programmatic_n_ary_function = Facet('atomic_n_ary_function', inclusions=[programmatic_function])
 
     programmatic_function_call = Facet('programmatic_function_call', inclusions=[formula])
@@ -133,7 +132,7 @@ class Facets:
     programmatic_binary_operator_call = Facet('programmatic_binary_operator_call', inclusions=[programmatic_function_call])
     programmatic_n_ary_function_call = Facet('programmatic_n_ary_function_call', inclusions=[programmatic_function_call])
 
-    # ST1
+    # SA1
 
     set2 = Facet('set')
 
@@ -712,66 +711,78 @@ class Repr:
         if rformat is None:
             # Default rformat.
             rformat = RFormats.DEFAULT
-        if has_facet(o, Facets.atomic_variable):
-            # Basic symbol representation.
-            # x
-            # TODO: Modify approach. Storing and returning the _base_name like this
-            #   prevent support for other mathematical fonts, such as MathCal, etc.
-            #   As an initial approach, it provides support for ASCII like variables.
-            #   We may consider storing a Glyph as the base name,
-            #   and calling the static represent() function.
-            return o._base_name + \
-                   Repr.subscriptify(Repr.represent(o._indexes, rformat), rformat)
-        elif has_facet(o, Facets.programmatic_constant_call):
-            # x
-            return f'{Repr.represent(o._system_function, rformat)}'
-        elif has_facet(o, Facets.programmatic_unary_operator_call):
-            # fx
-            return f'{Repr.represent(o._system_function, rformat)}{Repr.represent(o.arguments[0], rformat)}'
-        elif has_facet(o, Facets.programmatic_binary_operator_call):
-            # (x f y)
-            return f'{Repr.represent(Glyphs.parenthesis_left, rformat)}{Repr.represent(o.arguments[0], rformat)}{Repr.represent(Glyphs.small_space, rformat)}{Repr.represent(o._system_function, rformat)}{Repr.represent(Glyphs.small_space, rformat)}{Repr.represent(o.arguments[1], rformat)}{Repr.represent(Glyphs.parenthesis_right, rformat)}'
-        elif has_facet(o, Facets.programmatic_n_ary_function_call):
-            # f(x,y,z)
-            variable_list = ', '.join(map(lambda a: Repr.represent(a), o.arguments))
-            return f'{Repr.represent(o._system_function, rformat)}{Repr.represent(Glyphs.parenthesis_left, rformat)}{variable_list}{Repr.represent(Glyphs.parenthesis_right, rformat)}'
-        elif has_facet(o, Facets.extensively_defined_finite_set):
-            return o._base_name + \
-                   Repr.subscriptify(Repr.represent(o._indexes, rformat), rformat)
-        elif hasattr(o, '_' + rformat) or hasattr(o, '_' + RFormats.DEFAULT):
-            # TODO: Question: Used by facet=domain, facet=programmatic_function, etc.
-            #   Don't feel 100% sure this is the correct approach, we would be
-            #   better off reusing a Glyph as a property when available.
-            if hasattr(o, '_' + rformat):
-                return getattr(o, '_' + rformat)
-            elif hasattr(o, '_' + RFormats.DEFAULT):
-                # We fall back on UTF-8
-                return getattr(o, '_' + RFormats.DEFAULT)
-            else:
-                Log.log_error('Missing rformat property', rformat=rformat, __dict__=o.__dict__)
-        elif hasattr(o, '_representations'):
-            Log.log_warning('Obsolete representation method with _representations property ?', rformat=rformat,
-                            __dict__=o.__dict__)
+        if isinstance(o, Repr.Glyph):
             if rformat in o._representations:
                 return o._representations[rformat]
-            elif RFormats.UTF8 in o._representations:
-                # We fall back on UTF-8
-                return o._representations[RFormats.UTF8]
+            elif RFormats.DEFAULT in o._representations:
+                # We fall back on the default representation format, by default UTF-8
+                return o._representations[RFormats.DEFAULT]
             else:
-                Log.log_error('Missing rformat in _representations', rformat=rformat, __dict__=o.__dict__)
-        elif not isinstance(o, Core.Concept):
+                Log.log_error('Missing rformat property', rformat=rformat, __dict__=o.__dict__)
+        if isinstance(o, Core.Concept):
+            # Recall the represent() function. Often, the base_name is a Glyph.
+            base_name = Repr.represent(o.base_name, rformat=rformat)
+            indexes = Repr.subscriptify(Repr.represent(o.indexes, rformat=rformat), rformat)
+            if has_facet(o, Facets.atomic_variable):
+                # Basic symbol representation.
+                # x
+                # TODO: Modify approach. Storing and returning the _base_name like this
+                #   prevent support for other mathematical fonts, such as MathCal, etc.
+                #   As an initial approach, it provides support for ASCII like variables.
+                #   We may consider storing a Glyph as the base name,
+                #   and calling the static represent() function.
+                return base_name + indexes
+            elif has_facet(o, Facets.function):
+                # TODO: Add indexes and exponent
+                return base_name
+            elif has_facet(o, Facets.programmatic_constant_call):
+                # x
+                return f'{Repr.represent(o._system_function, rformat=rformat)}'
+            elif has_facet(o, Facets.programmatic_unary_operator_call):
+                # fx
+                return f'{Repr.represent(o._system_function, rformat)}{Repr.represent(o.arguments[0], rformat)}'
+            elif has_facet(o, Facets.programmatic_binary_operator_call):
+                # (x f y)
+                return f'{Repr.represent(Glyphs.parenthesis_left, rformat)}{Repr.represent(o.arguments[0], rformat)}{Repr.represent(Glyphs.small_space, rformat)}{Repr.represent(o._system_function, rformat)}{Repr.represent(Glyphs.small_space, rformat)}{Repr.represent(o.arguments[1], rformat)}{Repr.represent(Glyphs.parenthesis_right, rformat)}'
+            elif has_facet(o, Facets.programmatic_n_ary_function_call):
+                # f(x,y,z)
+                variable_list = ', '.join(map(lambda a: Repr.represent(a), o.arguments))
+                return f'{Repr.represent(o._system_function, rformat)}{Repr.represent(Glyphs.parenthesis_left, rformat)}{variable_list}{Repr.represent(Glyphs.parenthesis_right, rformat)}'
+            elif has_facet(o, Facets.extensively_defined_finite_set):
+                return base_name + \
+                       Repr.subscriptify(Repr.represent(o._indexes, rformat), rformat)
+            elif hasattr(o, '_' + rformat) or hasattr(o, '_' + RFormats.DEFAULT):
+                # TODO: PROBABLY OBSOLETE CONDITION
+                if hasattr(o, '_' + rformat):
+                    return getattr(o, '_' + rformat)
+                elif hasattr(o, '_' + RFormats.DEFAULT):
+                    # We fall back on UTF-8
+                    return getattr(o, '_' + RFormats.DEFAULT)
+                else:
+                    Log.log_error('Missing rformat property', rformat=rformat, __dict__=o.__dict__)
+            elif hasattr(o, '_representations'):
+                Log.log_warning('Obsolete representation method with _representations property ?', rformat=rformat,
+                                __dict__=o.__dict__)
+                if rformat in o._representations:
+                    return o._representations[rformat]
+                elif RFormats.UTF8 in o._representations:
+                    # We fall back on UTF-8
+                    return o._representations[RFormats.UTF8]
+                else:
+                    Log.log_error('Missing rformat in _representations', rformat=rformat, __dict__=o.__dict__)
+            else:
+                Log.log_error('No representation solution',
+                              type=type(o),
+                              rformat=rformat,
+                              facets=o.facets if hasattr(o, 'facets') else None,
+                              __dict__=o.__dict__)
+        else:  # elif not isinstance(o, Core.Concept):
             # The final fallback method before raising an error.
             # Provides support for all base types and non-naive classes.
             # Note that we exclude Core.Concept from the above
             # condition to avoid infinite ping-pong plays between
             # __str__ and represent().
             return str(o)
-        else:
-            Log.log_error('No representation solution',
-                          type=type(o),
-                          rformat=rformat,
-                          facets=o.facets if hasattr(o, 'facets') else None,
-                          __dict__=o.__dict__)
 
     @staticmethod
     def represent_declaration(o: object, rformat: str = None, *args, **kwargs) -> str:
@@ -849,7 +860,7 @@ class Glyphs:
     angle_bracket_right = Repr.Glyph(utf8='⟩', latex=r'\right\rangle', html='&rang;', usascii='>')
 
     # Set Theory
-    element_of = Repr.Glyph(utf8='∈∉', latex=r'\in')
+    element_of = Repr.Glyph(utf8='∈', latex=r'\in')
     not_element_of = Repr.Glyph(utf8='∉', latex=r'\notin')
 
     # Spaces
@@ -930,6 +941,9 @@ def f(o, *args):
     """Shorthand function to write a phi."""
     return Core.write_formula(o, *args)
 
+
+def s(base_name=None, indexes=None, elements=None, scope=None):
+    return SA1.declare_finite_set(base_name=base_name, indexes=indexes, elements=elements, scope=scope)
 
 def get_qualified_key(scope_key, language_key, base_key):
     return f'{scope_key}{Const._QUALIFIED_KEY_SEPARATOR}{language_key}{Const._QUALIFIED_KEY_SEPARATOR}{base_key}'
@@ -1375,8 +1389,6 @@ class BA1:
         Returns:
             typing.List[BooleanConstant]: The vector of the conjunction of **v1** and **v2**.
         """
-        # v1 = coerce(v1, BooleanConstant)  # TODO: Consider support for list coercion.
-        # v2 = coerce(v2, BooleanConstant)  # TODO: Consider support for list coercion.
         v1 = Utils.flatten(v1)  # If scalar, convert to list.
         v2 = Utils.flatten(v2)  # If scalar, convert to list.
         return [BA1.truth if (b1 == BA1.truth and b2 == BA1.truth) else BA1.falsum for b1, b2 in zip(v1, v2)]
@@ -1395,8 +1407,6 @@ class BA1:
         Returns:
             typing.List[BooleanConstant]: The vector of the disjunction of **v1** and **v2**.
         """
-        # v1 = coerce(v1, BooleanConstant)  # TODO: Consider support for list coercion.
-        # v2 = coerce(v2, BooleanConstant)  # TODO: Consider support for list coercion.
         v1 = Utils.flatten(v1)  # If scalar, convert to list.
         v2 = Utils.flatten(v2)  # If scalar, convert to list.
         return [BA1.truth if (b1 == BA1.truth or b2 == BA1.truth) else BA1.falsum for b1, b2 in zip(v1, v2)]
@@ -1406,35 +1416,40 @@ class BA1:
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='truth',
         facets=[Facets.function, Facets.programmatic_function, Facets.programmatic_constant],
         codomain=b, algorithm=truth_algorithm,
-        utf8='⊤', latex=r'\top', html='&top;', usascii='truth', tokens=['⊤', 'truth', 'true', 't', '1'],
+        base_name=Glyphs.logical_truth,
+        tokens=['⊤', 'truth', 'true', 't', '1'], # The last tokens are ambiguous!
         arity=0, python_value=True)
 
     falsum = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='falsum',
         facets=[Facets.function, Facets.programmatic_function, Facets.programmatic_constant],
         codomain=b, algorithm=falsum_algorithm,
-        utf8='⊥', latex=r'\bot', html='&perp;', usascii='falsum', tokens=['⊥', 'falsum', 'false', 'f', '0'],
+        base_name=Glyphs.logical_falsum,
+        tokens=['⊥', 'falsum', 'false', 'f', '0'],
         arity=0, python_value=False)
 
     negation = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='negation',
         facets=[Facets.function, Facets.programmatic_function, Facets.programmatic_unary_operator],
         codomain=b, algorithm=negation_algorithm,
-        utf8='¬', latex=r'\lnot', html='&not;', usascii='not', tokens=['¬', 'not', 'lnot'],
+        base_name=Glyphs.logical_negation,
+        tokens=['¬', 'not', 'lnot'],
         domain=b, arity=1)
 
     conjunction = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='conjunction',
         facets=[Facets.function, Facets.programmatic_function, Facets.programmatic_binary_operator],
         codomain=b, algorithm=conjunction_algorithm,
-        utf8='∧', latex=r'\land', html='&and;', usascii='and', tokens=['∧', 'and', 'land'],
+        base_name=Glyphs.logical_conjunction,
+        tokens=['∧', 'and', 'land'],
         domain=b, arity=2)
 
     disjunction = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='disjunction',
         facets=[Facets.function, Facets.programmatic_function, Facets.programmatic_binary_operator],
         codomain=b, algorithm=disjunction_algorithm,
-        utf8='∨', latex=r'\lor', html='&or;', usascii='or', tokens=['∨', 'or', 'lor'],
+        base_name=Glyphs.logical_disjunction,
+        tokens=['∨', 'or', 'lor'],
         domain=b, arity=2)
 
     @staticmethod
@@ -1548,21 +1563,21 @@ class BA1:
         return output_vector
 
 
-class ST1:
-    """The **Set Theory 1** library."""
+class SA1:
+    """The **Set Algebra 1** library."""
     # TODO: Develop a metaclass for "Language" classes.
 
-    _SCOPE_ST1 = 'sys_st1'
-    _LANGUAGE_ST1 = 'ba1_language'
+    _SCOPE_SA1 = 'SA1 Scope'
+    _LANGUAGE_SA1 = 'SA1 Language'
 
     # Scope.
     st1_scope = Core.Concept(
-        scope_key=_SCOPE_ST1, facets=Facets.scope, language_key=_LANGUAGE_ST1, base_key='st1_scope',
+        scope_key=_SCOPE_SA1, facets=Facets.scope, language_key=_LANGUAGE_SA1, base_key='st1_scope',
         utf8='st1_scope', latex=r'\text{st1_scope}', html='st1_scope', usascii='st1_scope')
 
     # Language.
     st1_language = Core.Concept(
-        scope_key=_SCOPE_ST1, facets=Facets.language, language_key=_LANGUAGE_ST1, base_key='st1_language',
+        scope_key=_SCOPE_SA1, facets=Facets.language, language_key=_LANGUAGE_SA1, base_key='st1_language',
         utf8='st1_language', latex=r'\text{st1_language}', html='st1_language', usascii='st1_language')
 
     @staticmethod
@@ -1603,6 +1618,31 @@ class ST1:
             Log.log_info(Repr.represent_declaration(finite_set))
             return finite_set
 
+    @staticmethod
+    def element_of_algorithm(
+            v1: typing.List[Core.Concept],
+            v2: typing.List[Core.Concept]) -> typing.List[Core.Concept]:
+        """The vectorized element of boolean function.
+
+        Args:
+            v1 (typing.List[Concept]): A vector of potential set elements of equal size than **v2**.
+            v2 (typing.List[Concept]): A vector of sets of equal size than **v1**.
+
+        Returns:
+            typing.List[Concept]: A vector of Boolean constants of equal size than v1 and v2,
+                such that for every pair (S,e) in the rows of the table built from **v1** and **v2** as columns, Truth if e \in S, Falsum otherwise.
+        """
+        python_bools = list(map(lambda e, S: e in S.elements, v1, v2))
+        naive_bools = [BA1.truth if b else BA1.falsum for b in python_bools]
+        return naive_bools
+
+    element_of = Core.Concept(
+        scope_key=_SCOPE_SA1, language_key=_LANGUAGE_SA1, base_key='element_of',
+        facets=[Facets.function, Facets.programmatic_function, Facets.programmatic_binary_operator],
+        codomain=BA1.b, algorithm=element_of_algorithm,
+        utf8='∈', latex=r'\in', html='&isin;', usascii='element_of',
+        domain=BA1.b, arity=2)
+    """The Boolean 'element of' operator."""
 
 def parse_string_utf8(code):
     metamodel_source = None
@@ -1656,5 +1696,23 @@ def parse_file_utf8():
     # TODO: Implement this.
     pass
 
+
+def repr(
+        o: object,
+        rformat: str = None,
+        *args,
+        left_bracket=None,
+        right_bracket=None,
+        element_separator=None,
+        **kwargs) -> str:
+    """Returns a representation (aka rendering, aka visualization) of the concept in the desired format."""
+    return Repr.represent(
+        o=o,
+        rformat=rformat,
+        *args,
+        left_bracket=left_bracket,
+        right_bracket=right_bracket,
+        element_separator=element_separator,
+        **kwargs)
 
 set_unique_scope()
