@@ -12,6 +12,8 @@ import uuid
 # This sets the root logger to write to stdout (your console).
 # Your script/app needs to call this somewhere at least once.
 # Reference: https://stackoverflow.com/questions/7016056/python-logging-not-outputting-anything
+import core
+
 logging.basicConfig(format='%(message)s')
 
 # By default the root logger is set to WARNING and all loggers you define
@@ -146,6 +148,20 @@ class Facets:
     """
 
     infinite_set = Facet('infinite_set', inclusions=[set2])
+
+    abstract_finite_set = Facet('abstract_finite_set', inclusions=[extensively_defined_finite_set])
+    """An abstract finite set is a set extensively defined by its abstract elements."""
+
+    abstract_element = Facet('abstract_element')
+    """An abstract element is an element that may be an element of set(s) but has no other mathematical properties.
+    It is useful to manipulate for example state sets in Kripke structures.
+    The default object factory will generate these as s_1, s_2, s_3, ...
+    
+    To be fully consistent, this facet should include the "element" Facet,
+    but (nearly) all Facets should include it as well and for the time being,
+    I don't see an immediate necessity for it. Perhaps implement it later,
+    to avoid marginal inconsistencies with ZFC.     
+    """
 
 
 def has_facet(o, facet):
@@ -723,18 +739,14 @@ class Repr:
             # Recall the represent() function. Often, the base_name is a Glyph.
             base_name = Repr.represent(o.base_name, rformat=rformat)
             indexes = Repr.subscriptify(Repr.represent(o.indexes, rformat=rformat), rformat)
-            if has_facet(o, Facets.atomic_variable):
+            exponent = Repr.superscriptify(Repr.represent(o.exponent, rformat=rformat), rformat)
+            if has_facet(o, Facets.atomic_variable) or \
+                    has_facet(o, Facets.function) or \
+                    has_facet(o, Facets.domain) or \
+                    has_facet(o, Facets.abstract_element):
                 # Basic symbol representation.
-                # x
-                # TODO: Modify approach. Storing and returning the _base_name like this
-                #   prevent support for other mathematical fonts, such as MathCal, etc.
-                #   As an initial approach, it provides support for ASCII like variables.
-                #   We may consider storing a Glyph as the base name,
-                #   and calling the static represent() function.
-                return base_name + indexes
-            elif has_facet(o, Facets.function):
-                # TODO: Add indexes and exponent
-                return base_name
+                # x_[indexes]^[exponent]
+                return base_name + indexes + exponent
             elif has_facet(o, Facets.programmatic_constant_call):
                 # x
                 return f'{Repr.represent(o._system_function, rformat=rformat)}'
@@ -786,21 +798,25 @@ class Repr:
 
     @staticmethod
     def represent_declaration(o: object, rformat: str = None, *args, **kwargs) -> str:
+        if rformat is None:
+            rformat = RFormats.DEFAULT
         if has_facet(o, Facets.atomic_variable):
-            if rformat is None:
-                rformat = RFormats.DEFAULT
             match rformat:
                 case RFormats.UTF8:
-                    return f'With {Repr.represent(o, rformat)} ∈ {Repr.represent(o.codomain, rformat)}.'
+                    return f'Let {Repr.represent(o, rformat)} ∈ {Repr.represent(o.codomain, rformat)}.'
                 case _:
                     raise NotImplementedError('TODO')
         if has_facet(o, Facets.extensively_defined_finite_set):
-            if rformat is None:
-                rformat = RFormats.DEFAULT
             match rformat:
                 case RFormats.UTF8:
                     element_list = ', '.join(map(lambda a: Repr.represent(a, rformat), o.elements))
                     return f'Let {Repr.represent(o, rformat)} := {Repr.represent(Glyphs.curly_bracket_left, rformat)}{element_list}{Repr.represent(Glyphs.curly_bracket_right, rformat)}'
+                case _:
+                    raise NotImplementedError('TODO')
+        if has_facet(o, Facets.abstract_element):
+            match rformat:
+                case RFormats.UTF8:
+                    return f'Let {Repr.represent(o, rformat)} ∈ {Repr.represent(o.parent_set, rformat)}.'
                 case _:
                     raise NotImplementedError('TODO')
         else:
@@ -810,6 +826,14 @@ class Repr:
 
 
 class Glyphs:
+
+    # Alphanumerics
+    a_lowercase = Repr.Glyph(utf8='a', latex=r'a', html='a', usascii='a')
+    s_lowercase = Repr.Glyph(utf8='s', latex=r's', html='s', usascii='s')
+    x_lowercase = Repr.Glyph(utf8='x', latex=r'x', html='x', usascii='x')
+
+    s_uppercase = Repr.Glyph(utf8='S', latex=r'S', html='S', usascii='S')
+
     # Number sets
     standard_0 = Repr.Glyph(utf8='0', latex=r'0', html='0', usascii='0')
     standard_1 = Repr.Glyph(utf8='1', latex=r'1', html='1', usascii='1')
@@ -860,7 +884,7 @@ class Glyphs:
     angle_bracket_right = Repr.Glyph(utf8='⟩', latex=r'\right\rangle', html='&rang;', usascii='>')
 
     # Set Theory
-    element_of = Repr.Glyph(utf8='∈', latex=r'\in')
+    element_of = Repr.Glyph(utf8='∈', latex=r'\in', html=r'&isin;', ascii='element_of')
     not_element_of = Repr.Glyph(utf8='∉', latex=r'\notin')
 
     # Spaces
@@ -945,8 +969,13 @@ def f(o, *args):
 def s(base_name=None, indexes=None, elements=None, scope=None):
     return SA1.declare_finite_set(base_name=base_name, indexes=indexes, elements=elements, scope=scope)
 
-def get_qualified_key(scope_key, language_key, base_key):
-    return f'{scope_key}{Const._QUALIFIED_KEY_SEPARATOR}{language_key}{Const._QUALIFIED_KEY_SEPARATOR}{base_key}'
+def get_qualified_key(scope_key, base_key,
+                      language_key=None  # Remove this obsolete argument
+                      ):
+    if language_key is None:
+        return f'{scope_key}{Const._QUALIFIED_KEY_SEPARATOR}{base_key}'
+    else:
+        return f'{scope_key}{Const._QUALIFIED_KEY_SEPARATOR}{language_key}{Const._QUALIFIED_KEY_SEPARATOR}{base_key}'
 
 
 _concept_database = {}
@@ -962,20 +991,25 @@ class Core:
         global _concept_database
         global _token_database
 
-        def __init__(self, scope_key, language_key, base_key,
+        def __init__(self, scope_key, base_key,
                      facets,
+                     language_key=None,  # TODO: Remove this obsolete argument
                      utf8=None, latex=None, html=None, usascii=None, tokens=None,
-                     base_name=None, indexes=None,
+                     base_name=None, indexes=None, exponent=None,
                      domain=None, codomain=None, arity=None, python_value=None,
                      arguments=None, algorithm=None, elements=None,
+                     parent_set=None,
                      system_function=None,
                      **kwargs):
             # Identification Properties that constitute the Qualified Key.
             if scope_key is None:
                 scope_key = get_default_scope()
-            self._scope_key = Utils.clean_mnemonic_key(scope_key)
-            self._language_key = Utils.clean_mnemonic_key(language_key)
-            self._base_key = Utils.clean_mnemonic_key(base_key)
+            self._scope_key = scope_key
+            if language_key is None:
+                self._language_key = None
+            else:
+                self._language_key = language_key
+            self._base_key = base_key
             # Structural properties
             self._facets = set()
             # Recall add_facets to assure that facet logic is applied.
@@ -987,6 +1021,7 @@ class Core:
             self._usascii = usascii
             self._base_name = base_name
             self._indexes = indexes
+            self._exponent = exponent
             self._tokens = tokens
             # Other properties
             self._arguments = arguments
@@ -994,9 +1029,14 @@ class Core:
             self._domain = domain
             self._codomain = codomain
             self._algorithm = algorithm
-            self._elements = elements
+            if elements is None:
+                # TODO: Leave this = None if facet is not applicable
+                self._elements = []
+            else:
+                self._elements = elements
             self._system_function = system_function
             self._python_value = python_value
+            self._parent_set = parent_set
             # Populate the token-concept mapping
             # to facilitate the retrieval of concepts during parsing
             # TODO: Consider the following approach: append utf8, latex, etc. as primary tokens,
@@ -1054,12 +1094,13 @@ class Core:
             return self._base_key
 
         @staticmethod
-        def check_concept_from_decomposed_key(scope_key: str, language_key: str, base_key: str,
+        def check_concept_from_decomposed_key(scope_key: str, base_key: str,
+                                              language_key: str = None,  # TODO: Remove this obsolete argument
                                               **kwargs):
-            if scope_key is not None and language_key is not None and base_key is not None:
-                qualified_key = get_qualified_key(scope_key, language_key, base_key)
+            if scope_key is not None and base_key is not None:
+                qualified_key = get_qualified_key(scope_key=scope_key, base_key=base_key, language_key=language_key)
                 return Core.Concept.check_concept_from_qualified_key(
-                    qualified_key, scope=scope_key, language=language_key, base_key=base_key,
+                    qualified_key=qualified_key, scope=scope_key, language=language_key, base_key=base_key,
                     **kwargs)
             else:
                 Log.log_error('Some identification properties are None',
@@ -1096,6 +1137,10 @@ class Core:
                 * extensively_defined_finite_set
             """
             return self._elements
+
+        @property
+        def exponent(self):
+            return self._exponent
 
         @property
         def facets(self) -> str:
@@ -1148,6 +1193,12 @@ class Core:
         @property
         def language(self):
             return self._language_key
+
+        @property
+        def parent_set(self):
+            # TODO: Rename this property to something like "canonical parent set",
+            #   because an element may be member of an infinity of other sets.
+            return self._parent_set
 
         @property
         def python_value(self):
@@ -1336,11 +1387,12 @@ class BA1:
     b = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='b',
         facets=Facets.domain,
-        utf8='𝔹', latex=r'\mathbb{B}', html='&Bopf;', usascii='B')
+        base_name=Glyphs.mathbb_b_uppercase)
     b2 = Core.Concept(
         scope_key=_SCOPE_BA1, language_key=_LANGUAGE_BA1, base_key='b2',
         facets=Facets.domain,
-        utf8='𝔹²', latex=r'\mathbb{B}^{2}', html=r'&Bopf;<sup>2</sup>', usascii='B2')
+        base_name=Glyphs.mathbb_b_uppercase,
+        exponent=2)
 
     # Algorithms.
     @staticmethod
@@ -1480,8 +1532,8 @@ class BA1:
                 return Core.Concept(
                     scope_key=scope_key, language_key=language_key, base_key=base_key,
                     facets=facets,
-                    utf8='𝔹' + Repr.superscriptify(n), latex=r'\mathbb{B}^{' + str(n) + r'}',
-                    html=r'&Bopf;<sup>' + str(n) + '</sup>', usascii='B' + str(n))
+                    base_name=Glyphs.mathbb_b_uppercase,
+                    exponent=n)
 
     @staticmethod
     def get_boolean_combinations_column(n, c):
@@ -1640,9 +1692,53 @@ class SA1:
         scope_key=_SCOPE_SA1, language_key=_LANGUAGE_SA1, base_key='element_of',
         facets=[Facets.function, Facets.programmatic_function, Facets.programmatic_binary_operator],
         codomain=BA1.b, algorithm=element_of_algorithm,
-        utf8='∈', latex=r'\in', html='&isin;', usascii='element_of',
+        base_name=Glyphs.element_of,
         domain=BA1.b, arity=2)
     """The Boolean 'element of' operator."""
+
+    @staticmethod
+    def declare_abstract_set(n: int, base_name=None, indexes=None, element_base_name=None, first_index=None, scope=None):
+        """An object factory that generates a set of n abstract elements whose scope is their parent set."""
+        if base_name is None:
+            base_name = Glyphs.s_uppercase
+        if element_base_name is None:
+            element_base_name = Glyphs.s_lowercase
+        if first_index is None:
+            first_index = 1
+        if scope is None:
+            scope = core.get_default_scope()
+
+        # We must initialize this object in several steps:
+        # 1. Pre-initialize the parent set without the elements property
+        # 2. Initialize the elements setting their parent_set property
+        # 3. Complete the initialization of the parent set, setting its elements property
+
+        # Step 1. Pre-initialize the parent set without the elements property
+        base_key = core.repr(base_name, rformat=RFormats.USASCII) + '_' + str(indexes)
+        # TODO: Question: should we add a property that states it is "pre-initializing"? Or issue a lock?
+        parent_set = Core.Concept(
+            scope_key=scope, base_key=base_key,
+            facets=Facets.abstract_finite_set,
+            base_name=base_name,
+            indexes=indexes #,
+            #elements=[]  # To assure that the empty set is initialized.
+        )
+
+        for i in range(first_index, first_index + n):
+            # TODO: Use instead a centralized function.
+            base_key = core.repr(element_base_name, rformat=RFormats.USASCII)  + '_' + str(i)
+            e = Core.Concept(
+                scope_key=parent_set,  # The scope of the element is the parent set.
+                base_key=base_key,
+                facets=Facets.abstract_element,
+                base_name=element_base_name,
+                indexes=i,
+                parent_set=parent_set)
+            Log.log_info(Repr.represent_declaration(e))
+            parent_set.elements.append(e)
+        Log.log_info(Repr.represent_declaration(parent_set))
+        return parent_set
+
 
 def parse_string_utf8(code):
     metamodel_source = None
